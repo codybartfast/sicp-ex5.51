@@ -1,0 +1,40 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558 
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "C/C++: clang build active file",
+            "command": "/usr/bin/clang",
+            "args": [
+                "${file}", // File to compile    
+                "-std=c17", // 'ISO C 2017' standard
+                "-o",
+                "${fileDirname}/sicp",
+                "-g", // Produce debugging info in os native format.
+                // Warnings
+                // https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#Warning-Options
+                "-pedantic", // warn if it is optionally supported
+                "-pedantic-errors", // warn if it is optionally supported
+                "-Wall", // enable all compiler warnings
+                "-Wextra", // warn if legit but possibly mistaken
+                "-Wdouble-promotion", // warn implicit float -> double
+                "-Wformat=2", // extra checks including security
+                "-Wmissing-prototypes", // function declarations
+                "-Wstrict-prototypes", // "specified argument types"
+                "-Wold-style-definition", // don't support K&R fun dec/def
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+        }
+    ]
+}
