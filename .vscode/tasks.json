@@ -8,10 +8,12 @@
             "label": "C/C++: clang build active file",
             "command": "/usr/bin/clang",
             "args": [
-                "${file}", // File to compile    
+
+                "src/source.c",
+                "src/sicp.c",
                 "-std=c17", // 'ISO C 2017' standard
                 "-o",
-                "${fileDirname}/sicp",
+                "a.out", // output e.g., "${fileDirname}/sicp",
                 "-g", // Produce debugging info in os native format.
                 // Warnings
                 // https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#Warning-Options
@@ -20,7 +22,6 @@
                 "-Wall", // enable all compiler warnings
                 "-Wextra", // warn if legit but possibly mistaken
                 "-Wdouble-promotion", // warn implicit float -> double
-                "-Wformat=2", // extra checks including security
                 "-Wmissing-prototypes", // function declarations
                 "-Wstrict-prototypes", // "specified argument types"
                 "-Wold-style-definition", // don't support K&R fun dec/def
@@ -35,6 +36,19 @@
                 "kind": "build",
                 "isDefault": true
             },
-        }
+            "dependsOn": "delete old objects",
+        },
+        {
+            "type": "shell",
+            "label": "delete old objects",
+            "command": "/bin/rm",
+            "args": [
+                "-f",
+                "${workspaceFolder}/*.out",
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+        },
     ]
 }

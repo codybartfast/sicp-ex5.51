@@ -1,5 +1,6 @@
 ## Addtions to github version
 /sicp
+*.out
 
 
 ## Ignore Visual Studio temporary files, build results, and
