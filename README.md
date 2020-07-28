@@ -1,2 +1,2 @@
 # sicp-scheme
-Perhaps, Eventually, a SICP Scheme Interpreter
+Perhaps, eventually, a SICP Scheme interpreter.

@@ -32,3 +32,19 @@ void parse(source *s)
 	while ((c = sgetc(s)) != EOF)
 		putchar(c);
 }
+
+/* output
+
+sicp-scheme/ [dev ≡ +1 ~0 -0]> echo "(comming down the pipe)" | a.out
+
+reading source from NAMED file:
+    (stuff in a file)
+
+reading source from a STRING:
+    (i am a string)
+
+reading source from FILE pointer:
+    (comming down the pipe)
+
+sicp-scheme/ [dev ≡ +1 ~0 -0]> 
+*/

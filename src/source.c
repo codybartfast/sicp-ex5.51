@@ -71,7 +71,7 @@ int sclose(source *s)
 	int rc = 0;
 	if (s == NULL)
 		return rc;
-	// Close the FIlE if it's one we openned
+	// Close the FIlE only if it's one we openned
 	if (s->file != NULL && s->kind == SOURCE_FILE_NAME)
 		if ((rc = fclose(s->file)) == EOF)
 			fprintf(stderr, "SOURCE: error closing file: '%s'.\n",
