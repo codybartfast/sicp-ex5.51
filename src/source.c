@@ -52,8 +52,7 @@ source *sopen_string(char *text)
 {
 	source *s;
 	if (text == NULL) {
-		fprintf(stderr,
-			"SOURCE: sopen_string given a null string.\n");
+		fprintf(stderr, "SOURCE: sopen_string given a null string.\n");
 		return NULL;
 	}
 	s = new_source();
