@@ -16,10 +16,10 @@ typedef struct
     char *next;
 } source;
 
-source *source_file(FILE *);
-source *source_name(char *);
-source *source_string(char *);
+source *sopen_file(FILE *);
+source *sopen_name(char *);
+source *sopen_string(char *);
 
-int source_close(source *);
+int sclose(source *);
 
 int sgetc(source *);
