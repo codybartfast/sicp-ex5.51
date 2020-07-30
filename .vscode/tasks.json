@@ -9,6 +9,7 @@
             "command": "/usr/bin/clang",
             "args": [
 
+                "src/util.c",
                 "src/port.c",
                 "src/sicp.c",
                 "-std=c17", // 'ISO C 2017' standard

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "util.h"
 #include "port.h"
+#define area "PORT"
 
 static struct in_port *new_in_port(void);
 
@@ -8,8 +10,7 @@ struct in_port *open_input_file_pointer(FILE *file)
 {
 	struct in_port *ip;
 	if (file == NULL) {
-		fprintf(stderr,
-			"PORT: open_input_file_pointer given a null file.\n");
+		error(area, "open_input_file_pointer given a null file.");
 		return NULL;
 	}
 	ip = new_in_port();
@@ -29,12 +30,12 @@ struct in_port *open_input_file(char *name)
 	struct in_port *ip;
 
 	if (name == NULL) {
-		fprintf(stderr, "PORT: open_input_file given a null name.\n");
+		error(area, "open_input_file given a null name.");
 		return NULL;
 	}
 	file = fopen(name, "r");
 	if (file == NULL) {
-		fprintf(stderr, "PORT: failed to open file: '%s'\n", name);
+		error(area, "failed to open file: '%s'", name);
 		return NULL;
 	}
 	ip = new_in_port();
@@ -53,8 +54,7 @@ struct in_port *open_input_string(char *text)
 {
 	struct in_port *ip;
 	if (text == NULL) {
-		fprintf(stderr,
-			"PORT: open_input_string given a null string.\n");
+		error(area, "open_input_string given a null string.");
 		return NULL;
 	}
 	ip = new_in_port();
@@ -76,8 +76,7 @@ int close_input_port(struct in_port *ip)
 	// Close the FIlE only if it's one we openned
 	if (ip->file != NULL && ip->kind == IN_PORT_FILE)
 		if ((rc = fclose(ip->file)) == EOF)
-			fprintf(stderr, "PORT: error closing file: '%s'.\n",
-				ip->name);
+			error(area, "error closing file: '%s'.", ip->name);
 	free(ip);
 	return rc;
 }
@@ -85,7 +84,7 @@ int close_input_port(struct in_port *ip)
 int read_char(struct in_port *ip)
 {
 	if (ip == NULL) {
-		fprintf(stderr, "PORT: read_char received a null port.\n");
+		error(area, "read_char received a null port.");
 		return EOF;
 	}
 	switch (ip->kind) {
@@ -95,7 +94,7 @@ int read_char(struct in_port *ip)
 	case IN_PORT_STRING:
 		return (*ip->next == '\0') ? EOF : *(ip->next++);
 	default:
-		fprintf(stderr, "PORT: BUG! More enums than cases.\n");
+		error(area, "BUG! More enums than cases.");
 		return EOF;
 	}
 }
@@ -104,6 +103,6 @@ struct in_port *new_in_port(void)
 {
 	struct in_port *ip = (struct in_port *)malloc(sizeof(struct in_port));
 	if (ip == NULL)
-		fprintf(stdin, "PORT: no memory for source struct.\n");
+		error(area, "no memory for source struct.");
 	return ip;
 }
