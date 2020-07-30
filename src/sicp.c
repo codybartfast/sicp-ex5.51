@@ -1,35 +1,35 @@
 #include <stdio.h>
-#include "source.h"
+#include "port.h"
 
-void parse(source *);
+void parse(struct in_port *);
 
 int main(void)
 {
-	source *source;
+	struct in_port *in_port;
 
 	printf("\nreading source from NAMED file:\n    ");
-	source = src_name("../test/file.txt");
-	parse(source);
-	src_close(source);
+	in_port = open_input_file("../test/file.txt");
+	parse(in_port);
+	close_input_port(in_port);
 
 	printf("\nreading source from a STRING:\n    ");
-	source = src_string("(i am a string)");
-	parse(source);
-	src_close(source);
+	in_port = open_input_string("(i am a string)");
+	parse(in_port);
+	close_input_port(in_port);
 
 	printf("\n\nreading source from FILE pointer:\n    ");
-	source = src_file(stdin);
-	parse(source);
-	src_close(source);
+	in_port = open_input_file_pointer(stdin);
+	parse(in_port);
+	close_input_port(in_port);
 	printf("\n");
 	
 	return 0;
 }
 
-void parse(source *s)
+void parse(struct in_port *ip)
 {
 	int c;
-	while ((c = sgetc(s)) != EOF)
+	while ((c = read_char(ip)) != EOF)
 		putchar(c);
 }
 
@@ -47,4 +47,5 @@ reading source from FILE pointer:
     (comming down the pipe)
 
 sicp-scheme/ [dev ≡ +1 ~0 -0]> 
+
 */
