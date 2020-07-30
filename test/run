@@ -1,0 +1,2 @@
+echo "(coming down the pipe)" | ~/sicp-scheme/bin/sicp
+
