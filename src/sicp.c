@@ -8,19 +8,19 @@ int main(void)
 	source *source;
 
 	printf("\nreading source from NAMED file:\n    ");
-	source = sopen_name("file.txt");
+	source = src_name("../test/file.txt");
 	parse(source);
-	sclose(source);
+	src_close(source);
 
 	printf("\nreading source from a STRING:\n    ");
-	source = sopen_string("(i am a string)");
+	source = src_string("(i am a string)");
 	parse(source);
-	sclose(source);
+	src_close(source);
 
 	printf("\n\nreading source from FILE pointer:\n    ");
-	source = sopen_file(stdin);
+	source = src_file(stdin);
 	parse(source);
-	sclose(source);
+	src_close(source);
 	printf("\n");
 	
 	return 0;
