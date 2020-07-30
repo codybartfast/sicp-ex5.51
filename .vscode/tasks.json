@@ -13,7 +13,7 @@
                 "src/sicp.c",
                 "-std=c17", // 'ISO C 2017' standard
                 "-o",
-                "a.out", // output e.g., "${fileDirname}/sicp",
+                "${workspaceFolder}/bin/sicp", // output e.g., "${fileDirname}/sicp",
                 "-g", // Produce debugging info in os native format.
                 // Warnings
                 // https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#Warning-Options
