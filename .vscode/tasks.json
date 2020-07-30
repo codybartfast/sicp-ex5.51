@@ -11,6 +11,7 @@
 
                 "src/util.c",
                 "src/port.c",
+                "src/lexer.c",
                 "src/sicp.c",
                 "-std=c17", // 'ISO C 2017' standard
                 "-o",
@@ -45,11 +46,8 @@
             "command": "/bin/rm",
             "args": [
                 "-f",
-                "${workspaceFolder}/*.out",
+                "${workspaceFolder}/bin/sicp",
             ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
         },
     ]
 }

@@ -2,9 +2,12 @@
 #include <stdlib.h>
 #include "util.h"
 #include "port.h"
+
+#define NO_PEEK -2
 #define area "PORT"
 
 static struct in_port *new_in_port(void);
+static int read(struct in_port *);
 
 struct in_port *open_input_file_pointer(FILE *file)
 {
@@ -21,6 +24,8 @@ struct in_port *open_input_file_pointer(FILE *file)
 	ip->file = file;
 	ip->text = NULL;
 	ip->next = NULL;
+	ip->peeked = NO_PEEK;
+	ip->read_count = 0L;
 	return ip;
 }
 
@@ -47,6 +52,8 @@ struct in_port *open_input_file(char *name)
 	ip->file = file;
 	ip->text = NULL;
 	ip->next = NULL;
+	ip->peeked = NO_PEEK;
+	ip->read_count = 0L;
 	return ip;
 }
 
@@ -65,6 +72,8 @@ struct in_port *open_input_string(char *text)
 	ip->file = NULL;
 	ip->text = text;
 	ip->next = text;
+	ip->peeked = NO_PEEK;
+	ip->read_count = 0L;
 	return ip;
 }
 
@@ -81,7 +90,7 @@ int close_input_port(struct in_port *ip)
 	return rc;
 }
 
-int read_char(struct in_port *ip)
+int read(struct in_port *ip)
 {
 	if (ip == NULL) {
 		error(area, "read_char received a null port.");
@@ -90,13 +99,33 @@ int read_char(struct in_port *ip)
 	switch (ip->kind) {
 	case IN_PORT_FILE_POINTER:
 	case IN_PORT_FILE:
+		ip->read_count++;
 		return getc(ip->file);
 	case IN_PORT_STRING:
+		ip->read_count++;
 		return (*ip->next == '\0') ? EOF : *(ip->next++);
 	default:
 		error(area, "BUG! More enums than cases.");
 		return EOF;
 	}
+}
+
+int read_char(struct in_port *ip)
+{
+	if (ip->peeked == NO_PEEK)
+		return read(ip);
+	else {
+		int c = ip->peeked;
+		ip->peeked = NO_PEEK;
+		return c;
+	}
+}
+
+int peek_char(struct in_port *ip)
+{
+	if (ip->peeked == NO_PEEK)
+		ip->peeked = read(ip);
+	return ip->peeked;
 }
 
 struct in_port *new_in_port(void)
