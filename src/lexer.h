@@ -2,8 +2,8 @@
 #include "port.h"
 #include "token.h"
 
-bool lexer_errored;
-long lexer_error_position;
-char *lexer_error_message;
+extern bool lexer_errored;
+extern long lexer_error_position;
+extern char *lexer_error_message;
 
 struct token *read_token(struct in_port *);

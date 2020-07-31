@@ -8,12 +8,16 @@
 #define error_len 100
 #define INITIAL_BUFFSIZE (1 << 2)
 
+bool lexer_errored = false;
+long lexer_error_position = -1;
+char *lexer_error_message = NULL;
+
 static enum token_type scan(struct in_port *);
 static enum token_type number(struct in_port *);
-bool peek_delimited(struct in_port *in);
+static bool peek_delimited(struct in_port *in);
 static enum token_type add(int c);
 static int grow_buff(void);
-void lexical_error(long position, char *msg);
+static void lexical_error(long position, char *msg);
 
 static int buffidx, buffsize = INITIAL_BUFFSIZE;
 static int maxlen = INITIAL_BUFFSIZE - 1;
@@ -23,6 +27,11 @@ static char error_msg[error_len];
 
 struct token *read_token(struct in_port *in)
 {
+	if (lexer_errored != false) {
+		lexer_errored = false;
+		lexer_error_position = -1;
+		lexer_error_message = NULL;
+	}
 	if (buff == NULL) {
 		buff = (char *)malloc(buffsize * sizeof(char));
 		if (buff == NULL) {
