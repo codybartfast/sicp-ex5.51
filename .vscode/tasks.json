@@ -12,6 +12,7 @@
                 "src/util.c",
                 "src/port.c",
                 "src/lexer.c",
+                "src/value.c",
                 "src/sicp.c",
                 "-std=c17", // 'ISO C 2017' standard
                 "-o",

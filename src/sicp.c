@@ -1,33 +1,18 @@
 #include <stdio.h>
-#include "lexer.h"
-
-void parse(struct in_port *);
+#include "value.h"
 
 int main(void)
 {
-	struct in_port *in_port;
-	struct token *t;
-
-	in_port = open_input_string("  123    456 7890 9876x54321");
-
-	printf("%ld: [%d] [%s]\n", (t = read_token(in_port))->position, t->type,
-	       t->value);
-	printf("%ld: [%d] [%s]\n", (t = read_token(in_port))->position, t->type,
-	       t->value);
-	printf("%ld: [%d] [%s]\n", (t = read_token(in_port))->position, t->type,
-	       t->value);
-
-	printf("%ld: [%d] [%s]\n", (t = read_token(in_port))->position, t->type,
-	       t->value);
-	printf("%d at %ld: %s\n", lexer_errored, lexer_error_position,
-	       lexer_error_message);
-
-	printf("%ld: [%d] [%s]\n", (t = read_token(open_input_string("555")))->position, t->type,
-	       t->value);
-	printf("%d at %ld: %s\n", lexer_errored, lexer_error_position,
-	       lexer_error_message);
-
-	close_input_port(in_port);
-
+	value v = { 0, 0, 0, 0, 0 };
+	int32_value(-51, &v);
+	printf("%lu\n", *((unsigned long *)(void *)&v));
+	printf("%d\n", value_int32(&v));
 	return 0;
 }
+
+/* Output
+
+4294967245
+-51
+
+*/
