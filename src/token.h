@@ -1,6 +1,6 @@
 enum token_type{
-	TKN_NUMBER,
-	TKN_EOF
+	TKN_EOF = -1,
+	TKN_NUMBER 
 };
 
 struct token {
