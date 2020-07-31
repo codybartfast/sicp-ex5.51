@@ -42,7 +42,8 @@ enum token_type scan(struct in_port *in)
 		read_char(in);
 	if ((c = peek_char(in)) == EOF)
 		return TKN_EOF;
-	else if (isdigit(c))
+	token.position = in->read_count;
+	if (isdigit(c))
 		return number(in);
 	sprintf(error_msg, "Unexpected start of datum: '%c' (%d)", c, c);
 	lexical_error(in->read_count, error_msg);

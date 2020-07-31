@@ -6,4 +6,5 @@ enum token_type{
 struct token {
 	enum token_type type;
 	char * value;
+	long position;
 };
