@@ -1,2 +1,2 @@
-echo "(coming down the pipe)" | ~/sicp-scheme/bin/sicp
+~/sicp-scheme/bin/sicp
 

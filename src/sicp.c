@@ -1,18 +1,13 @@
-#include <stdio.h>
-#include "value.h"
+#include "parser.h"
 
 int main(void)
 {
-	value v = { 0, 0, 0, 0, 0 };
-	int32_value(-51, &v);
-	printf("%lu\n", *((unsigned long *)(void *)&v));
-	printf("%d\n", value_int32(&v));
+	obj *obj;
+	struct in_port *in = open_input_string(" 1 2  123456789012345678 ");
+	obj = read(in);
+	obj = read(in);
+	obj = read(in);
+	printf("type: %d, subtype: %d, value: %ld\n", obj->type, obj->subtype,
+	       obj->value.int64);
 	return 0;
 }
-
-/* Output
-
-4294967245
--51
-
-*/

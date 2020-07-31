@@ -4,7 +4,7 @@
 #include "util.h"
 #include "lexer.h"
 
-#define area "LEXER"
+#define AREA "LEXER"
 #define error_len 100
 #define INITIAL_BUFFSIZE (1 << 2)
 
@@ -35,7 +35,7 @@ struct token *read_token(struct in_port *in)
 	if (buff == NULL) {
 		buff = (char *)malloc(buffsize * sizeof(char));
 		if (buff == NULL) {
-			error(area, "No memory for buff");
+			error(AREA, "No memory for buff");
 			return NULL;
 		}
 	}
@@ -128,5 +128,5 @@ void lexical_error(long position, char *msg)
 	lexer_errored = true;
 	lexer_error_position = position;
 	lexer_error_message = msg;
-	error(area, msg);
+	error(AREA, msg);
 }

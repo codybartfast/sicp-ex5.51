@@ -4,7 +4,7 @@
 #include "port.h"
 
 #define NO_PEEK -2
-#define area "PORT"
+#define AREA "PORT"
 
 static struct in_port *new_in_port(void);
 static int read(struct in_port *);
@@ -13,7 +13,7 @@ struct in_port *open_input_file_pointer(FILE *file)
 {
 	struct in_port *ip;
 	if (file == NULL) {
-		error(area, "open_input_file_pointer given a null file.");
+		error(AREA, "open_input_file_pointer given a null file.");
 		return NULL;
 	}
 	ip = new_in_port();
@@ -35,12 +35,12 @@ struct in_port *open_input_file(char *name)
 	struct in_port *ip;
 
 	if (name == NULL) {
-		error(area, "open_input_file given a null name.");
+		error(AREA, "open_input_file given a null name.");
 		return NULL;
 	}
 	file = fopen(name, "r");
 	if (file == NULL) {
-		error(area, "failed to open file: '%s'", name);
+		error(AREA, "failed to open file: '%s'", name);
 		return NULL;
 	}
 	ip = new_in_port();
@@ -61,7 +61,7 @@ struct in_port *open_input_string(char *text)
 {
 	struct in_port *ip;
 	if (text == NULL) {
-		error(area, "open_input_string given a null string.");
+		error(AREA, "open_input_string given a null string.");
 		return NULL;
 	}
 	ip = new_in_port();
@@ -85,7 +85,7 @@ int close_input_port(struct in_port *ip)
 	// Close the FIlE only if it's one we openned
 	if (ip->file != NULL && ip->kind == IN_PORT_FILE)
 		if ((rc = fclose(ip->file)) == EOF)
-			error(area, "error closing file: '%s'.", ip->name);
+			error(AREA, "error closing file: '%s'.", ip->name);
 	free(ip);
 	return rc;
 }
@@ -93,7 +93,7 @@ int close_input_port(struct in_port *ip)
 int read(struct in_port *ip)
 {
 	if (ip == NULL) {
-		error(area, "read_char received a null port.");
+		error(AREA, "read_char received a null port.");
 		return EOF;
 	}
 	switch (ip->kind) {
@@ -105,7 +105,7 @@ int read(struct in_port *ip)
 		ip->read_count++;
 		return (*ip->next == '\0') ? EOF : *(ip->next++);
 	default:
-		error(area, "BUG! More enums than cases.");
+		error(AREA, "BUG! More enums than cases.");
 		return EOF;
 	}
 }
@@ -132,6 +132,6 @@ struct in_port *new_in_port(void)
 {
 	struct in_port *ip = (struct in_port *)malloc(sizeof(struct in_port));
 	if (ip == NULL)
-		error(area, "no memory for source struct.");
+		error(AREA, "no memory for source struct.");
 	return ip;
 }

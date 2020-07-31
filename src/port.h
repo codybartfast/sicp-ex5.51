@@ -2,11 +2,14 @@
  * Could use fmemopen, but it's not portable.
  */
 
+#ifndef HDR_PORT
+#define HDR_PORT
+
 #include <stdio.h>
 
 enum in_port_kind { IN_PORT_FILE_POINTER, IN_PORT_FILE, IN_PORT_STRING };
 
-struct in_port{
+struct in_port {
 	enum in_port_kind kind;
 	char *name;
 	FILE *file;
@@ -24,3 +27,5 @@ int close_input_port(struct in_port *);
 
 int read_char(struct in_port *);
 int peek_char(struct in_port *);
+
+#endif
