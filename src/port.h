@@ -1,5 +1,6 @@
-#ifndef HDR_PORT
-#define HDR_PORT
+#ifndef PORT_H
+#define PORT_H 1
+
 
 #include <stdio.h>
 
