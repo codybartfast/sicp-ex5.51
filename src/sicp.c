@@ -1,4 +1,5 @@
 #include "parser.h"
+#include "eval.h"
 
 int main(void)
 {
@@ -7,7 +8,9 @@ int main(void)
 	obj = read(in);
 	obj = read(in);
 	obj = read(in);
+	obj = eval(obj);
 	printf("type: %d, subtype: %d, value: %ld\n", obj->type, obj->subtype,
-	       obj->value.int64);
+	       obj->val.int64);
+
 	return 0;
 }

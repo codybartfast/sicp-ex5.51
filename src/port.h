@@ -1,7 +1,3 @@
-/*
- * Could use fmemopen, but it's not portable.
- */
-
 #ifndef HDR_PORT
 #define HDR_PORT
 

@@ -1,23 +1,25 @@
+#ifndef HDR_OBJ
+#define HDR_OBJ
+
 #include <stdbool.h>
 #include <stdint.h>
 
 union value {
 	int64_t int64;
+	char * dfloat;
 };
 
 typedef struct {
 	uint8_t type;
 	uint8_t subtype;
-	union value value;
+	union value val;
 } obj;
 
-obj *new_obj(void);
-
 // NUMBER
-obj *int64_obj(int64_t, obj *);
-int64_t obj_int64(obj *);
+bool isnumber(obj *);
+obj *int64(int64_t);
 
-// STATIC
+// EOF
 extern obj *eof;
 bool iseof(obj *obj);
 
@@ -26,3 +28,6 @@ bool iserr(obj *obj);
 obj *error_internal(void);
 obj *error_lexor(void);
 obj *error_parser(void);
+obj *error_eval(void);
+
+#endif

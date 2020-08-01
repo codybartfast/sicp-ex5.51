@@ -14,6 +14,7 @@
                 "src/lexer.c",
                 "src/obj.c",
                 "src/parser.c",
+                "src/eval.c",
                 "src/sicp.c",
                 "-std=c17", // 'ISO C 2017' standard
                 "-o",
