@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include "eval.h"
+#include "sserror.h"
 
 static bool isself_evaluating(obj *expr);
 

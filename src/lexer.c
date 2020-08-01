@@ -1,7 +1,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "util.h"
+#include "sserror.h"
 #include "lexer.h"
 
 #define AREA "LEXER"

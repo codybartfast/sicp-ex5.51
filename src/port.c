@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "util.h"
+#include "sserror.h"
 #include "port.h"
 
 #define NO_PEEK -2
