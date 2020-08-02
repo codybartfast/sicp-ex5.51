@@ -2,6 +2,8 @@
 #include "eval.h"
 #include "convert.h"
 
+#include "out_port.h"
+
 int main(void)
 {
 	obj *num;
@@ -30,6 +32,12 @@ int main(void)
 	obj *str = cnv_number_string(num);
 	printf("type: %d, subtype: %d, value: \"%s\"\n", str->type,
 	       str->subtype, str->val.string);
+
+	struct out_port *out = open_output_string();
+	out->writes(out, "rage against the meh-chine\nblah\n");
+	out->writes(out, "phew\n");
+	out->writes(out, "phew\n");
+	printf("%s", out->string(out));
 
 	return 0;
 }

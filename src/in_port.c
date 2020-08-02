@@ -1,13 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "sserror.h"
-#include "port.h"
+#include "in_port.h"
 
 #define NO_PEEK -2
-#define AREA "PORT"
+#define AREA "in_port"
+
+enum { IN_PORT_FILE_POINTER, IN_PORT_FILE, IN_PORT_STRING };
 
 static struct in_port *new_in_port(void);
-static int read(struct in_port *);
+
+static void setfuncs(struct in_port *);
 
 struct in_port *open_input_file_pointer(FILE *file)
 {
@@ -26,6 +29,7 @@ struct in_port *open_input_file_pointer(FILE *file)
 	ip->next = NULL;
 	ip->peeked = NO_PEEK;
 	ip->read_count = 0L;
+	setfuncs(ip);
 	return ip;
 }
 
@@ -54,6 +58,7 @@ struct in_port *open_input_file(char *name)
 	ip->next = NULL;
 	ip->peeked = NO_PEEK;
 	ip->read_count = 0L;
+	setfuncs(ip);
 	return ip;
 }
 
@@ -74,10 +79,11 @@ struct in_port *open_input_string(char *text)
 	ip->next = text;
 	ip->peeked = NO_PEEK;
 	ip->read_count = 0L;
+	setfuncs(ip);
 	return ip;
 }
 
-int close_input_port(struct in_port *ip)
+static int close_input_port(struct in_port *ip)
 {
 	int rc = 0;
 	if (ip == NULL)
@@ -90,7 +96,7 @@ int close_input_port(struct in_port *ip)
 	return rc;
 }
 
-int read(struct in_port *ip)
+static int direct_read(struct in_port *ip)
 {
 	if (ip == NULL) {
 		error(AREA, "read_char received a null port.");
@@ -110,10 +116,10 @@ int read(struct in_port *ip)
 	}
 }
 
-int read_char(struct in_port *ip)
+static int read_char(struct in_port *ip)
 {
 	if (ip->peeked == NO_PEEK)
-		return read(ip);
+		return direct_read(ip);
 	else {
 		int c = ip->peeked;
 		ip->peeked = NO_PEEK;
@@ -121,10 +127,10 @@ int read_char(struct in_port *ip)
 	}
 }
 
-int peek_char(struct in_port *ip)
+static int peek_char(struct in_port *ip)
 {
 	if (ip->peeked == NO_PEEK)
-		ip->peeked = read(ip);
+		ip->peeked = direct_read(ip);
 	return ip->peeked;
 }
 
@@ -132,6 +138,12 @@ struct in_port *new_in_port(void)
 {
 	struct in_port *ip = (struct in_port *)malloc(sizeof(struct in_port));
 	if (ip == NULL)
-		error(AREA, "no memory for source struct.");
+		error(AREA, "no memory for in_port struct.");
 	return ip;
+}
+
+static void setfuncs(struct in_port *ip){
+	ip->readc = read_char;
+	ip->peek = peek_char;
+	ip->close = close_input_port;
 }

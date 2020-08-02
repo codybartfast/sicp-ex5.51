@@ -45,9 +45,9 @@ enum token_type scan(struct in_port *in)
 {
 	int c;
 
-	while (isspace(peek_char(in)))
-		read_char(in);
-	if ((c = peek_char(in)) == EOF)
+	while (isspace(in->peek(in)))
+		in->readc(in);
+	if ((c = in->peek(in)) == EOF)
 		return TKN_EOF;
 	token.position = in->read_count;
 	if (isdigit(c))
@@ -59,12 +59,12 @@ enum token_type scan(struct in_port *in)
 
 enum token_type number(struct in_port *in)
 {
-	while (isdigit(peek_char(in))) {
-		if (sb->addc(sb, read_char(in)) == TKN_EOF)
+	while (isdigit(in->peek(in))) {
+		if (sb->addc(sb, in->readc(in)) == TKN_EOF)
 			return TKN_EOF;
 	}
 	if (!peek_delimited(in)) {
-		int c = peek_char(in);
+		int c = in->peek(in);
 		sprintf(error_msg, "Unexpect char in number: '%c' (%d)", c, c);
 		lexical_error(in->read_count, error_msg);
 		return EOF;
@@ -74,7 +74,7 @@ enum token_type number(struct in_port *in)
 
 bool peek_delimited(struct in_port *in)
 {
-	int c = peek_char(in);
+	int c = in->peek(in);
 
 	if (isspace(c))
 		return true;

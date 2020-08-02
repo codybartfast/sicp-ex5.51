@@ -2,7 +2,7 @@
 #define LEXER_H 1
 
 #include <stdbool.h>
-#include "port.h"
+#include "in_port.h"
 #include "token.h"
 
 extern bool lexer_errored;
