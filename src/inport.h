@@ -1,9 +1,9 @@
-#ifndef IN_PORT_H
-#define IN_PORT_H 1
+#ifndef INPORT_H
+#define INPORT_H 1
 
 #include <stdio.h>
 
-struct in_port {
+struct inport {
 	int kind;
 	char *name;
 	FILE *file;
@@ -12,13 +12,13 @@ struct in_port {
 	int peeked;
 	long read_count;
 
-	int (*readc)(struct in_port *);
-	int (*peek)(struct in_port *);
-	int (*close)(struct in_port *);
+	int (*readc)(struct inport *);
+	int (*peek)(struct inport *);
+	int (*close)(struct inport *);
 };
 
-struct in_port *openin_ptr(FILE *);
-struct in_port *openin_file(char *);
-struct in_port *openin_string(char *);
+struct inport *openin_ptr(FILE *);
+struct inport *openin_file(char *);
+struct inport *openin_string(char *);
 
 #endif

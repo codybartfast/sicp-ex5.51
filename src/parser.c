@@ -8,8 +8,8 @@
 
 static obj *number(struct token *);
 
-struct in_port *default_in = NULL;
-static struct in_port *dfltin(void)
+struct inport *default_in = NULL;
+static struct inport *dfltin(void)
 {
 	return default_in == NULL ? (default_in = openin_ptr(stdin)) :
 				    default_in;
@@ -20,7 +20,7 @@ obj *read(void)
 	return  readp(dfltin());
 }
 
-obj *readp(struct in_port *in)
+obj *readp(struct inport *in)
 {
 	struct token *tkn = read_token(in);
 	switch (tkn->type) {

@@ -4,9 +4,9 @@
 
 // NUMBER
 
-bool isnumber(obj *obj)
+bool isnumber(obj *dat)
 {
-	return obj->type == TYPE_NUMBER;
+	return dat->type == TYPE_NUMBER;
 }
 
 obj *int64(int64_t n)
@@ -24,19 +24,19 @@ obj *int64(int64_t n)
 static obj nl_struct = { TYPE_STRING, 0, { .string = "\n" } };
 obj *nl_object = &nl_struct;
 
-bool isstring(obj *obj)
+bool isstring(obj *dat)
 {
-	return obj->type == TYPE_STRING;
+	return dat->type == TYPE_STRING;
 }
 
 obj *string(char *str)
 {
-	obj *obj = new_obj();
-	if (iserr(obj))
-		return obj;
-	obj->type = TYPE_STRING;
-	obj->val.string = str;
-	return obj;
+	obj *dat = new_obj();
+	if (iserr(dat))
+		return dat;
+	dat->type = TYPE_STRING;
+	dat->val.string = str;
+	return dat;
 }
 
 // EOF
@@ -44,18 +44,18 @@ obj *string(char *str)
 static obj eof_struct = { TYPE_EOF, 0, { 0 } };
 obj *eof_object = &eof_struct;
 
-bool iseof(obj *obj)
+bool iseof(obj *dat)
 {
-	return obj == eof_object;
+	return dat == eof_object;
 }
 
 // MEMORY 'MANAGEMENT'
 
 obj *new_obj(void)
 {
-	obj *object = (obj *)malloc(sizeof(obj));
-	if (object == NULL)
+	obj *dat = (obj *)malloc(sizeof(obj));
+	if (dat == NULL)
 		return error_memory();
-	object->type = TYPE_NOT_SET;
-	return object;
+	dat->type = TYPE_NOT_SET;
+	return dat;
 }

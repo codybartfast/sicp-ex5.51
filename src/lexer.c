@@ -12,16 +12,16 @@ bool lexer_errored = false;
 long lexer_error_position = -1;
 char *lexer_error_message = NULL;
 
-static enum token_type scan(struct in_port *);
-static enum token_type number(struct in_port *);
-static bool peek_delimited(struct in_port *in);
+static enum token_type scan(struct inport *);
+static enum token_type number(struct inport *);
+static bool peek_delimited(struct inport *in);
 static void lexical_error(long position, char *msg);
 
 static struct strbldr *sb = NULL;
 static struct token token;
 static char error_msg[error_len];
 
-struct token *read_token(struct in_port *in)
+struct token *read_token(struct inport *in)
 {
 	if (lexer_errored != false) {
 		lexer_errored = false;
@@ -41,7 +41,7 @@ struct token *read_token(struct in_port *in)
 	return &token;
 }
 
-enum token_type scan(struct in_port *in)
+enum token_type scan(struct inport *in)
 {
 	int c;
 
@@ -57,7 +57,7 @@ enum token_type scan(struct in_port *in)
 	return EOF;
 }
 
-enum token_type number(struct in_port *in)
+enum token_type number(struct inport *in)
 {
 	while (isdigit(in->peek(in))) {
 		if (sb->addc(sb, in->readc(in)) == TKN_EOF)
@@ -72,7 +72,7 @@ enum token_type number(struct in_port *in)
 	return TKN_NUMBER;
 }
 
-bool peek_delimited(struct in_port *in)
+bool peek_delimited(struct inport *in)
 {
 	int c = in->peek(in);
 

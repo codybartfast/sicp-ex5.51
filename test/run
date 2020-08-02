@@ -1,2 +1,2 @@
- ~/sicp-scheme/bin/sicp
+ echo 0010 | ~/sicp-scheme/bin/sicp
 

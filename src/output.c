@@ -6,12 +6,12 @@
 
 #define AREA "OUTPUT"
 
-static void display(struct out_port *, obj *);
+static void display(struct outport *, obj *);
 static obj *displaystr(obj *);
 
-struct out_port *defaullt_out = NULL;
+struct outport *defaullt_out = NULL;
 
-static struct out_port *dfltout(void)
+static struct outport *dfltout(void)
 {
 	return defaullt_out == NULL ? (defaullt_out = openout_ptr(stdout)) :
 				      defaullt_out;
@@ -22,9 +22,9 @@ void newline(void)
 	newlinep(dfltout());
 }
 
-void newlinep(struct out_port *op)
+void newlinep(struct outport *out)
 {
-	display(op, nl_object);
+	display(out, nl_object);
 }
 
 void write(obj *dat)
@@ -32,7 +32,7 @@ void write(obj *dat)
 	writep(dfltout(), dat);
 }
 
-void writep(struct out_port *op, obj *dat)
+void writep(struct outport *op, obj *dat)
 {
 	obj *str = displaystr(dat);
 	if (!iserr(str)) {
@@ -40,7 +40,7 @@ void writep(struct out_port *op, obj *dat)
 	}
 }
 
-static void display(struct out_port *op, obj *dat)
+static void display(struct outport *op, obj *dat)
 {
 	obj *str = displaystr(dat);
 	if (!iserr(str)) {

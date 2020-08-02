@@ -40,6 +40,6 @@ obj *string(char *);
 
 // EOF
 extern obj *eof_object;
-bool iseof(obj *obj);
+bool iseof(obj *);
 
 #endif

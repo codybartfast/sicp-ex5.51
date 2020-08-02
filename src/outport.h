@@ -1,24 +1,24 @@
-#ifndef OUT_PORT_H
-#define OUT_PORT_H 1
+#ifndef OUTPORT_H
+#define OUTPORT_H 1
 
 #include <stdio.h>
 #include "strbldr.h"
 
-struct out_port {
+struct outport {
 	int kind;
 	char *name;
 	FILE *file;
 	struct strbldr *sb;
 	long write_count;
 
-	int (*writec)(struct out_port *, char c);
-	int (*writes)(struct out_port *, char *s);
-	char *(*string)(struct out_port *);
-	int (*close)(struct out_port *);
+	int (*writec)(struct outport *, char c);
+	int (*writes)(struct outport *, char *s);
+	char *(*string)(struct outport *);
+	int (*close)(struct outport *);
 };
 
-struct out_port *openout_ptr(FILE *);
-struct out_port *openout_file(char *);
-struct out_port *openout_string(void);
+struct outport *openout_ptr(FILE *);
+struct outport *openout_file(char *);
+struct outport *openout_string(void);
 
 #endif

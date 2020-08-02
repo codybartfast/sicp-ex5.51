@@ -6,37 +6,29 @@
 #define NO_PEEK -2
 #define AREA "in_port"
 
-enum { IN_PORT_FILE_POINTER, IN_PORT_FILE, IN_PORT_STRING };
+enum inkind { INPORT_FILE_POINTER = 1, INPORT_FILE, INPORT_STRING };
 
-static struct in_port *new_in_port(void);
+static struct inport *new_inport(void);
 
-static void setfuncs(struct in_port *);
-
-struct in_port *openin_ptr(FILE *file)
+struct inport *openin_ptr(FILE *file)
 {
-	struct in_port *ip;
+	struct inport *ip;
 	if (file == NULL) {
 		error(AREA, "open_input_file_pointer given a null file.");
 		return NULL;
 	}
-	ip = new_in_port();
+	ip = new_inport();
 	if (ip == NULL)
 		return NULL;
-	ip->kind = IN_PORT_FILE_POINTER;
-	ip->name = NULL;
+	ip->kind = INPORT_FILE_POINTER;
 	ip->file = file;
-	ip->text = NULL;
-	ip->next = NULL;
-	ip->peeked = NO_PEEK;
-	ip->read_count = 0L;
-	setfuncs(ip);
 	return ip;
 }
 
-struct in_port *openin_file(char *name)
+struct inport *openin_file(char *name)
 {
 	FILE *file;
-	struct in_port *ip;
+	struct inport *in;
 
 	if (name == NULL) {
 		error(AREA, "open_input_file given a null name.");
@@ -47,103 +39,95 @@ struct in_port *openin_file(char *name)
 		error(AREA, "failed to open file: '%s'", name);
 		return NULL;
 	}
-	ip = new_in_port();
-	if (ip == NULL)
+	in = new_inport();
+	if (in == NULL)
 		return NULL;
 
-	ip->kind = IN_PORT_FILE;
-	ip->name = name;
-	ip->file = file;
-	ip->text = NULL;
-	ip->next = NULL;
-	ip->peeked = NO_PEEK;
-	ip->read_count = 0L;
-	setfuncs(ip);
-	return ip;
+	in->kind = INPORT_FILE;
+	in->name = name;
+	in->file = file;
+	return in;
 }
 
-struct in_port *openin_string(char *text)
+struct inport *openin_string(char *text)
 {
-	struct in_port *ip;
+	struct inport *in;
 	if (text == NULL) {
 		error(AREA, "open_input_string given a null string.");
 		return NULL;
 	}
-	ip = new_in_port();
-	if (ip == NULL)
+	in = new_inport();
+	if (in == NULL)
 		return NULL;
-	ip->kind = IN_PORT_STRING;
-	ip->name = NULL;
-	ip->file = NULL;
-	ip->text = text;
-	ip->next = text;
-	ip->peeked = NO_PEEK;
-	ip->read_count = 0L;
-	setfuncs(ip);
-	return ip;
+	in->kind = INPORT_STRING;
+	return in;
 }
 
-static int close_input_port(struct in_port *ip)
+static int close_inport(struct inport *in)
 {
 	int rc = 0;
-	if (ip == NULL)
+	if (in == NULL)
 		return rc;
 	// Close the FIlE only if it's one we openned
-	if (ip->file != NULL && ip->kind == IN_PORT_FILE)
-		if ((rc = fclose(ip->file)) == EOF)
-			error(AREA, "error closing file: '%s'.", ip->name);
-	free(ip);
+	if (in->file != NULL && in->kind == INPORT_FILE)
+		if ((rc = fclose(in->file)) == EOF)
+			error(AREA, "error closing file: '%s'.", in->name);
+	free(in);
 	return rc;
 }
 
-static int direct_read(struct in_port *ip)
+static int direct_read(struct inport *in)
 {
-	if (ip == NULL) {
+	if (in == NULL) {
 		error(AREA, "read_char received a null port.");
 		return EOF;
 	}
-	switch (ip->kind) {
-	case IN_PORT_FILE_POINTER:
-	case IN_PORT_FILE:
-		ip->read_count++;
-		return getc(ip->file);
-	case IN_PORT_STRING:
-		ip->read_count++;
-		return (*ip->next == '\0') ? EOF : *(ip->next++);
+	switch (in->kind) {
+	case INPORT_FILE_POINTER:
+	case INPORT_FILE:
+		in->read_count++;
+		return getc(in->file);
+	case INPORT_STRING:
+		in->read_count++;
+		return (*in->next == '\0') ? EOF : *(in->next++);
 	default:
 		error(AREA, "BUG! More enums than cases.");
 		return EOF;
 	}
 }
 
-static int read_char(struct in_port *ip)
+static int read_char(struct inport *in)
 {
-	if (ip->peeked == NO_PEEK)
-		return direct_read(ip);
+	if (in->peeked == NO_PEEK)
+		return direct_read(in);
 	else {
-		int c = ip->peeked;
-		ip->peeked = NO_PEEK;
+		int c = in->peeked;
+		in->peeked = NO_PEEK;
 		return c;
 	}
 }
 
-static int peek_char(struct in_port *ip)
+static int peek_char(struct inport *in)
 {
-	if (ip->peeked == NO_PEEK)
-		ip->peeked = direct_read(ip);
-	return ip->peeked;
+	if (in->peeked == NO_PEEK)
+		in->peeked = direct_read(in);
+	return in->peeked;
 }
 
-struct in_port *new_in_port(void)
+struct inport *new_inport(void)
 {
-	struct in_port *ip = (struct in_port *)malloc(sizeof(struct in_port));
-	if (ip == NULL)
+	struct inport *in = (struct inport *)malloc(sizeof(struct inport));
+	if (in == NULL)
 		error(AREA, "no memory for in_port struct.");
-	return ip;
-}
-
-static void setfuncs(struct in_port *ip){
-	ip->readc = read_char;
-	ip->peek = peek_char;
-	ip->close = close_input_port;
+	in->kind = 0;
+	in->name = NULL;
+	in->file = NULL;
+	in->text = NULL;
+	in->next = NULL;
+	in->peeked = NO_PEEK;
+	in->read_count = 0L;
+	in->readc = read_char;
+	in->peek = peek_char;
+	in->close = close_inport;
+	return in;
 }

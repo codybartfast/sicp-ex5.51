@@ -5,6 +5,6 @@
 #include "obj.h"
 
 obj *read(void);
-obj *readp(struct in_port *);
+obj *readp(struct inport *);
 
 #endif

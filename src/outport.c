@@ -3,37 +3,32 @@
 #include "sserror.h"
 #include "outport.h"
 
-#define AREA "out_port"
+#define AREA "OUTPORT"
 
-enum { OUT_PORT_FILE_POINTER, OUT_PORT_FILE, OUT_PORT_STRING };
+enum { OUTPORT_FILE_POINTER = 1, OUTPORT_FILE, OUTPORT_STRING };
 
-static struct out_port *new_out_port(void);
+static struct outport *new_outport(void);
 
-static void setfuncs(struct out_port *);
-
-struct out_port *openout_ptr(FILE *file)
+struct outport *openout_ptr(FILE *file)
 {
-	struct out_port *op;
+	struct outport *out;
 	if (file == NULL) {
 		error(AREA, "open_output_file_pointer given a null file.");
 		return NULL;
 	}
-	op = new_out_port();
-	if (op == NULL)
+	out = new_outport();
+	if (out == NULL)
 		return NULL;
-	op->kind = OUT_PORT_FILE_POINTER;
-	op->name = NULL;
-	op->file = file;
-	op->sb = NULL;
-	op->write_count = 0L;
-	setfuncs(op);
-	return op;
+
+	out->kind = OUTPORT_FILE_POINTER;
+	out->file = file;
+	return out;
 }
 
-struct out_port *openout_file(char *name)
+struct outport *openout_file(char *name)
 {
 	FILE *file;
-	struct out_port *op;
+	struct outport *out;
 
 	if (name == NULL) {
 		error(AREA, "open_output_file given a null name.");
@@ -44,100 +39,97 @@ struct out_port *openout_file(char *name)
 		error(AREA, "failed to open file: '%s'", name);
 		return NULL;
 	}
-	op = new_out_port();
-	if (op == NULL)
+	out = new_outport();
+	if (out == NULL)
 		return NULL;
 
-	op->kind = OUT_PORT_FILE;
-	op->name = name;
-	op->file = file;
-	op->sb = NULL;
-	op->write_count = 0L;
-	setfuncs(op);
-	return op;
+	out->kind = OUTPORT_FILE;
+	out->name = name;
+	out->file = file;
+	return out;
 }
 
-struct out_port *openout_string()
+struct outport *openout_string()
 {
-	struct out_port *op;
-	op = new_out_port();
-	if (op == NULL)
+	struct outport *out;
+	out = new_outport();
+	if (out == NULL)
 		return NULL;
-	op->kind = OUT_PORT_STRING;
-	op->name = NULL;
-	op->file = NULL;
-	if ((op->sb = new_strbldr()) == NULL)
+	out->kind = OUTPORT_STRING;
+	if ((out->sb = new_strbldr()) == NULL)
 		return NULL;
-	op->write_count = 0L;
-	setfuncs(op);
-	return op;
+	return out;
 }
 
-static int close_output_port(struct out_port *op)
+static int close_outport(struct outport *out)
 {
 	int rc = 0;
-	if (op == NULL)
+	if (out == NULL)
 		return rc;
 	// Close the FIlE only if it's one we openned
-	if (op->file != NULL && op->kind == OUT_PORT_FILE)
-		if ((rc = fclose(op->file)) == EOF)
-			error(AREA, "error closing file: '%s'.", op->name);
-	free(op);
+	if (out->file != NULL && out->kind == OUTPORT_FILE)
+		if ((rc = fclose(out->file)) == EOF)
+			error(AREA, "error closing file: '%s'.", out->name);
+	free(out);
 	return rc;
 }
 
-static int op_writec(struct out_port *op, char c)
+static int op_writec(struct outport *out, char c)
 {
-	if (op == NULL) {
+	if (out == NULL) {
 		error(AREA, "writec received a null port.");
 		return EOF;
 	}
-	switch (op->kind) {
-	case OUT_PORT_FILE_POINTER:
-	case OUT_PORT_FILE:
-		op->write_count++;
-		return putc(c, op->file);
-	case OUT_PORT_STRING:
-		op->write_count++;
-		return op->sb->addc(op->sb, c);
+	switch (out->kind) {
+	case OUTPORT_FILE_POINTER:
+	case OUTPORT_FILE:
+		out->write_count++;
+		return putc(c, out->file);
+	case OUTPORT_STRING:
+		out->write_count++;
+		return out->sb->addc(out->sb, c);
 	default:
 		error(AREA, "BUG! More enums than cases.");
 		return EOF;
 	}
 }
 
-static int op_writes(struct out_port *op, char *s)
+static int op_writes(struct outport *out, char *str)
 {
 	int rc;
-	for(; *s != '\0'; s++)
-		rc = op_writec(op, *s);
+	for(; *str != '\0'; str++)
+		rc = op_writec(out, *str);
 	return rc == EOF ? EOF : 0;
 }
 
-static char *op_string(struct out_port *op)
+static char *op_string(struct outport *out)
 {
-	if (op == NULL)
+	if (out == NULL)
 		return NULL;
-	if(op->kind != OUT_PORT_STRING){
+	if(out->kind != OUTPORT_STRING){
 		error(AREA, "Attempted to get string from non-string output");
 		return NULL;
 	}
-	return op->sb->string(op->sb);
+	return out->sb->string(out->sb);
 }
 
-struct out_port *new_out_port(void)
+struct outport *new_outport(void)
 {
-	struct out_port *op =
-		(struct out_port *)malloc(sizeof(struct out_port));
-	if (op == NULL)
+	struct outport *out =
+		(struct outport *)malloc(sizeof(struct outport));
+	if (out == NULL)
 		error(AREA, "no memory for out_port struct.");
-	return op;
-}
 
-static void setfuncs(struct out_port *op)
-{
-	op->writec = op_writec;
-	op->writes = op_writes;
-	op->string = op_string;
-	op->close = close_output_port;
+	out->kind = 0;
+	out->name = NULL;
+	out->file = NULL;
+	out->sb = NULL;
+	out->write_count = 0L;
+
+	out->writec = op_writec;
+	out->writes = op_writes;
+	out->string = op_string;
+	out->close = close_outport;
+
+	return out;
 }

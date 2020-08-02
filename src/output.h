@@ -5,8 +5,8 @@
 #include "outport.h"
 
 void newline(void);
-void newlinep(struct out_port *);
+void newlinep(struct outport *);
 void write(obj *);
-void writep(struct out_port *, obj *);
+void writep(struct outport *, obj *);
 
 #endif
