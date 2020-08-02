@@ -2,7 +2,7 @@
 #define LEXER_H 1
 
 #include <stdbool.h>
-#include "in_port.h"
+#include "inport.h"
 
 enum token_type { TKN_EOF = -1, TKN_NUMBER };
 

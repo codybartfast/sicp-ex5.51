@@ -3,7 +3,9 @@
 
 #include "obj.h"
 
-void newline(struct out_port *);
-void write(struct out_port *, obj *);
+void newline(void);
+void newlinep(struct out_port *);
+void write(obj *);
+void writep(struct out_port *, obj *);
 
 #endif

@@ -6,6 +6,14 @@
 
 #define AREA "PARSER"
 
+struct in_port *default_in = NULL;
+static struct in_port *dfltin(void)
+{
+	return default_in == NULL ?
+		       (default_in = open_input_file_pointer(stdin)) :
+		       default_in;
+}
+
 static obj *number(struct token *tkn)
 {
 	if (strlen(tkn->value) > 18)
@@ -13,7 +21,12 @@ static obj *number(struct token *tkn)
 	return int64(atoll(tkn->value));
 }
 
-obj *read(struct in_port *in)
+obj *read(void)
+{
+	return readp(dfltin());
+}
+
+obj *readp(struct in_port *in)
 {
 	struct token *tkn = read_token(in);
 	switch (tkn->type) {

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "sserror.h"
-#include "out_port.h"
+#include "outport.h"
 
 #define AREA "out_port"
 

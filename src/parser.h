@@ -1,9 +1,10 @@
 #ifndef PARSER_H
 #define PARSER_H 1
 
-#include "in_port.h"
+#include "inport.h"
 #include "obj.h"
 
-obj *read(struct in_port *);
+obj *read(void);
+obj *readp(struct in_port *);
 
 #endif

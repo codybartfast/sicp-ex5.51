@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "sserror.h"
-#include "in_port.h"
+#include "inport.h"
 
 #define NO_PEEK -2
 #define AREA "in_port"
