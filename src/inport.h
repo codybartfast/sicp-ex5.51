@@ -17,8 +17,8 @@ struct in_port {
 	int (*close)(struct in_port *);
 };
 
-struct in_port *open_input_file_pointer(FILE *);
-struct in_port *open_input_file(char *);
-struct in_port *open_input_string(char *);
+struct in_port *openin_ptr(FILE *);
+struct in_port *openin_file(char *);
+struct in_port *openin_string(char *);
 
 #endif

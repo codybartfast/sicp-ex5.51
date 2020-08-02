@@ -17,7 +17,7 @@ static enum token_type number(struct in_port *);
 static bool peek_delimited(struct in_port *in);
 static void lexical_error(long position, char *msg);
 
-static struct strbldr *sb;
+static struct strbldr *sb = NULL;
 static struct token token;
 static char error_msg[error_len];
 

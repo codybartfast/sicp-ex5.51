@@ -6,7 +6,7 @@
 
 bool isnumber(obj *obj)
 {
-	return obj->type = TYPE_NUMBER;
+	return obj->type == TYPE_NUMBER;
 }
 
 obj *int64(int64_t n)
@@ -26,7 +26,7 @@ obj *nl_object = &nl_struct;
 
 bool isstring(obj *obj)
 {
-	return obj->type = TYPE_STRING;
+	return obj->type == TYPE_STRING;
 }
 
 obj *string(char *str)

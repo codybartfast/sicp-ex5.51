@@ -12,7 +12,7 @@ static struct in_port *new_in_port(void);
 
 static void setfuncs(struct in_port *);
 
-struct in_port *open_input_file_pointer(FILE *file)
+struct in_port *openin_ptr(FILE *file)
 {
 	struct in_port *ip;
 	if (file == NULL) {
@@ -33,7 +33,7 @@ struct in_port *open_input_file_pointer(FILE *file)
 	return ip;
 }
 
-struct in_port *open_input_file(char *name)
+struct in_port *openin_file(char *name)
 {
 	FILE *file;
 	struct in_port *ip;
@@ -62,7 +62,7 @@ struct in_port *open_input_file(char *name)
 	return ip;
 }
 
-struct in_port *open_input_string(char *text)
+struct in_port *openin_string(char *text)
 {
 	struct in_port *ip;
 	if (text == NULL) {

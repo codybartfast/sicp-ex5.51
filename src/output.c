@@ -6,19 +6,19 @@
 
 #define AREA "OUTPUT"
 
-static void display(struct out_port *op, obj *ob);
-static obj *asstring(obj *obj);
+static void display(struct out_port *, obj *);
+static obj *displaystr(obj *);
 
 struct out_port *defaullt_out = NULL;
 
 static struct out_port *dfltout(void)
 {
-	return defaullt_out == NULL ?
-		       (defaullt_out = open_output_file_pointer(stdout)) :
-		       defaullt_out;
+	return defaullt_out == NULL ? (defaullt_out = openout_ptr(stdout)) :
+				      defaullt_out;
 }
 
-void newline(void){
+void newline(void)
+{
 	newlinep(dfltout());
 }
 
@@ -27,33 +27,36 @@ void newlinep(struct out_port *op)
 	display(op, nl_object);
 }
 
-void write(obj *obj)
+void write(obj *dat)
 {
-	writep(dfltout(), obj);
+	writep(dfltout(), dat);
 }
 
-void writep(struct out_port *op, obj *ob)
+void writep(struct out_port *op, obj *dat)
 {
-	display(op, ob);
-}
-
-static void display(struct out_port *op, obj *ob)
-{
-	obj *asstr = asstring(ob);
-	if (!iserr(asstr)) {
-		op->writes(op, asstr->val.string);
+	obj *str = displaystr(dat);
+	if (!iserr(str)) {
+		op->writes(op, str->val.string);
 	}
 }
 
-static obj *asstring(obj *obj)
+static void display(struct out_port *op, obj *dat)
 {
-	switch (obj->type) {
+	obj *str = displaystr(dat);
+	if (!iserr(str)) {
+		op->writes(op, str->val.string);
+	}
+}
+
+static obj *displaystr(obj *dat)
+{
+	switch (dat->type) {
 	case TYPE_STRING:
-		return obj;
+		return dat;
 	case TYPE_NUMBER:
-		return cnv_number_string(obj);
+		return cnv_number_string(dat);
 	default:
-		error(AREA, "more types than cases");
+		error(AREA, "BUG! tostring unmatched case: %d", dat->type);
 		return error_write();
 	}
 }

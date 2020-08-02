@@ -11,7 +11,7 @@ static struct out_port *new_out_port(void);
 
 static void setfuncs(struct out_port *);
 
-struct out_port *open_output_file_pointer(FILE *file)
+struct out_port *openout_ptr(FILE *file)
 {
 	struct out_port *op;
 	if (file == NULL) {
@@ -30,7 +30,7 @@ struct out_port *open_output_file_pointer(FILE *file)
 	return op;
 }
 
-struct out_port *open_output_file(char *name)
+struct out_port *openout_file(char *name)
 {
 	FILE *file;
 	struct out_port *op;
@@ -57,7 +57,7 @@ struct out_port *open_output_file(char *name)
 	return op;
 }
 
-struct out_port *open_output_string()
+struct out_port *openout_string()
 {
 	struct out_port *op;
 	op = new_out_port();

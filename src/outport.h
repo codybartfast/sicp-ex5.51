@@ -17,8 +17,8 @@ struct out_port {
 	int (*close)(struct out_port *);
 };
 
-struct out_port *open_output_file_pointer(FILE *);
-struct out_port *open_output_file(char *);
-struct out_port *open_output_string(void);
+struct out_port *openout_ptr(FILE *);
+struct out_port *openout_file(char *);
+struct out_port *openout_string(void);
 
 #endif
