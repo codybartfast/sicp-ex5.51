@@ -33,11 +33,13 @@ bool isnumber(obj *);
 obj *int64(int64_t);
 
 // STRING
+extern obj *nl_object;
+
 bool isstring(obj *);
 obj *string(char *);
 
 // EOF
-extern obj *eof;
+extern obj *eof_object;
 bool iseof(obj *obj);
 
 #endif

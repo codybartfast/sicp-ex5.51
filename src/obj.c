@@ -4,7 +4,8 @@
 
 // NUMBER
 
-bool isnumber(obj *obj){
+bool isnumber(obj *obj)
+{
 	return obj->type = TYPE_NUMBER;
 }
 
@@ -19,10 +20,12 @@ obj *int64(int64_t n)
 	return obj;
 }
 
-
 // STRING
+static obj nl_struct = { TYPE_STRING, 0, { .string = "\n" } };
+obj *nl_object = &nl_struct;
 
-bool isstring(obj *obj){
+bool isstring(obj *obj)
+{
 	return obj->type = TYPE_STRING;
 }
 
@@ -38,14 +41,13 @@ obj *string(char *str)
 
 // EOF
 
-static obj eof_obj = { TYPE_EOF, 0, { 0 } };
-obj *eof = &eof_obj;
+static obj eof_struct = { TYPE_EOF, 0, { 0 } };
+obj *eof_object = &eof_struct;
 
 bool iseof(obj *obj)
 {
-	return obj == eof;
+	return obj == eof_object;
 }
-
 
 // MEMORY 'MANAGEMENT'
 

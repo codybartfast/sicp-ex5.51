@@ -18,7 +18,7 @@ obj *read(struct in_port *in)
 	struct token *tkn = read_token(in);
 	switch (tkn->type) {
 	case TKN_EOF:
-		return lexer_errored ? error_lexor() : eof;
+		return lexer_errored ? error_lexor() : eof_object;
 	case TKN_NUMBER:
 		return number(tkn);
 	default:

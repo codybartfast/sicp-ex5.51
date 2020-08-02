@@ -4,6 +4,14 @@
 
 #include "sserror.h"
 
+#define ERROR_MEMORY 1
+#define ERROR_INTERNAL 2
+#define ERROR_LEXOR 3
+#define ERROR_PARSER 4
+#define ERROR_CONVERT 5
+#define ERROR_EVAL 6
+#define ERROR_WRITE 7
+
 void error(const char *area, const char *message, ...)
 {
 	va_list args;
@@ -64,4 +72,9 @@ obj *error_convert(void)
 obj *error_eval(void)
 {
 	return make_error(ERROR_EVAL);
+}
+
+obj *error_write(void)
+{
+	return make_error(ERROR_WRITE);
 }
