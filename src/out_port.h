@@ -2,13 +2,13 @@
 #define OUT_PORT_H 1
 
 #include <stdio.h>
-#include "strbuild.h"
+#include "strbldr.h"
 
 struct out_port {
 	int kind;
 	char *name;
 	FILE *file;
-	struct strbuild *sb;
+	struct strbldr *sb;
 	long write_count;
 
 	int (*writec)(struct out_port *, char c);

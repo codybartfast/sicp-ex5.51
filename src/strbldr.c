@@ -3,28 +3,28 @@
 #include <stdlib.h>
 #include <string.h>
 #include "sserror.h"
-#include "strbuild.h"
+#include "strbldr.h"
 
-#define AREA "strbuild"
+#define AREA "strbldr"
 #define INITIAL_BUFFSIZE (1 << 2)
 
-static int addc(struct strbuild *sb, char c);
-static char *str(struct strbuild *sb);
-static char *copy(struct strbuild *sb);
-static struct strbuild *clear(struct strbuild *sb);
-static void sbfree(struct strbuild *sb);
-static int grow_buff(struct strbuild *sb);
+static int addc(struct strbldr *sb, char c);
+static char *str(struct strbldr *sb);
+static char *copy(struct strbldr *sb);
+static struct strbldr *clear(struct strbldr *sb);
+static void sbfree(struct strbldr *sb);
+static int grow_buff(struct strbldr *sb);
 
-struct strbuild *new_strbuild(void)
+struct strbldr *new_strbldr(void)
 {
-	struct strbuild *sb = malloc(sizeof(struct strbuild));
+	struct strbldr *sb = malloc(sizeof(struct strbldr));
 	if (sb == NULL) {
-		error(AREA, "No memory for strbuild");
+		error(AREA, "No memory for strbldr");
 		return NULL;
 	}
 	sb->buff = calloc(sizeof(char), INITIAL_BUFFSIZE);
 	if (sb->buff == NULL) {
-		error(AREA, "No memory for strbuild buff");
+		error(AREA, "No memory for strbldr buff");
 		return NULL;
 	}
 	sb->buffsize = INITIAL_BUFFSIZE;
@@ -37,7 +37,7 @@ struct strbuild *new_strbuild(void)
 	return sb;
 }
 
-static int addc(struct strbuild *sb, char c)
+static int addc(struct strbldr *sb, char c)
 {
 	if (sb->buffidx >= sb->buffsize - 1) {
 		if (grow_buff(sb) != 0)
@@ -46,13 +46,13 @@ static int addc(struct strbuild *sb, char c)
 	return *(sb->buff + sb->buffidx++) = c;
 }
 
-static char *str(struct strbuild *sb)
+static char *str(struct strbldr *sb)
 {
 	sb->buffidx = '\0';
 	return sb->buff;
 }
 
-static char *copy(struct strbuild *sb)
+static char *copy(struct strbldr *sb)
 {
 	sb->buffidx = '\0';
 
@@ -65,14 +65,14 @@ static char *copy(struct strbuild *sb)
 	return str;
 }
 
-static struct strbuild *clear(struct strbuild *sb)
+static struct strbldr *clear(struct strbldr *sb)
 {
 	if (sb != NULL)
 		sb->buffidx = 0;
 	return sb;
 }
 
-static int grow_buff(struct strbuild *sb)
+static int grow_buff(struct strbldr *sb)
 {
 	int i;
 	char *old_buff = sb->buff;
@@ -89,7 +89,7 @@ static int grow_buff(struct strbuild *sb)
 	return 0;
 }
 
-static void sbfree(struct strbuild *sb)
+static void sbfree(struct strbldr *sb)
 {
 	if (sb != NULL) {
 		free(sb->buff);

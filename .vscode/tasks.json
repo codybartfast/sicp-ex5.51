@@ -8,7 +8,7 @@
             "label": "C/C++: clang build active file",
             "command": "/usr/bin/clang",
             "args": [
-                "src/strbuild.c",
+                "src/strbldr.c",
                 "src/obj.c",
                 "src/sserror.c",
                 "src/in_port.c",

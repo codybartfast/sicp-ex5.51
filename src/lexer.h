@@ -3,7 +3,14 @@
 
 #include <stdbool.h>
 #include "in_port.h"
-#include "token.h"
+
+enum token_type { TKN_EOF = -1, TKN_NUMBER };
+
+struct token {
+	enum token_type type;
+	char *value;
+	long position;
+};
 
 extern bool lexer_errored;
 extern long lexer_error_position;

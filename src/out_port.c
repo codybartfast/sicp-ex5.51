@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "sserror.h"
-#include "strbuild.h"
 #include "out_port.h"
 
 #define AREA "out_port"
@@ -67,7 +66,7 @@ struct out_port *open_output_string()
 	op->kind = OUT_PORT_STRING;
 	op->name = NULL;
 	op->file = NULL;
-	if ((op->sb = new_strbuild()) == NULL)
+	if ((op->sb = new_strbldr()) == NULL)
 		return NULL;
 	op->write_count = 0L;
 	setfuncs(op);

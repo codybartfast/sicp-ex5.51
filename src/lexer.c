@@ -1,7 +1,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "strbuild.h"
+#include "strbldr.h"
 #include "sserror.h"
 #include "lexer.h"
 
@@ -17,7 +17,7 @@ static enum token_type number(struct in_port *);
 static bool peek_delimited(struct in_port *in);
 static void lexical_error(long position, char *msg);
 
-static struct strbuild *sb;
+static struct strbldr *sb;
 static struct token token;
 static char error_msg[error_len];
 
@@ -29,7 +29,7 @@ struct token *read_token(struct in_port *in)
 		lexer_error_message = NULL;
 	}
 	if (sb == NULL) {
-		sb = new_strbuild();
+		sb = new_strbldr();
 		if (sb == NULL) {
 			error(AREA, "No memory for strbuild");
 			return NULL;
