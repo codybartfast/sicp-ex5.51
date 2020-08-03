@@ -25,7 +25,7 @@ obj *readp(struct inport *in)
 	struct token *tkn = read_token(in);
 	switch (tkn->type) {
 	case TKN_EOF:
-		return lexer_errored ? error_lexor() : eof_object;
+		return lexer_errored ? error_lexor() : Obj.eof();
 	case TKN_NUMBER:
 		return number(tkn);
 	default:
@@ -38,5 +38,5 @@ static obj *number(struct token *tkn)
 {
 	if (strlen(tkn->value) > 18)
 		return error_parser();
-	return int64(atoll(tkn->value));
+	return Obj.ofint64(atoll(tkn->value));
 }

@@ -14,5 +14,5 @@ obj *eval(obj *expr)
 
 static bool isself_evaluating(obj *expr)
 {
-	return isnumber(expr);
+	return Obj.isnumber(expr);
 }

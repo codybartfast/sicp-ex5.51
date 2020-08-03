@@ -24,7 +24,7 @@ void newline(void)
 
 void newlinep(struct outport *out)
 {
-	display(out, nl_object);
+	display(out, Obj.nl());
 }
 
 void write(obj *dat)
@@ -36,7 +36,7 @@ void writep(struct outport *op, obj *dat)
 {
 	obj *str = displaystr(dat);
 	if (!iserr(str)) {
-		op->writes(op, str->val.string);
+		op->writes(op, Obj.tostring(str));
 	}
 }
 
@@ -44,7 +44,7 @@ static void display(struct outport *op, obj *dat)
 {
 	obj *str = displaystr(dat);
 	if (!iserr(str)) {
-		op->writes(op, str->val.string);
+		op->writes(op, Obj.tostring(str));
 	}
 }
 
