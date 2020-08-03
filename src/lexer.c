@@ -4,9 +4,10 @@
 #include "strbldr.h"
 #include "sserror.h"
 #include "lexer.h"
+#include "windows.h"
 
 #define AREA "LEXER"
-#define error_len 100
+#define MAXERROR 100
 
 bool lexer_errored = false;
 long lexer_error_position = -1;
@@ -19,7 +20,7 @@ static void lexical_error(long position, char *msg);
 
 static struct strbldr *sb = NULL;
 static struct token token;
-static char error_msg[error_len];
+static char error_msg[MAXERROR];
 
 struct token *read_token(struct inport *in)
 {
@@ -52,7 +53,8 @@ enum token_type scan(struct inport *in)
 	token.position = in->read_count;
 	if (isdigit(c))
 		return number(in);
-	sprintf(error_msg, "Unexpected start of datum: '%c' (%d)", c, c);
+	sprintf_s(error_msg, MAXERROR, "Unexpected start of datum: '%c' (%d)", c,
+		  c);
 	lexical_error(in->read_count, error_msg);
 	return EOF;
 }
@@ -65,7 +67,7 @@ enum token_type number(struct inport *in)
 	}
 	if (!peek_delimited(in)) {
 		int c = in->peek(in);
-		sprintf(error_msg, "Unexpect char in number: '%c' (%d)", c, c);
+		sprintf_s(error_msg, MAXERROR, "Unexpect char in number: '%c' (%d)", c, c);
 		lexical_error(in->read_count, error_msg);
 		return EOF;
 	}

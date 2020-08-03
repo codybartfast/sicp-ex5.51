@@ -8,6 +8,7 @@
             "label": "C/C++: clang build active file",
             "command": "/usr/bin/clang",
             "args": [
+                "src/windows.c",
                 "src/strbldr.c",
                 "src/obj.c",
                 "src/sserror.c",

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "sserror.h"
 #include "inport.h"
+#include "windows.h"
 
 #define NO_PEEK -2
 #define AREA "in_port"
@@ -34,8 +35,7 @@ struct inport *openin_file(char *name)
 		error(AREA, "open_input_file given a null name.");
 		return NULL;
 	}
-	file = fopen(name, "r");
-	if (file == NULL) {
+	if (fopen_s(&file, name, "r")) {
 		error(AREA, "failed to open file: '%s'", name);
 		return NULL;
 	}
@@ -116,8 +116,10 @@ static int peek_char(struct inport *in)
 struct inport *new_inport(void)
 {
 	struct inport *in = (struct inport *)malloc(sizeof(struct inport));
-	if (in == NULL)
+	if (in == NULL) {
 		error(AREA, "no memory for in_port struct.");
+		return NULL;
+	}
 	*in = (struct inport){ 0 };
 	in->peeked = NO_PEEK;
 

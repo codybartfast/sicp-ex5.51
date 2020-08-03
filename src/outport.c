@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "sserror.h"
 #include "outport.h"
+#include "windows.h"
 
 #define AREA "OUTPORT"
 
@@ -34,8 +35,8 @@ struct outport *openout_file(char *name)
 		error(AREA, "open_output_file given a null name.");
 		return NULL;
 	}
-	file = fopen(name, "w");
-	if (file == NULL) {
+
+	if (fopen_s(&file, name, "w")) {
 		error(AREA, "failed to open file: '%s'", name);
 		return NULL;
 	}
@@ -95,7 +96,7 @@ static int op_writec(struct outport *out, char c)
 
 static int op_writes(struct outport *out, char *str)
 {
-	int rc;
+	int rc = 0;
 	for (; *str != '\0'; str++)
 		rc = op_writec(out, *str);
 	return rc == EOF ? EOF : 0;
@@ -115,9 +116,10 @@ static char *op_string(struct outport *out)
 struct outport *new_outport(void)
 {
 	struct outport *out = (struct outport *)malloc(sizeof(struct outport));
-	if (out == NULL)
+	if (out == NULL) {
 		error(AREA, "no memory for out_port struct.");
-
+		return NULL;
+	}
 	*out = (struct outport){ 0 };
 
 	out->writec = op_writec;

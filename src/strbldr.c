@@ -4,6 +4,7 @@
 #include <string.h>
 #include "sserror.h"
 #include "strbldr.h"
+#include "windows.h"
 
 #define AREA "strbldr"
 #define INITIAL_BUFFSIZE (1 << 2)
@@ -54,14 +55,15 @@ static char *str(struct strbldr *sb)
 
 static char *copy(struct strbldr *sb)
 {
+	long slen;
 	sb->buffidx = '\0';
 
-	char *str = (char *)malloc((sb->buffidx + 1) * sizeof(char));
+	char *str = (char *)malloc((slen = (sb->buffidx + 1)) * sizeof(char));
 	if (str == NULL) {
 		error(AREA, "No memory to copy string");
 		return NULL;
 	}
-	strcpy(str, sb->buff);
+	strcpy_s(str, slen, sb->buff);
 	return str;
 }
 
