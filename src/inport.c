@@ -68,7 +68,6 @@ static int close_inport(struct inport *in)
 	int rc = 0;
 	if (in == NULL)
 		return rc;
-	// Close the FIlE only if it's one we openned
 	if (in->file != NULL && in->kind == INPORT_FILE)
 		if ((rc = fclose(in->file)) == EOF)
 			error(AREA, "error closing file: '%s'.", in->name);
@@ -119,13 +118,9 @@ struct inport *new_inport(void)
 	struct inport *in = (struct inport *)malloc(sizeof(struct inport));
 	if (in == NULL)
 		error(AREA, "no memory for in_port struct.");
-	in->kind = 0;
-	in->name = NULL;
-	in->file = NULL;
-	in->text = NULL;
-	in->next = NULL;
+	*in = (struct inport){ 0 };
 	in->peeked = NO_PEEK;
-	in->read_count = 0L;
+
 	in->readc = read_char;
 	in->peek = peek_char;
 	in->close = close_inport;

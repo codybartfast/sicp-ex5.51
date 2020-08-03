@@ -56,6 +56,6 @@ obj *new_obj(void)
 	obj *dat = (obj *)malloc(sizeof(obj));
 	if (dat == NULL)
 		return error_memory();
-	dat->type = TYPE_NOT_SET;
+	*dat = (obj){ 0 };
 	return dat;
 }

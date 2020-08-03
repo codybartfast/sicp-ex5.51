@@ -66,7 +66,6 @@ static int close_outport(struct outport *out)
 	int rc = 0;
 	if (out == NULL)
 		return rc;
-	// Close the FIlE only if it's one we openned
 	if (out->file != NULL && out->kind == OUTPORT_FILE)
 		if ((rc = fclose(out->file)) == EOF)
 			error(AREA, "error closing file: '%s'.", out->name);
@@ -97,7 +96,7 @@ static int op_writec(struct outport *out, char c)
 static int op_writes(struct outport *out, char *str)
 {
 	int rc;
-	for(; *str != '\0'; str++)
+	for (; *str != '\0'; str++)
 		rc = op_writec(out, *str);
 	return rc == EOF ? EOF : 0;
 }
@@ -106,7 +105,7 @@ static char *op_string(struct outport *out)
 {
 	if (out == NULL)
 		return NULL;
-	if(out->kind != OUTPORT_STRING){
+	if (out->kind != OUTPORT_STRING) {
 		error(AREA, "Attempted to get string from non-string output");
 		return NULL;
 	}
@@ -115,16 +114,11 @@ static char *op_string(struct outport *out)
 
 struct outport *new_outport(void)
 {
-	struct outport *out =
-		(struct outport *)malloc(sizeof(struct outport));
+	struct outport *out = (struct outport *)malloc(sizeof(struct outport));
 	if (out == NULL)
 		error(AREA, "no memory for out_port struct.");
 
-	out->kind = 0;
-	out->name = NULL;
-	out->file = NULL;
-	out->sb = NULL;
-	out->write_count = 0L;
+	*out = (struct outport){ 0 };
 
 	out->writec = op_writec;
 	out->writes = op_writes;
