@@ -24,7 +24,7 @@ void newline(void)
 
 void newlinep(struct outport *out)
 {
-	display(out, Obj.nl());
+	display(out, Obj.newline());
 }
 
 void write(obj *dat)

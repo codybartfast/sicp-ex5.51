@@ -17,7 +17,7 @@ static struct inport *dfltin(void)
 
 obj *read(void)
 {
-	return  readp(dfltin());
+	return readp(dfltin());
 }
 
 obj *readp(struct inport *in)

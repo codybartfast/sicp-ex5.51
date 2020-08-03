@@ -34,7 +34,8 @@ bool iserr(obj *obj)
 static obj mem_error_obj = { TYPE_ERROR, ERROR_MEMORY, { 0 } };
 static obj *mem_error = &mem_error_obj;
 
-obj *error_memory(void){
+obj *error_memory(void)
+{
 	return mem_error;
 }
 
@@ -42,10 +43,8 @@ static obj *make_error(int err_subtype)
 {
 	obj *obj;
 
-	if (iserr(obj = new_obj()))
+	if (iserr(obj = new_obj(TYPE_ERROR, err_subtype)))
 		return obj;
-	obj->type = TYPE_ERROR;
-	obj->subtype = err_subtype;
 	return obj;
 }
 
