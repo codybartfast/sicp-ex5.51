@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "obj.h"
-#include "sserror.h"
+#include "error.h"
 
 #define VALUE val /* allow easy renaming of value member to check api leak */
 

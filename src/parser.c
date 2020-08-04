@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include "sserror.h"
+#include "error.h"
 #include "lexer.h"
 #include "parser.h"
 

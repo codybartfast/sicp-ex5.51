@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "sserror.h"
+#include "error.h"
 
 #define ERROR_MEMORY 1
 #define ERROR_INTERNAL 2

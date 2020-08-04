@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "sserror.h"
+#include "error.h"
 #include "inport.h"
 #include "windows.h"
 

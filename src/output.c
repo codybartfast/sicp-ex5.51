@@ -1,5 +1,5 @@
 #include "obj.h"
-#include "sserror.h"
+#include "error.h"
 #include "convert.h"
 #include "outport.h"
 #include "output.h"

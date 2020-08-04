@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "strbldr.h"
-#include "sserror.h"
+#include "error.h"
 #include "lexer.h"
 #include "windows.h"
 
