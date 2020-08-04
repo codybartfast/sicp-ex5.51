@@ -4,7 +4,9 @@
 #include "error.h"
 
 #define AREA "OBJ"
-#define VALUE val /* allow easy renaming of value member to check api leak */
+#define VALUE val /* allow renaming of value member to check api leak */
+
+static obj *new_obj(int type, int subtype);
 
 // EOF
 
@@ -69,20 +71,6 @@ static char *tostring(obj *dat)
 	return dat->VALUE.string;
 }
 
-// MEMORY 'MANAGEMENT'
-
-obj *new_obj(int type, int subtype)
-{
-	obj *dat = (obj *)malloc(sizeof(obj));
-	if (dat == NULL){
-		eprintf(AREA, "No memory for object");
-		return error_memory();
-	}
-	obj tmp = (obj){ .type = type, .subtype = subtype };
-	memcpy(dat, &tmp, sizeof *dat);
-	return dat;
-}
-
 // Accessor
 
 const struct accessors Obj = { .iserr = iserr,
@@ -95,3 +83,28 @@ const struct accessors Obj = { .iserr = iserr,
 			       .newline = newline,
 			       .ofstring = ofstring,
 			       .tostring = tostring };
+
+// ERROR
+
+obj *make_err(int err_subtype)
+{
+	obj *obj;
+
+	if (iserr(obj = new_obj(TYPE_ERROR, err_subtype)))
+		return obj;
+	return obj;
+}
+
+// MEMORY 'MANAGEMENT'
+
+static obj *new_obj(int type, int subtype)
+{
+	obj *dat = (obj *)malloc(sizeof(obj));
+	if (dat == NULL){
+		eprintf(AREA, "No memory for object");
+		return error_memory();
+	}
+	obj tmp = (obj){ .type = type, .subtype = subtype };
+	memcpy(dat, &tmp, sizeof *dat);
+	return dat;
+}

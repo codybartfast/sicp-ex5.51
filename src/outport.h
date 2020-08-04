@@ -13,7 +13,7 @@ struct outport {
 
 	int (*writec)(struct outport *, char c);
 	int (*writes)(struct outport *, char *s);
-	char *(*string)(struct outport *);
+	char *(*tostring)(struct outport *);
 	int (*close)(struct outport *);
 };
 

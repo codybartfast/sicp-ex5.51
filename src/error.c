@@ -35,41 +35,32 @@ obj *error_memory(void)
 	return &mem_error;
 }
 
-static obj *make_error(int err_subtype)
-{
-	obj *obj;
-
-	if (iserr(obj = new_obj(TYPE_ERROR, err_subtype)))
-		return obj;
-	return obj;
-}
-
 obj *error_internal(void)
 {
-	return make_error(ERROR_INTERNAL);
+	return make_err(ERROR_INTERNAL);
 }
 
 obj *error_lexor(void)
 {
-	return make_error(ERROR_LEXOR);
+	return make_err(ERROR_LEXOR);
 }
 
 obj *error_parser(void)
 {
-	return make_error(ERROR_PARSER);
+	return make_err(ERROR_PARSER);
 }
 
 obj *error_convert(void)
 {
-	return make_error(ERROR_CONVERT);
+	return make_err(ERROR_CONVERT);
 }
 
 obj *error_eval(void)
 {
-	return make_error(ERROR_EVAL);
+	return make_err(ERROR_EVAL);
 }
 
 obj *error_write(void)
 {
-	return make_error(ERROR_WRITE);
+	return make_err(ERROR_WRITE);
 }

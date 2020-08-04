@@ -13,20 +13,20 @@ int fopen_s(FILE **fpp, const char *filename, const char *mode)
 
 int sprintf_s(char *buffer, size_t buffsize, const char *format, ...)
 {
-	long written;
+	long writecnt;
 
 	va_list myargs;
 	va_start(myargs, format);
-	written = vsprintf(buffer, format, myargs);
+	writecnt = vsprintf(buffer, format, myargs);
 	buffer[buffsize - 1] = '\0';
-	return written >= 0 ? written : -1;
+	return writecnt >= 0 ? writecnt : -1;
 }
 
 int strcpy_s(char *dest, long destsize, const char *src)
 {
 	int rc;
 
-	rc = strcpy(dest, src) == NULL;
+	rc = (strcpy(dest, src) == NULL);
 	dest[destsize - 1] = '\0';
 	return rc;
 }

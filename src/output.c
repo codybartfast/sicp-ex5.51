@@ -1,7 +1,5 @@
-#include "obj.h"
 #include "error.h"
 #include "convert.h"
-#include "outport.h"
 #include "output.h"
 
 #define AREA "OUTPUT"

@@ -42,6 +42,6 @@ struct accessors {
 
 extern const struct accessors Obj;
 
-obj *new_obj(int type, int subtype);
+obj *make_err(int err_subtype);
 
 #endif

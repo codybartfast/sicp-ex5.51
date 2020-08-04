@@ -7,7 +7,7 @@
 #include "windows.h"
 
 #define AREA "strbldr"
-#define INITIAL_BUFFSIZE (1 << 2)
+#define INITIAL_BUFFSIZE (1 << 10)
 
 static int addc(struct strbldr *sb, char c);
 static char *str(struct strbldr *sb);
@@ -55,15 +55,15 @@ static char *str(struct strbldr *sb)
 
 static char *copy(struct strbldr *sb)
 {
-	long slen;
+	long dlen;
 	sb->buffidx = '\0';
 
-	char *str = (char *)malloc((slen = (sb->buffidx + 1)) * sizeof(char));
+	char *str = (char *)malloc((dlen = (sb->buffidx + 1)) * sizeof(char));
 	if (str == NULL) {
-		eprintf(AREA, "No memory to copy string");
+		eprintf(AREA, "No memory to copy strbldr string");
 		return NULL;
 	}
-	strcpy_s(str, slen, sb->buff);
+	strcpy_s(str, dlen, sb->buff);
 	return str;
 }
 
@@ -95,6 +95,7 @@ static void sbfree(struct strbldr *sb)
 {
 	if (sb != NULL) {
 		free(sb->buff);
+		sb->buff = NULL;
 		free(sb);
 	}
 }
