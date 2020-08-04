@@ -1,2 +1,6 @@
- echo 0010 | ~/sicp-scheme/bin/sicp
+#!/bin/bash
 
+test_dir=$(dirname "${BASH_SOURCE[0]}")
+bin_dir=$test_dir/../bin
+
+cat $test_dir/source.txt | $bin_dir/sicp
