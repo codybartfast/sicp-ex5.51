@@ -56,7 +56,7 @@ static obj *displaystr(obj *dat)
 	case TYPE_NUMBER:
 		return cnv_number_string(dat);
 	default:
-		error(AREA, "BUG! tostring unmatched case: %d", dat->type);
+		eprintf(AREA, "BUG! tostring unmatched case: %d", dat->type);
 		return error_write();
 	}
 }

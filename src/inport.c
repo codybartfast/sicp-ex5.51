@@ -15,7 +15,7 @@ struct inport *openin_ptr(FILE *file)
 {
 	struct inport *ip;
 	if (file == NULL) {
-		error(AREA, "open_input_file_pointer given a null file.");
+		eprintf(AREA, "open_input_file_pointer given a null file.");
 		return NULL;
 	}
 	ip = new_inport();
@@ -32,11 +32,11 @@ struct inport *openin_file(char *name)
 	struct inport *in;
 
 	if (name == NULL) {
-		error(AREA, "open_input_file given a null name.");
+		eprintf(AREA, "open_input_file given a null name.");
 		return NULL;
 	}
 	if (fopen_s(&file, name, "r")) {
-		error(AREA, "failed to open file: '%s'", name);
+		eprintf(AREA, "failed to open file: '%s'", name);
 		return NULL;
 	}
 	in = new_inport();
@@ -53,7 +53,7 @@ struct inport *openin_string(char *text)
 {
 	struct inport *in;
 	if (text == NULL) {
-		error(AREA, "open_input_string given a null string.");
+		eprintf(AREA, "open_input_string given a null string.");
 		return NULL;
 	}
 	in = new_inport();
@@ -70,7 +70,7 @@ static int close_inport(struct inport *in)
 		return rc;
 	if (in->file != NULL && in->kind == INPORT_FILE)
 		if ((rc = fclose(in->file)) == EOF)
-			error(AREA, "error closing file: '%s'.", in->name);
+			eprintf(AREA, "error closing file: '%s'.", in->name);
 	free(in);
 	return rc;
 }
@@ -78,7 +78,7 @@ static int close_inport(struct inport *in)
 static int direct_read(struct inport *in)
 {
 	if (in == NULL) {
-		error(AREA, "read_char received a null port.");
+		eprintf(AREA, "read_char received a null port.");
 		return EOF;
 	}
 	switch (in->kind) {
@@ -90,7 +90,7 @@ static int direct_read(struct inport *in)
 		in->read_count++;
 		return (*in->next == '\0') ? EOF : *(in->next++);
 	default:
-		error(AREA, "BUG! More enums than cases.");
+		eprintf(AREA, "BUG! More enums than cases.");
 		return EOF;
 	}
 }
@@ -117,7 +117,7 @@ struct inport *new_inport(void)
 {
 	struct inport *in = (struct inport *)malloc(sizeof(struct inport));
 	if (in == NULL) {
-		error(AREA, "no memory for in_port struct.");
+		eprintf(AREA, "no memory for in_port struct.");
 		return NULL;
 	}
 	*in = (struct inport){ 0 };

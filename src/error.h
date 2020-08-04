@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "obj.h"
 
-void error(const char *area, const char *message, ...);
+void eprintf(const char *area, const char *message, ...);
 
 // ERROR
 

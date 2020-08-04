@@ -20,12 +20,12 @@ struct strbldr *new_strbldr(void)
 {
 	struct strbldr *sb = malloc(sizeof(struct strbldr));
 	if (sb == NULL) {
-		error(AREA, "No memory for strbldr");
+		eprintf(AREA, "No memory for strbldr");
 		return NULL;
 	}
 	sb->buff = calloc(sizeof(char), INITIAL_BUFFSIZE);
 	if (sb->buff == NULL) {
-		error(AREA, "No memory for strbldr buff");
+		eprintf(AREA, "No memory for strbldr buff");
 		return NULL;
 	}
 	sb->buffsize = INITIAL_BUFFSIZE;
@@ -60,7 +60,7 @@ static char *copy(struct strbldr *sb)
 
 	char *str = (char *)malloc((slen = (sb->buffidx + 1)) * sizeof(char));
 	if (str == NULL) {
-		error(AREA, "No memory to copy string");
+		eprintf(AREA, "No memory to copy string");
 		return NULL;
 	}
 	strcpy_s(str, slen, sb->buff);

@@ -12,11 +12,11 @@
 #define ERROR_EVAL 6
 #define ERROR_WRITE 7
 
-void error(const char *area, const char *message, ...)
+void eprintf(const char *area, const char *message, ...)
 {
 	va_list args;
 	va_start(args, message);
-	fprintf(stderr, "error: ");
+	fprintf(stderr, "ERROR: ");
 	fprintf(stderr, "%s", area);
 	fprintf(stderr, ": ");
 	vfprintf(stderr, message, args);

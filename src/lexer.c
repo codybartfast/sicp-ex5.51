@@ -32,7 +32,7 @@ struct token *read_token(struct inport *in)
 	if (sb == NULL) {
 		sb = new_strbldr();
 		if (sb == NULL) {
-			error(AREA, "No memory for strbuild");
+			eprintf(AREA, "No memory for strbuild");
 			return NULL;
 		}
 	}
@@ -97,5 +97,5 @@ void lexical_error(long position, char *msg)
 	lexer_errored = true;
 	lexer_error_position = position;
 	lexer_error_message = msg;
-	error(AREA, msg);
+	eprintf(AREA, msg);
 }

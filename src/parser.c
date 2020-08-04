@@ -29,7 +29,7 @@ obj *readp(struct inport *in)
 	case TKN_NUMBER:
 		return number(tkn);
 	default:
-		error(AREA, "BUG: more token types than cases.");
+		eprintf(AREA, "BUG: more token types than cases.");
 		return error_internal();
 	}
 }
