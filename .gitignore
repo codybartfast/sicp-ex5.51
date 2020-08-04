@@ -1,5 +1,6 @@
 ## Addtions to github version
 /out
+/build
 *.out
 
 

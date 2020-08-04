@@ -4,4 +4,5 @@
     "files.associations": {
         "type_traits": "c"
     },
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
 }
