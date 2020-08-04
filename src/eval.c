@@ -2,6 +2,8 @@
 #include "eval.h"
 #include "error.h"
 
+#define AREA "EVAL"
+
 static bool isself_evaluating(obj *expr);
 
 obj *eval(obj *expr)
@@ -9,6 +11,7 @@ obj *eval(obj *expr)
 	if (isself_evaluating(expr)) {
 		return expr;
 	}
+	eprintf(AREA, "Can't parse expr: ... err, need datum->str");
 	return error_eval();
 }
 

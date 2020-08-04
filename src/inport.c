@@ -1,130 +1,129 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include "error.h"
 #include "inport.h"
 #include "windows.h"
 
 #define NO_PEEK -2
-#define AREA "in_port"
+#define AREA "INPORT"
 
-enum inkind { INPORT_FILE_POINTER = 1, INPORT_FILE, INPORT_STRING };
+enum inkind { INKIND_PTR = 1, INKIND_FILE, INKIND_STRING };
 
 static struct inport *new_inport(void);
 
 struct inport *openin_ptr(FILE *file)
 {
-	struct inport *ip;
+	struct inport *port;
 	if (file == NULL) {
-		eprintf(AREA, "open_input_file_pointer given a null file.");
+		eprintf(AREA, "openin_ptr given a null file pointer.");
 		return NULL;
 	}
-	ip = new_inport();
-	if (ip == NULL)
+	if ((port = new_inport()) == NULL)
 		return NULL;
-	ip->kind = INPORT_FILE_POINTER;
-	ip->file = file;
-	return ip;
+	port->kind = INKIND_PTR;
+	port->file = file;
+	return port;
 }
 
 struct inport *openin_file(char *name)
 {
 	FILE *file;
-	struct inport *in;
+	struct inport *port;
 
 	if (name == NULL) {
-		eprintf(AREA, "open_input_file given a null name.");
+		eprintf(AREA, "openin_file given a null filename.");
 		return NULL;
 	}
 	if (fopen_s(&file, name, "r")) {
 		eprintf(AREA, "failed to open file: '%s'", name);
 		return NULL;
 	}
-	in = new_inport();
-	if (in == NULL)
+	if ((port = new_inport()) == NULL)
 		return NULL;
-
-	in->kind = INPORT_FILE;
-	in->name = name;
-	in->file = file;
-	return in;
+	port->kind = INKIND_FILE;
+	port->name = name;
+	port->file = file;
+	return port;
 }
 
 struct inport *openin_string(char *text)
 {
-	struct inport *in;
+	struct inport *port;
 	if (text == NULL) {
-		eprintf(AREA, "open_input_string given a null string.");
+		eprintf(AREA, "openin_string given a null string.");
 		return NULL;
 	}
-	in = new_inport();
-	if (in == NULL)
+	if ((port = new_inport()) == NULL)
 		return NULL;
-	in->kind = INPORT_STRING;
-	return in;
+	port->kind = INKIND_STRING;
+	return port;
 }
 
-static int close_inport(struct inport *in)
+static int close(struct inport *port)
 {
 	int rc = 0;
-	if (in == NULL)
+	if (port == NULL)
 		return rc;
-	if (in->file != NULL && in->kind == INPORT_FILE)
-		if ((rc = fclose(in->file)) == EOF)
-			eprintf(AREA, "error closing file: '%s'.", in->name);
-	free(in);
+	if (port->file != NULL && port->kind == INKIND_FILE)
+		if ((rc = fclose(port->file)) == EOF)
+			eprintf(AREA, "error closing file: '%s'.", port->name);
+	free(port);
 	return rc;
 }
 
-static int direct_read(struct inport *in)
+static int direct_read(struct inport *port)
 {
-	if (in == NULL) {
-		eprintf(AREA, "read_char received a null port.");
-		return EOF;
-	}
-	switch (in->kind) {
-	case INPORT_FILE_POINTER:
-	case INPORT_FILE:
-		in->read_count++;
-		return getc(in->file);
-	case INPORT_STRING:
-		in->read_count++;
-		return (*in->next == '\0') ? EOF : *(in->next++);
+	switch (port->kind) {
+	case INKIND_PTR:
+	case INKIND_FILE:
+		port->read_count++;
+		return getc(port->file);
+	case INKIND_STRING:
+		port->read_count++;
+		return (*port->next == '\0') ? EOF : *(port->next++);
 	default:
-		eprintf(AREA, "BUG! More enums than cases.");
+		eprintf(AREA, "BUG! No case for inport kind: %d", port->kind);
 		return EOF;
 	}
 }
 
-static int read_char(struct inport *in)
+static int readc(struct inport *port)
 {
-	if (in->peeked == NO_PEEK)
-		return direct_read(in);
+	if (port == NULL) {
+		eprintf(AREA, "read_char received a null port.");
+		return EOF;
+	}
+	if (port->peeked == NO_PEEK)
+		return direct_read(port);
 	else {
-		int c = in->peeked;
-		in->peeked = NO_PEEK;
+		int c = port->peeked;
+		port->peeked = NO_PEEK;
 		return c;
 	}
 }
 
-static int peek_char(struct inport *in)
+static int peek(struct inport *port)
 {
-	if (in->peeked == NO_PEEK)
-		in->peeked = direct_read(in);
-	return in->peeked;
+	if (port == NULL) {
+		eprintf(AREA, "peek_char received a null port.");
+		return EOF;
+	}
+
+	if (port->peeked == NO_PEEK)
+		port->peeked = direct_read(port);
+	return port->peeked;
 }
 
 struct inport *new_inport(void)
 {
-	struct inport *in = (struct inport *)malloc(sizeof(struct inport));
-	if (in == NULL) {
-		eprintf(AREA, "no memory for in_port struct.");
+	struct inport *port = (struct inport *)malloc(sizeof(struct inport));
+	if (port == NULL) {
+		eprintf(AREA, "no memory for inport struct");
 		return NULL;
 	}
-	*in = (struct inport){ 0 };
-	in->peeked = NO_PEEK;
-
-	in->readc = read_char;
-	in->peek = peek_char;
-	in->close = close_inport;
-	return in;
+	*port = (struct inport){ 0 };
+	port->peeked = NO_PEEK;
+	port->readc = readc;
+	port->peek = peek;
+	port->close = close;
+	return port;
 }

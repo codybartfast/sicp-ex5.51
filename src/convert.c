@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "error.h"
@@ -6,15 +5,13 @@
 #include "windows.h"
 
 #define AREA "CONVERT"
-/*
- * interwebs suggest double representation can be over 1,000 chars!"
- */
+
 #define BUFFSIZE 2048
 char buff[BUFFSIZE];
 
 obj *cnv_number_string(obj *num)
 {
-	char * str;
+	char *str;
 	size_t slen;
 
 	if (!Obj.isnumber(num))
@@ -29,7 +26,8 @@ obj *cnv_number_string(obj *num)
 		strcpy_s(str, slen + 1, buff);
 		return Obj.ofstring(str);
 	default:
-		eprintf(AREA, "BUG: more number subtypes than cases.");
+		eprintf(AREA, "BUG: no case of number subtype %d.",
+			num->subtype);
 		return error_internal();
 	}
 }

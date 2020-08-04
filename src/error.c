@@ -1,16 +1,15 @@
 #include <stdarg.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "error.h"
 
-#define ERROR_MEMORY 1
-#define ERROR_INTERNAL 2
-#define ERROR_LEXOR 3
-#define ERROR_PARSER 4
-#define ERROR_CONVERT 5
-#define ERROR_EVAL 6
-#define ERROR_WRITE 7
+enum { ERROR_MEMORY,
+       ERROR_INTERNAL,
+       ERROR_LEXOR,
+       ERROR_PARSER,
+       ERROR_CONVERT,
+       ERROR_EVAL,
+       ERROR_WRITE };
 
 void eprintf(const char *area, const char *message, ...)
 {
@@ -24,19 +23,16 @@ void eprintf(const char *area, const char *message, ...)
 	va_end(args);
 }
 
-// ERROR
-
 bool iserr(obj *obj)
 {
 	return obj->type == TYPE_ERROR;
 }
 
-static obj mem_error_obj = { TYPE_ERROR, ERROR_MEMORY, { 0 } };
-static obj *mem_error = &mem_error_obj;
+static obj mem_error = { TYPE_ERROR, ERROR_MEMORY, { 0 } };
 
 obj *error_memory(void)
 {
-	return mem_error;
+	return &mem_error;
 }
 
 static obj *make_error(int err_subtype)

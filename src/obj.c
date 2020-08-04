@@ -3,6 +3,7 @@
 #include "obj.h"
 #include "error.h"
 
+#define AREA "OBJ"
 #define VALUE val /* allow easy renaming of value member to check api leak */
 
 // EOF
@@ -73,8 +74,10 @@ static char *tostring(obj *dat)
 obj *new_obj(int type, int subtype)
 {
 	obj *dat = (obj *)malloc(sizeof(obj));
-	if (dat == NULL)
+	if (dat == NULL){
+		eprintf(AREA, "No memory for object");
 		return error_memory();
+	}
 	obj tmp = (obj){ .type = type, .subtype = subtype };
 	memcpy(dat, &tmp, sizeof *dat);
 	return dat;
