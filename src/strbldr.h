@@ -6,6 +6,7 @@ struct strbldr {
 	int buffsize;
 	int buffidx; 
 	int (*addc)(struct strbldr *, char);
+	int (*adds)(struct strbldr *, char *);
 	char *(*string)(struct strbldr *);
 	char *(*copy)(struct strbldr *);
 	struct strbldr *(*clear)(struct strbldr *);

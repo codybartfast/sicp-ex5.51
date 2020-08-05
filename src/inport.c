@@ -55,6 +55,7 @@ struct inport *openin_string(char *text)
 	if ((port = new_inport()) == NULL)
 		return NULL;
 	port->kind = INKIND_STRING;
+	port->next = port->text = text;
 	return port;
 }
 

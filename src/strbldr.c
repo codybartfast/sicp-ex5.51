@@ -9,12 +9,13 @@
 #define AREA "strbldr"
 #define INITIAL_BUFFSIZE (1 << 10)
 
-static int addc(struct strbldr *sb, char c);
-static char *str(struct strbldr *sb);
-static char *copy(struct strbldr *sb);
-static struct strbldr *clear(struct strbldr *sb);
-static void sbfree(struct strbldr *sb);
-static int grow_buff(struct strbldr *sb);
+static int addc(struct strbldr *, char);
+static int adds(struct strbldr *, char *);
+static char *str(struct strbldr *);
+static char *copy(struct strbldr *);
+static struct strbldr *clear(struct strbldr *);
+static void sbfree(struct strbldr *);
+static int grow_buff(struct strbldr *);
 
 struct strbldr *new_strbldr(void)
 {
@@ -31,6 +32,7 @@ struct strbldr *new_strbldr(void)
 	sb->buffsize = INITIAL_BUFFSIZE;
 	sb->buffidx = 0;
 	sb->addc = addc;
+	sb->adds = adds;
 	sb->string = str;
 	sb->copy = copy;
 	sb->clear = clear;
@@ -45,6 +47,17 @@ static int addc(struct strbldr *sb, char c)
 			return EOF;
 	}
 	return *(sb->buff + sb->buffidx++) = c;
+}
+
+static int adds(struct strbldr *sb, char *s)
+{
+	int rc = 0;
+
+	if (s == NULL)
+		return EOF;
+	while (*s != '\0' && rc != EOF)
+		rc = addc(sb, *s++);
+	return (rc == EOF) ? EOF : 0;
 }
 
 static char *str(struct strbldr *sb)

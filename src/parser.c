@@ -20,9 +20,9 @@ obj *read(void)
 	return readp(dfltin());
 }
 
-obj *readp(struct inport *in)
+obj *readp(struct inport *port)
 {
-	struct token *tkn = read_token(in);
+	struct token *tkn = read_token(port);
 	switch (tkn->type) {
 	case TKN_EOF:
 		return lexer_errored ? error_lexor() : Obj.eof();
