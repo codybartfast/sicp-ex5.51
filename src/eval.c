@@ -8,10 +8,9 @@ static bool isself_evaluating(obj *expr);
 
 obj *eval(obj *expr)
 {
-	if (isself_evaluating(expr)) {
+	if (isself_evaluating(expr))
 		return expr;
-	}
-	eprintf(AREA, "Can't parse expr: ... err, need datum->str");
+	eprintf(AREA, "Can't parse expr:... err, can't yet display it either");
 	return error_eval();
 }
 

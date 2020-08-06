@@ -34,7 +34,7 @@ struct inport *openin_file(char *name)
 		return NULL;
 	}
 	if (fopen_s(&file, name, "r")) {
-		eprintf(AREA, "failed to open file: '%s'", name);
+		eprintf(AREA, "failed to open file: \"%s\"", name);
 		return NULL;
 	}
 	if ((port = new_inport()) == NULL)
