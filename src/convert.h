@@ -3,6 +3,6 @@
 
 #include "obj.h"
 
-obj* cnv_number_string(obj *);
+obj cnv_number_string(obj);
 
 #endif

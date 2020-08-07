@@ -6,7 +6,7 @@
 
 #define AREA "PARSER"
 
-static obj *number(struct token *);
+static obj number(struct token *);
 
 struct inport *default_in = NULL;
 static struct inport *dfltin(void)
@@ -15,12 +15,12 @@ static struct inport *dfltin(void)
 				    default_in;
 }
 
-obj *read(void)
+obj read(void)
 {
 	return readp(dfltin());
 }
 
-obj *readp(struct inport *port)
+obj readp(struct inport *port)
 {
 	struct token *tkn = read_token(port);
 	switch (tkn->type) {
@@ -35,7 +35,7 @@ obj *readp(struct inport *port)
 	}
 }
 
-static obj *number(struct token *tkn)
+static obj number(struct token *tkn)
 {
 	if (strlen(tkn->value) > 18)
 		return error_parser();

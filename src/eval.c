@@ -4,9 +4,9 @@
 
 #define AREA "EVAL"
 
-static bool isself_evaluating(obj *expr);
+static bool isself_evaluating(obj expr);
 
-obj *eval(obj *expr)
+obj eval(obj expr)
 {
 	if (isself_evaluating(expr))
 		return expr;
@@ -14,7 +14,7 @@ obj *eval(obj *expr)
 	return error_eval();
 }
 
-static bool isself_evaluating(obj *expr)
+static bool isself_evaluating(obj expr)
 {
 	return Obj.isnumber(expr);
 }

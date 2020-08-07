@@ -24,24 +24,24 @@ typedef struct {
 	union value val;
 } obj;
 
-struct accessors {
-	bool (*iserr)(obj *);
+struct obj_accessor {
+	bool (*iserr)(obj);
 
-	bool (*iseof)(obj *);
-	obj *(*eof)(void);
+	bool (*iseof)(obj);
+	obj (*eof)(void);
 
-	bool (*isnumber)(obj *);
-	obj *(*ofint64)(int64_t);
-	int64_t (*toint64)(obj *);
+	bool (*isnumber)(obj);
+	obj (*ofint64)(int64_t);
+	int64_t (*toint64)(obj);
 
-	bool (*isstring)(obj *dat);
-	obj *(*newline)(void);
-	obj *(*ofstring)(char *);
-	char *(*tostring)(obj *);
+	bool (*isstring)(obj);
+	obj (*newline)(void);
+	obj (*ofstring)(char *);
+	char *(*tostring)(obj);
 };
 
-extern const struct accessors Obj;
+extern const struct obj_accessor Obj;
 
-obj *make_err(int err_subtype);
+obj make_err(int err_subtype);
 
 #endif

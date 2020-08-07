@@ -4,8 +4,8 @@
 
 #define AREA "OUTPUT"
 
-static void display(struct outport *, obj *);
-static obj *displaystr(obj *);
+static void display(struct outport *, obj);
+static obj displaystr(obj);
 
 struct outport *defaullt_out = NULL;
 
@@ -25,37 +25,36 @@ void newlinep(struct outport *out)
 	display(out, Obj.newline());
 }
 
-void write(obj *dat)
+void write(obj dat)
 {
 	writep(dfltout(), dat);
 }
 
-void writep(struct outport *op, obj *dat)
+void writep(struct outport *op, obj dat)
 {
-	obj *str = displaystr(dat);
+	obj str = displaystr(dat);
 	if (!iserr(str)) {
 		op->writes(op, Obj.tostring(str));
 	}
 }
 
-static void display(struct outport *op, obj *dat)
+static void display(struct outport *op, obj dat)
 {
-	obj *str = displaystr(dat);
+	obj str = displaystr(dat);
 	if (!iserr(str)) {
 		op->writes(op, Obj.tostring(str));
 	}
 }
 
-static obj *displaystr(obj *dat)
+static obj displaystr(obj dat)
 {
-	switch (dat->type) {
+	switch (dat.type) {
 	case TYPE_STRING:
 		return dat;
 	case TYPE_NUMBER:
 		return cnv_number_string(dat);
 	default:
-		eprintf(AREA, "BUG! No displaystr case for type: %d",
-			dat->type);
+		eprintf(AREA, "BUG! No displaystr case for type: %d", dat.type);
 		return error_write();
 	}
 }

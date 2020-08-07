@@ -23,44 +23,44 @@ void eprintf(const char *area, const char *message, ...)
 	va_end(args);
 }
 
-bool iserr(obj *obj)
+bool iserr(obj obj)
 {
-	return obj->type == TYPE_ERROR;
+	return obj.type == TYPE_ERROR;
 }
 
 static obj mem_error = { TYPE_ERROR, ERROR_MEMORY, { 0 } };
 
-obj *error_memory(void)
+obj error_memory(void)
 {
-	return &mem_error;
+	return mem_error;
 }
 
-obj *error_internal(void)
+obj error_internal(void)
 {
 	return make_err(ERROR_INTERNAL);
 }
 
-obj *error_lexor(void)
+obj error_lexor(void)
 {
 	return make_err(ERROR_LEXOR);
 }
 
-obj *error_parser(void)
+obj error_parser(void)
 {
 	return make_err(ERROR_PARSER);
 }
 
-obj *error_convert(void)
+obj error_convert(void)
 {
 	return make_err(ERROR_CONVERT);
 }
 
-obj *error_eval(void)
+obj error_eval(void)
 {
 	return make_err(ERROR_EVAL);
 }
 
-obj *error_write(void)
+obj error_write(void)
 {
 	return make_err(ERROR_WRITE);
 }

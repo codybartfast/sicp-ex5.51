@@ -6,7 +6,7 @@
 
 void newline(void);
 void newlinep(struct outport *);
-void write(obj *);
-void writep(struct outport *, obj *);
+void write(obj);
+void writep(struct outport *, obj);
 
 #endif

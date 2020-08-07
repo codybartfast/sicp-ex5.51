@@ -4,7 +4,7 @@
 #include "inport.h"
 #include "obj.h"
 
-obj *read(void);
-obj *readp(struct inport *);
+obj read(void);
+obj readp(struct inport *);
 
 #endif
