@@ -13,15 +13,26 @@
 #define SUBTYPE_NOT_SET 0
 #define NUMBER_INT64 1
 
-union value {
-	int64_t int64;
-	char *string;
+struct simp {
+	const uint8_t type;
+	const uint8_t subtype;
+	union {
+		int64_t int64;
+		char *string;
+	} val;
+};
+
+struct pair {
+	struct simp car;
+	struct simp cdr;
 };
 
 typedef struct {
-	const uint8_t type;
-	const uint8_t subtype;
-	union value val;
+	bool ispair;
+	union {
+		struct simp simp;
+		struct pair pair;
+	};
 } obj;
 
 struct obj_accessor {

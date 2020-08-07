@@ -17,7 +17,7 @@ obj cnv_number_string(obj num)
 
 	if (!Obj.isnumber(num))
 		return error_convert();
-	switch (num.subtype) {
+	switch (num.simp.subtype) {
 	case NUMBER_INT64:
 		sprintf_s(buff, BUFFSIZE, "%lld", (long long)Obj.toint64(num));
 		slen = strlen(buff);
@@ -28,7 +28,7 @@ obj cnv_number_string(obj num)
 		return Obj.ofstring(str);
 	default:
 		eprintf(AREA, "BUG: no case of number subtype %d.",
-			num.subtype);
+			num.simp.subtype);
 		return error_internal();
 	}
 }

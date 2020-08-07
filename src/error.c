@@ -4,6 +4,7 @@
 #include "error.h"
 
 enum { ERROR_MEMORY,
+       ERROR_ARGUMENT,
        ERROR_INTERNAL,
        ERROR_LEXOR,
        ERROR_PARSER,
@@ -23,16 +24,21 @@ void eprintf(const char *area, const char *message, ...)
 	va_end(args);
 }
 
-bool iserr(obj obj)
+bool iserr(obj dat)
 {
-	return obj.type == TYPE_ERROR;
+	return !dat.ispair && dat.simp.type == TYPE_ERROR;
 }
 
-static obj mem_error = { TYPE_ERROR, ERROR_MEMORY, { 0 } };
+static obj mem_error = { false, .simp = { TYPE_ERROR, ERROR_MEMORY, { 0 } } };
 
 obj error_memory(void)
 {
 	return mem_error;
+}
+
+obj error_argument()
+{
+	return make_err(ERROR_ARGUMENT);
 }
 
 obj error_internal(void)

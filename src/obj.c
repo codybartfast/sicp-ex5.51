@@ -6,15 +6,19 @@
 #define AREA "OBJ"
 #define VALUE val /* allow renaming of value member to check api leak */
 
-static obj new_obj(int type, int subtype);
+inline static obj new_simp(int type, int subtype)
+{
+	obj dat = { false, .simp = { .type = type, .subtype = subtype } };
+	return dat;
+}
 
 // EOF
 
-static obj eof_struct = { TYPE_EOF, 0, { 0 } };
+const obj eof_struct = { false, .simp = { TYPE_EOF, 0, { 0 } } };
 
 static bool iseof(obj dat)
 {
-	return dat.type == TYPE_EOF;
+	return !dat.ispair && dat.simp.type == TYPE_EOF;
 }
 
 static obj eof(void)
@@ -24,35 +28,33 @@ static obj eof(void)
 
 // NUMBER
 
-static bool isnumber(obj dat)
+inline static bool isnumber(obj dat)
 {
-	return dat.type == TYPE_NUMBER;
+	return !dat.ispair && dat.simp.type == TYPE_NUMBER;
 }
 
 static obj ofint64(int64_t n)
 {
-	obj obj = new_obj(TYPE_NUMBER, NUMBER_INT64);
-	if (iserr(obj))
-		return obj;
-	obj.VALUE.int64 = n;
-	return obj;
+	obj dat = new_simp(TYPE_NUMBER, NUMBER_INT64);
+	dat.simp.VALUE.int64 = n;
+	return dat;
 }
 
 static int64_t toint64(obj dat)
 {
-	return dat.VALUE.int64;
+	return dat.simp.VALUE.int64;
 }
 
 // STRING
 
-static bool isstring(obj dat)
+inline static bool isstring(obj dat)
 {
-	return dat.type == TYPE_STRING;
+	return !dat.ispair && dat.simp.type == TYPE_STRING;
 }
 
-static obj newline_struct = { TYPE_STRING,
-			      SUBTYPE_NOT_SET,
-			      { .string = "\n" } };
+const obj newline_struct = {
+	false, .simp = { TYPE_STRING, SUBTYPE_NOT_SET, { .string = "\n" } }
+};
 
 static obj newline(void)
 {
@@ -61,16 +63,14 @@ static obj newline(void)
 
 static obj ofstring(char *str)
 {
-	obj dat = new_obj(TYPE_STRING, SUBTYPE_NOT_SET);
-	if (iserr(dat))
-		return dat;
-	dat.VALUE.string = str;
+	obj dat = new_simp(TYPE_STRING, SUBTYPE_NOT_SET);
+	dat.simp.VALUE.string = str;
 	return dat;
 }
 
 static char *tostring(obj dat)
 {
-	return dat.VALUE.string;
+	return dat.simp.VALUE.string;
 }
 
 // Accessor
@@ -90,15 +90,6 @@ const struct obj_accessor Obj = { .iserr = iserr,
 
 obj make_err(int err_subtype)
 {
-	obj obj = new_obj(TYPE_ERROR, err_subtype);
-
-	if (iserr(obj))
-		return obj;
+	obj obj = new_simp(TYPE_ERROR, err_subtype);
 	return obj;
-}
-
-inline static obj new_obj(int type, int subtype)
-{
-	obj dat = { .type = type, .subtype = subtype };
-	return dat;
 }

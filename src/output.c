@@ -48,13 +48,19 @@ static void display(struct outport *op, obj dat)
 
 static obj displaystr(obj dat)
 {
-	switch (dat.type) {
-	case TYPE_STRING:
-		return dat;
-	case TYPE_NUMBER:
-		return cnv_number_string(dat);
-	default:
-		eprintf(AREA, "BUG! No displaystr case for type: %d", dat.type);
+	if (dat.ispair) {
+		eprintf(AREA, "BUG! No displaystr case for pairs!");
 		return error_write();
+	} else {
+		switch (dat.simp.type) {
+		case TYPE_STRING:
+			return dat;
+		case TYPE_NUMBER:
+			return cnv_number_string(dat);
+		default:
+			eprintf(AREA, "BUG! No displaystr case for type: %d",
+				dat.simp.type);
+			return error_write();
+		}
 	}
 }
