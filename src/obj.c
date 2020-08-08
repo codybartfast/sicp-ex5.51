@@ -12,19 +12,81 @@ inline static obj new_simp(int type, int subtype)
 	return dat;
 }
 
-// EOF
+// EMPTY LIST
 
-const obj eof_struct = { false, .simp = { TYPE_EOF, 0, { 0 } } };
+const obj the_empty_list = {
+	false, .simp = { TYPE_EMPTY_LIST, SUBTYPE_NOT_SET, { 0 } }
+};
 
-static bool iseof(obj dat)
+bool isnull(obj dat)
 {
-	return !dat.ispair && dat.simp.type == TYPE_EOF;
+	return !dat.ispair && dat.simp.type == TYPE_EMPTY_LIST;
 }
 
-static obj eof(void)
+static obj tel(void)
 {
-	return eof_struct;
+	return the_empty_list;
 }
+
+// REFERENCE
+
+inline static bool isreference(obj dat)
+{
+	return !dat.ispair && dat.simp.type == TYPE_REFERENCE;
+}
+
+static obj reference(obj dat)
+{
+	obj *ptr = (obj *)calloc(sizeof(obj), 1);
+	*ptr = dat;
+	obj ref = new_simp(TYPE_REFERENCE, SUBTYPE_NOT_SET);
+	ref.simp.val.pointer = ptr;
+	return ref;
+}
+
+static obj dereference(obj dat)
+{
+	return *dat.simp.VALUE.pointer;
+}
+
+// PAIR
+
+static inline bool ispair(obj dat)
+{
+	return dat.ispair;
+}
+
+obj cons(obj car, obj cdr)
+{
+	obj p = { true,
+		  .pair = { ispair(car) ? reference(car).simp : car.simp,
+			    ispair(cdr) ? reference(cdr).simp : cdr.simp } };
+	return p;
+}
+
+obj car(obj pair)
+{
+	obj dat = { false, .simp = pair.pair.car };
+	if (!ispair(pair)) {
+		eprintf(AREA, "car expects a pair");
+		return error_argument_type();
+	}
+	return isreference(dat) ? dereference(dat) : dat;
+}
+
+obj cdr(obj pair)
+{
+	obj dat = { false, .simp = pair.pair.cdr };
+	if (!ispair(pair)) {
+		eprintf(AREA, "cdr expects a pair");
+		return error_argument_type();
+	}
+	return isreference(dat) ? dereference(dat) : dat;
+}
+
+obj cdr(obj pair);
+obj set_car(obj pair);
+obj set_cdr(obj pair);
 
 // NUMBER
 
@@ -47,18 +109,18 @@ static int64_t toint64(obj dat)
 
 // STRING
 
-inline static bool isstring(obj dat)
+inline bool isstring(obj dat)
 {
 	return !dat.ispair && dat.simp.type == TYPE_STRING;
 }
 
-const obj newline_struct = {
+const obj nl_struct = {
 	false, .simp = { TYPE_STRING, SUBTYPE_NOT_SET, { .string = "\n" } }
 };
 
-static obj newline(void)
+static obj nl(void)
 {
-	return newline_struct;
+	return nl_struct;
 }
 
 static obj ofstring(char *str)
@@ -73,18 +135,30 @@ static char *tostring(obj dat)
 	return dat.simp.VALUE.string;
 }
 
-// Accessor
+// UNSPECIFIED
 
-const struct obj_accessor Obj = { .iserr = iserr,
-				  .iseof = iseof,
-				  .eof = eof,
-				  .isnumber = isnumber,
-				  .ofint64 = ofint64,
-				  .toint64 = toint64,
-				  .isstring = isstring,
-				  .newline = newline,
-				  .ofstring = ofstring,
-				  .tostring = tostring };
+const obj unspecified_struct = {
+	false, .simp = { TYPE_UNSPECIFIED, SUBTYPE_NOT_SET, { 0 } }
+};
+
+static obj unspecified(void)
+{
+	return unspecified_struct;
+}
+
+// EOF
+
+const obj eof_struct = { false, .simp = { TYPE_EOF, SUBTYPE_NOT_SET, { 0 } } };
+
+static bool iseof(obj dat)
+{
+	return !dat.ispair && dat.simp.type == TYPE_EOF;
+}
+
+static obj eof(void)
+{
+	return eof_struct;
+}
 
 // ERROR
 
@@ -93,3 +167,29 @@ obj make_err(int err_subtype)
 	obj obj = new_simp(TYPE_ERROR, err_subtype);
 	return obj;
 }
+
+// Accessor
+
+const struct obj_accessor Obj = { 
+				  .tel = tel,
+
+				  .isreference = isreference,
+				  .reference = reference,
+				  .dereference = dereference,
+
+				  .ispair = ispair,
+
+				  .isnumber = isnumber,
+				  .ofint64 = ofint64,
+				  .toint64 = toint64,
+
+				  .nl = nl,
+				  .ofstring = ofstring,
+				  .tostring = tostring,
+
+				  .unspecified = unspecified,
+
+				  .iseof = iseof,
+				  .eof = eof,
+
+				  .iserr = iserr };

@@ -6,6 +6,7 @@
 
 #define AREA "PARSER"
 
+static obj list(struct token *);
 static obj number(struct token *);
 
 struct inport *default_in = NULL;
@@ -22,20 +23,26 @@ obj read(void)
 
 obj readp(struct inport *port)
 {
-	obj dat;	
 	struct token *tkn = read_token(port);
 	switch (tkn->type) {
+	case TKN_LIST_OPEN:
+		return list(tkn);
+	case TKN_NUMBER:
+		return number(tkn);
 	case TKN_EOF:
 		return lexer_errored ? error_lexor() : Obj.eof();
-	case TKN_NUMBER:
-		dat = number(tkn);
-		// printf("readp returning: %ld\n", dat.simp.val.int64);
-		return dat;
 	default:
 		eprintf(AREA, "BUG: no parser case for token type: %d",
 			tkn->type);
 		return error_internal();
 	}
+}
+
+static obj list(struct token *tkn)
+{
+	if (strlen(tkn->value) > 18)
+		return error_parser();
+	return Obj.ofint64(atoll(tkn->value));
 }
 
 static obj number(struct token *tkn)

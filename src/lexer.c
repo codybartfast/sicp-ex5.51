@@ -53,8 +53,12 @@ enum token_type scan(struct inport *in)
 	token.position = in->read_count;
 	if (isdigit(c))
 		return number(in);
-	sprintf_s(error_msg, MAXERROR, "Unexpected start of datum: '%c' (%d)", c,
-		  c);
+	if (c == '(')
+		return TKN_LIST_OPEN;
+	if (c == ')')
+		return TKN_LIST_CLOSE;
+	sprintf_s(error_msg, MAXERROR, "Unexpected start of datum: '%c' (%d)",
+		  c, c);
 	lexical_error(in->read_count, error_msg);
 	return EOF;
 }
@@ -67,7 +71,8 @@ enum token_type number(struct inport *in)
 	}
 	if (!peek_delimited(in)) {
 		int c = in->peek(in);
-		sprintf_s(error_msg, MAXERROR, "Unexpect char in number: '%c' (%d)", c, c);
+		sprintf_s(error_msg, MAXERROR,
+			  "Unexpect char in number: '%c' (%d)", c, c);
 		lexical_error(in->read_count, error_msg);
 		return EOF;
 	}

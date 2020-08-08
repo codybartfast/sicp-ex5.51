@@ -22,7 +22,7 @@ void newline(void)
 
 void newlinep(struct outport *out)
 {
-	display(out, Obj.newline());
+	display(out, Obj.nl());
 }
 
 void write(obj dat)

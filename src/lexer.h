@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "inport.h"
 
-enum token_type { TKN_EOF = -1, TKN_NUMBER };
+enum token_type { TKN_EOF = -1, TKN_NUMBER = 1, TKN_LIST_OPEN, TKN_LIST_CLOSE };
 
 struct token {
 	enum token_type type;

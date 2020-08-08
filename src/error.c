@@ -4,7 +4,7 @@
 #include "error.h"
 
 enum { ERROR_MEMORY,
-       ERROR_ARGUMENT,
+       ERROR_ARGUMENT_TYPE,
        ERROR_INTERNAL,
        ERROR_LEXOR,
        ERROR_PARSER,
@@ -36,9 +36,9 @@ obj error_memory(void)
 	return mem_error;
 }
 
-obj error_argument()
+obj error_argument_type()
 {
-	return make_err(ERROR_ARGUMENT);
+	return make_err(ERROR_ARGUMENT_TYPE);
 }
 
 obj error_internal(void)
