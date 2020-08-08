@@ -3,6 +3,8 @@
 #include "strbldr.h"
 #include "parser.h"
 #include "error.h"
+#include "pair.h"
+
 #include "eval.h"
 #include "output.h"
 
@@ -22,11 +24,11 @@ int main(int argc, char *argv[])
 		newline();
 	}
 
-	// obj pair1 = cons(Obj.ofint64(11), Obj.ofint64(22));
-	// obj pair2 = cons(Obj.ofint64(33), Obj.ofint64(44));
-	// obj pair3 = cons(pair1, pair2);
-	// obj pair4 = cons(pair1, Obj.ofint64(55));
-	// obj p1 = car(pair3);
+	obj pair1 = cons(Obj.ofint64(11), Obj.ofint64(22));
+	obj pair2 = cons(Obj.ofint64(33), Obj.ofint64(44));
+	obj pair3 = cons(pair1, pair2);
+	obj pair4 = cons(pair1, Obj.ofint64(55));
+	//obj p1 = car(pair3);
 	// printf("pair1; %ld\n", &pair1);
 	// printf("pair1 car: %ld\n", pair1.pair.car.val.int64);
 	// printf("pair1 cdr: %ld\n", pair1.pair.cdr.val.int64);
@@ -38,13 +40,13 @@ int main(int argc, char *argv[])
 	// printf("car(pair3) car: %ld\n", car(pair3).pair.car.val.int64);
 	// printf("car(pair3) ispair: %ld\n", car(pair3).ispair);
 	// printf("car(pair3) .car.type: %ld\n", car(pair3).pair.car.type);
-	// printf("car(car(pair3))  %ld\n", car(car(pair3)).simp.val.int64);
-	// printf("cdr(car(pair3))  %ld\n", cdr(car(pair3)).simp.val.int64);
-	// printf("car(cdr(pair3))  %ld\n", car(cdr(pair3)).simp.val.int64);
-	// printf("cdr(cdr(pair3))  %ld\n", cdr(cdr(pair3)).simp.val.int64);
-	// printf("car(car(pair4))  %ld\n", car(car(pair4)).simp.val.int64);
-	// printf("cdr(car(pair4))  %ld\n", cdr(car(pair4)).simp.val.int64);
-	// printf("cdr(pair4)  %ld\n", cdr(pair4).simp.val.int64);
+	printf("car(car(pair3))  %ld\n", car(car(pair3)).simp.val.int64);
+	printf("cdr(car(pair3))  %ld\n", cdr(car(pair3)).simp.val.int64);
+	printf("car(cdr(pair3))  %ld\n", car(cdr(pair3)).simp.val.int64);
+	printf("cdr(cdr(pair3))  %ld\n", cdr(cdr(pair3)).simp.val.int64);
+	printf("car(car(pair4))  %ld\n", car(car(pair4)).simp.val.int64);
+	printf("cdr(car(pair4))  %ld\n", cdr(car(pair4)).simp.val.int64);
+	printf("cdr(pair4)       %ld\n", cdr(pair4).simp.val.int64);
 
 	return 0;
 }

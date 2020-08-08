@@ -16,6 +16,7 @@
                 "src/obj.c",
                 "src/outport.c",
                 "src/output.c",
+                "src/pair.c",
                 "src/parser.c",
                 "src/sicp.c",
                 "src/strbldr.c",
