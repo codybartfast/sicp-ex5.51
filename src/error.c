@@ -26,7 +26,7 @@ void eprintf(const char *area, const char *message, ...)
 
 bool iserr(obj dat)
 {
-	return !dat.ispair && dat.simp.type == TYPE_ERROR;
+	return !ispair(dat) && dat.simp.type == TYPE_ERROR;
 }
 
 static obj mem_error = { false, .simp = { TYPE_ERROR, ERROR_MEMORY, { 0 } } };

@@ -15,38 +15,34 @@ static struct inport *usage(void);
 
 int main(int argc, char *argv[])
 {
-		obj dat;
+	// display should return unspec/error
+
+	obj dat;
 	struct inport *port = parseargs(argc, argv);
 	if (port == NULL)
 		return 0;
 	while (!iserr(dat = readp(port)) && !Obj.iseof(dat)) {
- 		write((dat));
+		printf("loop\n");
+		write((dat));
 		newline();
 	}
 
-	obj pair1 = cons(Obj.ofint64(11), Obj.ofint64(22));
-	obj pair2 = cons(Obj.ofint64(33), Obj.ofint64(44));
-	obj pair3 = cons(pair1, pair2);
-	obj pair4 = cons(pair1, Obj.ofint64(55));
-	//obj p1 = car(pair3);
-	// printf("pair1; %ld\n", &pair1);
-	// printf("pair1 car: %ld\n", pair1.pair.car.val.int64);
-	// printf("pair1 cdr: %ld\n", pair1.pair.cdr.val.int64);
-	// printf("pair2; %ld\n", &pair2);
-	// printf("pair2 car: %ld\n", pair2.pair.car.val.int64);
-	// printf("pair2 cdr: %ld\n", pair2.pair.cdr.val.int64);
-	// printf("pair3: %ld\n", &pair3);
-	// printf("pair3 car: %ld\n", pair3.pair.car.val.pointer);
-	// printf("car(pair3) car: %ld\n", car(pair3).pair.car.val.int64);
-	// printf("car(pair3) ispair: %ld\n", car(pair3).ispair);
-	// printf("car(pair3) .car.type: %ld\n", car(pair3).pair.car.type);
-	printf("car(car(pair3))  %ld\n", car(car(pair3)).simp.val.int64);
-	printf("cdr(car(pair3))  %ld\n", cdr(car(pair3)).simp.val.int64);
-	printf("car(cdr(pair3))  %ld\n", car(cdr(pair3)).simp.val.int64);
-	printf("cdr(cdr(pair3))  %ld\n", cdr(cdr(pair3)).simp.val.int64);
-	printf("car(car(pair4))  %ld\n", car(car(pair4)).simp.val.int64);
-	printf("cdr(car(pair4))  %ld\n", cdr(car(pair4)).simp.val.int64);
-	printf("cdr(pair4)       %ld\n", cdr(pair4).simp.val.int64);
+	// obj pair1 = cons(Obj.ofint64(11), Obj.ofint64(22));
+	// obj pair2 = cons(Obj.ofint64(33), Obj.ofint64(44));
+	// obj pair3 = cons(pair1, pair2);
+	// obj pair4 = cons(Obj.ofint64(55), Obj.ofint64(66));
+
+	// printf("car(car(pair3))  %ld\n", car(car(pair3)).simp.val.int64);
+	// printf("cdr(car(pair3))  %ld\n", cdr(car(pair3)).simp.val.int64);
+	// printf("car(cdr(pair3))  %ld\n", car(cdr(pair3)).simp.val.int64);
+	// printf("cdr(cdr(pair3))  %ld\n", cdr(cdr(pair3)).simp.val.int64);
+	// printf("\n");
+	// set_cdr(&pair3, pair4);
+	// printf("car(car(pair3))  %ld\n", car(car(pair3)).simp.val.int64);
+	// printf("cdr(car(pair3))  %ld\n", cdr(car(pair3)).simp.val.int64);
+	// printf("car(cdr(pair3))  %ld\n", car(cdr(pair3)).simp.val.int64);
+	// printf("cdr(cdr(pair3))  %ld\n", cdr(cdr(pair3)).simp.val.int64);
+
 
 	return 0;
 }

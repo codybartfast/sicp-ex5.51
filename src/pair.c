@@ -3,32 +3,17 @@
 
 #define AREA "PAIR"
 
-// PAIR
-
-inline bool ispair(obj dat)
-{
-	return dat.ispair;
-}
-
 inline bool isnull(obj dat)
 {
 	return !ispair(dat) && dat.simp.type == TYPE_EMPTY_LIST;
-}
-
-const obj empty_inst = {
-	false, .simp = { TYPE_EMPTY_LIST, SUBTYPE_NOT_SET, { 0 } }
-};
-
-inline static obj empty(void)
-{
-	return empty_inst;
 }
 
 obj cons(obj car, obj cdr)
 {
 	obj p = { true,
 		  .pair = { ispair(car) ? Obj.reference(car).simp : car.simp,
-			    ispair(cdr) ? Obj.reference(cdr).simp : cdr.simp } };
+			    ispair(cdr) ? Obj.reference(cdr).simp :
+					  cdr.simp } };
 	return p;
 }
 
@@ -52,5 +37,21 @@ obj cdr(obj pair)
 	return Obj.isreference(dat) ? Obj.dereference(dat) : dat;
 }
 
-obj set_car(obj pair);
-obj set_cdr(obj pair);
+obj set_car(obj *pair, obj val)
+{
+	if (!ispair(*pair)) {
+		eprintf(AREA, "set_car expects a pair");
+		return error_argument_type();
+	}
+	(*pair).pair.car = ispair(val) ? Obj.reference(val).simp : val.simp;
+	return Obj.unspecified();
+}
+
+obj set_cdr(obj *pair, obj val){
+	if (!ispair(*pair)) {
+		eprintf(AREA, "set_cdr expects a pair");
+		return error_argument_type();
+	}
+	(*pair).pair.cdr = ispair(val) ? Obj.reference(val).simp : val.simp;
+	return Obj.unspecified();
+}

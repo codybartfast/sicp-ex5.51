@@ -62,14 +62,14 @@ static int adds(struct strbldr *sb, char *s)
 
 static char *str(struct strbldr *sb)
 {
-	sb->buffidx = '\0';
+	*(sb->buff + sb->buffidx) = '\0';
 	return sb->buff;
 }
 
 static char *copy(struct strbldr *sb)
 {
 	long dlen;
-	sb->buffidx = '\0';
+	*(sb->buff + sb->buffidx) = '\0';
 
 	char *str = (char *)malloc((dlen = (sb->buffidx + 1)) * sizeof(char));
 	if (str == NULL) {
@@ -77,6 +77,7 @@ static char *copy(struct strbldr *sb)
 		return NULL;
 	}
 	strcpy_s(str, dlen, sb->buff);
+	printf("copy '%s'->'%s' (%d)(%ld)\n", sb->buff, str, sb->buffidx, dlen);
 	return str;
 }
 

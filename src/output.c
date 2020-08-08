@@ -1,11 +1,14 @@
+#include <stdlib.h>
 #include "error.h"
 #include "convert.h"
 #include "output.h"
+#include "pair.h"
 
 #define AREA "OUTPUT"
 
 static void display(struct outport *, obj);
 static obj displaystr(obj);
+static obj displaypair(obj);
 
 struct outport *defaullt_out = NULL;
 
@@ -15,21 +18,25 @@ static struct outport *dfltout(void)
 				      defaullt_out;
 }
 
+// Should return unpsecified/error
 void newline(void)
 {
 	newlinep(dfltout());
 }
 
+// Should return unpsecified/error
 void newlinep(struct outport *out)
 {
 	display(out, Obj.nl());
 }
 
+// Should return unpsecified/error
 void write(obj dat)
 {
 	writep(dfltout(), dat);
 }
 
+// Should return unpsecified/error
 void writep(struct outport *op, obj dat)
 {
 	obj str = displaystr(dat);
@@ -38,6 +45,7 @@ void writep(struct outport *op, obj dat)
 	}
 }
 
+// Should return unpsecified/error
 static void display(struct outport *op, obj dat)
 {
 	obj str = displaystr(dat);
@@ -48,9 +56,8 @@ static void display(struct outport *op, obj dat)
 
 static obj displaystr(obj dat)
 {
-	if (dat.ispair) {
-		eprintf(AREA, "BUG! No displaystr case for pairs!");
-		return error_write();
+	if (ispair(dat)) {
+		return displaypair(dat);
 	} else {
 		switch (dat.simp.type) {
 		case TYPE_STRING:
@@ -63,4 +70,28 @@ static obj displaystr(obj dat)
 			return error_write();
 		}
 	}
+}
+
+static obj displaypair(obj pair)
+{
+	struct strbldr *sb = new_strbldr();
+	if (sb == NULL)
+		return error_memory();
+	sb->addc(sb, '(');
+
+	while (!isnull(pair)) {
+		//sb->adds(sb, "blah");
+		sb->adds(sb, Obj.tostring(displaystr(car(pair))));
+		if (!isnull(pair = cdr(pair)))
+			sb->addc(sb, ' ');
+		if (!isnull(pair) && !ispair(pair)) {
+			eprintf(AREA, "Can't handle whatsit lists");
+			exit(1);
+		}
+	}
+	sb->addc(sb, ')');
+	// Need to check copy result ///////////////////
+	obj rslt = Obj.ofstring(sb->copy(sb));
+	printf("display sending: %s\n", sb->copy(sb));
+	return rslt;
 }

@@ -6,8 +6,6 @@
 
 void eprintf(const char *area, const char *message, ...);
 
-// ERROR
-
 bool iserr(obj obj);
 obj error_memory(void);
 obj error_argument_type(void);

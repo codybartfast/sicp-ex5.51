@@ -28,6 +28,7 @@ struct simp {
 	} val;
 };
 
+	// .iserr = iserr
 struct pair {
 	struct simp car;
 	struct simp cdr;
@@ -41,11 +42,9 @@ typedef struct obj {
 	};
 } obj;
 
-struct obj_accessor {
-	bool (*isreference)(obj);
-	obj (*reference)(obj);
-	obj (*dereference)(obj);
+bool ispair(obj);
 
+struct obj_accessor {
 	bool (*isnumber)(obj);
 	obj (*ofint64)(int64_t);
 	int64_t (*toint64)(obj);
@@ -54,6 +53,12 @@ struct obj_accessor {
 	obj (*nl)(void);
 	obj (*ofstring)(char *);
 	char *(*tostring)(obj);
+
+	bool (*isreference)(obj);
+	obj (*reference)(obj);
+	obj (*dereference)(obj);
+
+	obj (*empty)(void);
 
 	obj (*unspecified)(void);
 

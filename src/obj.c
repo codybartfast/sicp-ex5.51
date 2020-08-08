@@ -16,7 +16,7 @@ inline static obj new_simp(int type, int subtype)
 
 inline static bool isnumber(obj dat)
 {
-	return !dat.ispair && dat.simp.type == TYPE_NUMBER;
+	return !ispair(dat) && dat.simp.type == TYPE_NUMBER;
 }
 
 static obj ofint64(int64_t n)
@@ -35,7 +35,7 @@ static int64_t toint64(obj dat)
 
 inline bool isstring(obj dat)
 {
-	return !dat.ispair && dat.simp.type == TYPE_STRING;
+	return !ispair(dat) && dat.simp.type == TYPE_STRING;
 }
 
 const obj nl_struct = {
@@ -59,11 +59,26 @@ static char *tostring(obj dat)
 	return dat.simp.VALUE.string;
 }
 
+// PAIR
+
+inline bool ispair(obj dat)
+{
+	return dat.ispair;
+}
+
+const obj empty_inst = { false,
+			 .simp = { TYPE_EMPTY_LIST, SUBTYPE_NOT_SET, { 0 } } };
+
+inline static obj empty(void)
+{
+	return empty_inst;
+}
+
 // REFERENCE
 
 inline static bool isreference(obj dat)
 {
-	return !dat.ispair && dat.simp.type == TYPE_REFERENCE;
+	return !ispair(dat) && dat.simp.type == TYPE_REFERENCE;
 }
 
 static obj reference(obj dat)
@@ -97,7 +112,7 @@ const obj eof_struct = { false, .simp = { TYPE_EOF, SUBTYPE_NOT_SET, { 0 } } };
 
 static bool iseof(obj dat)
 {
-	return !dat.ispair && dat.simp.type == TYPE_EOF;
+	return !ispair(dat) && dat.simp.type == TYPE_EOF;
 }
 
 static obj eof(void)
@@ -117,10 +132,6 @@ obj make_err(int err_subtype)
 
 const struct obj_accessor Obj = {
 
-	.isreference = isreference,
-	.reference = reference,
-	.dereference = dereference,
-
 	.isnumber = isnumber,
 	.ofint64 = ofint64,
 	.toint64 = toint64,
@@ -128,6 +139,12 @@ const struct obj_accessor Obj = {
 	.nl = nl,
 	.ofstring = ofstring,
 	.tostring = tostring,
+
+	.empty = empty,
+
+	.isreference = isreference,
+	.reference = reference,
+	.dereference = dereference,
 
 	.unspecified = unspecified,
 
