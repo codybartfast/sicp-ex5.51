@@ -22,12 +22,15 @@ obj read(void)
 
 obj readp(struct inport *port)
 {
+	obj dat;	
 	struct token *tkn = read_token(port);
 	switch (tkn->type) {
 	case TKN_EOF:
 		return lexer_errored ? error_lexor() : Obj.eof();
 	case TKN_NUMBER:
-		return number(tkn);
+		dat = number(tkn);
+		// printf("readp returning: %ld\n", dat.simp.val.int64);
+		return dat;
 	default:
 		eprintf(AREA, "BUG: no parser case for token type: %d",
 			tkn->type);

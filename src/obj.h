@@ -14,8 +14,8 @@
 #define NUMBER_INT64 1
 
 struct simp {
-	const uint8_t type;
-	const uint8_t subtype;
+	uint8_t type;
+	uint8_t subtype;
 	union {
 		int64_t int64;
 		char *string;

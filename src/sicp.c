@@ -2,6 +2,7 @@
 #include "version.h"
 #include "strbldr.h"
 #include "parser.h"
+#include "error.h"
 #include "eval.h"
 #include "output.h"
 
@@ -12,11 +13,14 @@ static struct inport *usage(void);
 
 int main(int argc, char *argv[])
 {
+	obj dat;
 	struct inport *port = parseargs(argc, argv);
 	if (port == NULL)
 		return 0;
-	write(eval(readp(port)));
-	newline();
+	while (!iserr(dat = readp(port)) && !Obj.iseof(dat)) {
+		write(eval(dat));
+		newline();
+	}
 	return 0;
 }
 

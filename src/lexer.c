@@ -38,7 +38,7 @@ struct token *read_token(struct inport *in)
 	}
 	token.type = scan(in);
 	token.value = sb->string(sb);
-
+	// printf("token: '%s'\n", token.value);
 	return &token;
 }
 
