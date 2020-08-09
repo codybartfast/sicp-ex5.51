@@ -40,27 +40,26 @@ struct token *read_token(struct inport *in)
 	}
 	token.type = scan(in);
 	token.value = sb->string(sb);
-	// printf("token: '%s'\n", token.value);
 	return &token;
 }
 
 enum token_type scan(struct inport *in)
 {
 	int c;
-	printf("scan\n");
 	while (isspace(in->peek(in)))
 		in->readc(in);
 	if ((c = in->readc(in)) == EOF) {
-		printf("sending eof\n");
 		return TKN_EOF;
 	}
 	token.position = in->read_count;
 	if (isdigit(c))
 		return number(c, in);
 	if (c == '(') {
+		sb->addc(sb, '(');
 		return TKN_LIST_OPEN;
 	}
 	if (c == ')') {
+		sb->addc(sb, ')');
 		return TKN_LIST_CLOSE;
 	}
 	sprintf_s(error_msg, MAXERROR, "Unexpected start of datum: '%c' (%d)",

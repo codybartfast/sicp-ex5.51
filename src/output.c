@@ -2,7 +2,6 @@
 #include "error.h"
 #include "convert.h"
 #include "output.h"
-#include "pair.h"
 
 #define AREA "OUTPUT"
 
@@ -92,6 +91,5 @@ static obj displaypair(obj pair)
 	sb->addc(sb, ')');
 	// Need to check copy result ///////////////////
 	obj rslt = Obj.ofstring(sb->copy(sb));
-	printf("display sending: %s\n", sb->copy(sb));
 	return rslt;
 }

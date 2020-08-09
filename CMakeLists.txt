@@ -9,10 +9,10 @@ set (SRC_CORE
 	src/eval.c
 	src/inport.c
 	src/lexer.c
+	src/list.c
 	src/obj.c
 	src/outport.c
 	src/output.c
-	src/pair.c
 	src/parser.c
 	src/strbldr.c
 	src/windows.c

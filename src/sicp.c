@@ -3,7 +3,6 @@
 #include "strbldr.h"
 #include "parser.h"
 #include "error.h"
-#include "pair.h"
 
 #include "eval.h"
 #include "output.h"
@@ -22,28 +21,9 @@ int main(int argc, char *argv[])
 	if (port == NULL)
 		return 0;
 	while (!iserr(dat = readp(port)) && !Obj.iseof(dat)) {
-		printf("loop\n");
 		write((dat));
 		newline();
 	}
-
-	// obj pair1 = cons(Obj.ofint64(11), Obj.ofint64(22));
-	// obj pair2 = cons(Obj.ofint64(33), Obj.ofint64(44));
-	// obj pair3 = cons(pair1, pair2);
-	// obj pair4 = cons(Obj.ofint64(55), Obj.ofint64(66));
-
-	// printf("car(car(pair3))  %ld\n", car(car(pair3)).simp.val.int64);
-	// printf("cdr(car(pair3))  %ld\n", cdr(car(pair3)).simp.val.int64);
-	// printf("car(cdr(pair3))  %ld\n", car(cdr(pair3)).simp.val.int64);
-	// printf("cdr(cdr(pair3))  %ld\n", cdr(cdr(pair3)).simp.val.int64);
-	// printf("\n");
-	// set_cdr(&pair3, pair4);
-	// printf("car(car(pair3))  %ld\n", car(car(pair3)).simp.val.int64);
-	// printf("cdr(car(pair3))  %ld\n", cdr(car(pair3)).simp.val.int64);
-	// printf("car(cdr(pair3))  %ld\n", car(cdr(pair3)).simp.val.int64);
-	// printf("cdr(cdr(pair3))  %ld\n", cdr(cdr(pair3)).simp.val.int64);
-
-
 	return 0;
 }
 

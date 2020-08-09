@@ -43,6 +43,13 @@ typedef struct obj {
 } obj;
 
 bool ispair(obj);
+bool isnull(obj dat);
+
+obj cons(obj, obj);
+obj car(obj);
+obj cdr(obj);
+// obj set_car(obj *, obj);
+// obj set_cdr(obj *, obj);
 
 struct obj_accessor {
 	bool (*isnumber)(obj);
