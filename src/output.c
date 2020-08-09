@@ -5,7 +5,7 @@
 
 #define AREA "OUTPUT"
 
-static void display(struct outport *, obj);
+static obj display(struct outport *, obj);
 static obj displaystr(obj);
 static obj displaypair(obj);
 
@@ -17,40 +17,38 @@ static struct outport *dfltout(void)
 				      defaullt_out;
 }
 
-// Should return unpsecified/error
-void newline(void)
+obj newline(void)
 {
-	newlinep(dfltout());
+	return newlinep(dfltout());
 }
 
-// Should return unpsecified/error
-void newlinep(struct outport *out)
+obj newlinep(struct outport *out)
 {
-	display(out, Obj.nl());
+	return display(out, Obj.nl());
 }
 
-// Should return unpsecified/error
-void write(obj dat)
+obj write(obj dat)
 {
-	writep(dfltout(), dat);
+	return writep(dfltout(), dat);
 }
 
-// Should return unpsecified/error
-void writep(struct outport *op, obj dat)
+obj writep(struct outport *op, obj dat)
 {
 	obj str = displaystr(dat);
-	if (!iserr(str)) {
-		op->writes(op, Obj.tostring(str));
-	}
+	if (iserr(str))
+		return str;
+	op->writes(op, Obj.tostring(str));
+	return Obj.unspecified();
 }
 
 // Should return unpsecified/error
-static void display(struct outport *op, obj dat)
+static obj display(struct outport *op, obj dat)
 {
 	obj str = displaystr(dat);
-	if (!iserr(str)) {
-		op->writes(op, Obj.tostring(str));
-	}
+	if (iserr(str))
+		return str;
+	op->writes(op, Obj.tostring(str));
+	return Obj.unspecified();
 }
 
 static obj displaystr(obj dat)
@@ -73,13 +71,14 @@ static obj displaystr(obj dat)
 
 static obj displaypair(obj pair)
 {
+	char *s;
+
 	struct strbldr *sb = new_strbldr();
 	if (sb == NULL)
 		return error_memory();
 	sb->addc(sb, '(');
 
 	while (!isnull(pair)) {
-		//sb->adds(sb, "blah");
 		sb->adds(sb, Obj.tostring(displaystr(car(pair))));
 		if (!isnull(pair = cdr(pair)))
 			sb->addc(sb, ' ');
@@ -89,7 +88,9 @@ static obj displaypair(obj pair)
 		}
 	}
 	sb->addc(sb, ')');
-	// Need to check copy result ///////////////////
-	obj rslt = Obj.ofstring(sb->copy(sb));
+	s = sb->copy(sb);
+	if (s == NULL)
+		return error_memory();
+	obj rslt = Obj.ofstring(s);
 	return rslt;
 }
