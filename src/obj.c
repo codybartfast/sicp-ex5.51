@@ -134,13 +134,32 @@ static obj reference(obj dat)
 	obj *ptr = (obj *)calloc(sizeof(obj), 1);
 	*ptr = dat;
 	obj ref = new_simp(TYPE_REFERENCE, SUBTYPE_NOT_SET);
-	ref.simp.val.pointer = ptr;
+	ref.simp.VALUE.reference = ptr;
 	return ref;
 }
 
 static obj dereference(obj dat)
 {
-	return *dat.simp.VALUE.pointer;
+	return *dat.simp.VALUE.reference;
+}
+
+// PRIMITIVE PROCEDURES (FUNCTIONS)
+
+inline static bool isprimproc(obj dat)
+{
+	return !ispair(dat) && dat.simp.type == TYPE_PRIMITIVE_PROCEDURE;
+}
+
+static obj offunction(obj (*funptr)(obj))
+{
+	obj pp = new_simp(TYPE_PRIMITIVE_PROCEDURE, SUBTYPE_NOT_SET);
+	pp.simp.VALUE.primproc = funptr;
+	return pp;
+}
+
+static obj (*tofunction(obj dat))(obj)
+{
+	return dat.simp.VALUE.primproc;
 }
 
 // UNSPECIFIED
@@ -196,9 +215,12 @@ const struct obj_accessor Obj = {
 	.reference = reference,
 	.dereference = dereference,
 
+	.isprimproc = isprimproc,
+	.offunction = offunction,
+	.tofunction = tofunction,
+
 	.unspecified = unspecified,
 
 	.iseof = iseof,
 	.eof = eof,
-
 };

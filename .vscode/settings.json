@@ -2,7 +2,8 @@
     "editor.tabSize": 8,
     "editor.insertSpaces": false,
     "files.associations": {
-        "type_traits": "c"
+        "type_traits": "c",
+        "cmath": "c"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
 }

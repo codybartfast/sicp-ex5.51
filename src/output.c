@@ -34,11 +34,16 @@ obj write(obj dat)
 
 obj writep(struct outport *op, obj dat)
 {
-	obj str = displaystr(dat);
+	obj str = writestr(dat);
 	if (iserr(str))
 		return str;
 	op->writes(op, Obj.tostring(str));
 	return Obj.unspecified();
+}
+
+obj writestr(obj dat)
+{
+	return displaystr(dat);
 }
 
 static obj display(struct outport *op, obj dat)

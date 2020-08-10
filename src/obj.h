@@ -10,9 +10,10 @@
 #define TYPE_STRING 3
 #define TYPE_EMPTY_LIST 10
 #define TYPE_REFERENCE 11
-#define TYPE_UNSPECIFIED 12
-#define TYPE_EOF 13
-#define TYPE_ERROR 14
+#define TYPE_PRIMITIVE_PROCEDURE 12
+#define TYPE_UNSPECIFIED 13
+#define TYPE_EOF 14
+#define TYPE_ERROR 15
 
 #define SUBTYPE_NOT_SET 0
 #define NUMBER_INT64 1
@@ -25,7 +26,8 @@ struct simp {
 	union {
 		int64_t int64;
 		char *string;
-		struct obj *pointer;
+		struct obj *reference;
+		struct obj (*primproc)(struct obj);
 	} val;
 };
 
@@ -68,14 +70,16 @@ struct obj_accessor {
 	obj (*reference)(obj);
 	obj (*dereference)(obj);
 
+	bool (*isprimproc)(obj);
+	obj (*offunction)(obj (*)(obj));
+	obj (*(*tofunction)(obj))(obj);
+
 	obj (*empty)(void);
 
 	obj (*unspecified)(void);
 
 	bool (*iseof)(obj);
 	obj (*eof)(void);
-
-	// bool (*iserr)(obj);
 };
 
 extern const struct obj_accessor Obj;

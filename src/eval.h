@@ -3,6 +3,6 @@
 
 #include "obj.h"
 
-obj eval(obj expr);
+obj eval(obj expr, obj env);
 
 #endif

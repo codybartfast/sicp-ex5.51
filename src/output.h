@@ -8,5 +8,6 @@ obj newline(void);
 obj newlinep(struct outport *);
 obj write(obj);
 obj writep(struct outport *, obj);
+obj writestr(obj);
 
 #endif

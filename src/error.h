@@ -1,5 +1,5 @@
-#ifndef SSERROR_H
-#define SSERROR_H 1
+#ifndef ERROR_H
+#define ERROR_H
 
 #include <stdbool.h>
 #include "obj.h"

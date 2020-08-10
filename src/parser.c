@@ -8,7 +8,7 @@
 #define AREA "PARSER"
 
 static obj parse(struct token *tkn, struct inport *port);
-static obj list(obj lst, struct inport *port);
+static obj parse_list(obj lst, struct inport *port);
 static obj identifier(struct token *tkn);
 static obj number(struct token *);
 
@@ -40,7 +40,7 @@ static obj parse(struct token *tkn, struct inport *port)
 	case TKN_NUMBER:
 		return number(tkn);
 	case TKN_LIST_OPEN:
-		dat = list(Obj.empty(), port);
+		dat = parse_list(Obj.empty(), port);
 		return iserr(dat) || Obj.iseof(dat) ? dat : reverse(dat);
 	case TKN_EOF:
 		return lexer_errored ? error_lexor() : Obj.eof();
@@ -76,7 +76,7 @@ static obj number(struct token *tkn)
 	return Obj.ofint64(atoll(tkn->value));
 }
 
-static obj list(obj lst, struct inport *port)
+static obj parse_list(obj lst, struct inport *port)
 {
 	obj fst;
 
@@ -95,7 +95,7 @@ static obj list(obj lst, struct inport *port)
 		fst = parse(tkn, port);
 		return iserr(fst) || Obj.iseof(fst) ?
 			       fst :
-			       list(cons(fst, lst), port);
+			       parse_list(cons(fst, lst), port);
 	}
 }
 
