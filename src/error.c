@@ -3,7 +3,7 @@
 
 #include "error.h"
 
-enum { ERROR_MEMORY,
+enum { ERROR_MEMORY = 1,
        ERROR_ARGUMENT_TYPE,
        ERROR_INTERNAL,
        ERROR_LEXOR,

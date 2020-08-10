@@ -31,9 +31,12 @@ obj readp(struct inport *port)
 
 static obj parse(struct token *tkn, struct inport *port)
 {
+	obj dat;
+
 	switch (tkn->type) {
 	case TKN_LIST_OPEN:
-		return reverse(list(Obj.empty(), port));
+		dat = list(Obj.empty(), port);
+		return iserr(dat) || Obj.iseof(dat) ? dat : reverse(dat);
 	case TKN_NUMBER:
 		return number(tkn);
 	case TKN_EOF:
@@ -54,6 +57,8 @@ static obj number(struct token *tkn)
 
 static obj list(obj lst, struct inport *port)
 {
+	obj fst;
+
 	struct token *tkn = read_token(port);
 	switch (tkn->type) {
 	case TKN_EOF:
@@ -62,6 +67,9 @@ static obj list(obj lst, struct inport *port)
 	case TKN_LIST_CLOSE:
 		return lst;
 	default:
-		return list(cons(parse(tkn, port), lst), port);
+		fst = parse(tkn, port);
+		return iserr(fst) || Obj.iseof(fst) ?
+			       fst :
+			       list(cons(fst, lst), port);
 	}
 }

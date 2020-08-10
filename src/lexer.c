@@ -16,7 +16,7 @@ char *lexer_error_message = NULL;
 static enum token_type scan(struct inport *);
 static enum token_type number(char c, struct inport *);
 static bool peek_delimited(struct inport *in);
-static void lexical_error(long position, char *msg);
+static void lexer_error(long position, char *msg);
 
 static struct strbldr *sb = NULL;
 static struct token token;
@@ -40,12 +40,17 @@ struct token *read_token(struct inport *in)
 	}
 	token.type = scan(in);
 	token.value = sb->string(sb);
+	if(sb->errored){
+		token.type = TKN_EOF;
+		lexer_error(in->read_count, "strbldr (memory) error");
+	}
 	return &token;
 }
 
 enum token_type scan(struct inport *in)
 {
 	int c;
+
 	while (isspace(in->peek(in)))
 		in->readc(in);
 	if ((c = in->readc(in)) == EOF) {
@@ -64,7 +69,7 @@ enum token_type scan(struct inport *in)
 	}
 	sprintf_s(error_msg, MAXERROR, "Unexpected start of datum: '%c' (%d)",
 		  c, c);
-	lexical_error(in->read_count, error_msg);
+	lexer_error(in->read_count, error_msg);
 	return EOF;
 }
 
@@ -72,14 +77,14 @@ enum token_type number(char c, struct inport *in)
 {
 	sb->addc(sb, c);
 	while (isdigit(in->peek(in))) {
-		if (sb->addc(sb, in->readc(in)) == TKN_EOF)
+		if (sb->addc(sb, in->readc(in)) == EOF)
 			return TKN_EOF;
 	}
 	if (!peek_delimited(in)) {
 		int c = in->peek(in);
 		sprintf_s(error_msg, MAXERROR,
 			  "Unexpect char in number: '%c' (%d)", c, c);
-		lexical_error(in->read_count, error_msg);
+		lexer_error(in->read_count, error_msg);
 		return EOF;
 	}
 	return TKN_NUMBER;
@@ -103,7 +108,7 @@ bool peek_delimited(struct inport *in)
 	}
 }
 
-void lexical_error(long position, char *msg)
+void lexer_error(long position, char *msg)
 {
 	lexer_errored = true;
 	lexer_error_position = position;

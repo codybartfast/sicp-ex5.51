@@ -10,6 +10,7 @@ struct strbldr {
 	char *(*string)(struct strbldr *);
 	char *(*copy)(struct strbldr *);
 	struct strbldr *(*clear)(struct strbldr *);
+	bool errored;
 	void (*free)(struct strbldr *);
 };
 

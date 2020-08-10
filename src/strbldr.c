@@ -7,7 +7,7 @@
 #include "windows.h"
 
 #define AREA "strbldr"
-#define INITIAL_BUFFSIZE (1 << 10)
+#define INITIAL_BUFFSIZE (1 << 0)
 
 static int addc(struct strbldr *, char);
 static int adds(struct strbldr *, char *);
@@ -15,7 +15,9 @@ static char *str(struct strbldr *);
 static char *copy(struct strbldr *);
 static struct strbldr *clear(struct strbldr *);
 static void sbfree(struct strbldr *);
-static int grow_buff(struct strbldr *);
+static bool grow_buff(struct strbldr *);
+
+char *err_msg = "*** strbldr failed to allocate memory ***";
 
 struct strbldr *new_strbldr(void)
 {
@@ -36,14 +38,17 @@ struct strbldr *new_strbldr(void)
 	sb->string = str;
 	sb->copy = copy;
 	sb->clear = clear;
+	sb->errored = false;
 	sb->free = sbfree;
 	return sb;
 }
 
 static int addc(struct strbldr *sb, char c)
 {
+	if (sb->errored)
+		return EOF;
 	if (sb->buffidx >= sb->buffsize - 1) {
-		if (grow_buff(sb) != 0)
+		if (!grow_buff(sb))
 			return EOF;
 	}
 	return *(sb->buff + sb->buffidx++) = c;
@@ -53,6 +58,8 @@ static int adds(struct strbldr *sb, char *s)
 {
 	int rc = 0;
 
+	if (sb->errored)
+		return EOF;
 	if (s == NULL)
 		return EOF;
 	while (*s != '\0' && rc != EOF)
@@ -62,6 +69,8 @@ static int adds(struct strbldr *sb, char *s)
 
 static char *str(struct strbldr *sb)
 {
+	if (sb->errored)
+		return err_msg;
 	sb->buff[sb->buffidx] = '\0';
 	return sb->buff;
 }
@@ -69,9 +78,12 @@ static char *str(struct strbldr *sb)
 static char *copy(struct strbldr *sb)
 {
 	long dlen;
-	sb->buff[sb->buffidx] = '\0';
+	char *str;
 
-	char *str = (char *)malloc((dlen = (sb->buffidx + 1)) * sizeof(char));
+	if (sb->errored)
+		return err_msg;
+	sb->buff[sb->buffidx] = '\0';
+	str = (char *)malloc((dlen = (sb->buffidx + 1)) * sizeof(char));
 	if (str == NULL) {
 		eprintf(AREA, "No memory to copy strbldr string");
 		return NULL;
@@ -87,21 +99,24 @@ static struct strbldr *clear(struct strbldr *sb)
 	return sb;
 }
 
-static int grow_buff(struct strbldr *sb)
+static bool grow_buff(struct strbldr *sb)
 {
 	int i;
-	char *old_buff = sb->buff;
+	char *new_buff;
+	int new_buffsize;
 
-	sb->buffsize *= 2;
-	sb->buff = (char *)malloc(sb->buffsize * sizeof(char));
-	if (sb->buff == NULL) {
-		free(old_buff);
-		return -1;
+	new_buffsize = 2 * sb->buffsize;
+	new_buff = (char *)malloc(sb->buffsize * sizeof(char));
+	if (new_buff == NULL) {
+		sb->errored = true;
+		return false;
 	}
 	for (i = 0; i < sb->buffidx; i++)
-		*(sb->buff + i) = *(old_buff + i);
-	free(old_buff);
-	return 0;
+		new_buff[i] = sb->buff[i];
+	free(sb->buff);
+	sb->buff = new_buff;
+	sb->buffsize = new_buffsize;
+	return true;
 }
 
 static void sbfree(struct strbldr *sb)

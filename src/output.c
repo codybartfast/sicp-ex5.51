@@ -72,9 +72,9 @@ static obj displaystr(obj dat)
 static obj displaypair(obj pair)
 {
 	char *s;
+	struct strbldr *sb;
 
-	struct strbldr *sb = new_strbldr();
-	if (sb == NULL)
+	if ((sb = new_strbldr()) == NULL)
 		return error_memory();
 	sb->addc(sb, '(');
 
@@ -89,8 +89,9 @@ static obj displaypair(obj pair)
 	}
 	sb->addc(sb, ')');
 	s = sb->copy(sb);
-	if (s == NULL)
+	if (s == NULL || sb->errored) {
 		return error_memory();
+	}
 	obj rslt = Obj.ofstring(s);
 	return rslt;
 }
