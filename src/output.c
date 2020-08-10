@@ -41,7 +41,6 @@ obj writep(struct outport *op, obj dat)
 	return Obj.unspecified();
 }
 
-// Should return unpsecified/error
 static obj display(struct outport *op, obj dat)
 {
 	obj str = displaystr(dat);
@@ -55,17 +54,20 @@ static obj displaystr(obj dat)
 {
 	if (ispair(dat)) {
 		return displaypair(dat);
-	} else {
-		switch (dat.simp.type) {
-		case TYPE_STRING:
-			return dat;
-		case TYPE_NUMBER:
-			return cnv_number_string(dat);
-		default:
-			eprintf(AREA, "BUG! No displaystr case for type: %d",
-				dat.simp.type);
-			return error_write();
-		}
+	}
+	switch (dat.simp.type) {
+	case TYPE_SYMBOL:
+		return dat;
+	case TYPE_STRING:
+		return dat;
+	case TYPE_NUMBER:
+		return cnv_number_string(dat);
+	case TYPE_EMPTY_LIST:
+		return Obj.ofstring("()");
+	default:
+		eprintf(AREA, "BUG! No displaystr case for type: %d",
+			dat.simp.type);
+		return error_write();
 	}
 }
 
@@ -83,7 +85,7 @@ static obj displaypair(obj pair)
 		if (!isnull(pair = cdr(pair)))
 			sb->addc(sb, ' ');
 		if (!isnull(pair) && !ispair(pair)) {
-			eprintf(AREA, "Can't handle whatsit lists");
+			eprintf(AREA, "Can't handle improper lists");
 			exit(1);
 		}
 	}

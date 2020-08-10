@@ -12,6 +12,20 @@ inline static obj new_simp(int type, int subtype)
 	return dat;
 }
 
+// SYMBOL
+
+inline static bool issymbol(obj dat)
+{
+	return !ispair(dat) && dat.simp.type == TYPE_SYMBOL;
+}
+
+static obj ofidentifier(char *id)
+{
+	obj dat = new_simp(TYPE_SYMBOL, SUBTYPE_NOT_SET);
+	dat.simp.VALUE.string = id;
+	return dat;
+}
+
 // NUMBER
 
 inline static bool isnumber(obj dat)
@@ -108,25 +122,6 @@ obj cdr(obj pair)
 	return Obj.isreference(dat) ? Obj.dereference(dat) : dat;
 }
 
-// obj set_car(obj *pair, obj val)
-// {
-// 	if (!ispair(*pair)) {
-// 		eprintf(AREA, "set_car expects a pair");
-// 		return error_argument_type();
-// 	}
-// 	(*pair).pair.car = ispair(val) ? Obj.reference(val).simp : val.simp;
-// 	return Obj.unspecified();
-// }
-
-// obj set_cdr(obj *pair, obj val){
-// 	if (!ispair(*pair)) {
-// 		eprintf(AREA, "set_cdr expects a pair");
-// 		return error_argument_type();
-// 	}
-// 	(*pair).pair.cdr = ispair(val) ? Obj.reference(val).simp : val.simp;
-// 	return Obj.unspecified();
-// }
-
 // REFERENCE
 
 inline static bool isreference(obj dat)
@@ -184,6 +179,8 @@ obj make_err(int err_subtype)
 // ACCESSOR
 
 const struct obj_accessor Obj = {
+	.issymbol = issymbol,
+	.ofidentifier = ofidentifier,
 
 	.isnumber = isnumber,
 	.ofint64 = ofint64,

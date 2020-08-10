@@ -5,13 +5,14 @@
 #include <inttypes.h>
 
 #define TYPE_NOT_SET 0
-#define TYPE_NUMBER 1
-#define TYPE_STRING 2
-#define TYPE_EMPTY_LIST 4
-#define TYPE_REFERENCE 5
-#define TYPE_UNSPECIFIED 6
-#define TYPE_EOF 7
-#define TYPE_ERROR 8
+#define TYPE_SYMBOL 1
+#define TYPE_NUMBER 2
+#define TYPE_STRING 3
+#define TYPE_EMPTY_LIST 10
+#define TYPE_REFERENCE 11
+#define TYPE_UNSPECIFIED 12
+#define TYPE_EOF 13
+#define TYPE_ERROR 14
 
 #define SUBTYPE_NOT_SET 0
 #define NUMBER_INT64 1
@@ -28,7 +29,7 @@ struct simp {
 	} val;
 };
 
-	// .iserr = iserr
+// .iserr = iserr
 struct pair {
 	struct simp car;
 	struct simp cdr;
@@ -48,10 +49,12 @@ bool isnull(obj dat);
 obj cons(obj, obj);
 obj car(obj);
 obj cdr(obj);
-// obj set_car(obj *, obj);
-// obj set_cdr(obj *, obj);
 
 struct obj_accessor {
+	bool (*issymbol)(obj);
+	obj (*ofidentifier)(char *);
+	char *(*toidentifier)(obj);
+
 	bool (*isnumber)(obj);
 	obj (*ofint64)(int64_t);
 	int64_t (*toint64)(obj);
