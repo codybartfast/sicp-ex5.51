@@ -14,8 +14,6 @@ static struct inport *usage(void);
 
 int main(int argc, char *argv[])
 {
-	// display should return unspec/error
-
 	obj dat;
 	struct inport *port = parseargs(argc, argv);
 	if (port == NULL)

@@ -4,19 +4,18 @@
 
 #define AREA "LIST"
 
-static obj reversei(obj src, obj dst);
-obj reverse(obj lst)
+static obj reverse_i(obj lst, obj rev)
 {
-	return reversei(lst, Obj.empty());
+	if (isnull(lst))
+		return rev;
+	if (!ispair(lst)) {
+		eprintf(AREA, "reverse got non list");
+		return error_argument_type();
+	}
+	return reverse_i(cdr(lst), cons(car(lst), rev));
 }
 
-static obj reversei(obj src, obj dst)
+obj reverse(obj lst)
 {
-	if (isnull(src))
-		return dst;
-	if (!ispair(src)) {
-		eprintf(AREA, "reverse got non list");
-		error_argument_type();
-	}
-	return reversei(cdr(src), cons(car(src), dst));
+	return reverse_i(lst, Obj.empty());
 }
