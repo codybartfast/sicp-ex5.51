@@ -11,7 +11,7 @@ struct strbldr {
 	char *(*copy)(struct strbldr *);
 	struct strbldr *(*clear)(struct strbldr *);
 	bool errored;
-	void (*free)(struct strbldr *);
+	void (*free)(struct strbldr **);
 };
 
 struct strbldr *new_strbldr(void);

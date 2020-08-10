@@ -6,5 +6,6 @@
 
 obj read(void);
 obj readp(struct inport *);
+void parser_freetemp(void);
 
 #endif

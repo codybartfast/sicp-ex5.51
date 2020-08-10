@@ -73,3 +73,7 @@ static obj list(obj lst, struct inport *port)
 			       list(cons(fst, lst), port);
 	}
 }
+
+void parser_freetemp(void){
+	lexer_freetemp();
+}

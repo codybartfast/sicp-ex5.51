@@ -24,6 +24,9 @@ int main(int argc, char *argv[])
 		write((dat));
 		newline();
 	}
+	parser_freetemp();
+	port->close(port);
+
 	return 0;
 }
 
@@ -65,6 +68,7 @@ static struct inport *version(void)
 static struct inport *expr(int argc, char *argv[])
 {
 	struct strbldr *sb;
+	char *s;
 	int i;
 
 	if (argc <= 2)
@@ -76,7 +80,11 @@ static struct inport *expr(int argc, char *argv[])
 			sb->addc(sb, ' ');
 		sb->adds(sb, argv[i]);
 	}
-	return openin_string(sb->string(sb));
+	s = sb->copy(sb);
+	sb->free(&sb);
+	if (s == NULL)
+		return NULL;
+	return openin_string(s);
 }
 
 static struct inport *usage(void)

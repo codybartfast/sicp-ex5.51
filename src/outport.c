@@ -65,7 +65,7 @@ static int close(struct outport *port)
 		if ((rc = fclose(port->file)) == EOF)
 			eprintf(AREA, "error closing file: '%s'.", port->name);
 	if (port != NULL)
-		port->sb->free(port->sb);
+		port->sb->free(&port->sb);
 	free(port);
 	return rc;
 }

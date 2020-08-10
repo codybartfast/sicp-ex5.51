@@ -108,6 +108,10 @@ bool peek_delimited(struct inport *in)
 	}
 }
 
+void lexer_freetemp(void){
+	sb->free(&sb);
+}
+
 void lexer_error(long position, char *msg)
 {
 	lexer_errored = true;

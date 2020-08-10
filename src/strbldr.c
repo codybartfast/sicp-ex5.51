@@ -14,7 +14,7 @@ static int adds(struct strbldr *, char *);
 static char *str(struct strbldr *);
 static char *copy(struct strbldr *);
 static struct strbldr *clear(struct strbldr *);
-static void sbfree(struct strbldr *);
+static void sbfree(struct strbldr **);
 static bool grow_buff(struct strbldr *);
 
 char *err_msg = "*** strbldr failed to allocate memory ***";
@@ -119,11 +119,13 @@ static bool grow_buff(struct strbldr *sb)
 	return true;
 }
 
-static void sbfree(struct strbldr *sb)
+static void sbfree(struct strbldr **sbref)
 {
+	struct strbldr *sb = *sbref;
 	if (sb != NULL) {
 		free(sb->buff);
 		sb->buff = NULL;
 		free(sb);
 	}
+	*sbref = NULL;
 }

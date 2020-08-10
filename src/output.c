@@ -92,6 +92,6 @@ static obj displaypair(obj pair)
 	if (s == NULL || sb->errored) {
 		return error_memory();
 	}
-	obj rslt = Obj.ofstring(s);
-	return rslt;
+	sb->free(&sb);
+	return Obj.ofstring(s);
 }
