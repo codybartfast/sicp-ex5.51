@@ -53,37 +53,30 @@ bool isreference(obj dat);
 bool isprimproc(obj dat);
 bool iseof(obj dat);
 
+const extern obj emptylst;
 obj cons(obj, obj);
 obj car(obj);
 obj cdr(obj);
 
 struct obj_accessor {
-	// bool (*issymbol)(obj);
 	obj (*ofidentifier)(char *);
 	char *(*toidentifier)(obj);
 
-	// bool (*isnumber)(obj);
 	obj (*ofint64)(int64_t);
 	int64_t (*toint64)(obj);
 
-	// bool (*isstring)(obj);
 	obj (*nl)(void);
 	obj (*ofstring)(char *);
 	char *(*tostring)(obj);
 
-	// bool (*isreference)(obj);
 	obj (*reference)(obj);
 	obj (*dereference)(obj);
 
-	// bool (*isprimproc)(obj);
 	obj (*offunction)(obj (*)(obj));
 	obj (*(*tofunction)(obj))(obj);
 
-	obj (*empty)(void);
-
 	obj (*unspecified)(void);
 
-	// bool (*iseof)(obj);
 	obj (*eof)(void);
 };
 

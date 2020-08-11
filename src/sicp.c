@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
 	if (port == NULL)
 		return 0;
-	env = Obj.empty();
+	env = emptylst;
 	env = the_global_environment();
 	while (!iserr(exp = readp(port)) && !iseof(exp)) {
 		write(eval(exp, env));
@@ -34,12 +34,12 @@ int main(int argc, char *argv[])
 	parser_freetemp();
 	port->close(port);
 
-// obj pp = Obj.offunction(func);
-// obj (*f)(obj);
-// f = Obj.tofunction(pp);
+	// obj pp = Obj.offunction(func);
+	// obj (*f)(obj);
+	// f = Obj.tofunction(pp);
 
-// write(f(Obj.empty()));
-// newline();
+	// write(f(emptylst));
+	// newline();
 	return 0;
 }
 

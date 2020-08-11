@@ -55,7 +55,7 @@ static obj apply(obj procedure, obj arguments)
 static obj list_of_values(obj exps, obj env)
 {
 	return no_operands(exps) ?
-		       Obj.empty() :
+		       emptylst :
 		       cons(eval(first_operand(exps), env),
 			    list_of_values(rest_operands(exps), env));
 }

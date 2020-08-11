@@ -40,7 +40,7 @@ static obj parse(struct token *tkn, struct inport *port)
 	case TKN_NUMBER:
 		return number(tkn);
 	case TKN_LIST_OPEN:
-		dat = parse_list(Obj.empty(), port);
+		dat = parse_list(emptylst, port);
 		return iserr(dat) || iseof(dat) ? dat : reverse(dat);
 	case TKN_EOF:
 		return lexer_errored ? error_lexor() : Obj.eof();

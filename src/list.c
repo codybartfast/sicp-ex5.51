@@ -4,13 +4,14 @@
 
 #define AREA "LIST"
 
-inline obj cadr(obj lst){
+inline obj cadr(obj lst)
+{
 	return car(cdr(lst));
 }
 
 obj list2(obj a, obj b)
 {
-	return cons(a, cons(b, Obj.empty()));
+	return cons(a, cons(b, emptylst));
 }
 
 static int length_i(obj lst, int len)
@@ -55,7 +56,7 @@ static obj map_u_i(obj (*func)(obj), obj lst, obj prj)
 
 obj map_u(obj (*func)(obj), obj lst)
 {
-	return reverse(map_u_i(func, lst, Obj.empty()));
+	return reverse(map_u_i(func, lst, emptylst));
 }
 
 static obj reverse_i(obj lst, obj rev)
@@ -71,5 +72,5 @@ static obj reverse_i(obj lst, obj rev)
 
 obj reverse(obj lst)
 {
-	return reverse_i(lst, Obj.empty());
+	return reverse_i(lst, emptylst);
 }

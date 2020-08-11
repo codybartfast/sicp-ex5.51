@@ -85,13 +85,13 @@ inline bool isnull(obj dat)
 	return !ispair(dat) && dat.simp.type == TYPE_EMPTY_LIST;
 }
 
-const obj empty_inst = { false,
-			 .simp = { TYPE_EMPTY_LIST, SUBTYPE_NOT_SET, { 0 } } };
+const obj emptylst = { false,
+		       .simp = { TYPE_EMPTY_LIST, SUBTYPE_NOT_SET, { 0 } } };
 
-inline static obj empty(void)
-{
-	return empty_inst;
-}
+// inline static obj empty(void)
+// {
+// 	return empty_inst;
+// }
 
 obj cons(obj car, obj cdr)
 {
@@ -209,7 +209,7 @@ const struct obj_accessor Obj = {
 	.ofstring = ofstring,
 	.tostring = tostring,
 
-	.empty = empty,
+	// .empty = empty,
 
 	// .isreference = isreference,
 	.reference = reference,

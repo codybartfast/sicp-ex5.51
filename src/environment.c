@@ -21,19 +21,21 @@ static bool iseq_symbol(obj a, obj b)
 }
 
 //231
-static obj enclosing_environment(obj env){
+static obj enclosing_environment(obj env)
+{
 	return cdr(env);
 }
 
 //232
-static obj first_frame(obj env){
+static obj first_frame(obj env)
+{
 	return car(env);
 }
 
 // ln 233
 static obj the_empty_environment(void)
 {
-	return Obj.empty();
+	return emptylst;
 }
 
 // ln 235
@@ -43,12 +45,14 @@ static obj make_frame(obj variables, obj values)
 }
 
 // ln 237
-static obj frame_variables(obj frame){
+static obj frame_variables(obj frame)
+{
 	return car(frame);
 }
 
 // ln 238
-static obj frame_values(obj frame){
+static obj frame_values(obj frame)
+{
 	return cdr(frame);
 }
 
@@ -103,9 +107,9 @@ static obj primitive_procedures(void)
 		       _primitive_procedures :
 		       (_primitive_procedures =
 				list2(list2(Obj.ofidentifier("+"),
-					  Obj.offunction(add_pp)),
-				     list2(Obj.ofidentifier("-"),
-					  Obj.offunction(sub_pp))));
+					    Obj.offunction(add_pp)),
+				      list2(Obj.ofidentifier("-"),
+					    Obj.offunction(sub_pp))));
 }
 
 // ln 301
