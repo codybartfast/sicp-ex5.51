@@ -32,7 +32,7 @@ enum subtype subtype(obj dat)
 
 // SYMBOL
 
-inline bool issymbol(obj dat)
+bool issymbol(obj dat)
 {
 	return !ispair(dat) && dat.simp.type == TYPE_SYMBOL;
 }
@@ -46,7 +46,7 @@ static obj ofidentifier(char *id)
 
 // NUMBER
 
-inline bool isnumber(obj dat)
+bool isnumber(obj dat)
 {
 	return !ispair(dat) && dat.simp.type == TYPE_NUMBER;
 }
@@ -65,7 +65,7 @@ static int64_t toint64(obj dat)
 
 // STRING
 
-inline bool isstring(obj dat)
+bool isstring(obj dat)
 {
 	return !ispair(dat) && dat.simp.type == TYPE_STRING;
 }
@@ -93,12 +93,12 @@ static char *tostring(obj dat)
 
 // PAIR
 
-inline bool ispair(obj dat)
+bool ispair(obj dat)
 {
 	return dat.ispair;
 }
 
-inline bool isnull(obj dat)
+bool isnull(obj dat)
 {
 	return !ispair(dat) && dat.simp.type == TYPE_EMPTY_LIST;
 }
@@ -137,7 +137,7 @@ obj cdr(obj pair)
 
 // REFERENCE
 
-inline bool isreference(obj dat)
+bool isreference(obj dat)
 {
 	return !ispair(dat) && dat.simp.type == TYPE_REFERENCE;
 }
@@ -145,6 +145,10 @@ inline bool isreference(obj dat)
 static obj reference(obj dat)
 {
 	obj *ptr = (obj *)calloc(sizeof(obj), 1);
+	if (ptr == NULL) {
+		eprintf(AREA, "No memory for reference");
+		return error_memory();
+	}
 	*ptr = dat;
 	obj ref = new_simp(TYPE_REFERENCE, SUBTYPE_NOT_SET);
 	ref.simp.VALUE.reference = ptr;
@@ -158,7 +162,7 @@ static obj dereference(obj dat)
 
 // PRIMITIVE PROCEDURES (FUNCTIONS)
 
-inline bool isprimproc(obj dat)
+bool isprimproc(obj dat)
 {
 	return !ispair(dat) && dat.simp.type == TYPE_PRIMITIVE_PROCEDURE;
 }
@@ -190,7 +194,7 @@ static obj unspecified(void)
 
 const obj eof_struct = { false, .simp = { TYPE_EOF, SUBTYPE_NOT_SET, { 0 } } };
 
-inline bool iseof(obj dat)
+bool iseof(obj dat)
 {
 	return !ispair(dat) && dat.simp.type == TYPE_EOF;
 }

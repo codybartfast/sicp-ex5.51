@@ -53,14 +53,14 @@ static obj parse(struct token *tkn, struct inport *port)
 
 static obj identifier(struct token *tkn)
 {
-	int len = strlen(tkn->value);
-	char *s = malloc((len + 1) * sizeof(char));
-	if (s == NULL) {
+	size_t idlen = strlen(tkn->value) + 1;
+	char *id = malloc((idlen + 1) * sizeof(char));
+	if (id == NULL) {
 		eprintf(AREA, "No memory for identifier string");
 		return error_memory();
 	}
-	strcpy(s, tkn->value);
-	return Obj.ofidentifier(s);
+	strcpy_s(id, idlen, tkn->value);
+	return Obj.ofidentifier(id);
 }
 
 #define MAX_DIGITS 18

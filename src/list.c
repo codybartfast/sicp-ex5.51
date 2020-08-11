@@ -4,7 +4,7 @@
 
 #define AREA "LIST"
 
-inline obj cadr(obj lst)
+obj cadr(obj lst)
 {
 	return car(cdr(lst));
 }
