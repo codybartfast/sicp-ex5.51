@@ -4,6 +4,10 @@
 
 #define AREA "LIST"
 
+inline obj cadr(obj lst){
+	return car(cdr(lst));
+}
+
 obj list(obj a, obj b)
 {
 	return cons(a, cons(b, Obj.empty()));
@@ -46,7 +50,7 @@ static obj map_u_i(obj (*func)(obj), obj lst, obj prj)
 		eprintf(AREA, "map_u given non-list");
 		return error_argument_type();
 	}
-	return map_u_i(func, cdr(lst), func(car(lst)));
+	return map_u_i(func, cdr(lst), cons(func(car(lst)), prj));
 }
 
 obj map_u(obj (*func)(obj), obj lst)

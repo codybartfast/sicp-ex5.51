@@ -5,11 +5,12 @@
 
 enum { ERROR_MEMORY = 1,
        ERROR_ARGUMENT_TYPE,
+       ERROR_CONVERT,
+       ERROR_EVAL,
        ERROR_INTERNAL,
        ERROR_LEXOR,
        ERROR_PARSER,
-       ERROR_CONVERT,
-       ERROR_EVAL,
+       ERROR_UNBOUND_VARIABLE,
        ERROR_WRITE };
 
 void eprintf(const char *area, const char *message, ...)
@@ -41,6 +42,16 @@ obj error_argument_type()
 	return make_err(ERROR_ARGUMENT_TYPE);
 }
 
+obj error_convert(void)
+{
+	return make_err(ERROR_CONVERT);
+}
+
+obj error_eval(void)
+{
+	return make_err(ERROR_EVAL);
+}
+
 obj error_internal(void)
 {
 	return make_err(ERROR_INTERNAL);
@@ -56,14 +67,9 @@ obj error_parser(void)
 	return make_err(ERROR_PARSER);
 }
 
-obj error_convert(void)
+obj error_unbound_variable(void)
 {
-	return make_err(ERROR_CONVERT);
-}
-
-obj error_eval(void)
-{
-	return make_err(ERROR_EVAL);
+	return make_err(ERROR_UNBOUND_VARIABLE);
 }
 
 obj error_write(void)

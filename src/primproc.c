@@ -29,6 +29,7 @@ obj sub_pp(obj args)
 		eprintf(AREA, "'-' given no arguments");
 		return error_argument_type();
 	}
+	fst = car(args);
 	if (!Obj.isnumber(fst)) {
 		eprintf(AREA, "'-' given non-number: %s",
 			Obj.tostring(writestr(fst)));

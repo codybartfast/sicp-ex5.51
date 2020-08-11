@@ -11,6 +11,8 @@ static obj displaypair(obj);
 
 struct outport *defaullt_out = NULL;
 
+static char msg[1000];
+
 static struct outport *dfltout(void)
 {
 	return defaullt_out == NULL ? (defaullt_out = openout_ptr(stdout)) :
@@ -41,6 +43,11 @@ obj writep(struct outport *op, obj dat)
 	return Obj.unspecified();
 }
 
+char *debugstr(obj dat)
+{
+	return Obj.tostring(writestr(dat));
+}
+
 obj writestr(obj dat)
 {
 	return displaystr(dat);
@@ -69,6 +76,11 @@ static obj displaystr(obj dat)
 		return cnv_number_string(dat);
 	case TYPE_EMPTY_LIST:
 		return Obj.ofstring("()");
+	case TYPE_PRIMITIVE_PROCEDURE:
+		return Obj.ofstring("<primitive procedure>");
+	case TYPE_ERROR:
+		sprintf(msg, "Error, subtype: %d", dat.simp.subtype);
+		return Obj.ofstring(msg);
 	default:
 		eprintf(AREA, "BUG! No displaystr case for type: %d",
 			dat.simp.type);

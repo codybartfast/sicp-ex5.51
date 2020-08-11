@@ -25,10 +25,10 @@ int main(int argc, char *argv[])
 	if (port == NULL)
 		return 0;
 	env = Obj.empty();
-	//env = the_global_environment();
+	env = the_global_environment();
 	while (!iserr(exp = readp(port)) && !Obj.iseof(exp)) {
-		//write(eval(exp, env));
-		write(exp);
+		write(eval(exp, env));
+		//write(exp);
 		newline();
 	}
 	parser_freetemp();

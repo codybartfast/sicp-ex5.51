@@ -10,6 +10,7 @@
             "args": [
                 "src/convert.c",
                 "src/error.c",
+                "src/environment.c",
                 "src/eval.c",
                 "src/inport.c",
                 "src/lexer.c",
@@ -18,6 +19,7 @@
                 "src/outport.c",
                 "src/output.c",
                 "src/parser.c",
+                "src/primproc.c",
                 "src/sicp.c",
                 "src/strbldr.c",
                 "src/windows.c",

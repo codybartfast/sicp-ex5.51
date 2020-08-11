@@ -3,6 +3,7 @@
 
 #include "obj.h"
 
+obj cadr(obj);
 obj list(obj, obj);
 obj length(obj);
 int length_u(obj);
