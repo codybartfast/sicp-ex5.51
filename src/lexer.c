@@ -87,7 +87,7 @@ enum token_type peculiar(char c, struct inport *in)
 	}
 	char p = in->peek(in);
 	sprintf_s(error_msg, MAXERROR,
-		  "Unexpect char following initial '%c': '%c' (%d)", c, p, p);
+		  "Unexpected char following initial '%c': '%c' (%d)", c, p, p);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
 }

@@ -9,39 +9,9 @@
 #define AREA "strbldr"
 #define INITIAL_BUFFSIZE (1 << 0)
 
-static int addc(struct strbldr *, char);
-static int adds(struct strbldr *, char *);
-static char *str(struct strbldr *);
-static char *copy(struct strbldr *);
-static struct strbldr *clear(struct strbldr *);
-static void sbfree(struct strbldr **);
 static bool grow_buff(struct strbldr *);
 
 char *err_msg = "*** strbldr failed to allocate memory ***";
-
-struct strbldr *new_strbldr(void)
-{
-	struct strbldr *sb = malloc(sizeof(struct strbldr));
-	if (sb == NULL) {
-		eprintf(AREA, "No memory for strbldr");
-		return NULL;
-	}
-	sb->buff = calloc(sizeof(char), INITIAL_BUFFSIZE);
-	if (sb->buff == NULL) {
-		eprintf(AREA, "No memory for strbldr buff");
-		return NULL;
-	}
-	sb->buffsize = INITIAL_BUFFSIZE;
-	sb->buffidx = 0;
-	sb->addc = addc;
-	sb->adds = adds;
-	sb->string = str;
-	sb->copy = copy;
-	sb->clear = clear;
-	sb->errored = false;
-	sb->free = sbfree;
-	return sb;
-}
 
 static int addc(struct strbldr *sb, char c)
 {
@@ -128,4 +98,28 @@ static void sbfree(struct strbldr **sbref)
 		free(sb);
 	}
 	*sbref = NULL;
+}
+
+struct strbldr *new_strbldr(void)
+{
+	struct strbldr *sb = malloc(sizeof(struct strbldr));
+	if (sb == NULL) {
+		eprintf(AREA, "No memory for strbldr");
+		return NULL;
+	}
+	sb->buff = calloc(sizeof(char), INITIAL_BUFFSIZE);
+	if (sb->buff == NULL) {
+		eprintf(AREA, "No memory for strbldr buff");
+		return NULL;
+	}
+	sb->buffsize = INITIAL_BUFFSIZE;
+	sb->buffidx = 0;
+	sb->addc = addc;
+	sb->adds = adds;
+	sb->string = str;
+	sb->copy = copy;
+	sb->clear = clear;
+	sb->errored = false;
+	sb->free = sbfree;
+	return sb;
 }

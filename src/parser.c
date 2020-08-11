@@ -4,6 +4,7 @@
 #include "lexer.h"
 #include "list.h"
 #include "parser.h"
+#include "windows.h"
 
 #define AREA "PARSER"
 

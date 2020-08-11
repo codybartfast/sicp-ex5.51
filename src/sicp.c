@@ -12,11 +12,6 @@ static struct inport *version(void);
 static struct inport *expr(int argc, char *argv[]);
 static struct inport *usage(void);
 
-// static obj func(obj args){
-// 	return Obj.ofstring("Hello, there");
-// }
-// #include "list.h"
-
 int main(int argc, char *argv[])
 {
 	obj exp, env;
@@ -28,18 +23,11 @@ int main(int argc, char *argv[])
 	env = the_global_environment();
 	while (!iserr(exp = readp(port)) && !iseof(exp)) {
 		write(eval(exp, env));
-		//write(exp);
 		newline();
 	}
 	parser_freetemp();
 	port->close(port);
 
-	// obj pp = Obj.offunction(func);
-	// obj (*f)(obj);
-	// f = Obj.tofunction(pp);
-
-	// write(f(emptylst));
-	// newline();
 	return 0;
 }
 

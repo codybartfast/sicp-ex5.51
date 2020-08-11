@@ -50,6 +50,7 @@ enum subtype subtype(obj);
 
 bool issymbol(obj);
 bool isnumber(obj);
+bool isstring(obj);
 bool ispair(obj);
 bool isnull(obj dat);
 bool isreference(obj dat);
