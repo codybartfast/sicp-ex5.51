@@ -2,6 +2,7 @@
 #include "error.h"
 #include "convert.h"
 #include "output.h"
+#include "windows.h"
 
 #define AREA "OUTPUT"
 
@@ -11,7 +12,8 @@ static obj displaypair(obj);
 
 struct outport *defaullt_out = NULL;
 
-static char msg[1000];
+#define MSGSIZE (1 << 8)
+static char msg[MSGSIZE];
 
 static struct outport *dfltout(void)
 {
@@ -79,7 +81,7 @@ static obj displaystr(obj dat)
 	case TYPE_PRIMITIVE_PROCEDURE:
 		return Obj.ofstring("<primitive procedure>");
 	case TYPE_ERROR:
-		sprintf(msg, "Error, subtype: %d", subtype(dat));
+		sprintf_s(msg, MSGSIZE, "Error, subtype: %d", subtype(dat));
 		return Obj.ofstring(msg);
 	default:
 		eprintf(AREA, "BUG! No displaystr case for type: %d",
