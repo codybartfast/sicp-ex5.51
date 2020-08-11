@@ -6,10 +6,12 @@ project (sicp-scheme)
 set (SRC_CORE
 	src/convert.c
 	src/error.c
+	src/environment.c
 	src/eval.c
 	src/inport.c
 	src/lexer.c
 	src/list.c
+	src/primproc.c
 	src/obj.c
 	src/outport.c
 	src/output.c

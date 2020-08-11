@@ -115,6 +115,5 @@ static obj rest_operands(obj ops)
 // ln 324
 static obj apply_primitive_procedure(obj proc, obj args)
 {
-	obj (*func)(obj) = Obj.tofunction(proc);
-	return func(args);
+	return Obj.tofunction(proc)(args);
 }
