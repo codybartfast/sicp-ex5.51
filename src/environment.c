@@ -16,7 +16,7 @@ static obj setup_environment(void);
 // until we have a proper eq?
 static bool iseq_symbol(obj a, obj b)
 {
-	return Obj.issymbol(a) && Obj.issymbol(b) &&
+	return issymbol(a) && issymbol(b) &&
 	       strcmp(Obj.tostring(a), Obj.tostring(b)) == 0;
 }
 
@@ -102,9 +102,9 @@ static obj primitive_procedures(void)
 	return ispair(_primitive_procedures) ?
 		       _primitive_procedures :
 		       (_primitive_procedures =
-				list(list(Obj.ofidentifier("+"),
+				list2(list2(Obj.ofidentifier("+"),
 					  Obj.offunction(add_pp)),
-				     list(Obj.ofidentifier("-"),
+				     list2(Obj.ofidentifier("-"),
 					  Obj.offunction(sub_pp))));
 }
 

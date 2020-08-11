@@ -42,7 +42,7 @@ obj eval(obj exp, obj env)
 static obj apply(obj procedure, obj arguments)
 {
 	// printf("Apply proc: %s\n", Obj.tostring(writestr(procedure)));
-	if (Obj.isprimproc(procedure)) {
+	if (isprimproc(procedure)) {
 		return apply_primitive_procedure(procedure, arguments);
 	} else {
 		eprintf(AREA, "Unknown procedure type: %s",
@@ -63,13 +63,13 @@ static obj list_of_values(obj exps, obj env)
 // ln 110
 static bool isself_evaluating(obj exp)
 {
-	return Obj.isnumber(exp);
+	return isnumber(exp);
 }
 
 //ln 115
 static bool isvariable(obj exp)
 {
-	return Obj.issymbol(exp);
+	return issymbol(exp);
 }
 
 // ln 175

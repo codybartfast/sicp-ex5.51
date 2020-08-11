@@ -41,7 +41,7 @@ static obj parse(struct token *tkn, struct inport *port)
 		return number(tkn);
 	case TKN_LIST_OPEN:
 		dat = parse_list(Obj.empty(), port);
-		return iserr(dat) || Obj.iseof(dat) ? dat : reverse(dat);
+		return iserr(dat) || iseof(dat) ? dat : reverse(dat);
 	case TKN_EOF:
 		return lexer_errored ? error_lexor() : Obj.eof();
 	default:
@@ -93,7 +93,7 @@ static obj parse_list(obj lst, struct inport *port)
 		return lst;
 	default:
 		fst = parse(tkn, port);
-		return iserr(fst) || Obj.iseof(fst) ?
+		return iserr(fst) || iseof(fst) ?
 			       fst :
 			       parse_list(cons(fst, lst), port);
 	}

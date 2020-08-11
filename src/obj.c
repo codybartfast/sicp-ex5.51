@@ -14,7 +14,7 @@ inline static obj new_simp(int type, int subtype)
 
 // SYMBOL
 
-inline static bool issymbol(obj dat)
+inline bool issymbol(obj dat)
 {
 	return !ispair(dat) && dat.simp.type == TYPE_SYMBOL;
 }
@@ -28,7 +28,7 @@ static obj ofidentifier(char *id)
 
 // NUMBER
 
-inline static bool isnumber(obj dat)
+inline bool isnumber(obj dat)
 {
 	return !ispair(dat) && dat.simp.type == TYPE_NUMBER;
 }
@@ -109,7 +109,7 @@ obj car(obj pair)
 		eprintf(AREA, "car expects a pair");
 		return error_argument_type();
 	}
-	return Obj.isreference(dat) ? Obj.dereference(dat) : dat;
+	return isreference(dat) ? Obj.dereference(dat) : dat;
 }
 
 obj cdr(obj pair)
@@ -119,12 +119,12 @@ obj cdr(obj pair)
 		eprintf(AREA, "cdr expects a pair");
 		return error_argument_type();
 	}
-	return Obj.isreference(dat) ? Obj.dereference(dat) : dat;
+	return isreference(dat) ? Obj.dereference(dat) : dat;
 }
 
 // REFERENCE
 
-inline static bool isreference(obj dat)
+inline bool isreference(obj dat)
 {
 	return !ispair(dat) && dat.simp.type == TYPE_REFERENCE;
 }
@@ -145,7 +145,7 @@ static obj dereference(obj dat)
 
 // PRIMITIVE PROCEDURES (FUNCTIONS)
 
-inline static bool isprimproc(obj dat)
+inline bool isprimproc(obj dat)
 {
 	return !ispair(dat) && dat.simp.type == TYPE_PRIMITIVE_PROCEDURE;
 }
@@ -177,7 +177,7 @@ static obj unspecified(void)
 
 const obj eof_struct = { false, .simp = { TYPE_EOF, SUBTYPE_NOT_SET, { 0 } } };
 
-static bool iseof(obj dat)
+inline bool iseof(obj dat)
 {
 	return !ispair(dat) && dat.simp.type == TYPE_EOF;
 }
@@ -198,10 +198,10 @@ obj make_err(int err_subtype)
 // ACCESSOR
 
 const struct obj_accessor Obj = {
-	.issymbol = issymbol,
+	// .issymbol = issymbol,
 	.ofidentifier = ofidentifier,
 
-	.isnumber = isnumber,
+	// .isnumber = isnumber,
 	.ofint64 = ofint64,
 	.toint64 = toint64,
 
@@ -211,16 +211,16 @@ const struct obj_accessor Obj = {
 
 	.empty = empty,
 
-	.isreference = isreference,
+	// .isreference = isreference,
 	.reference = reference,
 	.dereference = dereference,
 
-	.isprimproc = isprimproc,
+	// .isprimproc = isprimproc,
 	.offunction = offunction,
 	.tofunction = tofunction,
 
 	.unspecified = unspecified,
 
-	.iseof = iseof,
+	// .iseof = iseof,
 	.eof = eof,
 };

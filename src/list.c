@@ -8,7 +8,7 @@ inline obj cadr(obj lst){
 	return car(cdr(lst));
 }
 
-obj list(obj a, obj b)
+obj list2(obj a, obj b)
 {
 	return cons(a, cons(b, Obj.empty()));
 }

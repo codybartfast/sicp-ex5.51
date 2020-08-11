@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 		return 0;
 	env = Obj.empty();
 	env = the_global_environment();
-	while (!iserr(exp = readp(port)) && !Obj.iseof(exp)) {
+	while (!iserr(exp = readp(port)) && !iseof(exp)) {
 		write(eval(exp, env));
 		//write(exp);
 		newline();

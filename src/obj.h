@@ -45,32 +45,37 @@ typedef struct obj {
 	};
 } obj;
 
+bool issymbol(obj);
+bool isnumber(obj);
 bool ispair(obj);
 bool isnull(obj dat);
+bool isreference(obj dat);
+bool isprimproc(obj dat);
+bool iseof(obj dat);
 
 obj cons(obj, obj);
 obj car(obj);
 obj cdr(obj);
 
 struct obj_accessor {
-	bool (*issymbol)(obj);
+	// bool (*issymbol)(obj);
 	obj (*ofidentifier)(char *);
 	char *(*toidentifier)(obj);
 
-	bool (*isnumber)(obj);
+	// bool (*isnumber)(obj);
 	obj (*ofint64)(int64_t);
 	int64_t (*toint64)(obj);
 
-	bool (*isstring)(obj);
+	// bool (*isstring)(obj);
 	obj (*nl)(void);
 	obj (*ofstring)(char *);
 	char *(*tostring)(obj);
 
-	bool (*isreference)(obj);
+	// bool (*isreference)(obj);
 	obj (*reference)(obj);
 	obj (*dereference)(obj);
 
-	bool (*isprimproc)(obj);
+	// bool (*isprimproc)(obj);
 	obj (*offunction)(obj (*)(obj));
 	obj (*(*tofunction)(obj))(obj);
 
@@ -78,7 +83,7 @@ struct obj_accessor {
 
 	obj (*unspecified)(void);
 
-	bool (*iseof)(obj);
+	// bool (*iseof)(obj);
 	obj (*eof)(void);
 };
 

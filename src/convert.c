@@ -15,7 +15,7 @@ obj cnv_number_string(obj num)
 	char *str;
 	size_t slen;
 
-	if (!Obj.isnumber(num))
+	if (!isnumber(num))
 		return error_convert();
 	switch (num.simp.subtype) {
 	case NUMBER_INT64:
