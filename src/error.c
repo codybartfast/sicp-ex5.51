@@ -25,7 +25,7 @@ void eprintf(const char *area, const char *message, ...)
 	va_end(args);
 }
 
-bool iserr(obj dat)
+inline bool iserr(obj dat)
 {
 	return !ispair(dat) && dat.simp.type == TYPE_ERROR;
 }

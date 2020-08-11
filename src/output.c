@@ -67,7 +67,7 @@ static obj displaystr(obj dat)
 	if (ispair(dat)) {
 		return displaypair(dat);
 	}
-	switch (dat.simp.type) {
+	switch (type(dat)) {
 	case TYPE_SYMBOL:
 		return dat;
 	case TYPE_STRING:
@@ -79,11 +79,11 @@ static obj displaystr(obj dat)
 	case TYPE_PRIMITIVE_PROCEDURE:
 		return Obj.ofstring("<primitive procedure>");
 	case TYPE_ERROR:
-		sprintf(msg, "Error, subtype: %d", dat.simp.subtype);
+		sprintf(msg, "Error, subtype: %d", subtype(dat));
 		return Obj.ofstring(msg);
 	default:
 		eprintf(AREA, "BUG! No displaystr case for type: %d",
-			dat.simp.type);
+			type(dat));
 		return error_write();
 	}
 }

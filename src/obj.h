@@ -4,19 +4,20 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
-#define TYPE_NOT_SET 0
-#define TYPE_SYMBOL 1
-#define TYPE_NUMBER 2
-#define TYPE_STRING 3
-#define TYPE_EMPTY_LIST 10
-#define TYPE_REFERENCE 11
-#define TYPE_PRIMITIVE_PROCEDURE 12
-#define TYPE_UNSPECIFIED 13
-#define TYPE_EOF 14
-#define TYPE_ERROR 99
+enum type {
+	TYPE_NOT_SET = 0,
+	TYPE_SYMBOL,
+	TYPE_NUMBER,
+	TYPE_STRING,
+	TYPE_EMPTY_LIST,
+	TYPE_REFERENCE,
+	TYPE_PRIMITIVE_PROCEDURE,
+	TYPE_UNSPECIFIED,
+	TYPE_EOF,
+	TYPE_ERROR
+};
 
-#define SUBTYPE_NOT_SET 0
-#define NUMBER_INT64 1
+enum subtype { SUBTYPE_NOT_SET = 0, NUMBER_INT64 };
 
 struct obj;
 
@@ -31,7 +32,6 @@ struct simp {
 	} val;
 };
 
-// .iserr = iserr
 struct pair {
 	struct simp car;
 	struct simp cdr;
@@ -44,6 +44,9 @@ typedef struct obj {
 		struct pair pair;
 	};
 } obj;
+
+enum type type(obj);
+enum subtype subtype(obj);
 
 bool issymbol(obj);
 bool isnumber(obj);

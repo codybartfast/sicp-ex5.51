@@ -6,10 +6,28 @@
 #define AREA "OBJ"
 #define VALUE val /* allow renaming of value member to check api leak */
 
-inline static obj new_simp(int type, int subtype)
+static obj new_simp(int type, int subtype)
 {
 	obj dat = { false, .simp = { .type = type, .subtype = subtype } };
 	return dat;
+}
+
+enum type type(obj dat)
+{
+	if (dat.ispair) {
+		eprintf(AREA, "Cannot get type of a pair");
+		error_argument_type();
+	}
+	return dat.simp.type;
+}
+
+enum subtype subtype(obj dat)
+{
+	if (dat.ispair) {
+		eprintf(AREA, "Cannot get type of a pair");
+		error_argument_type();
+	}
+	return dat.simp.subtype;
 }
 
 // SYMBOL
@@ -87,11 +105,6 @@ inline bool isnull(obj dat)
 
 const obj emptylst = { false,
 		       .simp = { TYPE_EMPTY_LIST, SUBTYPE_NOT_SET, { 0 } } };
-
-// inline static obj empty(void)
-// {
-// 	return empty_inst;
-// }
 
 obj cons(obj car, obj cdr)
 {
@@ -198,10 +211,8 @@ obj make_err(int err_subtype)
 // ACCESSOR
 
 const struct obj_accessor Obj = {
-	// .issymbol = issymbol,
 	.ofidentifier = ofidentifier,
 
-	// .isnumber = isnumber,
 	.ofint64 = ofint64,
 	.toint64 = toint64,
 
@@ -209,18 +220,13 @@ const struct obj_accessor Obj = {
 	.ofstring = ofstring,
 	.tostring = tostring,
 
-	// .empty = empty,
-
-	// .isreference = isreference,
 	.reference = reference,
 	.dereference = dereference,
 
-	// .isprimproc = isprimproc,
 	.offunction = offunction,
 	.tofunction = tofunction,
 
 	.unspecified = unspecified,
 
-	// .iseof = iseof,
 	.eof = eof,
 };
