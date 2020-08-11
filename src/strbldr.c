@@ -106,7 +106,7 @@ static bool grow_buff(struct strbldr *sb)
 	int new_buffsize;
 
 	new_buffsize = 2 * sb->buffsize;
-	new_buff = (char *)malloc(sb->buffsize * sizeof(char));
+	new_buff = (char *)calloc(sizeof(char), new_buffsize);
 	if (new_buff == NULL) {
 		sb->errored = true;
 		return false;
