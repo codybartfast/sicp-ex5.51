@@ -1,7 +1,8 @@
+#include "outport.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "error.h"
-#include "outport.h"
 #include "windows.h"
 
 #define AREA "OUTPORT"

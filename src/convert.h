@@ -1,5 +1,6 @@
 #ifndef CONVERT_H
-#define CONVERT_H 1
+#define CONVERT_H
+#include "sicpstd.h"
 
 #include "obj.h"
 

@@ -1,5 +1,6 @@
 #include <stdarg.h>
 #include <stdio.h>
+#include "sicpstd.h"
 
 #include "error.h"
 

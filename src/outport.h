@@ -1,5 +1,6 @@
 #ifndef OUTPORT_H
-#define OUTPORT_H 1
+#define OUTPORT_H
+#include "sicpstd.h"
 
 #include <stdio.h>
 #include "strbldr.h"

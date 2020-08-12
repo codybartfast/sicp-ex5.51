@@ -1,8 +1,9 @@
+#include "convert.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "error.h"
-#include "convert.h"
 #include "windows.h"
 
 #define AREA "CONVERT"

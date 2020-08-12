@@ -1,5 +1,6 @@
 #ifndef OUTPUT_H
 #define OUTPUT_H
+#include "sicpstd.h"
 
 #include "obj.h"
 #include "outport.h"

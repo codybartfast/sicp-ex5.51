@@ -1,11 +1,10 @@
-#include <string.h>
+#include "environment.h"
 
+#include <string.h>
 #include "error.h"
 #include "list.h"
 #include "output.h"
 #include "primproc.h"
-
-#include "environment.h"
 
 #define AREA "ENVIRONMENT"
 

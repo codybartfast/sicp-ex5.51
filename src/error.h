@@ -1,5 +1,6 @@
 #ifndef ERROR_H
 #define ERROR_H
+#include "sicpstd.h"
 
 #include <stdbool.h>
 #include "obj.h"

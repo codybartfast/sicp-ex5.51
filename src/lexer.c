@@ -1,9 +1,10 @@
+#include "lexer.h"
+
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include "strbldr.h"
 #include "error.h"
-#include "lexer.h"
 #include "windows.h"
 
 #define AREA "LEXER"

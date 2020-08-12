@@ -1,3 +1,7 @@
+#ifndef WINDOWS_H
+#define WINDOWS_H
+#include "sicpstd.h"
+
 #ifndef _WIN32
 
 #include <stdio.h>
@@ -8,5 +12,7 @@ int fopen_s(FILE **fpp, const char *filename, const char *mode);
 int sprintf_s(char *buffer, size_t buffsize, const char *format, ...);
 
 int strcpy_s(char *dest, long destsize, const char *src);
+
+#endif
 
 #endif

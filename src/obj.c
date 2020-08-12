@@ -1,6 +1,7 @@
+#include "obj.h"
+
 #include <stdlib.h>
 #include <string.h>
-#include "obj.h"
 #include "error.h"
 
 #define AREA "OBJ"

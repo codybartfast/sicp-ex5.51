@@ -1,6 +1,7 @@
+#include "inport.h"
+
 #include <stdlib.h>
 #include "error.h"
-#include "inport.h"
 #include "windows.h"
 
 #define NO_PEEK -2

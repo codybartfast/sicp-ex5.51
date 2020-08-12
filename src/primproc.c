@@ -1,8 +1,8 @@
+#include "primproc.h"
+
 #include "error.h"
 #include "output.h"
 #include "list.h"
-
-#include "primproc.h"
 
 #define AREA "PRIMPROC"
 

@@ -1,5 +1,6 @@
 #ifndef PRIMPROC_H
 #define PRIMPROC_H
+#include "sicpstd.h"
 
 #include "obj.h"
 

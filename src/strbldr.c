@@ -1,9 +1,9 @@
+#include "strbldr.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "error.h"
-#include "strbldr.h"
 #include "windows.h"
 
 #define AREA "strbldr"

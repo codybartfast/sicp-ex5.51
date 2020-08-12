@@ -1,5 +1,6 @@
 #ifndef OBJ_H
 #define OBJ_H
+#include "sicpstd.h"
 
 #include <stdbool.h>
 #include <inttypes.h>

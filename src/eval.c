@@ -1,5 +1,6 @@
-#include <stdbool.h>
 #include "eval.h"
+
+#include <stdbool.h>
 #include "error.h"
 #include "output.h"
 

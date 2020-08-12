@@ -1,9 +1,10 @@
+#include "parser.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include "error.h"
 #include "lexer.h"
 #include "list.h"
-#include "parser.h"
 #include "windows.h"
 
 #define AREA "PARSER"

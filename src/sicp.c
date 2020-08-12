@@ -1,3 +1,5 @@
+#include "sicpstd.h"
+
 #include <stdbool.h>
 #include "version.h"
 #include "strbldr.h"

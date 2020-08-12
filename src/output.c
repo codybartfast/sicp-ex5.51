@@ -1,7 +1,8 @@
+#include "output.h"
+
 #include <stdlib.h>
 #include "error.h"
 #include "convert.h"
-#include "output.h"
 #include "windows.h"
 
 #define AREA "OUTPUT"

@@ -1,5 +1,6 @@
 #ifndef PARSER_H
-#define PARSER_H 1
+#define PARSER_H
+#include "sicpstd.h"
 
 #include "inport.h"
 #include "obj.h"

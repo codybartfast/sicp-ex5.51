@@ -1,5 +1,6 @@
 #ifndef INPORT_H
-#define INPORT_H 1
+#define INPORT_H
+#include "sicpstd.h"
 
 #include <stdio.h>
 

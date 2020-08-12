@@ -1,6 +1,7 @@
+#include "list.h"
+
 #include "error.h"
 #include "obj.h"
-#include "list.h"
 
 #define AREA "LIST"
 

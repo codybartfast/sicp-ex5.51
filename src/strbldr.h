@@ -1,10 +1,12 @@
 #ifndef STRBLDR_H
-#define STRBLDR_H 1
+#define STRBLDR_H
+#include "sicpstd.h"
+#include "stdbool.h"
 
 struct strbldr {
 	char *buff;
 	int buffsize;
-	int buffidx; 
+	int buffidx;
 	int (*addc)(struct strbldr *, char);
 	int (*adds)(struct strbldr *, char *);
 	char *(*string)(struct strbldr *);

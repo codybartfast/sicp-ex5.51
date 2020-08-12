@@ -1,10 +1,17 @@
 #ifndef LEXER_H
-#define LEXER_H 1
+#define LEXER_H
+#include "sicpstd.h"
 
 #include <stdbool.h>
 #include "inport.h"
 
-enum token_type { TKN_EOF = -1, TKN_IDENTIFIER = 1, TKN_NUMBER, TKN_LIST_OPEN, TKN_LIST_CLOSE };
+enum token_type {
+	TKN_EOF = -1,
+	TKN_IDENTIFIER = 1,
+	TKN_NUMBER,
+	TKN_LIST_OPEN,
+	TKN_LIST_CLOSE
+};
 
 struct token {
 	enum token_type type;
