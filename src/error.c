@@ -37,7 +37,7 @@ obj error_memory(void)
 	return mem_error;
 }
 
-obj error_argument_type()
+obj error_argument_type(void)
 {
 	return make_err(ERROR_ARGUMENT_TYPE);
 }

@@ -45,7 +45,7 @@ struct outport *openout_file(char *name)
 	return port;
 }
 
-struct outport *openout_string()
+struct outport *openout_string(void)
 {
 	struct outport *port;
 	if ((port = new_outport()) == NULL)

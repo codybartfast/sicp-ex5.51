@@ -57,7 +57,7 @@ bool isreference(obj dat);
 bool isprimproc(obj dat);
 bool iseof(obj dat);
 
-const extern obj emptylst;
+extern const obj emptylst;
 obj cons(obj, obj);
 obj car(obj);
 obj cdr(obj);

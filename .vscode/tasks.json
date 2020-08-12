@@ -5,8 +5,8 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "C/C++: clang build active file",
-            "command": "/usr/bin/clang",
+            "label": "Build SICP",
+            "command": "/usr/bin/gcc",
             "args": [
                 "src/convert.c",
                 "src/error.c",
