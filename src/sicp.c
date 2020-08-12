@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 		return 0;
 	env = emptylst;
 	env = the_global_environment();
-	while (!iserr(exp = readp(port)) && !iseof(exp)) {
+	while (!is_err(exp = readp(port)) && !is_eof(exp)) {
 		write(eval(exp, env));
 		newline();
 	}

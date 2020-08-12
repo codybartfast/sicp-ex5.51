@@ -40,15 +40,15 @@ obj write(obj dat)
 obj writep(struct outport *op, obj dat)
 {
 	obj str = writestr(dat);
-	if (iserr(str))
+	if (is_err(str))
 		return str;
-	op->writes(op, Obj.tostring(str));
+	op->writes(op, Obj.to_string(str));
 	return Obj.unspecified();
 }
 
 char *debugstr(obj dat)
 {
-	return Obj.tostring(writestr(dat));
+	return Obj.to_string(writestr(dat));
 }
 
 obj writestr(obj dat)
@@ -59,15 +59,15 @@ obj writestr(obj dat)
 static obj display(struct outport *op, obj dat)
 {
 	obj str = displaystr(dat);
-	if (iserr(str))
+	if (is_err(str))
 		return str;
-	op->writes(op, Obj.tostring(str));
+	op->writes(op, Obj.to_string(str));
 	return Obj.unspecified();
 }
 
 static obj displaystr(obj dat)
 {
-	if (ispair(dat)) {
+	if (is_pair(dat)) {
 		return displaypair(dat);
 	}
 	switch (type(dat)) {
@@ -78,12 +78,12 @@ static obj displaystr(obj dat)
 	case TYPE_NUMBER:
 		return cnv_number_string(dat);
 	case TYPE_EMPTY_LIST:
-		return Obj.ofstring("()");
+		return Obj.of_string("()");
 	case TYPE_PRIMITIVE_PROCEDURE:
-		return Obj.ofstring("<primitive procedure>");
+		return Obj.of_string("<primitive procedure>");
 	case TYPE_ERROR:
 		sprintf_s(msg, MSGSIZE, "Error, subtype: %d", subtype(dat));
-		return Obj.ofstring(msg);
+		return Obj.of_string(msg);
 	default:
 		eprintf(AREA, "BUG! No displaystr case for type: %d",
 			type(dat));
@@ -100,11 +100,11 @@ static obj displaypair(obj pair)
 		return error_memory();
 	sb->addc(sb, '(');
 
-	while (!isnull(pair)) {
-		sb->adds(sb, Obj.tostring(displaystr(car(pair))));
-		if (!isnull(pair = cdr(pair)))
+	while (!is_null(pair)) {
+		sb->adds(sb, Obj.to_string(displaystr(car(pair))));
+		if (!is_null(pair = cdr(pair)))
 			sb->addc(sb, ' ');
-		if (!isnull(pair) && !ispair(pair)) {
+		if (!is_null(pair) && !is_pair(pair)) {
 			eprintf(AREA, "Can't handle improper lists");
 			exit(1);
 		}
@@ -115,5 +115,5 @@ static obj displaypair(obj pair)
 		return error_memory();
 	}
 	sb->free(&sb);
-	return Obj.ofstring(s);
+	return Obj.of_string(s);
 }

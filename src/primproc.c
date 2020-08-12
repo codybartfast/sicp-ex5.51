@@ -11,40 +11,40 @@ obj add_pp(obj args)
 	int64_t acc = 0;
 	do {
 		obj fst = car(args);
-		if (!isnumber(fst)) {
+		if (!is_number(fst)) {
 			eprintf(AREA, "+ given non-number: %s",
-				Obj.tostring(writestr(fst)));
+				Obj.to_string(writestr(fst)));
 			return error_argument_type();
 		}
-		acc += Obj.toint64(fst);
-	} while (ispair(args = cdr(args)));
-	return Obj.ofint64(acc);
+		acc += Obj.to_int64(fst);
+	} while (is_pair(args = cdr(args)));
+	return Obj.of_int64(acc);
 }
 
 obj sub_pp(obj args)
 {
 	int64_t acc;
 	obj fst;
-	if (!ispair(args)) {
+	if (!is_pair(args)) {
 		eprintf(AREA, "'-' given no arguments");
 		return error_argument_type();
 	}
 	fst = car(args);
-	if (!isnumber(fst)) {
+	if (!is_number(fst)) {
 		eprintf(AREA, "'-' given non-number: %s",
-			Obj.tostring(writestr(fst)));
+			Obj.to_string(writestr(fst)));
 		return error_argument_type();
 	}
-	acc = Obj.toint64(fst);
-	acc = isnull(cdr(args)) ? -acc : acc;
-	while (ispair(args = cdr(args))) {
+	acc = Obj.to_int64(fst);
+	acc = is_null(cdr(args)) ? -acc : acc;
+	while (is_pair(args = cdr(args))) {
 		fst = car(args);
-		if (!isnumber(fst)) {
+		if (!is_number(fst)) {
 			eprintf(AREA, "'-' given non-number: %s",
-				Obj.tostring(writestr(fst)));
+				Obj.to_string(writestr(fst)));
 			return error_argument_type();
 		}
-		acc -= Obj.toint64(fst);
+		acc -= Obj.to_int64(fst);
 	}
-	return Obj.ofint64(acc);
+	return Obj.of_int64(acc);
 }

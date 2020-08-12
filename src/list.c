@@ -17,9 +17,9 @@ obj list2(obj a, obj b)
 
 static int length_i(obj lst, int len)
 {
-	if (isnull(lst))
+	if (is_null(lst))
 		return len;
-	if (!ispair(lst)) {
+	if (!is_pair(lst)) {
 		eprintf(AREA, "Length given an improper list");
 		return -1;
 	}
@@ -28,10 +28,10 @@ static int length_i(obj lst, int len)
 
 int length_u(obj lst)
 {
-	if (isnull(lst)) {
+	if (is_null(lst)) {
 		return 0;
 	}
-	if (!ispair(lst)) {
+	if (!is_pair(lst)) {
 		eprintf(AREA, "Length given non-pair: %s");
 		return -1;
 	}
@@ -41,14 +41,14 @@ int length_u(obj lst)
 obj length(obj lst)
 {
 	int len = length_u(lst);
-	return len < 0 ? error_argument_type() : Obj.ofint64(len);
+	return len < 0 ? error_argument_type() : Obj.of_int64(len);
 }
 
 static obj map_u_i(obj (*func)(obj), obj lst, obj prj)
 {
-	if (isnull(lst))
+	if (is_null(lst))
 		return prj;
-	if (!ispair(lst)) {
+	if (!is_pair(lst)) {
 		eprintf(AREA, "map_u given non-list");
 		return error_argument_type();
 	}
@@ -62,9 +62,9 @@ obj map_u(obj (*func)(obj), obj lst)
 
 static obj reverse_i(obj lst, obj rev)
 {
-	if (isnull(lst))
+	if (is_null(lst))
 		return rev;
-	if (!ispair(lst)) {
+	if (!is_pair(lst)) {
 		eprintf(AREA, "reverse given non-list");
 		return error_argument_type();
 	}

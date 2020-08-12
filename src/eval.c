@@ -27,23 +27,23 @@ obj eval(obj exp, obj env)
 	else if (isapplication(exp)) {
 		obj oator, orands;
 		oator = eval(operator(exp), env);
-		if (iserr(oator))
+		if (is_err(oator))
 			return oator;
 		orands = list_of_values(operands(exp), env);
-		if (iserr(orands))
+		if (is_err(orands))
 			return orands;
 		// printf("Got operator: %s\n", debugstr(oator));
 		// printf("Got operands: %s\n", debugstr(orands));
 		return apply(oator, orands);
 	}
-	eprintf(AREA, "Can't parse exp: %s", Obj.tostring(writestr(exp)));
+	eprintf(AREA, "Can't parse exp: %s", Obj.to_string(writestr(exp)));
 	return error_eval();
 }
 
 static obj apply(obj procedure, obj arguments)
 {
 	// printf("Apply proc: %s\n", Obj.tostring(writestr(procedure)));
-	if (isprimproc(procedure)) {
+	if (is_primproc(procedure)) {
 		return apply_primitive_procedure(procedure, arguments);
 	} else {
 		eprintf(AREA, "Unknown procedure type: %s",
@@ -64,19 +64,19 @@ static obj list_of_values(obj exps, obj env)
 // ln 110
 static bool isself_evaluating(obj exp)
 {
-	return isnumber(exp);
+	return is_number(exp);
 }
 
 //ln 115
 static bool isvariable(obj exp)
 {
-	return issymbol(exp);
+	return is_symbol(exp);
 }
 
 // ln 175
 static bool isapplication(obj exp)
 {
-	return ispair(exp);
+	return is_pair(exp);
 }
 
 // ln 176
@@ -94,7 +94,7 @@ static obj operands(obj exp)
 // ln 178
 static bool no_operands(obj ops)
 {
-	return isnull(ops);
+	return is_null(ops);
 }
 
 // ln 179
@@ -116,5 +116,5 @@ static obj rest_operands(obj ops)
 // ln 324
 static obj apply_primitive_procedure(obj proc, obj args)
 {
-	return Obj.tofunction(proc)(args);
+	return Obj.to_function(proc)(args);
 }

@@ -15,8 +15,8 @@ static obj setup_environment(void);
 // until we have a proper eq?
 static bool iseq_symbol(obj a, obj b)
 {
-	return issymbol(a) && issymbol(b) &&
-	       strcmp(Obj.tostring(a), Obj.tostring(b)) == 0;
+	return is_symbol(a) && is_symbol(b) &&
+	       strcmp(Obj.to_string(a), Obj.to_string(b)) == 0;
 }
 
 //231
@@ -71,7 +71,7 @@ static obj extend_environment(obj vars, obj vals, obj base_env)
 // ln 250
 static obj lvv_scan(obj var, obj env, obj vars, obj vals)
 {
-	if (isnull(vars)) {
+	if (is_null(vars)) {
 		return lvv_env_loop(var, enclosing_environment(env));
 	} else if (iseq_symbol(var, car(vars))) {
 		return car(vals);
@@ -82,8 +82,8 @@ static obj lvv_scan(obj var, obj env, obj vars, obj vals)
 
 static obj lvv_env_loop(obj var, obj env)
 {
-	if (isnull(env)) { // should be eq - but don't have it yet.
-		eprintf(AREA, "Unbound variable: %s", Obj.tostring(var));
+	if (is_null(env)) { // should be eq - but don't have it yet.
+		eprintf(AREA, "Unbound variable: %s", Obj.to_string(var));
 		return error_unbound_variable();
 	}
 	obj frame = first_frame(env);
@@ -102,13 +102,13 @@ obj lookup_variable_value(obj var, obj env)
 static obj _primitive_procedures;
 static obj primitive_procedures(void)
 {
-	return ispair(_primitive_procedures) ?
+	return is_pair(_primitive_procedures) ?
 		       _primitive_procedures :
 		       (_primitive_procedures =
-				list2(list2(Obj.ofidentifier("+"),
-					    Obj.offunction(add_pp)),
-				      list2(Obj.ofidentifier("-"),
-					    Obj.offunction(sub_pp))));
+				list2(list2(Obj.of_identifier("+"),
+					    Obj.of_function(add_pp)),
+				      list2(Obj.of_identifier("-"),
+					    Obj.of_function(sub_pp))));
 }
 
 // ln 301
@@ -138,7 +138,7 @@ static obj setup_environment(void)
 obj _the_global_environment;
 obj the_global_environment(void)
 {
-	return ispair(_the_global_environment) ?
+	return is_pair(_the_global_environment) ?
 		       _the_global_environment :
 		       (_the_global_environment = setup_environment());
 }

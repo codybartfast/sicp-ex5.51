@@ -43,7 +43,7 @@ static obj parse(struct token *tkn, struct inport *port)
 		return number(tkn);
 	case TKN_LIST_OPEN:
 		dat = parse_list(emptylst, port);
-		return iserr(dat) || iseof(dat) ? dat : reverse(dat);
+		return is_err(dat) || is_eof(dat) ? dat : reverse(dat);
 	case TKN_EOF:
 		return lexer_errored ? error_lexor() : Obj.eof();
 	default:
@@ -62,7 +62,7 @@ static obj identifier(struct token *tkn)
 		return error_memory();
 	}
 	strcpy_s(id, idlen, tkn->value);
-	return Obj.ofidentifier(id);
+	return Obj.of_identifier(id);
 }
 
 #define MAX_DIGITS 18
@@ -75,7 +75,7 @@ static obj number(struct token *tkn)
 			tkn->value);
 		return error_parser();
 	}
-	return Obj.ofint64(atoll(tkn->value));
+	return Obj.of_int64(atoll(tkn->value));
 }
 
 static obj parse_list(obj lst, struct inport *port)
@@ -88,14 +88,14 @@ static obj parse_list(obj lst, struct inport *port)
 		eprintf(AREA, "Open list at and of file");
 		return error_parser();
 	case TKN_LIST_CLOSE:
-		if (isnull(lst)) {
+		if (is_null(lst)) {
 			eprintf(AREA, "Invalid syntax: \"()\"");
 			return error_parser();
 		}
 		return lst;
 	default:
 		fst = parse(tkn, port);
-		return iserr(fst) || iseof(fst) ?
+		return is_err(fst) || is_eof(fst) ?
 			       fst :
 			       parse_list(cons(fst, lst), port);
 	}

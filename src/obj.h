@@ -39,7 +39,7 @@ struct pair {
 };
 
 typedef struct obj {
-	bool ispair;
+	bool is_pair;
 	union {
 		struct simp simp;
 		struct pair pair;
@@ -49,14 +49,14 @@ typedef struct obj {
 enum type type(obj);
 enum subtype subtype(obj);
 
-bool issymbol(obj);
-bool isnumber(obj);
-bool isstring(obj);
-bool ispair(obj);
-bool isnull(obj dat);
-bool isreference(obj dat);
-bool isprimproc(obj dat);
-bool iseof(obj dat);
+bool is_symbol(obj);
+bool is_number(obj);
+bool is_string(obj);
+bool is_pair(obj);
+bool is_null(obj dat);
+bool is_reference(obj dat);
+bool is_primproc(obj dat);
+bool is_eof(obj dat);
 
 extern const obj emptylst;
 obj cons(obj, obj);
@@ -64,21 +64,21 @@ obj car(obj);
 obj cdr(obj);
 
 struct obj_accessor {
-	obj (*ofidentifier)(char *);
-	char *(*toidentifier)(obj);
+	obj (*of_identifier)(char *);
+	char *(*to_identifier)(obj);
 
-	obj (*ofint64)(int64_t);
-	int64_t (*toint64)(obj);
+	obj (*of_int64)(int64_t);
+	int64_t (*to_int64)(obj);
 
 	obj (*nl)(void);
-	obj (*ofstring)(char *);
-	char *(*tostring)(obj);
+	obj (*of_string)(char *);
+	char *(*to_string)(obj);
 
 	obj (*reference)(obj);
 	obj (*dereference)(obj);
 
-	obj (*offunction)(obj (*)(obj));
-	obj (*(*tofunction)(obj))(obj);
+	obj (*of_function)(obj (*)(obj));
+	obj (*(*to_function)(obj))(obj);
 
 	obj (*unspecified)(void);
 

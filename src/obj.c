@@ -15,7 +15,7 @@ static obj new_simp(int type, int subtype)
 
 enum type type(obj dat)
 {
-	if (dat.ispair) {
+	if (dat.is_pair) {
 		eprintf(AREA, "Cannot get type of a pair");
 		error_argument_type();
 	}
@@ -24,7 +24,7 @@ enum type type(obj dat)
 
 enum subtype subtype(obj dat)
 {
-	if (dat.ispair) {
+	if (dat.is_pair) {
 		eprintf(AREA, "Cannot get type of a pair");
 		error_argument_type();
 	}
@@ -33,12 +33,12 @@ enum subtype subtype(obj dat)
 
 // SYMBOL
 
-bool issymbol(obj dat)
+bool is_symbol(obj dat)
 {
-	return !ispair(dat) && dat.simp.type == TYPE_SYMBOL;
+	return !is_pair(dat) && dat.simp.type == TYPE_SYMBOL;
 }
 
-static obj ofidentifier(char *id)
+static obj of_identifier(char *id)
 {
 	obj dat = new_simp(TYPE_SYMBOL, SUBTYPE_NOT_SET);
 	dat.simp.VALUE.string = id;
@@ -47,28 +47,28 @@ static obj ofidentifier(char *id)
 
 // NUMBER
 
-bool isnumber(obj dat)
+bool is_number(obj dat)
 {
-	return !ispair(dat) && dat.simp.type == TYPE_NUMBER;
+	return !is_pair(dat) && dat.simp.type == TYPE_NUMBER;
 }
 
-static obj ofint64(int64_t n)
+static obj of_int64(int64_t n)
 {
 	obj dat = new_simp(TYPE_NUMBER, NUMBER_INT64);
 	dat.simp.VALUE.int64 = n;
 	return dat;
 }
 
-static int64_t toint64(obj dat)
+static int64_t to_int64(obj dat)
 {
 	return dat.simp.VALUE.int64;
 }
 
 // STRING
 
-bool isstring(obj dat)
+bool is_string(obj dat)
 {
-	return !ispair(dat) && dat.simp.type == TYPE_STRING;
+	return !is_pair(dat) && dat.simp.type == TYPE_STRING;
 }
 
 const obj nl_struct = {
@@ -80,28 +80,28 @@ static obj nl(void)
 	return nl_struct;
 }
 
-static obj ofstring(char *str)
+static obj of_string(char *str)
 {
 	obj dat = new_simp(TYPE_STRING, SUBTYPE_NOT_SET);
 	dat.simp.VALUE.string = str;
 	return dat;
 }
 
-static char *tostring(obj dat)
+static char *to_string(obj dat)
 {
 	return dat.simp.VALUE.string;
 }
 
 // PAIR
 
-bool ispair(obj dat)
+bool is_pair(obj dat)
 {
-	return dat.ispair;
+	return dat.is_pair;
 }
 
-bool isnull(obj dat)
+bool is_null(obj dat)
 {
-	return !ispair(dat) && dat.simp.type == TYPE_EMPTY_LIST;
+	return !is_pair(dat) && dat.simp.type == TYPE_EMPTY_LIST;
 }
 
 const obj emptylst = { false,
@@ -110,8 +110,8 @@ const obj emptylst = { false,
 obj cons(obj car, obj cdr)
 {
 	obj p = { true,
-		  .pair = { ispair(car) ? Obj.reference(car).simp : car.simp,
-			    ispair(cdr) ? Obj.reference(cdr).simp :
+		  .pair = { is_pair(car) ? Obj.reference(car).simp : car.simp,
+			    is_pair(cdr) ? Obj.reference(cdr).simp :
 					  cdr.simp } };
 	return p;
 }
@@ -119,28 +119,28 @@ obj cons(obj car, obj cdr)
 obj car(obj pair)
 {
 	obj dat = { false, .simp = pair.pair.car };
-	if (!ispair(pair)) {
+	if (!is_pair(pair)) {
 		eprintf(AREA, "car expects a pair");
 		return error_argument_type();
 	}
-	return isreference(dat) ? Obj.dereference(dat) : dat;
+	return is_reference(dat) ? Obj.dereference(dat) : dat;
 }
 
 obj cdr(obj pair)
 {
 	obj dat = { false, .simp = pair.pair.cdr };
-	if (!ispair(pair)) {
+	if (!is_pair(pair)) {
 		eprintf(AREA, "cdr expects a pair");
 		return error_argument_type();
 	}
-	return isreference(dat) ? Obj.dereference(dat) : dat;
+	return is_reference(dat) ? Obj.dereference(dat) : dat;
 }
 
 // REFERENCE
 
-bool isreference(obj dat)
+bool is_reference(obj dat)
 {
-	return !ispair(dat) && dat.simp.type == TYPE_REFERENCE;
+	return !is_pair(dat) && dat.simp.type == TYPE_REFERENCE;
 }
 
 static obj reference(obj dat)
@@ -163,19 +163,19 @@ static obj dereference(obj dat)
 
 // PRIMITIVE PROCEDURES (FUNCTIONS)
 
-bool isprimproc(obj dat)
+bool is_primproc(obj dat)
 {
-	return !ispair(dat) && dat.simp.type == TYPE_PRIMITIVE_PROCEDURE;
+	return !is_pair(dat) && dat.simp.type == TYPE_PRIMITIVE_PROCEDURE;
 }
 
-static obj offunction(obj (*funptr)(obj))
+static obj of_function(obj (*funptr)(obj))
 {
 	obj pp = new_simp(TYPE_PRIMITIVE_PROCEDURE, SUBTYPE_NOT_SET);
 	pp.simp.VALUE.primproc = funptr;
 	return pp;
 }
 
-static obj (*tofunction(obj dat))(obj)
+static obj (*to_function(obj dat))(obj)
 {
 	return dat.simp.VALUE.primproc;
 }
@@ -195,9 +195,9 @@ static obj unspecified(void)
 
 const obj eof_struct = { false, .simp = { TYPE_EOF, SUBTYPE_NOT_SET, { 0 } } };
 
-bool iseof(obj dat)
+bool is_eof(obj dat)
 {
-	return !ispair(dat) && dat.simp.type == TYPE_EOF;
+	return !is_pair(dat) && dat.simp.type == TYPE_EOF;
 }
 
 static obj eof(void)
@@ -216,20 +216,20 @@ obj make_err(int err_subtype)
 // ACCESSOR
 
 const struct obj_accessor Obj = {
-	.ofidentifier = ofidentifier,
+	.of_identifier = of_identifier,
 
-	.ofint64 = ofint64,
-	.toint64 = toint64,
+	.of_int64 = of_int64,
+	.to_int64 = to_int64,
 
 	.nl = nl,
-	.ofstring = ofstring,
-	.tostring = tostring,
+	.of_string = of_string,
+	.to_string = to_string,
 
 	.reference = reference,
 	.dereference = dereference,
 
-	.offunction = offunction,
-	.tofunction = tofunction,
+	.of_function = of_function,
+	.to_function = to_function,
 
 	.unspecified = unspecified,
 
