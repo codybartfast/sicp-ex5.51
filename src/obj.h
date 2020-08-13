@@ -6,7 +6,9 @@
 #include <inttypes.h>
 
 #ifndef __STDC_IEC_559__
+#ifndef _WIN32
 #error
+#endif
 #endif
 
 enum type {
