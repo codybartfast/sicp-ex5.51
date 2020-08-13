@@ -269,40 +269,47 @@ const int table[256] = {
 	0
 };
 
-inline bool is_delimiter(char c)
+bool is_delimiter(char c)
 {
 	return table[(unsigned char)c] & IS_DELIMITER;
 }
-inline bool is_digit(char c)
+
+bool is_digit(char c)
 {
 	return table[(unsigned char)c] & IS_DIGIT;
 }
-inline bool is_initial(char c)
+
+bool is_initial(char c)
 {
 	return table[(unsigned char)c] & IS_INITIAL;
 }
-inline bool is_letter(char c)
+
+bool is_letter(char c)
 {
 	return table[(unsigned char)c] & IS_LETTER;
 }
-inline bool is_peculiar_identifier(char c)
+
+bool is_peculiar_identifier(char c)
 {
 	return table[(unsigned char)c] & IS_PECULIAR_IDENTIFIER;
 }
-inline bool is_special_initial(char c)
+
+bool is_special_initial(char c)
 {
 	return table[(unsigned char)c] & IS_SPECIAL_INITIAL;
 }
-inline bool is_subsequent(char c)
+
+bool is_subsequent(char c)
 {
 	return table[(unsigned char)c] & IS_SUBSEQUENT;
 }
-inline bool is_special_subsequent(char c)
+
+bool is_special_subsequent(char c)
 {
 	return table[(unsigned char)c] & IS_SPECIAL_SUBSEQUENT;
 }
 
-inline bool is_whitespace(char c)
+bool is_whitespace(char c)
 {
 	return table[(unsigned char)c] & IS_WHITESPACE;
 }

@@ -17,6 +17,7 @@ set (SRC_CORE
 	src/outport.c
 	src/output.c
 	src/parser.c
+	src/sicpstd.h
 	src/strbldr.c
 	)
 

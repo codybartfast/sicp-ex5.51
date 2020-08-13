@@ -14,13 +14,10 @@ static struct inport *version(void);
 static struct inport *expr(int argc, char *argv[]);
 static struct inport *usage(void);
 
-#include <ctype.h>
 int main(int argc, char *argv[])
 {
 	obj exp, env;
 	struct inport *port = parseargs(argc, argv);
-
-	printf("is? :  %d\n", (bool)isdigit('1'));
 
 	if (port == NULL)
 		return 0;

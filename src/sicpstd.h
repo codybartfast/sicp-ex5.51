@@ -5,4 +5,8 @@
 #define _ANSI_SOURCE
 #endif
 
+#ifdef _WIN32
+#pragma warning(disable:4996)
+#endif
+
 #endif
