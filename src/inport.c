@@ -2,7 +2,6 @@
 
 #include <stdlib.h>
 #include "error.h"
-#include "windows.h"
 
 #define NO_PEEK -2
 #define AREA "INPORT"
@@ -34,7 +33,7 @@ struct inport *openin_file(char *name)
 		eprintf(AREA, "openin_file given a null filename.");
 		return NULL;
 	}
-	if (fopen_s(&file, name, "r")) {
+	if ((file = fopen(name, "r")) == NULL) {
 		eprintf(AREA, "failed to open file: \"%s\"", name);
 		return NULL;
 	}

@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "error.h"
-#include "windows.h"
 
 #define AREA "OUTPORT"
 
@@ -34,7 +33,7 @@ struct outport *openout_file(char *name)
 		eprintf(AREA, "openout_file given a null filename.");
 		return NULL;
 	}
-	if (fopen_s(&file, name, "w")) {
+	if ((file = fopen(name, "w")) == NULL) {
 		eprintf(AREA, "failed to open file: '%s'", name);
 		return NULL;
 	}

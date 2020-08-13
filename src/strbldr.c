@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "error.h"
-#include "windows.h"
 
 #define AREA "strbldr"
 #define INITIAL_BUFFSIZE (1 << 0)
@@ -47,18 +46,17 @@ static char *str(struct strbldr *sb)
 
 static char *copy(struct strbldr *sb)
 {
-	long dlen;
 	char *str;
 
 	if (sb->errored)
 		return err_msg;
 	sb->buff[sb->buffidx] = '\0';
-	str = (char *)malloc((dlen = (sb->buffidx + 1)) * sizeof(char));
+	str = (char *)malloc((sb->buffidx + 1) * sizeof(char));
 	if (str == NULL) {
 		eprintf(AREA, "No memory to copy strbldr string");
 		return NULL;
 	}
-	strcpy_s(str, dlen, sb->buff);
+	strcpy(str, sb->buff);
 	return str;
 }
 

@@ -6,10 +6,9 @@
 #include "character.h"
 #include "strbldr.h"
 #include "error.h"
-#include "windows.h"
 
 #define AREA "LEXER"
-#define MAXERROR 100
+#define MAXERROR 256
 
 bool lexer_errored = false;
 long lexer_error_position = -1;
@@ -74,8 +73,7 @@ enum token_type scan(struct inport *in)
 		return peculiar(c, in);
 	if (is_digit(c))
 		return number(c, in);
-	sprintf_s(error_msg, MAXERROR, "Unexpected start of datum: '%c' (%d)",
-		  c, c);
+	sprintf(error_msg, "Unexpected start of datum: '%c' (%d)", c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
 }
@@ -90,9 +88,8 @@ enum token_type identifier(char c, struct inport *in)
 	if (c == EOF || is_delimiter(c)) {
 		return TKN_IDENTIFIER;
 	}
-	sprintf_s(error_msg, MAXERROR,
-		  "Unexpected char in identifier (%s...): %c' (%d)",
-		  sb->string(sb), c, c);
+	sprintf(error_msg, "Unexpected char in identifier (%128s...): %c' (%d)",
+		sb->string(sb), c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
 }
@@ -107,8 +104,8 @@ enum token_type peculiar(char c, struct inport *in)
 		return number(c, in);
 	}
 	char p = in->peek(in);
-	sprintf_s(error_msg, MAXERROR,
-		  "Unexpected char following initial '%c': '%c' (%d)", c, p, p);
+	sprintf(error_msg, "Unexpected char following initial '%c': '%c' (%d)",
+		c, p, p);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
 }
@@ -123,9 +120,8 @@ enum token_type number(char c, struct inport *in)
 	if (c == EOF || is_delimiter(c)) {
 		return TKN_NUMBER;
 	}
-	sprintf_s(error_msg, MAXERROR,
-		  "Unexpect char in number (%s...): '%c' (%d)", sb->string(sb),
-		  c, c);
+	sprintf(error_msg, "Unexpect char in number (%128s...): '%c' (%d)",
+		sb->string(sb), c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
 }

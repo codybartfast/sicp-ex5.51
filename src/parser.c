@@ -5,7 +5,6 @@
 #include "error.h"
 #include "lexer.h"
 #include "list.h"
-#include "windows.h"
 
 #define AREA "PARSER"
 
@@ -55,13 +54,12 @@ static obj parse(struct token *tkn, struct inport *port)
 
 static obj identifier(struct token *tkn)
 {
-	size_t idlen = strlen(tkn->value) + 1;
-	char *id = malloc((idlen + 1) * sizeof(char));
+	char *id = malloc((strlen(tkn->value) + 1) * sizeof(char));
 	if (id == NULL) {
 		eprintf(AREA, "No memory for identifier string");
 		return error_memory();
 	}
-	strcpy_s(id, idlen, tkn->value);
+	strcpy(id, tkn->value);
 	return Obj.of_identifier(id);
 }
 

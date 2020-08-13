@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include "error.h"
 #include "convert.h"
-#include "windows.h"
 
 #define AREA "OUTPUT"
 
@@ -82,7 +81,7 @@ static obj displaystr(obj dat)
 	case TYPE_PRIMITIVE_PROCEDURE:
 		return Obj.of_string("<primitive procedure>");
 	case TYPE_ERROR:
-		sprintf_s(msg, MSGSIZE, "Error, subtype: %d", subtype(dat));
+		sprintf(msg, "Error, subtype: %d", subtype(dat));
 		return Obj.of_string(msg);
 	default:
 		eprintf(AREA, "BUG! No displaystr case for type: %d",

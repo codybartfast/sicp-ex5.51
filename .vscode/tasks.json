@@ -23,7 +23,6 @@
                 "src/primproc.c",
                 "src/sicp.c",
                 "src/strbldr.c",
-                "src/windows.c",
 
                 "-std=c17", // 'ISO C 2017' standard
                 "-o",

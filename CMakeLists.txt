@@ -18,7 +18,6 @@ set (SRC_CORE
 	src/output.c
 	src/parser.c
 	src/strbldr.c
-	src/windows.c
 	)
 
 set(BIN_DIR  ${CMAKE_SOURCE_DIR}/bin)
