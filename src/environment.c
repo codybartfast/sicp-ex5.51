@@ -13,7 +13,7 @@ static obj lvv_env_loop(obj var, obj env);
 static obj setup_environment(void);
 
 // until we have a proper eq?
-static bool iseq_symbol(obj a, obj b)
+static bool eq_symbol(obj a, obj b)
 {
 	return is_symbol(a) && is_symbol(b) &&
 	       strcmp(Obj.to_string(a), Obj.to_string(b)) == 0;
@@ -73,7 +73,7 @@ static obj lvv_scan(obj var, obj env, obj vars, obj vals)
 {
 	if (is_null(vars)) {
 		return lvv_env_loop(var, enclosing_environment(env));
-	} else if (iseq_symbol(var, car(vars))) {
+	} else if (eq_symbol(var, car(vars))) {
 		return car(vals);
 	} else {
 		return lvv_scan(var, env, cdr(vars), cdr(vals));
