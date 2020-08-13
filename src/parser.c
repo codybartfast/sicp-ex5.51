@@ -66,14 +66,15 @@ static obj identifier(struct token *tkn)
 #define MAX_DIGITS 18
 static obj number(struct token *tkn)
 {
-	char c = *tkn->value;
-	size_t maxlen = (c == '+' || c == '-') ? MAX_DIGITS + 1 : MAX_DIGITS;
-	if (strlen(tkn->value) > maxlen) {
-		eprintf(AREA, "Number has more than %d digits: %s", MAX_DIGITS,
-			tkn->value);
-		return error_parser();
+	char *s = tkn->value;
+	size_t maxlen = (*s == '+' || *s == '-') ? MAX_DIGITS + 1 : MAX_DIGITS;
+	if (strlen(s) <= maxlen && (strchr(s, '.') == NULL)) {
+		return Obj.of_int64(atoll(tkn->value));
+		// eprintf(AREA, "Number has more than %d digits: %s", MAX_DIGITS,
+		// 	tkn->value);
+		// return error_parser();
 	}
-	return Obj.of_int64(atoll(tkn->value));
+	return of_double(atoll(tkn->value));
 }
 
 static obj parse_list(obj lst, struct inport *port)
