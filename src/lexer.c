@@ -71,7 +71,7 @@ enum token_type scan(struct inport *in)
 	}
 	if (is_peculiar_identifier(c))
 		return peculiar(c, in);
-	if (is_digit(c))
+	if (is_digit(c) || c == '.')
 		return number(c, in);
 	sprintf(error_msg, "Unexpected start of datum: '%c' (%d)", c, c);
 	lexer_error(in->read_count, error_msg);
@@ -81,14 +81,15 @@ enum token_type scan(struct inport *in)
 enum token_type identifier(char c, struct inport *in)
 {
 	sb->addc(sb, c);
-	while (is_subsequent(in->peek(in))) {
+	while (is_subsequent(c = in->peek(in))) {
 		sb->addc(sb, in->readc(in));
 	}
-	c = in->peek(in);
 	if (c == EOF || is_delimiter(c)) {
 		return TKN_IDENTIFIER;
 	}
-	sprintf(error_msg, "Unexpected char in identifier (%128s...): %c' (%d)",
+	// need to check string length
+	sprintf(error_msg,
+		"Unexpected char in identifier starting '%s': %c' (%d)",
 		sb->string(sb), c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
@@ -112,15 +113,27 @@ enum token_type peculiar(char c, struct inport *in)
 
 enum token_type number(char c, struct inport *in)
 {
+	int prdcnt = 0;
+	int lastc = -1;
+
 	sb->addc(sb, c);
-	while (is_digit(in->peek(in))) {
+	while (is_digit(c = in->peek(in)) || c == '.') {
+		prdcnt += (c == '.');
 		sb->addc(sb, in->readc(in));
+		lastc = c;
 	}
-	c = in->peek(in);
+	if (prdcnt > 1 || lastc == '.') {
+		sprintf(error_msg,
+			// need to check string length
+			"Invalid number: '%s'", sb->string(sb));
+		lexer_error(in->read_count, error_msg);
+		return EOF;
+	}
 	if (c == EOF || is_delimiter(c)) {
 		return TKN_NUMBER;
 	}
-	sprintf(error_msg, "Unexpect char in number (%128s...): '%c' (%d)",
+	// need to check string length
+	sprintf(error_msg, "Unexpected char in number starting '%s': '%c' (%d)",
 		sb->string(sb), c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
