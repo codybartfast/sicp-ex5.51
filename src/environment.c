@@ -104,11 +104,15 @@ static obj primitive_procedures(void)
 {
 	return is_pair(_primitive_procedures) ?
 		       _primitive_procedures :
-		       (_primitive_procedures =
-				list2(list2(Obj.of_identifier("+"),
-					    Obj.of_function(add_pp)),
-				      list2(Obj.of_identifier("-"),
-					    Obj.of_function(sub_pp))));
+		       (_primitive_procedures = cons(
+				list2(Obj.of_identifier("+"),
+				      Obj.of_function(add_pp)),
+				cons(list2(Obj.of_identifier("-"),
+					   Obj.of_function(sub_pp)),
+				     list2(list2(Obj.of_identifier("*"),
+						 Obj.of_function(mul_pp)),
+					   list2(Obj.of_identifier("/"),
+						 Obj.of_function(div_pp))))));
 }
 
 // ln 301

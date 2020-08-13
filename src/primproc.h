@@ -6,5 +6,7 @@
 
 obj add_pp(obj);
 obj sub_pp(obj);
+obj mul_pp(obj);
+obj div_pp(obj);
 
 #endif
