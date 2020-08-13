@@ -18,6 +18,8 @@ int main(int argc, char *argv[])
 	obj exp, env;
 	struct inport *port = parseargs(argc, argv);
 
+	printf("size of double: %ld\n", sizeof(double));
+
 	if (port == NULL)
 		return 0;
 	env = emptylst;

@@ -5,12 +5,6 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
-#ifndef __STDC_IEC_559__
-#ifndef _WIN32
-#error
-#endif
-#endif
-
 enum type {
 	TYPE_NOT_SET = 0,
 	TYPE_SYMBOL,
