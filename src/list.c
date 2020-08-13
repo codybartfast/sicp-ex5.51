@@ -1,5 +1,6 @@
 #include "list.h"
 
+#include "stdarg.h"
 #include "error.h"
 #include "obj.h"
 
@@ -13,6 +14,23 @@ obj cadr(obj lst)
 obj list2(obj a, obj b)
 {
 	return cons(a, cons(b, emptylst));
+}
+
+static obj listn_i(int argc, va_list els, obj lst)
+{
+	obj element;
+	if (argc <= 0) {
+		return lst;
+	}
+	element = va_arg(els, obj);
+	return listn_i(argc - 1, els, cons(element, lst));
+}
+
+obj listn(int argc, ...)
+{
+	va_list els;
+	va_start(els, argc);
+	return reverse(listn_i(argc, els, emptylst));
 }
 
 static int length_i(obj lst, int len)
