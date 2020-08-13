@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "character.h"
 #include "strbldr.h"
 #include "error.h"
 #include "windows.h"
@@ -15,9 +16,9 @@ long lexer_error_position = -1;
 char *lexer_error_message = NULL;
 
 static enum token_type scan(struct inport *);
-enum token_type peculiar(char c, struct inport *in);
+static enum token_type identifier(char c, struct inport *);
 static enum token_type number(char c, struct inport *);
-static bool peek_delimited(struct inport *in);
+enum token_type peculiar(char c, struct inport *in);
 static void lexer_error(long position, char *msg);
 
 static struct strbldr *sb = NULL;
@@ -53,16 +54,14 @@ enum token_type scan(struct inport *in)
 {
 	int c;
 
-	while (isspace(in->peek(in)))
+	while (is_whitespace(in->peek(in)))
 		in->readc(in);
 	if ((c = in->readc(in)) == EOF) {
 		return TKN_EOF;
 	}
 	token.position = in->read_count;
-	if (c == '+' || c == '-')
-		return peculiar(c, in);
-	if (isdigit(c))
-		return number(c, in);
+	if (is_initial(c))
+		return identifier(c, in);
 	if (c == '(') {
 		sb->addc(sb, '(');
 		return TKN_LIST_OPEN;
@@ -71,19 +70,40 @@ enum token_type scan(struct inport *in)
 		sb->addc(sb, ')');
 		return TKN_LIST_CLOSE;
 	}
+	if (is_peculiar_identifier(c))
+		return peculiar(c, in);
+	if (is_digit(c))
+		return number(c, in);
 	sprintf_s(error_msg, MAXERROR, "Unexpected start of datum: '%c' (%d)",
 		  c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
 }
 
+enum token_type identifier(char c, struct inport *in)
+{
+	sb->addc(sb, c);
+	while (is_subsequent(in->peek(in))) {
+		sb->addc(sb, in->readc(in));
+	}
+	c = in->peek(in);
+	if (c == EOF || is_delimiter(c)) {
+		return TKN_IDENTIFIER;
+	}
+	sprintf_s(error_msg, MAXERROR,
+		  "Unexpected char in identifier (%s...): %c' (%d)",
+		  sb->string(sb), c, c);
+	lexer_error(in->read_count, error_msg);
+	return EOF;
+}
+
 enum token_type peculiar(char c, struct inport *in)
 {
-	if (peek_delimited(in)) {
+	if (is_delimiter(in->peek(in))) {
 		sb->addc(sb, c);
 		return TKN_IDENTIFIER;
 	}
-	if (isdigit(in->peek(in))) {
+	if (is_digit(in->peek(in))) {
 		return number(c, in);
 	}
 	char p = in->peek(in);
@@ -96,36 +116,18 @@ enum token_type peculiar(char c, struct inport *in)
 enum token_type number(char c, struct inport *in)
 {
 	sb->addc(sb, c);
-	while (isdigit(in->peek(in))) {
-		if (sb->addc(sb, in->readc(in)) == EOF)
-			return TKN_EOF;
+	while (is_digit(in->peek(in))) {
+		sb->addc(sb, in->readc(in));
 	}
-	if (!peek_delimited(in)) {
-		int c = in->peek(in);
-		sprintf_s(error_msg, MAXERROR,
-			  "Unexpect char in number: '%c' (%d)", c, c);
-		lexer_error(in->read_count, error_msg);
-		return EOF;
+	c = in->peek(in);
+	if (c == EOF || is_delimiter(c)) {
+		return TKN_NUMBER;
 	}
-	return TKN_NUMBER;
-}
-
-bool peek_delimited(struct inport *in)
-{
-	int c = in->peek(in);
-
-	if (isspace(c))
-		return true;
-	switch (c) {
-	case '(':
-	case ')':
-	case '"':
-	case ';':
-	case EOF:
-		return true;
-	default:
-		return false;
-	}
+	sprintf_s(error_msg, MAXERROR,
+		  "Unexpect char in number (%s...): '%c' (%d)", sb->string(sb),
+		  c, c);
+	lexer_error(in->read_count, error_msg);
+	return EOF;
 }
 
 void lexer_freetemp(void)

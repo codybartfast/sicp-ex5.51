@@ -8,6 +8,7 @@
             "label": "Build SICP",
             "command": "/usr/bin/gcc",
             "args": [
+                "src/character.c",
                 "src/convert.c",
                 "src/error.c",
                 "src/environment.c",

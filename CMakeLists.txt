@@ -4,6 +4,7 @@ cmake_minimum_required (VERSION 3.8)
 project (sicp-scheme)
 
 set (SRC_CORE
+	src/character.c
 	src/convert.c
 	src/error.c
 	src/environment.c
