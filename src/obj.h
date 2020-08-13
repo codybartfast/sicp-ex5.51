@@ -5,6 +5,10 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
+#ifndef __STDC_IEC_559__
+#error
+#endif
+
 enum type {
 	TYPE_NOT_SET = 0,
 	TYPE_SYMBOL,
@@ -18,7 +22,9 @@ enum type {
 	TYPE_ERROR
 };
 
-enum subtype { SUBTYPE_NOT_SET = 0, NUMBER_INT64 };
+enum { SUBTYPE_NOT_SET = 0 };
+
+enum { NUMBER_INT64 = 1, NUMBER_DOUBLE };
 
 struct obj;
 
@@ -27,6 +33,7 @@ struct simp {
 	uint8_t subtype;
 	union {
 		int64_t int64;
+		double iec559;
 		char *string;
 		struct obj *reference;
 		struct obj (*primproc)(struct obj);
@@ -47,7 +54,7 @@ typedef struct obj {
 } obj;
 
 enum type type(obj);
-enum subtype subtype(obj);
+int subtype(obj);
 
 bool is_symbol(obj);
 bool is_number(obj);
@@ -57,6 +64,9 @@ bool is_null(obj dat);
 bool is_reference(obj dat);
 bool is_primproc(obj dat);
 bool is_eof(obj dat);
+
+obj of_double(double);
+double to_double(obj);
 
 extern const obj emptylst;
 obj cons(obj, obj);

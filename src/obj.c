@@ -22,7 +22,7 @@ enum type type(obj dat)
 	return dat.simp.type;
 }
 
-enum subtype subtype(obj dat)
+int subtype(obj dat)
 {
 	if (dat.is_pair) {
 		eprintf(AREA, "Cannot get type of a pair");
@@ -62,6 +62,18 @@ static obj of_int64(int64_t n)
 static int64_t to_int64(obj dat)
 {
 	return dat.simp.VALUE.int64;
+}
+
+obj of_double(double n)
+{
+	obj dat = new_simp(TYPE_NUMBER, NUMBER_DOUBLE);
+	dat.simp.VALUE.iec559 = n;
+	return dat;
+}
+
+double to_double(obj dat)
+{
+	return dat.simp.VALUE.iec559;
 }
 
 // STRING
@@ -112,7 +124,7 @@ obj cons(obj car, obj cdr)
 	obj p = { true,
 		  .pair = { is_pair(car) ? Obj.reference(car).simp : car.simp,
 			    is_pair(cdr) ? Obj.reference(cdr).simp :
-					  cdr.simp } };
+					   cdr.simp } };
 	return p;
 }
 
