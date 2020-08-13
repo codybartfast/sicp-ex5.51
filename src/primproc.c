@@ -19,9 +19,13 @@ static int64_t add_pp_int64(obj args)
 static double add_pp_double(obj args)
 {
 	double acc;
+	obj n;
 
-	for (acc = 0; is_pair(args); args = cdr(args))
-		acc += to_double(car(args));
+	for (acc = 0; is_pair(args); args = cdr(args)) {
+		n = car(args);
+		acc += (subtype(n) == NUMBER_DOUBLE) ? to_double(n) :
+						       Obj.to_int64(n);
+	}
 	return acc;
 }
 
