@@ -6,19 +6,46 @@
 
 #define AREA "PRIMPROC"
 
+// overflow?
+static int64_t add_pp_int64(obj args)
+{
+	int64_t acc;
+
+	for (acc = 0; is_pair(args); args = cdr(args))
+		acc += Obj.to_int64(car(args));
+	return acc;
+}
+
+static double add_pp_double(obj args)
+{
+	double acc;
+
+	for (acc = 0; is_pair(args); args = cdr(args))
+		acc += to_double(car(args));
+	return acc;
+}
+
 obj add_pp(obj args)
 {
-	int64_t acc = 0;
-	do {
-		obj fst = car(args);
-		if (!is_number(fst)) {
+	bool gotfloat = false;
+	obj lst;
+	for (lst = args; is_pair(lst); lst = cdr(lst)) {
+		obj itm = car(lst);
+		if (!is_number(itm)) {
 			eprintf(AREA, "+ given non-number: %s",
-				Obj.to_string(writestr(fst)));
+				Obj.to_string(writestr(itm)));
 			return error_argument_type();
 		}
-		acc += Obj.to_int64(fst);
-	} while (is_pair(args = cdr(args)));
-	return Obj.of_int64(acc);
+		gotfloat |= (subtype(itm) == NUMBER_DOUBLE);
+	}
+	if (!is_null(lst)) {
+		eprintf(AREA, "+ given inmproper list");
+		return error_argument_type();
+	}
+	if (!gotfloat) {
+		return Obj.of_int64(add_pp_int64(args));
+	}
+	return of_double(add_pp_double(args));
 }
 
 obj sub_pp(obj args)
@@ -64,6 +91,7 @@ obj mul_pp(obj args)
 	return Obj.of_int64(acc);
 }
 
+// div by zero?
 obj div_pp(obj args)
 {
 	int64_t acc;
