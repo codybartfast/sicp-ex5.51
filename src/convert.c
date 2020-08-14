@@ -19,7 +19,7 @@ obj cnv_number_string(obj num)
 		return error_convert();
 	switch (subtype(num)) {
 	case NUMBER_INT64:
-		sprintf(buff, "%lld", (long long)Obj.to_int64(num));
+		sprintf(buff, "%lld", (long long)to_integer(num));
 		break;
 	case NUMBER_DOUBLE:
 		sprintf(buff, "%g", to_double(num));

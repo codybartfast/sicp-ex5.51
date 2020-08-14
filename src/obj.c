@@ -59,7 +59,7 @@ obj of_integer(int64_t n)
 	return dat;
 }
 
-static int64_t to_int64(obj dat)
+int64_t to_integer(obj dat)
 {
 	return dat.simp.VALUE.int64;
 }
@@ -229,9 +229,6 @@ obj make_err(int err_subtype)
 
 const struct obj_accessor Obj = {
 	.of_identifier = of_identifier,
-
-	//.of_int64 = of_int64,
-	.to_int64 = to_int64,
 
 	.nl = nl,
 	.of_string = of_string,
