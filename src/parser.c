@@ -74,7 +74,7 @@ static obj number(struct token *tkn)
 		// 	tkn->value);
 		// return error_parser();
 	}
-	return of_double(strtod(tkn->value, NULL));
+	return of_floating(strtod(tkn->value, NULL));
 }
 
 static obj parse_list(obj lst, struct inport *port)
