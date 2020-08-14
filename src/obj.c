@@ -52,7 +52,7 @@ bool is_number(obj dat)
 	return !is_pair(dat) && dat.simp.type == TYPE_NUMBER;
 }
 
-static obj of_int64(int64_t n)
+obj of_integer(int64_t n)
 {
 	obj dat = new_simp(TYPE_NUMBER, NUMBER_INT64);
 	dat.simp.VALUE.int64 = n;
@@ -230,7 +230,7 @@ obj make_err(int err_subtype)
 const struct obj_accessor Obj = {
 	.of_identifier = of_identifier,
 
-	.of_int64 = of_int64,
+	//.of_int64 = of_int64,
 	.to_int64 = to_int64,
 
 	.nl = nl,

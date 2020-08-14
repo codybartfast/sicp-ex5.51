@@ -69,7 +69,7 @@ static obj number(struct token *tkn)
 	char *s = tkn->value;
 	size_t maxlen = (*s == '+' || *s == '-') ? MAX_DIGITS + 1 : MAX_DIGITS;
 	if (strlen(s) <= maxlen && (strchr(s, '.') == NULL)) {
-		return Obj.of_int64(atoll(tkn->value));
+		return of_integer(atoll(tkn->value));
 		// eprintf(AREA, "Number has more than %d digits: %s", MAX_DIGITS,
 		// 	tkn->value);
 		// return error_parser();
