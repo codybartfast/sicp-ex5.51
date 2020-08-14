@@ -11,9 +11,19 @@ obj cadr(obj lst)
 	return car(cdr(lst));
 }
 
+obj caddr(obj lst)
+{
+	return car(cdr(cdr(lst)));
+}
+
 obj list2(obj a, obj b)
 {
 	return cons(a, cons(b, emptylst));
+}
+
+obj list3(obj a, obj b, obj c)
+{
+	return cons(a, cons(b, cons(c, emptylst)));
 }
 
 static obj listn_i(int argc, va_list els, obj lst)
