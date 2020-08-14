@@ -20,7 +20,7 @@ enum type {
 
 enum { SUBTYPE_NOT_SET = 0 };
 
-enum { NUMBER_INT64 = 1, NUMBER_DOUBLE };
+enum { NUMBER_INTEGER = 1, NUMBER_FLOATING };
 
 struct obj;
 
@@ -28,8 +28,8 @@ struct simp {
 	uint8_t type;
 	uint8_t subtype;
 	union {
-		int64_t int64;
-		double iec559;
+		INTEGER integer;
+		FLOATING floating;
 		char *string;
 		struct obj *reference;
 		struct obj (*primproc)(struct obj);
