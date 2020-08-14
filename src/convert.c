@@ -18,10 +18,10 @@ obj cnv_number_string(obj num)
 	if (!is_number(num))
 		return error_convert();
 	switch (subtype(num)) {
-	case NUMBER_INT64:
+	case NUMBER_INTEGER:
 		sprintf(buff, "%lld", (long long)to_integer(num));
 		break;
-	case NUMBER_DOUBLE:
+	case NUMBER_FLOATING:
 		sprintf(buff, "%g", to_double(num));
 		break;
 	default:

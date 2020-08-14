@@ -52,28 +52,28 @@ bool is_number(obj dat)
 	return !is_pair(dat) && dat.simp.type == TYPE_NUMBER;
 }
 
-obj of_integer(int64_t n)
+obj of_integer(INTEGER n)
 {
-	obj dat = new_simp(TYPE_NUMBER, NUMBER_INT64);
-	dat.simp.VALUE.int64 = n;
+	obj dat = new_simp(TYPE_NUMBER, NUMBER_INTEGER);
+	dat.simp.VALUE.integer = n;
 	return dat;
 }
 
-int64_t to_integer(obj dat)
+INTEGER to_integer(obj dat)
 {
-	return dat.simp.VALUE.int64;
+	return dat.simp.VALUE.integer;
 }
 
 obj of_double(double n)
 {
-	obj dat = new_simp(TYPE_NUMBER, NUMBER_DOUBLE);
-	dat.simp.VALUE.iec559 = n;
+	obj dat = new_simp(TYPE_NUMBER, NUMBER_FLOATING);
+	dat.simp.VALUE.floating = n;
 	return dat;
 }
 
 double to_double(obj dat)
 {
-	return dat.simp.VALUE.iec559;
+	return dat.simp.VALUE.floating;
 }
 
 // STRING

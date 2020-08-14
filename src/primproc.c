@@ -23,7 +23,7 @@ static double add_pp_double(obj args)
 
 	for (acc = 0; is_pair(args); args = cdr(args)) {
 		n = car(args);
-		acc += (subtype(n) == NUMBER_DOUBLE) ? to_double(n) :
+		acc += (subtype(n) == NUMBER_FLOATING) ? to_double(n) :
 						       to_integer(n);
 	}
 	return acc;
@@ -40,7 +40,7 @@ obj add_pp(obj args)
 				Obj.to_string(writestr(itm)));
 			return error_argument_type();
 		}
-		gotfloat |= (subtype(itm) == NUMBER_DOUBLE);
+		gotfloat |= (subtype(itm) == NUMBER_FLOATING);
 	}
 	if (!is_null(lst)) {
 		eprintf(AREA, "+ given inmproper list");
