@@ -5,7 +5,9 @@
 #include "obj.h"
 
 obj cadr(obj);
+obj caddr(obj);
 obj list2(obj, obj);
+obj list3(obj, obj, obj);
 obj listn(int argc, ...);
 obj length(obj);
 int length_u(obj);
