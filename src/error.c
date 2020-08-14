@@ -1,6 +1,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include "sicpstd.h"
+#include "output.h"
 
 #include "error.h"
 
@@ -13,6 +14,11 @@ enum { ERROR_MEMORY = 1,
        ERROR_PARSER,
        ERROR_UNBOUND_VARIABLE,
        ERROR_WRITE };
+
+char *errstr(obj dat)
+{
+	return Obj.to_string(writestr(dat));
+}
 
 void eprintf(const char *area, const char *message, ...)
 {

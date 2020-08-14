@@ -45,11 +45,6 @@ obj writep(struct outport *op, obj dat)
 	return Obj.unspecified();
 }
 
-char *debugstr(obj dat)
-{
-	return Obj.to_string(writestr(dat));
-}
-
 obj writestr(obj dat)
 {
 	return displaystr(dat);
