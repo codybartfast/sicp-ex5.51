@@ -3,6 +3,7 @@
 
 #define INTEGER int64_t
 #define FLOATING double
+#define FLOATING_FORMAT "%g"
 
 #ifdef __MACH__
 #define _ANSI_SOURCE

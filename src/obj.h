@@ -63,10 +63,10 @@ bool is_eof(obj dat);
 
 // NUMBER
 
-obj of_integer(int64_t);
-int64_t to_integer(obj dat);
-obj of_double(double);
-double to_double(obj);
+obj of_integer(INTEGER);
+INTEGER to_integer(obj dat);
+obj of_floating(FLOATING);
+FLOATING to_floating(obj);
 
 extern const obj emptylst;
 obj cons(obj, obj);

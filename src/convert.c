@@ -22,7 +22,7 @@ obj cnv_number_string(obj num)
 		sprintf(buff, "%lld", (long long)to_integer(num));
 		break;
 	case NUMBER_FLOATING:
-		sprintf(buff, "%g", to_double(num));
+		sprintf(buff, FLOATING_FORMAT, to_floating(num));
 		break;
 	default:
 		eprintf(AREA, "BUG: no case of number subtype %d.",

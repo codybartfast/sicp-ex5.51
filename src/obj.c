@@ -64,14 +64,14 @@ INTEGER to_integer(obj dat)
 	return dat.simp.VALUE.integer;
 }
 
-obj of_double(double n)
+obj of_floating(FLOATING n)
 {
 	obj dat = new_simp(TYPE_NUMBER, NUMBER_FLOATING);
 	dat.simp.VALUE.floating = n;
 	return dat;
 }
 
-double to_double(obj dat)
+FLOATING to_floating(obj dat)
 {
 	return dat.simp.VALUE.floating;
 }
