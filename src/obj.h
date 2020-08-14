@@ -77,9 +77,6 @@ struct obj_accessor {
 	obj (*of_identifier)(char *);
 	char *(*to_identifier)(obj);
 
-	// obj (*of_int64)(int64_t);
-	int64_t (*to_int64)(obj);
-
 	obj (*nl)(void);
 	obj (*of_string)(char *);
 	char *(*to_string)(obj);
