@@ -64,6 +64,7 @@ bool is_eof(obj dat);
 // NUMBER
 
 obj of_integer(int64_t);
+int64_t to_integer(obj dat);
 obj of_double(double);
 double to_double(obj);
 

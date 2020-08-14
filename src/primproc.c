@@ -12,7 +12,7 @@ static int64_t add_pp_int64(obj args)
 	int64_t acc;
 
 	for (acc = 0; is_pair(args); args = cdr(args))
-		acc += Obj.to_int64(car(args));
+		acc += to_integer(car(args));
 	return acc;
 }
 
@@ -24,7 +24,7 @@ static double add_pp_double(obj args)
 	for (acc = 0; is_pair(args); args = cdr(args)) {
 		n = car(args);
 		acc += (subtype(n) == NUMBER_DOUBLE) ? to_double(n) :
-						       Obj.to_int64(n);
+						       to_integer(n);
 	}
 	return acc;
 }
@@ -66,7 +66,7 @@ obj sub_pp(obj args)
 			Obj.to_string(writestr(fst)));
 		return error_argument_type();
 	}
-	acc = Obj.to_int64(fst);
+	acc = to_integer(fst);
 	acc = is_null(cdr(args)) ? -acc : acc;
 	while (is_pair(args = cdr(args))) {
 		fst = car(args);
@@ -75,7 +75,7 @@ obj sub_pp(obj args)
 				Obj.to_string(writestr(fst)));
 			return error_argument_type();
 		}
-		acc -= Obj.to_int64(fst);
+		acc -= to_integer(fst);
 	}
 	return of_integer(acc);
 }
@@ -90,7 +90,7 @@ obj mul_pp(obj args)
 				Obj.to_string(writestr(fst)));
 			return error_argument_type();
 		}
-		acc *= Obj.to_int64(fst);
+		acc *= to_integer(fst);
 	} while (is_pair(args = cdr(args)));
 	return of_integer(acc);
 }
@@ -110,7 +110,7 @@ obj div_pp(obj args)
 			Obj.to_string(writestr(fst)));
 		return error_argument_type();
 	}
-	acc = Obj.to_int64(fst);
+	acc = to_integer(fst);
 	acc = is_null(cdr(args)) ? (1 / acc) : acc;
 	while (is_pair(args = cdr(args))) {
 		fst = car(args);
@@ -119,7 +119,7 @@ obj div_pp(obj args)
 				Obj.to_string(writestr(fst)));
 			return error_argument_type();
 		}
-		acc /= Obj.to_int64(fst);
+		acc /= to_integer(fst);
 	}
 	return of_integer(acc);
 }
