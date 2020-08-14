@@ -47,7 +47,7 @@ obj add_pp(obj args)
 		return error_argument_type();
 	}
 	if (!gotfloat) {
-		return Obj.of_int64(add_pp_int64(args));
+		return of_integer(add_pp_int64(args));
 	}
 	return of_double(add_pp_double(args));
 }
@@ -77,7 +77,7 @@ obj sub_pp(obj args)
 		}
 		acc -= Obj.to_int64(fst);
 	}
-	return Obj.of_int64(acc);
+	return of_integer(acc);
 }
 
 obj mul_pp(obj args)
@@ -92,7 +92,7 @@ obj mul_pp(obj args)
 		}
 		acc *= Obj.to_int64(fst);
 	} while (is_pair(args = cdr(args)));
-	return Obj.of_int64(acc);
+	return of_integer(acc);
 }
 
 // div by zero?
@@ -121,5 +121,5 @@ obj div_pp(obj args)
 		}
 		acc /= Obj.to_int64(fst);
 	}
-	return Obj.of_int64(acc);
+	return of_integer(acc);
 }

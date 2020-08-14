@@ -61,6 +61,9 @@ bool is_reference(obj dat);
 bool is_primproc(obj dat);
 bool is_eof(obj dat);
 
+// NUMBER
+
+obj of_integer(int64_t);
 obj of_double(double);
 double to_double(obj);
 
@@ -73,7 +76,7 @@ struct obj_accessor {
 	obj (*of_identifier)(char *);
 	char *(*to_identifier)(obj);
 
-	obj (*of_int64)(int64_t);
+	// obj (*of_int64)(int64_t);
 	int64_t (*to_int64)(obj);
 
 	obj (*nl)(void);
