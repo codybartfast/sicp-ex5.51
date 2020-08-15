@@ -69,7 +69,7 @@ int length_u(obj lst)
 obj length(obj lst)
 {
 	int len = length_u(lst);
-	return len < 0 ? error_argument_type() : of_integer(len);
+	return len < 0 ? error_argument_type(AREA, "'length' given non-list") : of_integer(len);
 }
 
 static obj map_u_i(obj (*func)(obj), obj lst, obj prj)
@@ -77,8 +77,7 @@ static obj map_u_i(obj (*func)(obj), obj lst, obj prj)
 	if (is_null(lst))
 		return prj;
 	if (!is_pair(lst)) {
-		eprintf(AREA, "map_u given non-list");
-		return error_argument_type();
+		return error_argument_type(AREA, "map_u given non-list");
 	}
 	return map_u_i(func, cdr(lst), cons(func(car(lst)), prj));
 }
@@ -93,8 +92,7 @@ static obj reverse_i(obj lst, obj rev)
 	if (is_null(lst))
 		return rev;
 	if (!is_pair(lst)) {
-		eprintf(AREA, "reverse given non-list");
-		return error_argument_type();
+		return error_argument_type(AREA, "reverse given non-list");
 	}
 	return reverse_i(cdr(lst), cons(car(lst), rev));
 }

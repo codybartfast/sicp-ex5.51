@@ -10,7 +10,7 @@ void eprintf(const char *area, const char *message, ...);
 
 bool is_err(obj obj);
 obj error_memory(void);
-obj error_argument_type(void);
+obj error_argument_type(const char *area, const char *message, ...);
 obj error_argument_value(void);
 obj error_convert(void);
 obj error_eval(void);
