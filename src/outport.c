@@ -90,7 +90,7 @@ static int writec(struct outport *port, char c)
 	}
 }
 
-static int writes(struct outport *out, char *str)
+static int writes(struct outport *out, const char *str)
 {
 	int rc = 0;
 	for (; *str != '\0' && rc >= 0; str++)

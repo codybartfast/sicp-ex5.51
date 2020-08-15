@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include "obj.h"
 
-char *errstr(obj dat);
+const char *errstr(obj dat);
 void eprintf(const char *area, const char *message, ...);
 
 bool is_err(obj obj);

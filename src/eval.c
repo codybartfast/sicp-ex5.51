@@ -36,7 +36,7 @@ obj eval(obj exp, obj env)
 		// printf("Got operands: %s\n", debugstr(orands));
 		return apply(oator, orands);
 	}
-	eprintf(AREA, "Can't parse exp: %s", Obj.to_string(writestr(exp)));
+	eprintf(AREA, "Can't parse exp: %s", to_string(writestr(exp)));
 	return error_eval();
 }
 
@@ -116,5 +116,5 @@ static obj rest_operands(obj ops)
 // ln 324
 static obj apply_primitive_procedure(obj proc, obj args)
 {
-	return Obj.to_function(proc)(args);
+	return to_function(proc)(args);
 }

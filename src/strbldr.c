@@ -23,7 +23,7 @@ static int addc(struct strbldr *sb, char c)
 	return *(sb->buff + sb->buffidx++) = c;
 }
 
-static int adds(struct strbldr *sb, char *s)
+static int adds(struct strbldr *sb, const char *s)
 {
 	int rc = 0;
 

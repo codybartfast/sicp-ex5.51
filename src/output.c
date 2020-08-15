@@ -28,7 +28,7 @@ obj newline(void)
 
 obj newlinep(struct outport *out)
 {
-	return display(out, Obj.nl());
+	return display(out, nl);
 }
 
 obj write(obj dat)
@@ -41,8 +41,8 @@ obj writep(struct outport *op, obj dat)
 	obj str = writestr(dat);
 	if (is_err(str))
 		return str;
-	op->writes(op, Obj.to_string(str));
-	return Obj.unspecified();
+	op->writes(op, to_string(str));
+	return unspecified;
 }
 
 obj writestr(obj dat)
@@ -55,8 +55,8 @@ static obj display(struct outport *op, obj dat)
 	obj str = displaystr(dat);
 	if (is_err(str))
 		return str;
-	op->writes(op, Obj.to_string(str));
-	return Obj.unspecified();
+	op->writes(op, to_string(str));
+	return unspecified;
 }
 
 static obj displaystr(obj dat)
@@ -72,12 +72,12 @@ static obj displaystr(obj dat)
 	case TYPE_NUMBER:
 		return cnv_number_string(dat);
 	case TYPE_EMPTY_LIST:
-		return Obj.of_string("()");
+		return of_string("()");
 	case TYPE_PRIMITIVE_PROCEDURE:
-		return Obj.of_string("<primitive procedure>");
+		return of_string("<primitive procedure>");
 	case TYPE_ERROR:
 		sprintf(msg, "Error, subtype: %d", subtype(dat));
-		return Obj.of_string(msg);
+		return of_string(msg);
 	default:
 		eprintf(AREA, "BUG! No displaystr case for type: %d",
 			type(dat));
@@ -95,7 +95,7 @@ static obj displaypair(obj pair)
 	sb->addc(sb, '(');
 
 	while (!is_null(pair)) {
-		sb->adds(sb, Obj.to_string(displaystr(car(pair))));
+		sb->adds(sb, to_string(displaystr(car(pair))));
 		if (!is_null(pair = cdr(pair)))
 			sb->addc(sb, ' ');
 		if (!is_null(pair) && !is_pair(pair)) {
@@ -109,5 +109,5 @@ static obj displaypair(obj pair)
 		return error_memory();
 	}
 	sb->free(&sb);
-	return Obj.of_string(s);
+	return of_string(s);
 }

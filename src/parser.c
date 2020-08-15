@@ -44,7 +44,7 @@ static obj parse(struct token *tkn, struct inport *port)
 		dat = parse_list(emptylst, port);
 		return is_err(dat) || is_eof(dat) ? dat : reverse(dat);
 	case TKN_EOF:
-		return lexer_errored ? error_lexor() : Obj.eof();
+		return lexer_errored ? error_lexor() : eof;
 	default:
 		eprintf(AREA, "BUG: no parser case for token type: %d",
 			tkn->type);
@@ -60,7 +60,7 @@ static obj identifier(struct token *tkn)
 		return error_memory();
 	}
 	strcpy(id, tkn->value);
-	return Obj.of_identifier(id);
+	return of_identifier(id);
 }
 
 #define MAX_DIGITS 18
