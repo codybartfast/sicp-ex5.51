@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 		newline();
 	}
 	parser_freetemp();
-	port->close(port);
+	in_close(port);
 
 	return 0;
 }

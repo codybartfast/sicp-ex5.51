@@ -41,7 +41,7 @@ obj writep(struct outport *op, obj dat)
 	obj str = writestr(dat);
 	if (is_err(str))
 		return str;
-	op->writes(op, to_string(str));
+	out_writes(op, to_string(str));
 	return unspecified;
 }
 
@@ -55,7 +55,7 @@ static obj display(struct outport *op, obj dat)
 	obj str = displaystr(dat);
 	if (is_err(str))
 		return str;
-	op->writes(op, to_string(str));
+	out_writes(op, to_string(str));
 	return unspecified;
 }
 
