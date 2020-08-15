@@ -52,6 +52,9 @@ typedef struct obj {
 enum type type(obj);
 int subtype(obj);
 
+// ERROR
+
+bool is_err(obj obj);
 obj make_err(int err_subtype);
 
 // SYMBOL

@@ -1,6 +1,7 @@
 #ifndef STRBLDR_H
 #define STRBLDR_H
 #include "sicpstd.h"
+
 #include "stdbool.h"
 
 struct strbldr {

@@ -5,7 +5,6 @@
 #include "error.h"
 
 #define AREA "OBJ"
-#define VALUE val /* allow renaming of value member to check api leak */
 
 static obj new_simp(int type, int subtype)
 {
@@ -33,6 +32,11 @@ int subtype(obj dat)
 
 // ERROR
 
+bool is_err(obj dat)
+{
+	return !is_pair(dat) && dat.simp.type == TYPE_ERROR;
+}
+
 obj make_err(int err_subtype)
 {
 	obj obj = new_simp(TYPE_ERROR, err_subtype);
@@ -49,7 +53,7 @@ bool is_symbol(obj dat)
 obj of_identifier(const char *id)
 {
 	obj dat = new_simp(TYPE_SYMBOL, SUBTYPE_NOT_SET);
-	dat.simp.VALUE.string = id;
+	dat.simp.val.string = id;
 	return dat;
 }
 
@@ -63,25 +67,25 @@ bool is_number(obj dat)
 obj of_integer(INTEGER n)
 {
 	obj dat = new_simp(TYPE_NUMBER, NUMBER_INTEGER);
-	dat.simp.VALUE.integer = n;
+	dat.simp.val.integer = n;
 	return dat;
 }
 
 INTEGER to_integer(obj dat)
 {
-	return dat.simp.VALUE.integer;
+	return dat.simp.val.integer;
 }
 
 obj of_floating(FLOATING n)
 {
 	obj dat = new_simp(TYPE_NUMBER, NUMBER_FLOATING);
-	dat.simp.VALUE.floating = n;
+	dat.simp.val.floating = n;
 	return dat;
 }
 
 FLOATING to_floating(obj dat)
 {
-	return dat.simp.VALUE.floating;
+	return dat.simp.val.floating;
 }
 
 const obj zero = { false,
@@ -109,7 +113,7 @@ obj of_string(const char *str)
 
 const char *to_string(const obj dat)
 {
-	return dat.simp.VALUE.string;
+	return dat.simp.val.string;
 }
 
 // REFERENCE
@@ -128,13 +132,13 @@ static obj reference(obj dat)
 	}
 	*ptr = dat;
 	obj ref = new_simp(TYPE_REFERENCE, SUBTYPE_NOT_SET);
-	ref.simp.VALUE.reference = ptr;
+	ref.simp.val.reference = ptr;
 	return ref;
 }
 
 static obj dereference(obj dat)
 {
-	return *dat.simp.VALUE.reference;
+	return *dat.simp.val.reference;
 }
 
 // PAIR
@@ -188,13 +192,13 @@ bool is_primproc(obj dat)
 obj of_function(obj (*funptr)(obj))
 {
 	obj pp = new_simp(TYPE_PRIMITIVE_PROCEDURE, SUBTYPE_NOT_SET);
-	pp.simp.VALUE.primproc = funptr;
+	pp.simp.val.primproc = funptr;
 	return pp;
 }
 
 obj (*to_function(obj dat))(obj)
 {
-	return dat.simp.VALUE.primproc;
+	return dat.simp.val.primproc;
 }
 
 // MISC VALUES

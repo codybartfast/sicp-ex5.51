@@ -32,8 +32,6 @@ obj eval(obj exp, obj env)
 		orands = list_of_values(operands(exp), env);
 		if (is_err(orands))
 			return orands;
-		// printf("Got operator: %s\n", debugstr(oator));
-		// printf("Got operands: %s\n", debugstr(orands));
 		return apply(oator, orands);
 	}
 	return error_eval(AREA, "Unknown expression type: %s", errstr(exp));
@@ -41,7 +39,6 @@ obj eval(obj exp, obj env)
 
 static obj apply(obj procedure, obj arguments)
 {
-	// printf("Apply proc: %s\n", Obj.tostring(writestr(procedure)));
 	if (is_primproc(procedure)) {
 		return apply_primitive_procedure(procedure, arguments);
 	} else {

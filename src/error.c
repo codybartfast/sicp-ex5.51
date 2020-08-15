@@ -32,11 +32,6 @@ void eprintf(const char *area, const char *message, ...)
 	va_end(args);
 }
 
-bool is_err(obj dat)
-{
-	return !is_pair(dat) && dat.simp.type == TYPE_ERROR;
-}
-
 static obj mem_error = { false, .simp = { TYPE_ERROR, ERROR_MEMORY, { 0 } } };
 
 obj error_memory(void)
