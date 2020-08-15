@@ -7,15 +7,16 @@ struct strbldr {
 	char *buff;
 	int buffsize;
 	int buffidx;
-	int (*addc)(struct strbldr *, char);
-	int (*adds)(struct strbldr *, const char *);
-	char *(*string)(struct strbldr *);
-	char *(*copy)(struct strbldr *);
-	struct strbldr *(*clear)(struct strbldr *);
 	bool errored;
-	void (*free)(struct strbldr **);
 };
 
 struct strbldr *new_strbldr(void);
+
+int sb_addc(struct strbldr *, char);
+int sb_adds(struct strbldr *, const char *);
+char *sb_string(struct strbldr *);
+char *sb_copy(struct strbldr *);
+struct strbldr *sb_clear(struct strbldr *);
+void sb_free(struct strbldr **);
 
 #endif

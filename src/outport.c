@@ -65,7 +65,7 @@ int out_close(struct outport *port)
 		if ((rc = fclose(port->file)) == EOF)
 			eprintf(AREA, "error closing file: '%s'.", port->name);
 	if (port != NULL)
-		port->sb->free(&port->sb);
+		sb_free(&port->sb);
 	free(port);
 	return rc;
 }
@@ -83,7 +83,7 @@ int out_writec(struct outport *port, char c)
 		return putc(c, port->file);
 	case OUTKIND_STRING:
 		port->write_count++;
-		return port->sb->addc(port->sb, c);
+		return sb_addc(port->sb, c);
 	default:
 		eprintf(AREA, "BUG! No case for outkind: %d", port->kind);
 		return EOF;
@@ -108,7 +108,7 @@ char *out_tostring(struct outport *port)
 		eprintf(AREA, "cannot get string from a non-string outport");
 		return NULL;
 	}
-	return port->sb->string(port->sb);
+	return sb_string(port->sb);
 }
 
 struct outport *new_outport(void)
