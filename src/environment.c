@@ -61,10 +61,10 @@ static obj extend_environment(obj vars, obj vals, obj base_env)
 	if (length_u(vars) == length_u(vals)) {
 		return cons(make_frame(vars, vals), base_env);
 	} else {
-		eprintf(AREA, "Too %s arguments supplied",
+		return error_argument_type(
+			AREA, "Too %s arguments supplied, var: %s, vals: %s",
 			length_u(vars) < length_u(vals) ? "many" : "few",
 			writestr(vars), writestr(vars));
-		return error_argument_type();
 	}
 }
 

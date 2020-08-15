@@ -45,8 +45,15 @@ obj error_memory(void)
 	return mem_error;
 }
 
-obj error_argument_type(void)
+obj error_argument_type(const char *area, const char *message, ...)
 {
+	va_list args;
+	va_start(args, message);
+	fprintf(stderr, "ERROR: ");
+	fprintf(stderr, "%s", area);
+	fprintf(stderr, ": ");
+	vfprintf(stderr, message, args);
+	fprintf(stderr, "\n");
 	return make_err(ERROR_ARGUMENT_TYPE);
 }
 

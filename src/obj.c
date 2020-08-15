@@ -16,8 +16,8 @@ static obj new_simp(int type, int subtype)
 enum type type(obj dat)
 {
 	if (dat.is_pair) {
-		eprintf(AREA, "Cannot get type of a pair");
-		error_argument_type();
+		error_argument_type(AREA, "Cannot get type of a pair");
+		return -1;
 	}
 	return dat.simp.type;
 }
@@ -25,8 +25,8 @@ enum type type(obj dat)
 int subtype(obj dat)
 {
 	if (dat.is_pair) {
-		eprintf(AREA, "Cannot get type of a pair");
-		error_argument_type();
+		error_argument_type(AREA, "Cannot get type of a pair");
+		return -1;
 	}
 	return dat.simp.subtype;
 }
@@ -164,8 +164,7 @@ obj car(obj pair)
 {
 	obj dat = { false, .simp = pair.pair.car };
 	if (!is_pair(pair)) {
-		eprintf(AREA, "car expects a pair");
-		return error_argument_type();
+		return error_argument_type(AREA, "car expects a pair");
 	}
 	return is_reference(dat) ? dereference(dat) : dat;
 }
@@ -174,8 +173,7 @@ obj cdr(obj pair)
 {
 	obj dat = { false, .simp = pair.pair.cdr };
 	if (!is_pair(pair)) {
-		eprintf(AREA, "cdr expects a pair");
-		return error_argument_type();
+		return error_argument_type(AREA, "cdr expects a pair");
 	}
 	return is_reference(dat) ? dereference(dat) : dat;
 }
