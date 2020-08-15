@@ -11,13 +11,10 @@ void eprintf(const char *area, const char *message, ...);
 bool is_err(obj obj);
 obj error_memory(void);
 obj error_argument_type(const char *area, const char *message, ...);
-obj error_argument_value(void);
-obj error_convert(void);
-obj error_eval(void);
-obj error_internal(void);
-obj error_lexor(void);
-obj error_parser(void);
-obj error_unbound_variable(void);
-obj error_write(void);
+obj error_argument_value(const char *area, const char *message, ...);
+obj error_eval(const char *area, const char *message, ...);
+obj error_internal(const char *area, const char *message, ...);
+obj error_parser(const char *area, const char *message, ...);
+obj error_unbound_variable(const char *area, const char *message, ...);
 
 #endif

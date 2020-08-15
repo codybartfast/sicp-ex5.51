@@ -9,6 +9,7 @@
 
 #define AREA "LEXER"
 #define MAXERROR 256
+#define MSGLIM "64"
 
 bool lexer_errored = false;
 long lexer_error_position = -1;
@@ -89,7 +90,8 @@ enum token_type identifier(char c, struct inport *in)
 	}
 	// need to check string length
 	sprintf(error_msg,
-		"Unexpected char in identifier starting '%s': %c' (%d)",
+		"Unexpected char in identifier starting '%." MSGLIM
+		"s': %c' (%d)",
 		sb_string(sb), c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
@@ -123,17 +125,16 @@ enum token_type number(char c, struct inport *in)
 		lastc = c;
 	}
 	if (prdcnt > 1 || lastc == '.') {
-		sprintf(error_msg,
-			// need to check string length
-			"Invalid number: '%s'", sb_string(sb));
+		sprintf(error_msg, "Invalid number: '%." MSGLIM "s'",
+			sb_string(sb));
 		lexer_error(in->read_count, error_msg);
 		return EOF;
 	}
 	if (c == EOF || is_delimiter(c)) {
 		return TKN_NUMBER;
 	}
-	// need to check string length
-	sprintf(error_msg, "Unexpected char in number starting '%s': '%c' (%d)",
+	sprintf(error_msg,
+		"Unexpected char in number starting '%." MSGLIM "s': '%c' (%d)",
 		sb_string(sb), c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
@@ -149,5 +150,5 @@ void lexer_error(long position, char *msg)
 	lexer_errored = true;
 	lexer_error_position = position;
 	lexer_error_message = msg;
-	eprintf(AREA, msg);
+	// eprintf(AREA, msg);
 }

@@ -83,8 +83,7 @@ static obj lvv_scan(obj var, obj env, obj vars, obj vals)
 static obj lvv_env_loop(obj var, obj env)
 {
 	if (is_null(env)) { // should be eq - but don't have it yet.
-		eprintf(AREA, "Unbound variable: %s", to_string(var));
-		return error_unbound_variable();
+		return error_unbound_variable(AREA, "%s", to_string(var));
 	}
 	obj frame = first_frame(env);
 	return lvv_scan(var, env, frame_variables(frame), frame_values(frame));

@@ -36,8 +36,7 @@ obj eval(obj exp, obj env)
 		// printf("Got operands: %s\n", debugstr(orands));
 		return apply(oator, orands);
 	}
-	eprintf(AREA, "Can't parse exp: %s", to_string(writestr(exp)));
-	return error_eval();
+	return error_eval(AREA, "Unknown expression type: %s", errstr(exp));
 }
 
 static obj apply(obj procedure, obj arguments)
@@ -46,9 +45,8 @@ static obj apply(obj procedure, obj arguments)
 	if (is_primproc(procedure)) {
 		return apply_primitive_procedure(procedure, arguments);
 	} else {
-		eprintf(AREA, "Unknown procedure type: %s",
-			"blah"); //writestr(procedure));
-		return error_eval();
+		return error_eval(AREA, "Unknown procedure type: %s",
+				  errstr(procedure));
 	}
 }
 
