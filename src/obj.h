@@ -68,6 +68,10 @@ INTEGER to_integer(obj dat);
 obj of_floating(FLOATING);
 FLOATING to_floating(obj);
 
+extern const obj one;
+extern const obj zero;
+
+
 extern const obj emptylst;
 obj cons(obj, obj);
 obj car(obj);

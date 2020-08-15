@@ -76,6 +76,11 @@ FLOATING to_floating(obj dat)
 	return dat.simp.VALUE.floating;
 }
 
+const obj zero = { false,
+		   .simp = { TYPE_NUMBER, NUMBER_INTEGER, { .integer = 0 } } };
+const obj one = { false,
+		  .simp = { TYPE_NUMBER, NUMBER_INTEGER, { .integer = 1 } } };
+
 // STRING
 
 bool is_string(obj dat)

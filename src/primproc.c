@@ -7,20 +7,21 @@
 
 #define AREA "PRIMPROC"
 
-static bool is_zero(obj n)
+enum op { ADD, SUB, MUL, DIV };
+
+static obj err_improper(const char *fname, const obj np)
 {
-	switch (subtype(n)) {
-	case NUMBER_INTEGER:
-		return to_integer(n) == 0;
-	case NUMBER_FLOATING:
-		return to_floating(n) == 0;
-	default:
-		eprintf(AREA, "BUG! No is_zero case for: %d", subtype(n));
-		return true;
-	}
+	eprintf(AREA, "%s given an improper list: %s", fname, errstr(np));
+	return error_argument_value();
 }
 
-static FLOATING num_to_floating(obj n)
+static obj err_notnum(const char *fname, const obj np)
+{
+	eprintf(AREA, "%s given an non-number: %s", fname, errstr(np));
+	return error_argument_value();
+}
+
+static FLOATING num_to_floating(const obj n)
 {
 	switch (subtype(n)) {
 	case NUMBER_FLOATING:
@@ -34,156 +35,119 @@ static FLOATING num_to_floating(obj n)
 	}
 }
 
-static obj chknums(char *fn, obj args)
+static obj div(const FLOATING a, const FLOATING b)
 {
-	obj n, orig = args;
-	int i = 0;
-	int fltcnt = -1;
-	int zerocnt = -1;
+	if (b == 0) {
+		eprintf(AREA, "divide by zero (/ " FLOATING_FORMAT " 0)", a);
+		return error_argument_value();
+	}
+	return of_floating(a / b);
+}
 
-	for (; is_pair(args); args = cdr(args), i++) {
-		n = car(args);
-		if (!is_number(n)) {
-			eprintf(AREA, "primitive %s given non number: %s", fn,
-				errstr(n));
-			return error_argument_type();
+static obj applyop(const enum op op, const obj arg1, const obj arg2)
+{
+	if (subtype(arg1) == NUMBER_INTEGER &&
+	    subtype(arg2) == NUMBER_INTEGER) {
+		const INTEGER a = to_integer(arg1), b = to_integer(arg2);
+		switch (op) {
+		case ADD:
+			return of_integer(a + b);
+		case SUB:
+			return of_integer(a - b);
+		case MUL:
+			return of_integer(a * b);
+		case DIV:
+			if (b != 0 && a % b == 0)
+				return of_integer(a / b);
+			return div(a, b);
 		}
-		if (subtype(n) != NUMBER_INTEGER && fltcnt == -1)
-			fltcnt = i;
-		if (is_zero(n) && zerocnt == -1)
-			zerocnt = i;
-	}
-	if (!is_null(args)) {
-		eprintf(AREA, "%s not given a proper list: %s", fn,
-			errstr(orig));
-		return error_argument_type();
-	}
-	return list3(of_integer(i), of_integer(fltcnt), of_integer(zerocnt));
-}
-
-static int chknums_len(obj r)
-{
-	return to_integer(car(r));
-}
-
-static int chknums_flt(obj r)
-{
-	return to_integer(cadr(r));
-}
-
-static int chknums_zero(obj r)
-{
-	return to_integer(caddr(r));
-}
-
-static obj add_pp_integer(obj args)
-{
-	INTEGER acc;
-
-	for (acc = 0; is_pair(args); args = cdr(args))
-		acc += to_integer(car(args));
-	return of_integer(acc);
-}
-
-static obj add_pp_floating(obj args)
-{
-	FLOATING acc;
-	obj n;
-
-	for (acc = 0; is_pair(args); args = cdr(args)) {
-		n = car(args);
-		acc += num_to_floating(n);
-	}
-	return of_floating(acc);
-}
-
-obj add_pp(obj args)
-{
-	obj chk = chknums("add", args);
-	if (is_err(chk))
-		return chk;
-	return (chknums_flt(chk) > -1) ? add_pp_floating(args) :
-					 add_pp_integer(args);
-}
-
-static obj sub_pp_integer(obj args)
-{
-	INTEGER acc = to_integer(car(args));
-
-	for (args = cdr(args); is_pair(args); args = cdr(args))
-		acc -= to_integer(car(args));
-	return of_integer(acc);
-}
-
-static obj sub_pp_floating(obj args)
-{
-	FLOATING acc = num_to_floating(car(args));
-
-	for (args = cdr(args); is_pair(args); args = cdr(args))
-		acc -= num_to_floating(car(args));
-	return of_floating(acc);
-}
-
-obj sub_pp(obj args)
-{
-	obj chk = chknums("sub", args);
-	bool flts = chknums_flt(chk) > -1;
-
-	if (is_err(chk))
-		return chk;
-
-	switch (chknums_len(chk)) {
-	case 0:
-		eprintf(AREA, "'-' given no arguments");
-		return error_argument_type();
-	case 1:
-		return flts ? of_floating(-to_floating(car(args))) :
-			      of_integer(-to_integer(car(args)));
-	default:
-		return flts ? sub_pp_floating(args) : sub_pp_integer(args);
-	}
-}
-
-obj mul_pp(obj args)
-{
-	INTEGER acc = 1;
-	do {
-		obj fst = car(args);
-		if (!is_number(fst)) {
-			eprintf(AREA, "* given non-number: %s",
-				Obj.to_string(writestr(fst)));
-			return error_argument_type();
+	} else {
+		const FLOATING a = num_to_floating(arg1),
+			       b = num_to_floating(arg2);
+		switch (op) {
+		case ADD:
+			return of_floating(a + b);
+		case SUB:
+			return of_floating(a - b);
+		case MUL:
+			return of_integer(a * b);
+		case DIV:
+			return div(a, b);
 		}
-		acc *= to_integer(fst);
-	} while (is_pair(args = cdr(args)));
-	return of_integer(acc);
+	}
+	eprintf(AREA, "BUG! no apply op case for %d", op);
+	return error_internal();
 }
 
-// div by zero?
-obj div_pp(obj args)
+static obj accumulate(const char *fname, const enum op op, const obj acc,
+		      const obj args)
 {
-	INTEGER acc;
-	obj fst;
+	if (is_null(args))
+		return acc;
+	if (!is_pair(args))
+		return err_improper(fname, args);
+	else {
+		const obj num = car(args);
+		if (!is_number(num))
+			return err_notnum(fname, num);
+		return accumulate(fname, op, applyop(op, acc, num), cdr(args));
+	}
+}
+
+static obj checkcar(const char *fname, const obj args)
+{
+	if (is_null(args)) {
+		eprintf(AREA, "%s requires at least on argument", fname);
+		return error_argument_value();
+	}
 	if (!is_pair(args)) {
-		eprintf(AREA, "'/' given no arguments");
-		return error_argument_type();
+		return err_improper(fname, args);
+	} else {
+		const obj head = car(args);
+		if (!is_number(head))
+			return err_notnum(fname, head);
+		return args;
 	}
-	fst = car(args);
-	if (!is_number(fst)) {
-		eprintf(AREA, "'/' given non-number: %s",
-			Obj.to_string(writestr(fst)));
-		return error_argument_type();
-	}
-	acc = to_integer(fst);
-	acc = is_null(cdr(args)) ? (1 / acc) : acc;
-	while (is_pair(args = cdr(args))) {
-		fst = car(args);
-		if (!is_number(fst)) {
-			eprintf(AREA, "'/' given non-number: %s",
-				Obj.to_string(writestr(fst)));
-			return error_argument_type();
+}
+
+obj add_pp(const obj args)
+{
+	return accumulate("+ (add)", ADD, zero, args);
+}
+
+obj sub_pp(const obj args)
+{
+	const char *fname = "- (sub)";
+	obj err;
+	if (is_err(err = checkcar(fname, args)))
+		return err;
+	else {
+		const obj head = car(args), tail = cdr(args);
+		if (is_null(tail)) {
+			return applyop(SUB, zero, head);
+		} else {
+			return accumulate(fname, SUB, head, tail);
 		}
-		acc /= to_integer(fst);
 	}
-	return of_integer(acc);
+}
+
+obj mul_pp(const obj args)
+{
+	return accumulate("* (mul)", MUL, one, args);
+}
+
+obj div_pp(const obj args)
+{
+	const char *fname = "/ (div)";
+	obj err;
+	if (is_err(err = checkcar(fname, args)))
+		return err;
+	else {
+		const obj head = car(args), tail = cdr(args);
+		if (is_null(tail)) {
+			return applyop(DIV, one, head);
+		} else {
+			return accumulate(fname, DIV, head, tail);
+		}
+	}
 }
