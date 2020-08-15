@@ -1,1 +1,1 @@
-#define SICP_VERSION "111.0.0-beta.1"
+#define SICP_VERSION "1.1.1.3"
