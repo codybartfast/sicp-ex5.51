@@ -79,11 +79,11 @@ static struct inport *expr(int argc, char *argv[])
 		return NULL;
 	for (i = 2; i < argc; i++) {
 		if (i > 2)
-			sb->addc(sb, ' ');
-		sb->adds(sb, argv[i]);
+			sb_addc(sb, ' ');
+		sb_adds(sb, argv[i]);
 	}
-	s = sb->copy(sb);
-	sb->free(&sb);
+	s = sb_copy(sb);
+	sb_free(&sb);
 	if (s == NULL)
 		return NULL;
 	return openin_string(s);

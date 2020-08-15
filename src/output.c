@@ -92,22 +92,22 @@ static obj displaypair(obj pair)
 
 	if ((sb = new_strbldr()) == NULL)
 		return error_memory();
-	sb->addc(sb, '(');
+	sb_addc(sb, '(');
 
 	while (!is_null(pair)) {
-		sb->adds(sb, to_string(displaystr(car(pair))));
+		sb_adds(sb, to_string(displaystr(car(pair))));
 		if (!is_null(pair = cdr(pair)))
-			sb->addc(sb, ' ');
+			sb_addc(sb, ' ');
 		if (!is_null(pair) && !is_pair(pair)) {
 			eprintf(AREA, "Can't handle improper lists");
 			exit(1);
 		}
 	}
-	sb->addc(sb, ')');
-	s = sb->copy(sb);
+	sb_addc(sb, ')');
+	s = sb_copy(sb);
 	if (s == NULL || sb->errored) {
 		return error_memory();
 	}
-	sb->free(&sb);
+	sb_free(&sb);
 	return of_string(s);
 }

@@ -38,10 +38,10 @@ struct token *read_token(struct inport *in)
 			return NULL;
 		}
 	} else {
-		sb->clear(sb);
+		sb_clear(sb);
 	}
 	token.type = scan(in);
-	token.value = sb->string(sb);
+	token.value = sb_string(sb);
 	if (sb->errored) {
 		token.type = TKN_EOF;
 		lexer_error(in->read_count, "strbldr (memory) error");
@@ -62,11 +62,11 @@ enum token_type scan(struct inport *in)
 	if (is_initial(c))
 		return identifier(c, in);
 	if (c == '(') {
-		sb->addc(sb, '(');
+		sb_addc(sb, '(');
 		return TKN_LIST_OPEN;
 	}
 	if (c == ')') {
-		sb->addc(sb, ')');
+		sb_addc(sb, ')');
 		return TKN_LIST_CLOSE;
 	}
 	if (is_peculiar_identifier(c))
@@ -80,9 +80,9 @@ enum token_type scan(struct inport *in)
 
 enum token_type identifier(char c, struct inport *in)
 {
-	sb->addc(sb, c);
+	sb_addc(sb, c);
 	while (is_subsequent(c = in_peek(in))) {
-		sb->addc(sb, in_readc(in));
+		sb_addc(sb, in_readc(in));
 	}
 	if (c == EOF || is_delimiter(c)) {
 		return TKN_IDENTIFIER;
@@ -90,7 +90,7 @@ enum token_type identifier(char c, struct inport *in)
 	// need to check string length
 	sprintf(error_msg,
 		"Unexpected char in identifier starting '%s': %c' (%d)",
-		sb->string(sb), c, c);
+		sb_string(sb), c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
 }
@@ -98,7 +98,7 @@ enum token_type identifier(char c, struct inport *in)
 enum token_type peculiar(char c, struct inport *in)
 {
 	if (is_delimiter(in_peek(in))) {
-		sb->addc(sb, c);
+		sb_addc(sb, c);
 		return TKN_IDENTIFIER;
 	}
 	if (is_digit(in_peek(in))) {
@@ -116,16 +116,16 @@ enum token_type number(char c, struct inport *in)
 	int prdcnt = 0;
 	int lastc = -1;
 
-	sb->addc(sb, c);
+	sb_addc(sb, c);
 	while (is_digit(c = in_peek(in)) || c == '.') {
 		prdcnt += (c == '.');
-		sb->addc(sb, in_readc(in));
+		sb_addc(sb, in_readc(in));
 		lastc = c;
 	}
 	if (prdcnt > 1 || lastc == '.') {
 		sprintf(error_msg,
 			// need to check string length
-			"Invalid number: '%s'", sb->string(sb));
+			"Invalid number: '%s'", sb_string(sb));
 		lexer_error(in->read_count, error_msg);
 		return EOF;
 	}
@@ -134,14 +134,14 @@ enum token_type number(char c, struct inport *in)
 	}
 	// need to check string length
 	sprintf(error_msg, "Unexpected char in number starting '%s': '%c' (%d)",
-		sb->string(sb), c, c);
+		sb_string(sb), c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
 }
 
 void lexer_freetemp(void)
 {
-	sb->free(&sb);
+	sb_free(&sb);
 }
 
 void lexer_error(long position, char *msg)

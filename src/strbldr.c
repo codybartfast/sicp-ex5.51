@@ -12,7 +12,7 @@ static bool grow_buff(struct strbldr *);
 
 char *err_msg = "*** strbldr failed to allocate memory ***";
 
-static int addc(struct strbldr *sb, char c)
+int sb_addc(struct strbldr *sb, char c)
 {
 	if (sb->errored)
 		return EOF;
@@ -23,7 +23,7 @@ static int addc(struct strbldr *sb, char c)
 	return *(sb->buff + sb->buffidx++) = c;
 }
 
-static int adds(struct strbldr *sb, const char *s)
+int sb_adds(struct strbldr *sb, const char *s)
 {
 	int rc = 0;
 
@@ -32,11 +32,11 @@ static int adds(struct strbldr *sb, const char *s)
 	if (s == NULL)
 		return EOF;
 	while (*s != '\0' && rc != EOF)
-		rc = addc(sb, *s++);
+		rc = sb_addc(sb, *s++);
 	return (rc == EOF) ? EOF : 0;
 }
 
-static char *str(struct strbldr *sb)
+char *sb_string(struct strbldr *sb)
 {
 	if (sb->errored)
 		return err_msg;
@@ -44,7 +44,7 @@ static char *str(struct strbldr *sb)
 	return sb->buff;
 }
 
-static char *copy(struct strbldr *sb)
+char *sb_copy(struct strbldr *sb)
 {
 	char *str;
 
@@ -60,7 +60,7 @@ static char *copy(struct strbldr *sb)
 	return str;
 }
 
-static struct strbldr *clear(struct strbldr *sb)
+struct strbldr *sb_clear(struct strbldr *sb)
 {
 	if (sb != NULL)
 		sb->buffidx = 0;
@@ -87,7 +87,7 @@ static bool grow_buff(struct strbldr *sb)
 	return true;
 }
 
-static void sbfree(struct strbldr **sbref)
+void sb_free(struct strbldr **sbref)
 {
 	struct strbldr *sb = *sbref;
 	if (sb != NULL) {
@@ -112,12 +112,6 @@ struct strbldr *new_strbldr(void)
 	}
 	sb->buffsize = INITIAL_BUFFSIZE;
 	sb->buffidx = 0;
-	sb->addc = addc;
-	sb->adds = adds;
-	sb->string = str;
-	sb->copy = copy;
-	sb->clear = clear;
 	sb->errored = false;
-	sb->free = sbfree;
 	return sb;
 }
