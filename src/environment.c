@@ -16,7 +16,7 @@ static obj setup_environment(void);
 static bool eq_symbol(obj a, obj b)
 {
 	return is_symbol(a) && is_symbol(b) &&
-	       strcmp(Obj.to_string(a), Obj.to_string(b)) == 0;
+	       strcmp(to_string(a), to_string(b)) == 0;
 }
 
 //231
@@ -83,7 +83,7 @@ static obj lvv_scan(obj var, obj env, obj vars, obj vals)
 static obj lvv_env_loop(obj var, obj env)
 {
 	if (is_null(env)) { // should be eq - but don't have it yet.
-		eprintf(AREA, "Unbound variable: %s", Obj.to_string(var));
+		eprintf(AREA, "Unbound variable: %s", to_string(var));
 		return error_unbound_variable();
 	}
 	obj frame = first_frame(env);
@@ -106,14 +106,14 @@ static obj primitive_procedures(void)
 		       _primitive_procedures :
 		       (_primitive_procedures =
 				listn(4,
-				      list2(Obj.of_identifier("+"),
-					    Obj.of_function(add_pp)),
-				      list2(Obj.of_identifier("-"),
-					    Obj.of_function(sub_pp)),
-				      list2(Obj.of_identifier("*"),
-					    Obj.of_function(mul_pp)),
-				      list2(Obj.of_identifier("/"),
-					    Obj.of_function(div_pp))));
+				      list2(of_identifier("+"),
+					    of_function(add_pp)),
+				      list2(of_identifier("-"),
+					    of_function(sub_pp)),
+				      list2(of_identifier("*"),
+					    of_function(mul_pp)),
+				      list2(of_identifier("/"),
+					    of_function(div_pp))));
 }
 
 // ln 301

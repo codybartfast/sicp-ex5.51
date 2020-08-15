@@ -13,7 +13,7 @@ struct outport {
 	long write_count;
 
 	int (*writec)(struct outport *, char c);
-	int (*writes)(struct outport *, char *s);
+	int (*writes)(struct outport *, const char *s);
 	char *(*tostring)(struct outport *);
 	int (*close)(struct outport *);
 };

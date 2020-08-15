@@ -16,9 +16,9 @@ enum { ERROR_MEMORY = 1,
        ERROR_UNBOUND_VARIABLE,
        ERROR_WRITE };
 
-char *errstr(obj dat)
+const char *errstr(obj dat)
 {
-	return Obj.to_string(writestr(dat));
+	return to_string(writestr(dat));
 }
 
 void eprintf(const char *area, const char *message, ...)

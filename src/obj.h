@@ -30,7 +30,7 @@ struct simp {
 	union {
 		INTEGER integer;
 		FLOATING floating;
-		char *string;
+		const char *string;
 		struct obj *reference;
 		struct obj (*primproc)(struct obj);
 	} val;
@@ -52,52 +52,52 @@ typedef struct obj {
 enum type type(obj);
 int subtype(obj);
 
+obj make_err(int err_subtype);
+
+// SYMBOL
+
 bool is_symbol(obj);
-bool is_number(obj);
-bool is_string(obj);
-bool is_pair(obj);
-bool is_null(obj dat);
-bool is_reference(obj dat);
-bool is_primproc(obj dat);
-bool is_eof(obj dat);
+obj of_identifier(char *id);
 
 // NUMBER
 
+bool is_number(obj);
 obj of_integer(INTEGER);
 INTEGER to_integer(obj dat);
 obj of_floating(FLOATING);
 FLOATING to_floating(obj);
-
 extern const obj one;
 extern const obj zero;
 
+// STRINGS
+
+bool is_string(obj);
+extern const obj nl;
+
+obj of_string(const char *str);
+const char *to_string(const obj dat);
+
+// PAIRS
+
+bool is_pair(obj);
+bool is_null(obj dat);
+bool is_reference(obj dat);
 
 extern const obj emptylst;
 obj cons(obj, obj);
 obj car(obj);
 obj cdr(obj);
 
-struct obj_accessor {
-	obj (*of_identifier)(char *);
-	char *(*to_identifier)(obj);
+// PRIMITIVE PROCEDURES
 
-	obj (*nl)(void);
-	obj (*of_string)(char *);
-	char *(*to_string)(obj);
+bool is_primproc(obj dat);
+obj of_function(obj (*funptr)(obj));
+obj (*to_function(obj dat))(obj);
 
-	obj (*reference)(obj);
-	obj (*dereference)(obj);
+// MISC VALUES
 
-	obj (*of_function)(obj (*)(obj));
-	obj (*(*to_function)(obj))(obj);
-
-	obj (*unspecified)(void);
-
-	obj (*eof)(void);
-};
-
-extern const struct obj_accessor Obj;
-
-obj make_err(int err_subtype);
+bool is_eof(obj dat);
+extern const obj eof;
+extern const obj unspecified;
 
 #endif

@@ -34,5 +34,5 @@ obj cnv_number_string(obj num)
 	if (str == NULL)
 		return error_memory();
 	strcpy(str, buff);
-	return Obj.of_string(str);
+	return of_string(str);
 }
