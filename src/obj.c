@@ -46,7 +46,7 @@ bool is_symbol(obj dat)
 	return !is_pair(dat) && dat.simp.type == TYPE_SYMBOL;
 }
 
-obj of_identifier(char *id)
+obj of_identifier(const char *id)
 {
 	obj dat = new_simp(TYPE_SYMBOL, SUBTYPE_NOT_SET);
 	dat.simp.VALUE.string = id;

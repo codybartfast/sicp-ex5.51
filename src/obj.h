@@ -31,7 +31,7 @@ struct simp {
 		INTEGER integer;
 		FLOATING floating;
 		const char *string;
-		struct obj *reference;
+		const struct obj *reference;
 		struct obj (*primproc)(struct obj);
 	} val;
 };
@@ -57,7 +57,7 @@ obj make_err(int err_subtype);
 // SYMBOL
 
 bool is_symbol(obj);
-obj of_identifier(char *id);
+obj of_identifier(const char *id);
 
 // NUMBER
 
