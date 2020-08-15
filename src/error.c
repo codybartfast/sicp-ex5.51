@@ -7,6 +7,7 @@
 
 enum { ERROR_MEMORY = 1,
        ERROR_ARGUMENT_TYPE,
+       ERROR_ARGUMENT_VALUE,
        ERROR_CONVERT,
        ERROR_EVAL,
        ERROR_INTERNAL,
@@ -47,6 +48,11 @@ obj error_memory(void)
 obj error_argument_type(void)
 {
 	return make_err(ERROR_ARGUMENT_TYPE);
+}
+
+obj error_argument_value(void)
+{
+	return make_err(ERROR_ARGUMENT_VALUE);
 }
 
 obj error_convert(void)

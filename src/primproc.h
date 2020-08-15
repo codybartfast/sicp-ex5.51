@@ -4,9 +4,9 @@
 
 #include "obj.h"
 
-obj add_pp(obj);
-obj sub_pp(obj);
-obj mul_pp(obj);
-obj div_pp(obj);
+obj add_pp(const obj);
+obj sub_pp(const obj);
+obj mul_pp(const obj);
+obj div_pp(const obj);
 
 #endif
