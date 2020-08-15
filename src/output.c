@@ -12,7 +12,7 @@ static obj displaypair(obj);
 
 struct outport *defaullt_out = NULL;
 
-#define MSGSIZE (1 << 8)
+#define MSGSIZE 256
 static char msg[MSGSIZE];
 
 static struct outport *dfltout(void)
@@ -76,12 +76,12 @@ static obj displaystr(obj dat)
 	case TYPE_PRIMITIVE_PROCEDURE:
 		return of_string("<primitive procedure>");
 	case TYPE_ERROR:
-		sprintf(msg, "Error, subtype: %d", subtype(dat));
+		sprintf(msg, "Error-Object, subtype: %d", subtype(dat));
 		return of_string(msg);
 	default:
-		eprintf(AREA, "BUG! No displaystr case for type: %d",
-			type(dat));
-		return error_write();
+		return error_internal(AREA,
+				      "BUG! No displaystr case for type: %d",
+				      type(dat));
 	}
 }
 

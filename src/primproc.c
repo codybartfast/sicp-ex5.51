@@ -11,14 +11,14 @@ enum op { ADD, SUB, MUL, DIV };
 
 static obj err_improper(const char *fname, const obj np)
 {
-	eprintf(AREA, "%s given an improper list: %s", fname, errstr(np));
-	return error_argument_value();
+	return error_argument_value(AREA, "%s given an improper list: %s",
+				    fname, errstr(np));
 }
 
 static obj err_notnum(const char *fname, const obj np)
 {
-	eprintf(AREA, "%s given an non-number: %s", fname, errstr(np));
-	return error_argument_value();
+	return error_argument_value(AREA, "%s given an non-number: %s", fname,
+				    errstr(np));
 }
 
 static FLOATING num_to_floating(const obj n)
@@ -38,8 +38,8 @@ static FLOATING num_to_floating(const obj n)
 static obj div(const FLOATING a, const FLOATING b)
 {
 	if (b == 0) {
-		eprintf(AREA, "divide by zero (/ " FLOATING_FORMAT " 0)", a);
-		return error_argument_value();
+		return error_argument_value(
+			AREA, "divide by zero (/ " FLOATING_FORMAT " 0)", a);
 	}
 	return of_floating(a / b);
 }
@@ -75,8 +75,7 @@ static obj applyop(const enum op op, const obj arg1, const obj arg2)
 			return div(a, b);
 		}
 	}
-	eprintf(AREA, "BUG! no apply op case for %d", op);
-	return error_internal();
+	return error_internal(AREA, "BUG! no apply op case for %d", op);
 }
 
 static obj accumulate(const char *fname, const enum op op, const obj acc,
@@ -97,8 +96,8 @@ static obj accumulate(const char *fname, const enum op op, const obj acc,
 static obj checkcar(const char *fname, const obj args)
 {
 	if (is_null(args)) {
-		eprintf(AREA, "%s requires at least on argument", fname);
-		return error_argument_value();
+		return error_argument_value(
+			AREA, "%s requires at least on argument", fname);
 	}
 	if (!is_pair(args)) {
 		return err_improper(fname, args);
