@@ -91,9 +91,7 @@ static obj lvv_env_loop(obj var, obj env)
 
 obj lookup_variable_value(obj var, obj env)
 {
-	//printf("looking up: %s\n", debugstr(var));
 	obj val = lvv_env_loop(var, env);
-	//printf("looked up: %s\n", debugstr(val));
 	return val;
 }
 

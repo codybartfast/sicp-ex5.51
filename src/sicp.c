@@ -1,10 +1,7 @@
 #include "sicpstd.h"
 
-#include <stdbool.h>
 #include "version.h"
-#include "strbldr.h"
 #include "parser.h"
-#include "error.h"
 #include "eval.h"
 #include "output.h"
 
@@ -15,15 +12,13 @@ static struct inport *usage(void);
 
 int main(int argc, char *argv[])
 {
-	obj exp, env;
+	obj exp;
 	struct inport *port = parseargs(argc, argv);
 
 	if (port == NULL)
 		return 0;
-	env = emptylst;
-	env = the_global_environment();
 	while (!is_err(exp = readp(port)) && !is_eof(exp)) {
-		write(eval(exp, env));
+		write(eval(exp, the_global_environment()));
 		newline();
 	}
 	parser_freetemp();

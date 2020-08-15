@@ -45,8 +45,8 @@ static obj parse(struct token *tkn, struct inport *port)
 		return is_err(dat) || is_eof(dat) ? dat : reverse(dat);
 	case TKN_EOF:
 		return lexer_errored ? error_parser("LEXER", "%s (offset %ld)",
-						   lexer_error_message,
-						   lexer_error_position) :
+						    lexer_error_message,
+						    lexer_error_position) :
 				       eof;
 	default:
 		return error_internal(AREA,

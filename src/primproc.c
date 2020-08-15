@@ -35,7 +35,7 @@ static FLOATING num_to_floating(const obj n)
 	}
 }
 
-static obj div(const FLOATING a, const FLOATING b)
+static obj divf(const FLOATING a, const FLOATING b)
 {
 	if (b == 0) {
 		return error_argument_value(
@@ -59,7 +59,7 @@ static obj applyop(const enum op op, const obj arg1, const obj arg2)
 		case DIV:
 			if (b != 0 && a % b == 0)
 				return of_integer(a / b);
-			return div(a, b);
+			return divf(a, b);
 		}
 	} else {
 		const FLOATING a = num_to_floating(arg1),
@@ -72,7 +72,7 @@ static obj applyop(const enum op op, const obj arg1, const obj arg2)
 		case MUL:
 			return of_integer(a * b);
 		case DIV:
-			return div(a, b);
+			return divf(a, b);
 		}
 	}
 	return error_internal(AREA, "BUG! no apply op case for %d", op);
