@@ -56,7 +56,7 @@ struct outport *openout_string(void)
 	return port;
 }
 
-static int close(struct outport *port)
+int out_close(struct outport *port)
 {
 	int rc = 0;
 	if (port == NULL)
@@ -70,7 +70,7 @@ static int close(struct outport *port)
 	return rc;
 }
 
-static int writec(struct outport *port, char c)
+int out_writec(struct outport *port, char c)
 {
 	if (port == NULL) {
 		eprintf(AREA, "writec received a null outport.");
@@ -90,15 +90,15 @@ static int writec(struct outport *port, char c)
 	}
 }
 
-static int writes(struct outport *out, const char *str)
+int out_writes(struct outport *out, const char *str)
 {
 	int rc = 0;
 	for (; *str != '\0' && rc >= 0; str++)
-		rc = writec(out, *str);
+		rc = out_writec(out, *str);
 	return rc < 0 ? EOF : 0;
 }
 
-static char *tostring(struct outport *port)
+char *out_tostring(struct outport *port)
 {
 	if (port == NULL) {
 		eprintf(AREA, "tostring received a null outport.");
@@ -119,11 +119,5 @@ struct outport *new_outport(void)
 		return NULL;
 	}
 	*port = (struct outport){ 0 };
-
-	port->writec = writec;
-	port->writes = writes;
-	port->tostring = tostring;
-	port->close = close;
-
 	return port;
 }

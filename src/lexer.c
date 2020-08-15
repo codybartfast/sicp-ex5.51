@@ -53,9 +53,9 @@ enum token_type scan(struct inport *in)
 {
 	int c;
 
-	while (is_whitespace(in->peek(in)))
-		in->readc(in);
-	if ((c = in->readc(in)) == EOF) {
+	while (is_whitespace(in_peek(in)))
+		in_readc(in);
+	if ((c = in_readc(in)) == EOF) {
 		return TKN_EOF;
 	}
 	token.position = in->read_count;
@@ -81,8 +81,8 @@ enum token_type scan(struct inport *in)
 enum token_type identifier(char c, struct inport *in)
 {
 	sb->addc(sb, c);
-	while (is_subsequent(c = in->peek(in))) {
-		sb->addc(sb, in->readc(in));
+	while (is_subsequent(c = in_peek(in))) {
+		sb->addc(sb, in_readc(in));
 	}
 	if (c == EOF || is_delimiter(c)) {
 		return TKN_IDENTIFIER;
@@ -97,14 +97,14 @@ enum token_type identifier(char c, struct inport *in)
 
 enum token_type peculiar(char c, struct inport *in)
 {
-	if (is_delimiter(in->peek(in))) {
+	if (is_delimiter(in_peek(in))) {
 		sb->addc(sb, c);
 		return TKN_IDENTIFIER;
 	}
-	if (is_digit(in->peek(in))) {
+	if (is_digit(in_peek(in))) {
 		return number(c, in);
 	}
-	char p = in->peek(in);
+	char p = in_peek(in);
 	sprintf(error_msg, "Unexpected char following initial '%c': '%c' (%d)",
 		c, p, p);
 	lexer_error(in->read_count, error_msg);
@@ -117,9 +117,9 @@ enum token_type number(char c, struct inport *in)
 	int lastc = -1;
 
 	sb->addc(sb, c);
-	while (is_digit(c = in->peek(in)) || c == '.') {
+	while (is_digit(c = in_peek(in)) || c == '.') {
 		prdcnt += (c == '.');
-		sb->addc(sb, in->readc(in));
+		sb->addc(sb, in_readc(in));
 		lastc = c;
 	}
 	if (prdcnt > 1 || lastc == '.') {

@@ -59,7 +59,7 @@ struct inport *openin_string(char *text)
 	return port;
 }
 
-static int close(struct inport *port)
+int in_close(struct inport *port)
 {
 	int rc = 0;
 	if (port == NULL)
@@ -87,7 +87,7 @@ static int direct_read(struct inport *port)
 	}
 }
 
-static int readc(struct inport *port)
+int in_readc(struct inport *port)
 {
 	if (port == NULL) {
 		eprintf(AREA, "read_char received a null port.");
@@ -102,7 +102,7 @@ static int readc(struct inport *port)
 	}
 }
 
-static int peek(struct inport *port)
+int in_peek(struct inport *port)
 {
 	if (port == NULL) {
 		eprintf(AREA, "peek_char received a null port.");
@@ -123,8 +123,5 @@ struct inport *new_inport(void)
 	}
 	*port = (struct inport){ 0 };
 	port->peeked = NO_PEEK;
-	port->readc = readc;
-	port->peek = peek;
-	port->close = close;
 	return port;
 }

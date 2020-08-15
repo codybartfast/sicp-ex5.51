@@ -11,15 +11,15 @@ struct outport {
 	FILE *file;
 	struct strbldr *sb;
 	long write_count;
-
-	int (*writec)(struct outport *, char c);
-	int (*writes)(struct outport *, const char *s);
-	char *(*tostring)(struct outport *);
-	int (*close)(struct outport *);
 };
 
 struct outport *openout_ptr(FILE *);
 struct outport *openout_file(char *);
 struct outport *openout_string(void);
+
+int out_writec(struct outport *, char c);
+int out_writes(struct outport *, const char *s);
+char *out_tostring(struct outport *);
+int out_close(struct outport *);
 
 #endif
