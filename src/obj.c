@@ -116,36 +116,11 @@ const char *to_string(const obj dat)
 	return dat.simp.val.string;
 }
 
-// REFERENCE
-
-bool is_reference(obj dat)
-{
-	return !dat.is_pair && dat.simp.type == TYPE_REFERENCE;
-}
-
-static obj reference(obj dat)
-{
-	obj *ptr = (obj *)calloc(sizeof(obj), 1);
-	if (ptr == NULL) {
-		eprintf(AREA, "No memory for reference");
-		return error_memory();
-	}
-	*ptr = dat;
-	obj ref = new_simp(TYPE_REFERENCE, SUBTYPE_NOT_SET);
-	ref.simp.val.reference = ptr;
-	return ref;
-}
-
-static obj dereference(obj dat)
-{
-	return *dat.simp.val.reference;
-}
-
 // PAIR
 
 bool is_pair(obj dat)
 {
-	return dat.is_pair || is_reference(dat);
+	return type(dat) == TYPE_REFERENCE;
 }
 
 bool is_null(obj dat)
@@ -158,60 +133,57 @@ const obj emptylst = { false,
 
 obj cons(obj car, obj cdr)
 {
-	obj p = { true,
-		  .pair = { car.is_pair ? reference(car).simp : car.simp,
-			    cdr.is_pair ? reference(cdr).simp : cdr.simp } };
-	return p;
+	obj pair = { true, .pair = { car.simp, cdr.simp } };
+	obj *ptr = (obj *)calloc(sizeof(obj), 1);
+	if (ptr == NULL) {
+		eprintf(AREA, "No memory for reference");
+		return error_memory();
+	}
+	*ptr = pair;
+	obj ref = { false, .simp = { TYPE_REFERENCE,
+				     SUBTYPE_NOT_SET,
+				     { .reference = ptr } } };
+	return ref;
 }
 
 obj car(obj pair)
 {
-	obj dat = { false, .simp = pair.pair.car };
 	if (!is_pair(pair)) {
 		return error_argument_type(AREA, "car expects a pair");
+	} else {
+		obj dat = { false, .simp = pair.simp.val.reference->pair.car };
+		return dat;
 	}
-	return (pair.is_pair) ? dat : car(dereference(pair));
 }
 
 obj set_car(obj *pair, obj val)
 {
-	if (val.is_pair)
-		val = reference(val);
-
-	if (pair->is_pair) {
-		pair->pair.car = val.simp;
-	} else if (is_reference(*pair)) {
-		pair->simp.val.reference->pair.car = val.simp;
-	} else {
+	if (!is_pair(*pair)) {
 		return error_argument_type(AREA, "set_car expects a pair");
+	} else {
+		pair->simp.val.reference->pair.car = val.simp;
+		return unspecified;
 	}
-
-	return unspecified;
 }
 
 obj cdr(obj pair)
 {
-	obj dat = { false, .simp = pair.pair.cdr };
 	if (!is_pair(pair)) {
 		return error_argument_type(AREA, "cdr expects a pair");
+	} else {
+		obj dat = { false, .simp = pair.simp.val.reference->pair.cdr };
+		return dat;
 	}
-	return (pair.is_pair) ? dat : cdr(dereference(pair));
 }
 
 obj set_cdr(obj *pair, obj val)
 {
-	if (val.is_pair)
-		val = reference(val);
-
-	if (pair->is_pair) {
-		pair->pair.cdr = val.simp;
-	} else if (is_reference(*pair)) {
-		pair->simp.val.reference->pair.cdr = val.simp;
-	} else {
+	if (!is_pair(*pair)) {
 		return error_argument_type(AREA, "set_cdr expects a pair");
+	} else {
+		pair->simp.val.reference->pair.cdr = val.simp;
+		return unspecified;
 	}
-
-	return unspecified;
 }
 
 // PRIMITIVE PROCEDURES (FUNCTIONS)

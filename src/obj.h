@@ -84,7 +84,7 @@ const char *to_string(const obj dat);
 
 bool is_pair(obj);
 bool is_null(obj dat);
-bool is_reference(obj dat);
+// bool is_reference(obj dat);
 
 extern const obj emptylst;
 obj cons(obj, obj);
