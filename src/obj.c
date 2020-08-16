@@ -120,7 +120,7 @@ const char *to_string(const obj dat)
 
 bool is_reference(obj dat)
 {
-	return !is_pair(dat) && dat.simp.type == TYPE_REFERENCE;
+	return !dat.is_pair && dat.simp.type == TYPE_REFERENCE;
 }
 
 static obj reference(obj dat)
@@ -145,7 +145,7 @@ static obj dereference(obj dat)
 
 bool is_pair(obj dat)
 {
-	return dat.is_pair;
+	return dat.is_pair || is_reference(dat);
 }
 
 bool is_null(obj dat)
@@ -159,8 +159,8 @@ const obj emptylst = { false,
 obj cons(obj car, obj cdr)
 {
 	obj p = { true,
-		  .pair = { is_pair(car) ? reference(car).simp : car.simp,
-			    is_pair(cdr) ? reference(cdr).simp : cdr.simp } };
+		  .pair = { car.is_pair ? reference(car).simp : car.simp,
+			    cdr.is_pair ? reference(cdr).simp : cdr.simp } };
 	return p;
 }
 
@@ -170,7 +170,8 @@ obj car(obj pair)
 	if (!is_pair(pair)) {
 		return error_argument_type(AREA, "car expects a pair");
 	}
-	return is_reference(dat) ? dereference(dat) : dat;
+	return (pair.is_pair) ? dat : car(dereference(pair));
+	//return dat; //is_reference(dat) ? dereference(dat) : dat;
 }
 
 obj set_car(obj *pair, obj val)
@@ -188,7 +189,8 @@ obj cdr(obj pair)
 	if (!is_pair(pair)) {
 		return error_argument_type(AREA, "cdr expects a pair");
 	}
-	return is_reference(dat) ? dereference(dat) : dat;
+	return (pair.is_pair) ? dat : cdr(dereference(pair));
+	// return dat; //is_reference(dat) ? dereference(dat) : dat;
 }
 
 obj set_cdr(obj *pair, obj val)
