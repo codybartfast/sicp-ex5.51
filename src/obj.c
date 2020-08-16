@@ -107,8 +107,7 @@ obj cons(obj car, obj cdr)
 {
 	struct cell *ptr = (struct cell *)calloc(sizeof(struct cell), 1);
 	if (ptr == NULL) {
-		eprintf(AREA, "No memory for reference");
-		return error_memory();
+		return error_memory(AREA, "Reference");
 	}
 	*ptr = (struct cell){ true, .pair = { car, cdr } };
 	return (obj){ TYPE_REFERENCE, SUBTYPE_NOT_SET, { .reference = ptr } };

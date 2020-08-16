@@ -91,7 +91,7 @@ static obj displaypair(obj pair)
 	struct strbldr *sb;
 
 	if ((sb = new_strbldr()) == NULL)
-		return error_memory();
+		return error_memory(AREA, "StrBldr");
 	sb_addc(sb, '(');
 
 	while (!is_null(pair)) {
@@ -106,7 +106,7 @@ static obj displaypair(obj pair)
 	sb_addc(sb, ')');
 	s = sb_copy(sb);
 	if (s == NULL || sb->errored) {
-		return error_memory();
+		return error_memory(AREA, "Copy");
 	}
 	sb_free(&sb);
 	return of_string(s);

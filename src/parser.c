@@ -59,8 +59,7 @@ static obj identifier(struct token *tkn)
 {
 	char *id = malloc((strlen(tkn->value) + 1) * sizeof(char));
 	if (id == NULL) {
-		eprintf(AREA, "No memory for identifier string");
-		return error_memory();
+		return error_memory(AREA, "Identifier");
 	}
 	strcpy(id, tkn->value);
 	return of_identifier(id);

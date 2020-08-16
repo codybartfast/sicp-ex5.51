@@ -33,7 +33,7 @@ obj cnv_number_string(obj num)
 	slen = strlen(buff);
 	str = (char *)malloc((slen + 1) * sizeof(char));
 	if (str == NULL)
-		return error_memory();
+		return error_memory(AREA, "Number Conversion");
 	strcpy(str, buff);
 	return of_string(str);
 }

@@ -8,7 +8,7 @@
 const char *errstr(obj dat);
 void eprintf(const char *area, const char *message, ...);
 
-obj error_memory(void);
+obj error_memory(const char *area, const char *message, ...);
 obj error_argument_type(const char *area, const char *message, ...);
 obj error_argument_value(const char *area, const char *message, ...);
 obj error_eval(const char *area, const char *message, ...);

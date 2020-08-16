@@ -32,12 +32,12 @@ void eprintf(const char *area, const char *message, ...)
 	va_end(args);
 }
 
-static obj mem_error = { TYPE_ERROR, ERROR_MEMORY, { 0 } } ;
+// static obj mem_error = { TYPE_ERROR, ERROR_MEMORY, { 0 } } ;
 
-obj error_memory(void)
-{
-	return mem_error;
-}
+// obj error_memory(void)
+// {
+// 	return mem_error;
+// }
 
 static obj print_make_err(enum errsbtyp est, const char *stmsg,
 			  const char *area, const char *message, va_list args)
@@ -50,6 +50,14 @@ static obj print_make_err(enum errsbtyp est, const char *stmsg,
 	vfprintf(stderr, message, args);
 	fprintf(stderr, "\n");
 	return make_err(est);
+}
+
+obj error_memory(const char *area, const char *message, ...)
+{
+	va_list args;
+	va_start(args, message);
+	return print_make_err(ERROR_MEMORY, "Out of Memory", area, message,
+			      args);
 }
 
 obj error_argument_type(const char *area, const char *message, ...)
