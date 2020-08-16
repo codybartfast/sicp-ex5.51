@@ -8,14 +8,19 @@
 (* 25 4 12)
 (+ (* 3 5) (- 10 6))
 (+ (* 3 (+ (* 2 4) (+ 3 5))) (+ (- 10 7) 6))
-1000000
 (define size 2)
-size
 (* 5 size)
-1000000
+(define pi 3.14159)
+(define radius 10)
+(* pi (* radius radius))
+(define circumference (* 2 pi radius))
+circumference
 
 10
 (+ 5 3 4)
 (- 9 1)
 (/ 6 2)
 (+ (* 2 4) (- 4 6))
+(define a 3)
+(define b (+ a 1))
+(+ a b (* a b))
