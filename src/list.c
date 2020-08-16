@@ -11,9 +11,24 @@ obj cadr(obj lst)
 	return car(cdr(lst));
 }
 
+obj cddr(obj lst)
+{
+	return cdr(cdr(lst));
+}
+
+obj caadr(obj lst)
+{
+	return car(car(cdr(lst)));
+}
+
 obj caddr(obj lst)
 {
 	return car(cdr(cdr(lst)));
+}
+
+obj cdadr(obj lst)
+{
+	return cdr(car(cdr(lst)));
 }
 
 obj list2(obj a, obj b)

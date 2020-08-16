@@ -89,7 +89,9 @@ bool is_reference(obj dat);
 extern const obj emptylst;
 obj cons(obj, obj);
 obj car(obj);
+obj set_car(obj *, obj);
 obj cdr(obj);
+obj set_cdr(obj *, obj);
 
 // PRIMITIVE PROCEDURES
 
@@ -97,10 +99,16 @@ bool is_primproc(obj dat);
 obj of_function(obj (*funptr)(obj));
 obj (*to_function(obj dat))(obj);
 
+// KEYWORDS
+
+extern const obj define;
+extern const obj lambda;
+
 // MISC VALUES
 
 bool is_eof(obj dat);
 extern const obj eof;
 extern const obj unspecified;
+extern const obj ok;
 
 #endif

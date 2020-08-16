@@ -1,16 +1,23 @@
 #include "eval.h"
 
 #include <stdbool.h>
+#include <string.h>
 #include "error.h"
+#include "list.h"
 #include "output.h"
 
 #define AREA "EVAL"
 
 static obj apply(obj procedure, obj arguments);
 static obj list_of_values(obj exps, obj env);
-static bool isself_evaluating(obj exp);
-static bool isvariable(obj exp);
-static bool isapplication(obj exp);
+static obj eval_definition(obj exp, obj env);
+static bool is_self_evaluating(obj exp);
+static bool is_variable(obj exp);
+static bool is_definition(obj exp);
+static obj definition_variable(obj exp);
+static obj definition_value(obj exp);
+static obj make_lambda(obj, obj);
+static bool is_application(obj exp);
 static obj operator(obj exp);
 static obj operands(obj exp);
 static bool no_operands(obj ops);
@@ -20,11 +27,13 @@ static obj apply_primitive_procedure(obj proc, obj args);
 
 obj eval(obj exp, obj env)
 {
-	if (isself_evaluating(exp))
+	if (is_self_evaluating(exp))
 		return exp;
-	if (isvariable(exp))
+	if (is_variable(exp))
 		return lookup_variable_value(exp, env);
-	else if (isapplication(exp)) {
+	if (is_definition(exp))
+		return eval_definition(exp, env);
+	if (is_application(exp)) {
 		obj oator, orands;
 		oator = eval(operator(exp), env);
 		if (is_err(oator))
@@ -56,20 +65,68 @@ static obj list_of_values(obj exps, obj env)
 			    list_of_values(rest_operands(exps), env));
 }
 
+// ln 100
+static obj eval_definition(obj exp, obj env)
+{
+	obj r = define_variable(definition_variable(exp),
+				eval(definition_value(exp), env), env);
+	return is_err(r) ? r : ok;
+}
+
 // ln 110
-static bool isself_evaluating(obj exp)
+static bool is_self_evaluating(obj exp)
 {
 	return is_number(exp);
 }
 
-//ln 115
-static bool isvariable(obj exp)
+// ln 115
+static bool is_variable(obj exp)
 {
 	return is_symbol(exp);
 }
 
+// until we have a proper eq? - also in environment
+static bool eq_symbol(obj a, obj b)
+{
+	return is_symbol(a) && is_symbol(b) &&
+	       strcmp(to_string(a), to_string(b)) == 0;
+}
+
+// ln 122
+static bool is_tagged_list(obj exp, obj tag)
+{
+	return is_pair(exp) ? eq_symbol(car(exp), tag) : false;
+}
+
+// ln 132
+static bool is_definition(obj exp)
+{
+	return is_tagged_list(exp, define);
+}
+
+// ln 134
+static obj definition_variable(obj exp)
+{
+	return is_symbol(cadr(exp)) ? cadr(exp) : caadr(exp);
+}
+
+// ln 138
+static obj definition_value(obj exp)
+{
+	return is_symbol(cadr(exp)) ?
+		       caddr(exp) :
+		       make_lambda(cdadr(exp), // formal parameters
+				   cddr(exp)); // body
+}
+
+// ln 148
+obj make_lambda(obj parameters, obj body)
+{
+	return cons(lambda, cons(parameters, body));
+}
+
 // ln 175
-static bool isapplication(obj exp)
+static bool is_application(obj exp)
 {
 	return is_pair(exp);
 }
@@ -105,7 +162,7 @@ static obj rest_operands(obj ops)
 }
 
 //
-// ln 233 - environment.c
+// ln 233 - ln 317, see environment.c
 //
 
 // ln 324

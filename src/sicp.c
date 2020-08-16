@@ -10,19 +10,26 @@ static struct inport *version(void);
 static struct inport *expr(int argc, char *argv[]);
 static struct inport *usage(void);
 
+#include "error.h"
+#include "list.h"
+
 int main(int argc, char *argv[])
 {
-	obj exp;
-	struct inport *port = parseargs(argc, argv);
+	obj tge = the_global_environment();
+	printf("%s\n", errstr(tge));
+	define_variable(of_string("size"), of_integer(2), tge);
+	printf("%s\n", errstr(tge));
+	// obj exp;
+	// struct inport *port = parseargs(argc, argv);
 
-	if (port == NULL)
-		return 0;
-	while (!is_err(exp = readp(port)) && !is_eof(exp)) {
-		write(eval(exp, the_global_environment()));
-		newline();
-	}
-	parser_freetemp();
-	in_close(port);
+	// if (port == NULL)
+	// 	return 0;
+	// while (!is_err(exp = readp(port)) && !is_eof(exp)) {
+	// 	write(eval(exp, the_global_environment()));
+	// 	newline();
+	// }
+	// parser_freetemp();
+	// in_close(port);
 
 	return 0;
 }

@@ -12,7 +12,7 @@ static obj the_empty_environment(void);
 static obj lvv_env_loop(obj var, obj env);
 static obj setup_environment(void);
 
-// until we have a proper eq?
+// until we have a proper eq? - also in eval
 static bool eq_symbol(obj a, obj b)
 {
 	return is_symbol(a) && is_symbol(b) &&
@@ -55,6 +55,15 @@ static obj frame_values(obj frame)
 	return cdr(frame);
 }
 
+// ln 239
+static obj add_binding_to_frame(obj var, obj val, obj frame)
+{
+	obj r = set_car(&frame, cons(var, car(frame)));
+	if (is_err(r))
+		return r;
+	return set_cdr(&frame, cons(val, cdr(frame)));
+}
+
 // ln 243
 static obj extend_environment(obj vars, obj vals, obj base_env)
 {
@@ -80,6 +89,7 @@ static obj lvv_scan(obj var, obj env, obj vars, obj vals)
 	}
 }
 
+// ln 250
 static obj lvv_env_loop(obj var, obj env)
 {
 	if (is_null(env)) { // should be eq - but don't have it yet.
@@ -89,10 +99,28 @@ static obj lvv_env_loop(obj var, obj env)
 	return lvv_scan(var, env, frame_variables(frame), frame_values(frame));
 }
 
+// ln 250
 obj lookup_variable_value(obj var, obj env)
 {
 	obj val = lvv_env_loop(var, env);
 	return val;
+}
+
+// ln 280
+static obj dv_scan(obj vars, obj vals, obj var, obj val, obj frame)
+{
+	if (is_null(vars))
+		return add_binding_to_frame(var, val, frame);
+	if (eq_symbol(var, car(vars)))
+		return set_car(&vals, val);
+	return dv_scan(cdr(vars), cdr(vals), var, val, frame);
+}
+// ln 280
+obj define_variable(obj var, obj val, obj env)
+{
+	obj frame = first_frame(env);
+	return dv_scan(frame_variables(frame), frame_values(frame), var, val,
+		       frame);
 }
 
 // ln 295
@@ -134,10 +162,11 @@ static obj setup_environment(void)
 }
 
 // ln 317
-obj _the_global_environment;
+static obj _the_global_environment;
 obj the_global_environment(void)
 {
-	return is_pair(_the_global_environment) ?
-		       _the_global_environment :
-		       (_the_global_environment = setup_environment());
+	if (is_pair(_the_global_environment))
+		return _the_global_environment;
+	_the_global_environment = setup_environment();
+	return _the_global_environment;
 }

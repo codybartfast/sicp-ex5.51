@@ -173,6 +173,15 @@ obj car(obj pair)
 	return is_reference(dat) ? dereference(dat) : dat;
 }
 
+obj set_car(obj *pair, obj val)
+{
+	if (!is_pair(*pair)) {
+		return error_argument_type(AREA, "set_car expects a pair");
+	}
+	(*pair).pair.car = is_pair(val) ? reference(val).simp : val.simp;
+	return unspecified;
+}
+
 obj cdr(obj pair)
 {
 	obj dat = { false, .simp = pair.pair.cdr };
@@ -182,6 +191,14 @@ obj cdr(obj pair)
 	return is_reference(dat) ? dereference(dat) : dat;
 }
 
+obj set_cdr(obj *pair, obj val)
+{
+	if (!is_pair(*pair)) {
+		return error_argument_type(AREA, "set_cdr expects a pair");
+	}
+	(*pair).pair.cdr = is_pair(val) ? reference(val).simp : val.simp;
+	return unspecified;
+}
 // PRIMITIVE PROCEDURES (FUNCTIONS)
 
 bool is_primproc(obj dat)
@@ -201,6 +218,16 @@ obj (*to_function(obj dat))(obj)
 	return dat.simp.val.primproc;
 }
 
+// KEYWORDS
+
+const obj define = {
+	false, .simp = { TYPE_SYMBOL, SUBTYPE_NOT_SET, { .string = "define" } }
+};
+
+const obj lambda = {
+	false, .simp = { TYPE_SYMBOL, SUBTYPE_NOT_SET, { .string = "lambda" } }
+};
+
 // MISC VALUES
 
 bool is_eof(obj dat)
@@ -213,3 +240,6 @@ const obj eof = { false, .simp = { TYPE_EOF, SUBTYPE_NOT_SET, { 0 } } };
 const obj unspecified = {
 	false, .simp = { TYPE_UNSPECIFIED, SUBTYPE_NOT_SET, { 0 } }
 };
+
+const obj ok = { false,
+		 .simp = { TYPE_SYMBOL, SUBTYPE_NOT_SET, { .string = "ok" } } };
