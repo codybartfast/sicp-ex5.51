@@ -15,10 +15,10 @@ static struct inport *usage(void);
 
 int main(int argc, char *argv[])
 {
-	if (true) {
+	if (false) {
 		obj tge = the_global_environment();
 		printf("%s\n", errstr(tge));
-		define_variable(of_string("size"), of_integer(2), tge);
+		define_variable(of_identifier("size"), of_integer(2), tge);
 		printf("%s\n", errstr(tge));
 	} else {
 		obj exp;

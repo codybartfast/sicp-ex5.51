@@ -19,13 +19,13 @@ static bool eq_symbol(obj a, obj b)
 	       strcmp(to_string(a), to_string(b)) == 0;
 }
 
-//231
+//ln 231
 static obj enclosing_environment(obj env)
 {
 	return cdr(env);
 }
 
-//232
+// ln 232
 static obj first_frame(obj env)
 {
 	return car(env);
@@ -58,10 +58,15 @@ static obj frame_values(obj frame)
 // ln 239
 static obj add_binding_to_frame(obj var, obj val, obj frame)
 {
+	// printf("\nbefore: %s\n", errstr(frame));
+	// printf("adding binding\n");
 	obj r = set_car(&frame, cons(var, car(frame)));
 	if (is_err(r))
 		return r;
-	return set_cdr(&frame, cons(val, cdr(frame)));
+	// printf("inbetween: %s\n", errstr(frame));
+	r = set_cdr(&frame, cons(val, cdr(frame)));
+	// printf("after: %s\n\n", errstr(frame));
+	return r;
 }
 
 // ln 243

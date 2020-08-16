@@ -171,15 +171,21 @@ obj car(obj pair)
 		return error_argument_type(AREA, "car expects a pair");
 	}
 	return (pair.is_pair) ? dat : car(dereference(pair));
-	//return dat; //is_reference(dat) ? dereference(dat) : dat;
 }
 
 obj set_car(obj *pair, obj val)
 {
-	if (!is_pair(*pair)) {
+	if (val.is_pair)
+		val = reference(val);
+
+	if (pair->is_pair) {
+		pair->pair.car = val.simp;
+	} else if (is_reference(*pair)) {
+		pair->simp.val.reference->pair.car = val.simp;
+	} else {
 		return error_argument_type(AREA, "set_car expects a pair");
 	}
-	(*pair).pair.car = is_pair(val) ? reference(val).simp : val.simp;
+
 	return unspecified;
 }
 
@@ -190,17 +196,24 @@ obj cdr(obj pair)
 		return error_argument_type(AREA, "cdr expects a pair");
 	}
 	return (pair.is_pair) ? dat : cdr(dereference(pair));
-	// return dat; //is_reference(dat) ? dereference(dat) : dat;
 }
 
 obj set_cdr(obj *pair, obj val)
 {
-	if (!is_pair(*pair)) {
+	if (val.is_pair)
+		val = reference(val);
+
+	if (pair->is_pair) {
+		pair->pair.cdr = val.simp;
+	} else if (is_reference(*pair)) {
+		pair->simp.val.reference->pair.cdr = val.simp;
+	} else {
 		return error_argument_type(AREA, "set_cdr expects a pair");
 	}
-	(*pair).pair.cdr = is_pair(val) ? reference(val).simp : val.simp;
+
 	return unspecified;
 }
+
 // PRIMITIVE PROCEDURES (FUNCTIONS)
 
 bool is_primproc(obj dat)

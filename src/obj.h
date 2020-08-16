@@ -31,7 +31,7 @@ struct simp {
 		INTEGER integer;
 		FLOATING floating;
 		const char *string;
-		const struct obj *reference;
+		struct obj *reference;
 		struct obj (*primproc)(struct obj);
 	} val;
 };
