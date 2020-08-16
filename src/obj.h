@@ -22,32 +22,30 @@ enum { SUBTYPE_NOT_SET = 0 };
 
 enum { NUMBER_INTEGER = 1, NUMBER_FLOATING };
 
-struct obj;
-
-struct simp {
+typedef struct obj {
 	uint8_t type;
 	uint8_t subtype;
 	union {
 		INTEGER integer;
 		FLOATING floating;
 		const char *string;
-		struct obj *reference;
+		struct cell *reference;
 		struct obj (*primproc)(struct obj);
 	} val;
-};
+} obj;
 
 struct pair {
-	struct simp car;
-	struct simp cdr;
+	struct obj car;
+	struct obj cdr;
 };
 
-typedef struct obj {
+struct cell {
 	bool is_pair;
 	union {
-		struct simp simp;
+		struct obj object;
 		struct pair pair;
 	};
-} obj;
+};
 
 enum type type(obj);
 int subtype(obj);

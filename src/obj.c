@@ -6,114 +6,87 @@
 
 #define AREA "OBJ"
 
-static obj new_simp(int type, int subtype)
-{
-	obj dat = { false, .simp = { .type = type, .subtype = subtype } };
-	return dat;
-}
-
 enum type type(obj dat)
 {
-	if (dat.is_pair) {
-		error_argument_type(AREA, "Cannot get type of a pair");
-		return -1;
-	}
-	return dat.simp.type;
+	return dat.type;
 }
 
 int subtype(obj dat)
 {
-	if (dat.is_pair) {
-		error_argument_type(AREA, "Cannot get type of a pair");
-		return -1;
-	}
-	return dat.simp.subtype;
+	return dat.subtype;
 }
 
 // ERROR
 
 bool is_err(obj dat)
 {
-	return !is_pair(dat) && dat.simp.type == TYPE_ERROR;
+	return type(dat) == TYPE_ERROR;
 }
 
 obj make_err(int err_subtype)
 {
-	obj obj = new_simp(TYPE_ERROR, err_subtype);
-	return obj;
+	return (obj){ TYPE_ERROR, err_subtype, { 0 } };
 }
 
 // SYMBOL
 
 bool is_symbol(obj dat)
 {
-	return !is_pair(dat) && dat.simp.type == TYPE_SYMBOL;
+	return type(dat) == TYPE_SYMBOL;
 }
 
 obj of_identifier(const char *id)
 {
-	obj dat = new_simp(TYPE_SYMBOL, SUBTYPE_NOT_SET);
-	dat.simp.val.string = id;
-	return dat;
+	return (obj){ TYPE_SYMBOL, SUBTYPE_NOT_SET, { .string = id } };
 }
 
 // NUMBER
 
 bool is_number(obj dat)
 {
-	return !is_pair(dat) && dat.simp.type == TYPE_NUMBER;
+	return type(dat) == TYPE_NUMBER;
 }
 
 obj of_integer(INTEGER n)
 {
-	obj dat = new_simp(TYPE_NUMBER, NUMBER_INTEGER);
-	dat.simp.val.integer = n;
-	return dat;
+	return (obj){ TYPE_NUMBER, NUMBER_INTEGER, { .integer = n } };
 }
 
 INTEGER to_integer(obj dat)
 {
-	return dat.simp.val.integer;
+	return dat.val.integer;
 }
 
 obj of_floating(FLOATING n)
 {
-	obj dat = new_simp(TYPE_NUMBER, NUMBER_FLOATING);
-	dat.simp.val.floating = n;
-	return dat;
+	return (obj){ TYPE_NUMBER, NUMBER_FLOATING, { .floating = n } };
 }
 
 FLOATING to_floating(obj dat)
 {
-	return dat.simp.val.floating;
+	return dat.val.floating;
 }
 
-const obj zero = { false,
-		   .simp = { TYPE_NUMBER, NUMBER_INTEGER, { .integer = 0 } } };
-const obj one = { false,
-		  .simp = { TYPE_NUMBER, NUMBER_INTEGER, { .integer = 1 } } };
+const obj zero = { TYPE_NUMBER, NUMBER_INTEGER, { .integer = 0 } };
+const obj one = { TYPE_NUMBER, NUMBER_INTEGER, { .integer = 1 } };
 
 // STRING
 
 bool is_string(const obj dat)
 {
-	return !is_pair(dat) && dat.simp.type == TYPE_STRING;
+	return type(dat) == TYPE_STRING;
 }
 
-const obj nl = { false,
-		 .simp = { TYPE_STRING, SUBTYPE_NOT_SET, { .string = "\n" } } };
+const obj nl = { TYPE_STRING, SUBTYPE_NOT_SET, { .string = "\n" } };
 
 obj of_string(const char *str)
 {
-	obj dat = { false, .simp = { .type = TYPE_STRING,
-				     .subtype = SUBTYPE_NOT_SET,
-				     { .string = str } } };
-	return dat;
+	return (obj){ TYPE_STRING, SUBTYPE_NOT_SET, { .string = str } };
 }
 
 const char *to_string(const obj dat)
 {
-	return dat.simp.val.string;
+	return dat.val.string;
 }
 
 // PAIR
@@ -125,25 +98,20 @@ bool is_pair(obj dat)
 
 bool is_null(obj dat)
 {
-	return !is_pair(dat) && dat.simp.type == TYPE_EMPTY_LIST;
+	return type(dat) == TYPE_EMPTY_LIST;
 }
 
-const obj emptylst = { false,
-		       .simp = { TYPE_EMPTY_LIST, SUBTYPE_NOT_SET, { 0 } } };
+const obj emptylst = { TYPE_EMPTY_LIST, SUBTYPE_NOT_SET, { 0 } };
 
 obj cons(obj car, obj cdr)
 {
-	obj pair = { true, .pair = { car.simp, cdr.simp } };
-	obj *ptr = (obj *)calloc(sizeof(obj), 1);
+	struct cell *ptr = (struct cell *)calloc(sizeof(struct cell), 1);
 	if (ptr == NULL) {
 		eprintf(AREA, "No memory for reference");
 		return error_memory();
 	}
-	*ptr = pair;
-	obj ref = { false, .simp = { TYPE_REFERENCE,
-				     SUBTYPE_NOT_SET,
-				     { .reference = ptr } } };
-	return ref;
+	*ptr = (struct cell){ true, .pair = { car, cdr } };
+	return (obj){ TYPE_REFERENCE, SUBTYPE_NOT_SET, { .reference = ptr } };
 }
 
 obj car(obj pair)
@@ -151,8 +119,7 @@ obj car(obj pair)
 	if (!is_pair(pair)) {
 		return error_argument_type(AREA, "car expects a pair");
 	} else {
-		obj dat = { false, .simp = pair.simp.val.reference->pair.car };
-		return dat;
+		return pair.val.reference->pair.car;
 	}
 }
 
@@ -161,7 +128,7 @@ obj set_car(obj *pair, obj val)
 	if (!is_pair(*pair)) {
 		return error_argument_type(AREA, "set_car expects a pair");
 	} else {
-		pair->simp.val.reference->pair.car = val.simp;
+		pair->val.reference->pair.car = val;
 		return unspecified;
 	}
 }
@@ -171,8 +138,7 @@ obj cdr(obj pair)
 	if (!is_pair(pair)) {
 		return error_argument_type(AREA, "cdr expects a pair");
 	} else {
-		obj dat = { false, .simp = pair.simp.val.reference->pair.cdr };
-		return dat;
+		return pair.val.reference->pair.cdr;
 	}
 }
 
@@ -181,7 +147,7 @@ obj set_cdr(obj *pair, obj val)
 	if (!is_pair(*pair)) {
 		return error_argument_type(AREA, "set_cdr expects a pair");
 	} else {
-		pair->simp.val.reference->pair.cdr = val.simp;
+		pair->val.reference->pair.cdr = val;
 		return unspecified;
 	}
 }
@@ -190,43 +156,36 @@ obj set_cdr(obj *pair, obj val)
 
 bool is_primproc(obj dat)
 {
-	return !is_pair(dat) && dat.simp.type == TYPE_PRIMITIVE_PROCEDURE;
+	return type(dat) == TYPE_PRIMITIVE_PROCEDURE;
 }
 
 obj of_function(obj (*funptr)(obj))
 {
-	obj pp = new_simp(TYPE_PRIMITIVE_PROCEDURE, SUBTYPE_NOT_SET);
-	pp.simp.val.primproc = funptr;
-	return pp;
+	return (obj){ TYPE_PRIMITIVE_PROCEDURE,
+		      SUBTYPE_NOT_SET,
+		      { .primproc = funptr } };
 }
 
 obj (*to_function(obj dat))(obj)
 {
-	return dat.simp.val.primproc;
+	return dat.val.primproc;
 }
 
 // KEYWORDS
 
-const obj define = {
-	false, .simp = { TYPE_SYMBOL, SUBTYPE_NOT_SET, { .string = "define" } }
-};
+const obj define = { TYPE_SYMBOL, SUBTYPE_NOT_SET, { .string = "define" } };
 
-const obj lambda = {
-	false, .simp = { TYPE_SYMBOL, SUBTYPE_NOT_SET, { .string = "lambda" } }
-};
+const obj lambda = { TYPE_SYMBOL, SUBTYPE_NOT_SET, { .string = "lambda" } };
 
 // MISC VALUES
 
 bool is_eof(obj dat)
 {
-	return !is_pair(dat) && dat.simp.type == TYPE_EOF;
+	return type(dat) == TYPE_EOF;
 }
 
-const obj eof = { false, .simp = { TYPE_EOF, SUBTYPE_NOT_SET, { 0 } } };
+const obj eof = { TYPE_EOF, SUBTYPE_NOT_SET, { 0 } };
 
-const obj unspecified = {
-	false, .simp = { TYPE_UNSPECIFIED, SUBTYPE_NOT_SET, { 0 } }
-};
+const obj unspecified = { TYPE_UNSPECIFIED, SUBTYPE_NOT_SET, { 0 } };
 
-const obj ok = { false,
-		 .simp = { TYPE_SYMBOL, SUBTYPE_NOT_SET, { .string = "ok" } } };
+const obj ok = { TYPE_SYMBOL, SUBTYPE_NOT_SET, { .string = "ok" } };

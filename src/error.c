@@ -32,7 +32,7 @@ void eprintf(const char *area, const char *message, ...)
 	va_end(args);
 }
 
-static obj mem_error = { false, .simp = { TYPE_ERROR, ERROR_MEMORY, { 0 } } };
+static obj mem_error = { TYPE_ERROR, ERROR_MEMORY, { 0 } } ;
 
 obj error_memory(void)
 {
