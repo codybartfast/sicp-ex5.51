@@ -87,9 +87,9 @@ bool is_null(obj dat);
 extern const obj emptylst;
 obj cons(obj, obj);
 obj car(obj);
-obj set_car(obj *, obj);
+obj set_car(obj, obj);
 obj cdr(obj);
-obj set_cdr(obj *, obj);
+obj set_cdr(obj, obj);
 
 // PRIMITIVE PROCEDURES
 

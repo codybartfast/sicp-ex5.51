@@ -161,12 +161,14 @@ static obj rest_operands(obj ops)
 	return cdr(ops);
 }
 
-//
-// ln 233 - ln 317, see environment.c
-//
+/**********************************
+ *                                *
+ * lns 233-317, see environment.c *
+ *                                *
+ **********************************/
 
 // ln 324
 static obj apply_primitive_procedure(obj proc, obj args)
 {
-	return to_function(proc)(args);
+	return (to_function(proc))(args);
 }

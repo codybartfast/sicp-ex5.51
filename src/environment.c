@@ -58,14 +58,10 @@ static obj frame_values(obj frame)
 // ln 239
 static obj add_binding_to_frame(obj var, obj val, obj frame)
 {
-	// printf("\nbefore: %s\n", errstr(frame));
-	// printf("adding binding\n");
-	obj r = set_car(&frame, cons(var, car(frame)));
+	obj r = set_car(frame, cons(var, car(frame)));
 	if (is_err(r))
 		return r;
-	// printf("inbetween: %s\n", errstr(frame));
-	r = set_cdr(&frame, cons(val, cdr(frame)));
-	// printf("after: %s\n\n", errstr(frame));
+	r = set_cdr(frame, cons(val, cdr(frame)));
 	return r;
 }
 
@@ -117,7 +113,7 @@ static obj dv_scan(obj vars, obj vals, obj var, obj val, obj frame)
 	if (is_null(vars))
 		return add_binding_to_frame(var, val, frame);
 	if (eq_symbol(var, car(vars)))
-		return set_car(&vals, val);
+		return set_car(vals, val);
 	return dv_scan(cdr(vars), cdr(vals), var, val, frame);
 }
 // ln 280

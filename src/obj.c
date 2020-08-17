@@ -122,12 +122,12 @@ obj car(obj pair)
 	}
 }
 
-obj set_car(obj *pair, obj val)
+obj set_car(obj pair, obj val)
 {
-	if (!is_pair(*pair)) {
+	if (!is_pair(pair)) {
 		return error_argument_type(AREA, "set_car expects a pair");
 	} else {
-		pair->val.reference->pair.car = val;
+		pair.val.reference->pair.car = val;
 		return unspecified;
 	}
 }
@@ -141,12 +141,12 @@ obj cdr(obj pair)
 	}
 }
 
-obj set_cdr(obj *pair, obj val)
+obj set_cdr(obj pair, obj val)
 {
-	if (!is_pair(*pair)) {
+	if (!is_pair(pair)) {
 		return error_argument_type(AREA, "set_cdr expects a pair");
 	} else {
-		pair->val.reference->pair.cdr = val;
+		pair.val.reference->pair.cdr = val;
 		return unspecified;
 	}
 }
