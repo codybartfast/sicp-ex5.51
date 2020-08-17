@@ -34,9 +34,6 @@ static bool no_operands(obj ops);
 static obj first_operand(obj ops);
 static obj rest_operands(obj ops);
 static obj make_procedure(obj parameters, obj body, obj env);
-static bool is_compound_procedure(obj exp);
-static obj procedure_parameters(obj p);
-static obj procedure_body(obj p);
 static obj procedure_environment(obj p);
 static obj apply_primitive_procedure(obj proc, obj args);
 
@@ -239,19 +236,19 @@ static obj make_procedure(obj parameters, obj body, obj env)
 }
 
 // ln 223
-static bool is_compound_procedure(obj exp)
+bool is_compound_procedure(obj exp)
 {
 	return is_tagged_list(exp, procedure);
 }
 
 // ln 225
-static obj procedure_parameters(obj p)
+obj procedure_parameters(obj p)
 {
 	return cadr(p);
 }
 
 // ln 226
-static obj procedure_body(obj p)
+obj procedure_body(obj p)
 {
 	return caddr(p);
 }

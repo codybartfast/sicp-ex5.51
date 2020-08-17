@@ -6,5 +6,8 @@
 #include "obj.h"
 
 obj eval(obj expr, obj env);
+bool is_compound_procedure(obj exp);
+obj procedure_parameters(obj p);
+obj procedure_body(obj p);
 
 #endif

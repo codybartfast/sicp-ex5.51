@@ -1,8 +1,10 @@
 #include "output.h"
 
 #include <stdlib.h>
-#include "error.h"
 #include "convert.h"
+#include "eval.h"
+#include "error.h"
+#include "list.h"
 
 #define AREA "OUTPUT"
 
@@ -52,7 +54,14 @@ obj writestr(obj dat)
 
 static obj display(struct outport *op, obj dat)
 {
-	obj str = displaystr(dat);
+	obj str;
+	if (is_compound_procedure(dat)) {
+		str = displaypair(list4(procedure, procedure_parameters(dat),
+					procedure_body(dat),
+					of_string("<procedure-env>")));
+	} else {
+		str = displaystr(dat);
+	}
 	if (is_err(str))
 		return str;
 	out_writes(op, to_string(str));
@@ -61,6 +70,11 @@ static obj display(struct outport *op, obj dat)
 
 static obj displaystr(obj dat)
 {
+	if (is_compound_procedure(dat)) {
+		return displaypair(list4(
+			of_string("<procedure>"), procedure_parameters(dat),
+			procedure_body(dat), of_string("<procedure-env>")));
+	}
 	if (is_pair(dat)) {
 		return displaypair(dat);
 	}
