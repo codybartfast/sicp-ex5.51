@@ -12,11 +12,11 @@ set (SRC_CORE
 	src/inport.c
 	src/lexer.c
 	src/list.c
-	src/primproc.c
 	src/obj.c
 	src/outport.c
 	src/output.c
 	src/parser.c
+	src/primproc.c
 	src/sicpstd.h
 	src/strbldr.c
 	)

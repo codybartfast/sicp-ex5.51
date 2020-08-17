@@ -1,3 +1,6 @@
+/* Line numbers refer to:
+ https://github.com/codybartfast/sicp/blob/master/chapter5/mc-evaluator-50.scm */
+
 #include "environment.h"
 
 #include <string.h>
@@ -157,8 +160,6 @@ static obj setup_environment(void)
 	obj initial_env = extend_environment(primitive_procedure_names(),
 					     primitive_procedure_objects(),
 					     the_empty_environment());
-	// define_variable(Obj.ofidentifier("true"), Obj.true);
-	// define_variable(Obj.ofidentifier("false"), Obj.false);
 	return initial_env;
 }
 

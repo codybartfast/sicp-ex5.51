@@ -1,3 +1,6 @@
+/* Line numbers refer to:
+ https://github.com/codybartfast/sicp/blob/master/chapter5/mc-evaluator-50.scm */
+
 #include "eval.h"
 
 #include <stdbool.h>
@@ -34,14 +37,14 @@ obj eval(obj exp, obj env)
 	if (is_definition(exp))
 		return eval_definition(exp, env);
 	if (is_application(exp)) {
-		obj oator, orands;
-		oator = eval(operator(exp), env);
-		if (is_err(oator))
-			return oator;
-		orands = list_of_values(operands(exp), env);
-		if (is_err(orands))
-			return orands;
-		return apply(oator, orands);
+		obj proc, args;
+		proc = eval(operator(exp), env);
+		if (is_err(proc))
+			return proc;
+		args = list_of_values(operands(exp), env);
+		if (is_err(args))
+			return args;
+		return apply(proc, args);
 	}
 	return error_eval(AREA, "Unknown expression type: %s", errstr(exp));
 }
