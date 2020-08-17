@@ -20,7 +20,7 @@ int sb_addc(struct strbldr *sb, char c)
 		if (!grow_buff(sb))
 			return EOF;
 	}
-	return *(sb->buff + sb->buffidx++) = c;
+	return sb->buff[sb->buffidx++] = c;
 }
 
 int sb_adds(struct strbldr *sb, const char *s)
