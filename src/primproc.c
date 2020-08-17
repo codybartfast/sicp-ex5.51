@@ -70,7 +70,7 @@ static obj applyop(const enum op op, const obj arg1, const obj arg2)
 		case SUB:
 			return of_floating(a - b);
 		case MUL:
-			return of_integer(a * b);
+			return of_floating(a * b);
 		case DIV:
 			return divf(a, b);
 		}
