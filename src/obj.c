@@ -197,8 +197,10 @@ obj (*to_function(obj dat))(obj)
 // KEYWORDS
 
 SYMBOL(define)
-
 SYMBOL(lambda)
+
+// TAGS
+SYMBOL(procedure)
 
 // MISC VALUES
 

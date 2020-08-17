@@ -13,19 +13,31 @@
 
 static obj apply(obj procedure, obj arguments);
 static obj list_of_values(obj exps, obj env);
+static obj eval_sequence(obj exps, obj env);
 static obj eval_definition(obj exp, obj env);
 static bool is_self_evaluating(obj exp);
 static bool is_variable(obj exp);
 static bool is_definition(obj exp);
+static bool is_lambda(obj exp);
+static obj lambda_parameters(obj exp);
+static obj lambda_body(obj exp);
 static obj definition_variable(obj exp);
 static obj definition_value(obj exp);
 static obj make_lambda(obj, obj);
+static bool is_last_exp(obj seq);
+static obj first_exp(obj seq);
+static obj rest_exps(obj seq);
 static bool is_application(obj exp);
 static obj operator(obj exp);
 static obj operands(obj exp);
 static bool no_operands(obj ops);
 static obj first_operand(obj ops);
 static obj rest_operands(obj ops);
+static obj make_procedure(obj parameters, obj body, obj env);
+static bool is_compound_procedure(obj exp);
+static obj procedure_parameters(obj p);
+static obj procedure_body(obj p);
+static obj procedure_environment(obj p);
 static obj apply_primitive_procedure(obj proc, obj args);
 
 obj eval(obj exp, obj env)
@@ -36,6 +48,9 @@ obj eval(obj exp, obj env)
 		return lookup_variable_value(exp, env);
 	if (is_definition(exp))
 		return eval_definition(exp, env);
+	if (is_lambda(exp))
+		return make_procedure(lambda_parameters(exp), lambda_body(exp),
+				      env);
 	if (is_application(exp)) {
 		obj proc, args;
 		proc = eval(operator(exp), env);
@@ -53,6 +68,12 @@ static obj apply(obj procedure, obj arguments)
 {
 	if (is_primproc(procedure)) {
 		return apply_primitive_procedure(procedure, arguments);
+	} else if (is_compound_procedure(procedure)) {
+		return eval_sequence(
+			procedure_body(procedure),
+			extend_environment(procedure_parameters(procedure),
+					   arguments,
+					   procedure_environment(procedure)));
 	} else {
 		return error_eval(AREA, "Unknown procedure type: %s",
 				  errstr(procedure));
@@ -66,6 +87,17 @@ static obj list_of_values(obj exps, obj env)
 		       emptylst :
 		       cons(eval(first_operand(exps), env),
 			    list_of_values(rest_operands(exps), env));
+}
+
+// ln 85
+static obj eval_sequence(obj exps, obj env)
+{
+	if (is_last_exp(exps)) {
+		return eval(first_exp(exps), env);
+	} else {
+		eval(first_exp(exps), env);
+		return eval_sequence(rest_exps(exps), env);
+	}
 }
 
 // ln 100
@@ -122,10 +154,46 @@ static obj definition_value(obj exp)
 				   cddr(exp)); // body
 }
 
+// ln 144
+static bool is_lambda(obj exp)
+{
+	return is_tagged_list(exp, lambda);
+}
+
+// ln 145
+static obj lambda_parameters(obj exp)
+{
+	return cadr(exp);
+}
+
+// ln 146
+static obj lambda_body(obj exp)
+{
+	return cddr(exp);
+}
+
 // ln 148
-obj make_lambda(obj parameters, obj body)
+static obj make_lambda(obj parameters, obj body)
 {
 	return cons(lambda, cons(parameters, body));
+}
+
+// ln 165
+bool is_last_exp(obj seq)
+{
+	return is_null(cdr(seq));
+}
+
+// ln 166
+static obj first_exp(obj seq)
+{
+	return car(seq);
+}
+
+// ln 167
+static obj rest_exps(obj seq)
+{
+	return cdr(seq);
 }
 
 // ln 175
@@ -162,6 +230,36 @@ static obj first_operand(obj ops)
 static obj rest_operands(obj ops)
 {
 	return cdr(ops);
+}
+
+// ln 222
+static obj make_procedure(obj parameters, obj body, obj env)
+{
+	return list4(procedure, parameters, body, env);
+}
+
+// ln 223
+static bool is_compound_procedure(obj exp)
+{
+	return is_tagged_list(exp, procedure);
+}
+
+// ln 225
+static obj procedure_parameters(obj p)
+{
+	return cadr(p);
+}
+
+// ln 226
+static obj procedure_body(obj p)
+{
+	return caddr(p);
+}
+
+// ln 227
+static obj procedure_environment(obj p)
+{
+	return cadddr(p);
 }
 
 /**********************************

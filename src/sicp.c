@@ -23,11 +23,13 @@ int main(int argc, char *argv[])
 	} else {
 		obj exp;
 		struct inport *port = parseargs(argc, argv);
+		obj tge = the_global_environment();
 
 		if (port == NULL)
 			return 0;
 		while (!is_err(exp = readp(port)) && !is_eof(exp)) {
-			write(eval(exp, the_global_environment()));
+			// printf("Evaluating: %s\n", errstr(exp));
+			write(eval(exp, tge));
 			newline();
 		}
 		parser_freetemp();

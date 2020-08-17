@@ -69,7 +69,7 @@ static obj add_binding_to_frame(obj var, obj val, obj frame)
 }
 
 // ln 243
-static obj extend_environment(obj vars, obj vals, obj base_env)
+obj extend_environment(obj vars, obj vals, obj base_env)
 {
 	if (length_u(vars) == length_u(vals)) {
 		return cons(make_frame(vars, vals), base_env);

@@ -102,6 +102,9 @@ obj (*to_function(obj dat))(obj);
 extern const obj define;
 extern const obj lambda;
 
+// EVAL TAGS
+extern const obj procedure;
+
 // MISC VALUES
 
 bool is_eof(obj dat);
