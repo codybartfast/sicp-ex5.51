@@ -28,7 +28,7 @@ static FLOATING num_to_floating(const obj n)
 	case NUMBER_FLOATING:
 		return to_floating(n);
 	case NUMBER_INTEGER:
-		return to_integer(n);
+		return (FLOATING)to_integer(n);
 	default:
 		eprintf(AREA, "BUG! No num_tofloating case for: %d",
 			subtype(n));
@@ -60,7 +60,7 @@ static obj applyop(const enum op op, const obj arg1, const obj arg2)
 		case DIV:
 			if (b != 0 && a % b == 0)
 				return of_integer(a / b);
-			return divf(a, b);
+			return divf((FLOATING)a, (FLOATING)b);
 		}
 	} else {
 		const FLOATING a = num_to_floating(arg1),
@@ -238,4 +238,36 @@ obj gt_pp(const obj args)
 obj gte_pp(const obj args)
 {
 	return chkfold(">= (greater than)", GTE, args);
+}
+
+obj and_pp(const obj args)
+{
+	if (is_null(args))
+		return tru_o;
+	if (!is_pair(args))
+		return err_improper("and", args);
+	return is_false(car(args)) ? fls_o : and_pp(cdr(args));
+}
+
+obj or_pp(const obj args)
+{
+	if (is_null(args))
+		return fls_o;
+	if (!is_pair(args))
+		return err_improper("or", args);
+	return is_true(car(args)) ? tru_o : or_pp(cdr(args));
+}
+
+obj not_pp(const obj args)
+{
+	if (is_null(args))
+		return error_argument_type(AREA,
+					   "'not' expects 1 arg, but got 0");
+	if (!is_pair(args))
+		return err_improper("not", args);
+	if (!is_null(cdr(args)))
+		return error_argument_type(
+			AREA, "'not' expects 1 arg, but got more than 1: (%s)",
+			errstr(args));
+	return is_false(car(args)) ? tru_o : fls_o;
 }

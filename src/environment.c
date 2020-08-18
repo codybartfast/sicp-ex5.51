@@ -134,17 +134,21 @@ static obj primitive_procedures(void)
 	return is_pair(_primitive_procedures) ?
 		       _primitive_procedures :
 		       (_primitive_procedures = listn(
-				9,
+				10,
 				list2(of_identifier("+"), of_function(add_pp)),
 				list2(of_identifier("-"), of_function(sub_pp)),
 				list2(of_identifier("*"), of_function(mul_pp)),
 				list2(of_identifier("/"), of_function(div_pp)),
 				list2(of_identifier("<"), of_function(lt_pp)),
-				list2(of_identifier("<="), of_function(lte_pp)),
+				//list2(of_identifier("<="), of_function(lte_pp)),
 				list2(of_identifier("="), of_function(eqn_pp)),
 				list2(of_identifier(">"), of_function(gt_pp)),
-				list2(of_identifier(">="),
-				      of_function(gte_pp))));
+				//list2(of_identifier(">="), of_function(gte_pp)),
+				list2(of_identifier("and"),
+				      of_function(and_pp)),
+				list2(of_identifier("or"), of_function(or_pp)),
+				list2(of_identifier("not"),
+				      of_function(not_pp))));
 }
 
 // ln 301

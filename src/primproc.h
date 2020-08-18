@@ -15,4 +15,8 @@ obj eqn_pp(const obj);
 obj gte_pp(const obj);
 obj gt_pp(const obj);
 
+obj and_pp(const obj);
+obj or_pp(const obj);
+obj not_pp(const obj);
+
 #endif
