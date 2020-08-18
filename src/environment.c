@@ -165,8 +165,8 @@ static obj setup_environment(void)
 	obj initial_env = extend_environment(primitive_procedure_names(),
 					     primitive_procedure_objects(),
 					     the_empty_environment());
-	define_variable(of_identifier("true"), tru, initial_env);
-	define_variable(of_identifier("false"), fls, initial_env);
+	define_variable(of_identifier("true"), tru_o, initial_env);
+	define_variable(of_identifier("false"), fls_o, initial_env);
 	return initial_env;
 }
 

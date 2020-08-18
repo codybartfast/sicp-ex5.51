@@ -61,6 +61,8 @@ obj of_identifier(const char *id);
 bool is_boolean(obj);
 bool is_true(obj);
 bool is_false(obj);
+extern const obj tru_o;
+extern const obj fls_o;
 extern const obj tru;
 extern const obj fls;
 
@@ -103,6 +105,7 @@ obj (*to_function(obj dat))(obj);
 // KEYWORDS
 
 extern const obj define;
+extern const obj if_s;
 extern const obj lambda;
 
 // EVAL TAGS

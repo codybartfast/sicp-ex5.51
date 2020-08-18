@@ -159,30 +159,30 @@ static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)
 		const INTEGER a = to_integer(arg1), b = to_integer(arg2);
 		switch (cmp) {
 		case LT:
-			return a < b ? tru : fls;
+			return a < b ? tru_o : fls_o;
 		case LTE:
-			return a <= b ? tru : fls;
+			return a <= b ? tru_o : fls_o;
 		case EQ:
-			return a == b ? tru : fls;
+			return a == b ? tru_o : fls_o;
 		case GT:
-			return a >= b ? tru : fls;
+			return a >= b ? tru_o : fls_o;
 		case GTE:
-			return a > b ? tru : fls;
+			return a > b ? tru_o : fls_o;
 		}
 	} else {
 		const FLOATING a = num_to_floating(arg1),
 			       b = num_to_floating(arg2);
 		switch (cmp) {
 		case LT:
-			return a < b ? tru : fls;
+			return a < b ? tru_o : fls_o;
 		case LTE:
-			return a <= b ? tru : fls;
+			return a <= b ? tru_o : fls_o;
 		case EQ:
-			return a == b ? tru : fls;
+			return a == b ? tru_o : fls_o;
 		case GT:
-			return a >= b ? tru : fls;
+			return a >= b ? tru_o : fls_o;
 		case GTE:
-			return a > b ? tru : fls;
+			return a > b ? tru_o : fls_o;
 		}
 	}
 	return error_internal(AREA, "BUG! no comparison case for %d", cmp);
@@ -192,7 +192,7 @@ static obj fold(const char *fname, const enum cmp cmp, const obj prv,
 		const obj args)
 {
 	if (is_null(args))
-		return tru;
+		return tru_o;
 	if (!is_pair(args))
 		return err_improper(fname, args);
 	else {
@@ -202,7 +202,7 @@ static obj fold(const char *fname, const enum cmp cmp, const obj prv,
 		if (is_true(applycmp(cmp, prv, num))) {
 			return fold(fname, cmp, num, cdr(args));
 		} else {
-			return fls;
+			return fls_o;
 		}
 	}
 }

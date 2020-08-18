@@ -9,8 +9,8 @@ obj cddr(obj);
 obj caadr(obj);
 obj caddr(obj);
 obj cdadr(obj);
+obj cdddr(obj);
 obj cadddr(obj);
-
 obj list2(obj, obj);
 obj list3(obj, obj, obj);
 obj list4(obj, obj, obj, obj);

@@ -31,6 +31,11 @@ obj cdadr(obj lst)
 	return cdr(car(cdr(lst)));
 }
 
+obj cdddr(obj lst)
+{
+	return cdr(cdr(cdr(lst)));
+}
+
 obj cadddr(obj lst)
 {
 	return car(cdr(cdr(cdr(lst))));

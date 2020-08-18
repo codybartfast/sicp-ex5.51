@@ -64,8 +64,10 @@ bool is_false(obj dat)
 	return type(dat) == TYPE_BOOL && subtype(dat) == BOOL_FALSE;
 }
 
-const obj tru = OBJ_2(TYPE_BOOL, BOOL_TRUE);
-const obj fls = OBJ_2(TYPE_BOOL, BOOL_FALSE);
+const obj tru_o = OBJ_2(TYPE_BOOL, BOOL_TRUE);
+const obj fls_o = OBJ_2(TYPE_BOOL, BOOL_FALSE);
+const obj tru = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "true");
+const obj fls = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "false");
 
 // NUMBER
 
@@ -200,6 +202,7 @@ obj (*to_function(obj dat))(obj)
 // KEYWORDS
 
 SYMBOL(define)
+const obj if_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "if");
 SYMBOL(lambda)
 
 // TAGS

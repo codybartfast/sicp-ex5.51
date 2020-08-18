@@ -13,6 +13,7 @@
 
 static obj apply(obj procedure, obj arguments);
 static obj list_of_values(obj exps, obj env);
+static obj eval_if(obj exp, obj env);
 static obj eval_sequence(obj exps, obj env);
 static obj eval_definition(obj exp, obj env);
 static bool is_self_evaluating(obj exp);
@@ -24,6 +25,10 @@ static obj lambda_body(obj exp);
 static obj definition_variable(obj exp);
 static obj definition_value(obj exp);
 static obj make_lambda(obj, obj);
+static bool is_if(obj);
+static obj if_predicate(obj);
+static obj if_consequent(obj);
+static obj if_alternate(obj);
 static bool is_last_exp(obj seq);
 static obj first_exp(obj seq);
 static obj rest_exps(obj seq);
@@ -45,6 +50,8 @@ obj eval(obj exp, obj env)
 		return lookup_variable_value(exp, env);
 	if (is_definition(exp))
 		return eval_definition(exp, env);
+	if (is_if(exp))
+		return eval_if(exp, env);
 	if (is_lambda(exp))
 		return make_procedure(lambda_parameters(exp), lambda_body(exp),
 				      env);
@@ -84,6 +91,16 @@ static obj list_of_values(obj exps, obj env)
 		       emptylst :
 		       cons(eval(first_operand(exps), env),
 			    list_of_values(rest_operands(exps), env));
+}
+
+// ln 80
+static obj eval_if(obj exp, obj env)
+{
+	if (is_true(eval(if_predicate(exp), env))) {
+		return eval(if_consequent(exp), env);
+	} else {
+		return eval(if_alternate(exp), env);
+	}
 }
 
 // ln 85
@@ -173,6 +190,34 @@ static obj lambda_body(obj exp)
 static obj make_lambda(obj parameters, obj body)
 {
 	return cons(lambda, cons(parameters, body));
+}
+
+// ln 151
+static bool is_if(obj exp)
+{
+	return is_tagged_list(exp, if_s);
+}
+
+// ln 152
+static obj if_predicate(obj exp)
+{
+	return cadr(exp);
+}
+
+// ln 153
+static obj if_consequent(obj exp)
+{
+	return caddr(exp);
+}
+
+// ln 155
+static obj if_alternate(obj exp)
+{
+	if (!is_null(cdddr(exp))) {
+		return cadddr(exp);
+	} else {
+		return fls;
+	}
 }
 
 // ln 165
