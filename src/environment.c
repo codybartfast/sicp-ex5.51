@@ -160,6 +160,8 @@ static obj setup_environment(void)
 	obj initial_env = extend_environment(primitive_procedure_names(),
 					     primitive_procedure_objects(),
 					     the_empty_environment());
+	define_variable(of_identifier("true"), cox, initial_env);
+	define_variable(of_identifier("false"), dom, initial_env);
 	return initial_env;
 }
 

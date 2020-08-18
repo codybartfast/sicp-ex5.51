@@ -4,9 +4,6 @@
 #include <string.h>
 #include "error.h"
 
-#define CONST_OBJ(NAME, TYPE, STYPE, VTYPE, VALUE)                             \
-	const obj NAME = { TYPE, STYPE, { .VTYPE = VALUE } };
-
 #define OBJ_4(TYPE, STYPE, VTYPE, VALUE)                                       \
 	{                                                                      \
 		TYPE, STYPE,                                                   \
@@ -23,8 +20,6 @@
 		}                                                              \
 	}
 
-#define OBJ_1(TYPE) OBJ_2(TYPE, SUBTYPE_NOT_SET)
-
 #define SYMBOL(NAME)                                                           \
 	const obj NAME = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, #NAME);
 
@@ -40,18 +35,6 @@ int subtype(obj dat)
 	return dat.subtype;
 }
 
-// ERROR
-
-bool is_err(obj dat)
-{
-	return type(dat) == TYPE_ERROR;
-}
-
-obj make_err(int err_subtype)
-{
-	return (obj)OBJ_2(TYPE_ERROR, err_subtype);
-}
-
 // SYMBOL
 
 bool is_symbol(obj dat)
@@ -63,6 +46,26 @@ obj of_identifier(const char *id)
 {
 	return (obj)OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, id);
 }
+
+// BOOLS
+
+bool is_boolean(obj dat)
+{
+	return type(dat) == TYPE_BOOL;
+}
+
+bool is_true(obj dat)
+{
+	return !is_false(dat);
+}
+
+bool is_false(obj dat)
+{
+	return type(dat) == TYPE_BOOL && subtype(dat) == BOOL_FALSE;
+}
+
+const obj cox = OBJ_2(TYPE_BOOL, BOOL_TRUE);
+const obj dom = OBJ_2(TYPE_BOOL, BOOL_FALSE);
 
 // NUMBER
 
@@ -91,9 +94,9 @@ FLOATING to_floating(obj dat)
 	return dat.val.floating;
 }
 
-CONST_OBJ(zero, TYPE_NUMBER, NUMBER_INTEGER, integer, 0)
+const obj zero = OBJ_4(TYPE_NUMBER, NUMBER_INTEGER, integer, 0);
 
-CONST_OBJ(one, TYPE_NUMBER, NUMBER_INTEGER, integer, 1)
+const obj one = OBJ_4(TYPE_NUMBER, NUMBER_INTEGER, integer, 1);
 
 // STRING
 
@@ -102,7 +105,7 @@ bool is_string(const obj dat)
 	return type(dat) == TYPE_STRING;
 }
 
-CONST_OBJ(nl, TYPE_STRING, SUBTYPE_NOT_SET, string, "\n")
+const obj nl = OBJ_4(TYPE_STRING, SUBTYPE_NOT_SET, string, "\n");
 
 obj of_string(const char *str)
 {
@@ -126,7 +129,7 @@ bool is_null(obj dat)
 	return type(dat) == TYPE_EMPTY_LIST;
 }
 
-const obj emptylst = OBJ_1(TYPE_EMPTY_LIST);
+const obj emptylst = OBJ_2(TYPE_EMPTY_LIST, SUBTYPE_NOT_SET);
 
 obj cons(obj car, obj cdr)
 {
@@ -176,7 +179,7 @@ obj set_cdr(obj pair, obj val)
 	}
 }
 
-// PRIMITIVE PROCEDURES (FUNCTIONS)
+// PRIMITIVE PROCEDURES
 
 bool is_primproc(obj dat)
 {
@@ -209,8 +212,20 @@ bool is_eof(obj dat)
 	return type(dat) == TYPE_EOF;
 }
 
-const obj eof = OBJ_1(TYPE_EOF);
+const obj eof = OBJ_2(TYPE_EOF, SUBTYPE_NOT_SET);
 
-const obj unspecified = OBJ_1(TYPE_UNSPECIFIED);
+const obj unspecified = OBJ_2(TYPE_UNSPECIFIED, SUBTYPE_NOT_SET);
 
 SYMBOL(ok)
+
+// ERROR
+
+bool is_err(obj dat)
+{
+	return type(dat) == TYPE_ERROR;
+}
+
+obj make_err(int err_subtype)
+{
+	return (obj)OBJ_2(TYPE_ERROR, err_subtype);
+}

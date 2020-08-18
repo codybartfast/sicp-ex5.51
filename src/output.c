@@ -81,10 +81,12 @@ static obj displaystr(obj dat)
 	switch (type(dat)) {
 	case TYPE_SYMBOL:
 		return dat;
-	case TYPE_STRING:
-		return dat;
+	case TYPE_BOOL:
+		return cnv_boolean_string(dat);
 	case TYPE_NUMBER:
 		return cnv_number_string(dat);
+	case TYPE_STRING:
+		return dat;
 	case TYPE_EMPTY_LIST:
 		return of_string("()");
 	case TYPE_PRIMITIVE_PROCEDURE:

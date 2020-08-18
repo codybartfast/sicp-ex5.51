@@ -7,19 +7,21 @@
 
 enum type {
 	TYPE_NOT_SET = 0,
-	TYPE_SYMBOL,
-	TYPE_NUMBER,
-	TYPE_STRING,
-	TYPE_EMPTY_LIST,
-	TYPE_REFERENCE,
-	TYPE_PRIMITIVE_PROCEDURE,
-	TYPE_UNSPECIFIED,
-	TYPE_EOF,
-	TYPE_ERROR
+	TYPE_SYMBOL, // 1
+	TYPE_BOOL, // 2
+	TYPE_NUMBER, // 3
+	TYPE_STRING, // 4
+	TYPE_EMPTY_LIST, // 5
+	TYPE_REFERENCE, // 6
+	TYPE_PRIMITIVE_PROCEDURE, // 7
+	TYPE_UNSPECIFIED, // 8
+	TYPE_EOF, // 9
+	TYPE_ERROR // 10
 };
 
 enum { SUBTYPE_NOT_SET = 0 };
 
+enum { BOOL_TRUE = 1, BOOL_FALSE = 2 };
 enum { NUMBER_INTEGER = 1, NUMBER_FLOATING };
 
 typedef struct obj {
@@ -50,15 +52,17 @@ struct cell {
 enum type type(obj);
 int subtype(obj);
 
-// ERROR
-
-bool is_err(obj obj);
-obj make_err(int err_subtype);
-
 // SYMBOL
 
 bool is_symbol(obj);
 obj of_identifier(const char *id);
+
+// BOOLS
+bool is_boolean(obj);
+bool is_true(obj);
+bool is_false(obj);
+extern const obj cox;
+extern const obj dom;
 
 // NUMBER
 
@@ -82,7 +86,6 @@ const char *to_string(const obj dat);
 
 bool is_pair(obj);
 bool is_null(obj dat);
-// bool is_reference(obj dat);
 
 extern const obj emptylst;
 obj cons(obj, obj);
@@ -111,5 +114,10 @@ bool is_eof(obj dat);
 extern const obj eof;
 extern const obj unspecified;
 extern const obj ok;
+
+// ERROR
+
+bool is_err(obj obj);
+obj make_err(int err_subtype);
 
 #endif

@@ -10,11 +10,31 @@
 #define BUFFSIZE 2048
 char buff[BUFFSIZE];
 
+static obj cpystrobj(char *s, char *msg)
+{
+	char *dup = (char *)malloc((strlen(buff) + 1) * sizeof(char));
+	if (dup == NULL)
+		return error_memory(AREA, msg);
+	strcpy(dup, s);
+	return of_string(dup);
+}
+
+obj cnv_boolean_string(obj bl)
+{
+	if (!is_boolean(bl))
+		return error_argument_type(
+			AREA, "boolean->string got non-boolean: %s",
+			errstr(bl));
+	if (is_false(bl)) {
+		sprintf(buff, "#f");
+	} else {
+		sprintf(buff, "#t");
+	}
+	return cpystrobj(buff, "boolean conversion");
+}
+
 obj cnv_number_string(obj num)
 {
-	char *str;
-	size_t slen;
-
 	if (!is_number(num))
 		return error_argument_type(
 			AREA, "number->string got non-number: %s", errstr(num));
@@ -30,10 +50,5 @@ obj cnv_number_string(obj num)
 				      "BUG: no case of number subtype %d.",
 				      subtype(num));
 	}
-	slen = strlen(buff);
-	str = (char *)malloc((slen + 1) * sizeof(char));
-	if (str == NULL)
-		return error_memory(AREA, "Number Conversion");
-	strcpy(str, buff);
-	return of_string(str);
+	return cpystrobj(buff, "number conversion");
 }

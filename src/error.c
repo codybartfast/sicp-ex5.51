@@ -7,12 +7,12 @@
 
 enum errsbtyp {
 	ERROR_MEMORY = 1,
-	ERROR_ARGUMENT_TYPE,
-	ERROR_ARGUMENT_VALUE,
-	ERROR_EVAL,
-	ERROR_INTERNAL,
-	ERROR_PARSER,
-	ERROR_UNBOUND_VARIABLE
+	ERROR_ARGUMENT_TYPE, //2
+	ERROR_ARGUMENT_VALUE, //3
+	ERROR_EVAL, //4
+	ERROR_INTERNAL, //5
+	ERROR_PARSER, //6
+	ERROR_UNBOUND_VARIABLE //7
 };
 
 const char *errstr(obj dat)
@@ -31,13 +31,6 @@ void eprintf(const char *area, const char *message, ...)
 	fprintf(stderr, "\n");
 	va_end(args);
 }
-
-// static obj mem_error = { TYPE_ERROR, ERROR_MEMORY, { 0 } } ;
-
-// obj error_memory(void)
-// {
-// 	return mem_error;
-// }
 
 static obj print_make_err(enum errsbtyp est, const char *stmsg,
 			  const char *area, const char *message, va_list args)
@@ -103,6 +96,6 @@ obj error_unbound_variable(const char *area, const char *message, ...)
 {
 	va_list args;
 	va_start(args, message);
-	return print_make_err(ERROR_UNBOUND_VARIABLE, "Unknown Variable", area,
+	return print_make_err(ERROR_UNBOUND_VARIABLE, "Unbound Variable", area,
 			      message, args);
 }

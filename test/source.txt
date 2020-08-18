@@ -39,3 +39,11 @@ circumference
 (define a 3)
 (define b (+ a 1))
 (+ a b (* a b))
+true
+false
+(> 1 0)
+(= 0 -0)
+(< -1 0)
+(> -1 0)
+(= 2 0)
+(< 1 0)
