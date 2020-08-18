@@ -92,6 +92,14 @@ obj error_parser(const char *area, const char *message, ...)
 			      args);
 }
 
+obj error_syntax(const char *area, const char *message, ...)
+{
+	va_list args;
+	va_start(args, message);
+	return print_make_err(ERROR_PARSER, "Syntax Error", area, message,
+			      args);
+}
+
 obj error_unbound_variable(const char *area, const char *message, ...)
 {
 	va_list args;

@@ -104,7 +104,10 @@ obj (*to_function(obj dat))(obj);
 
 // KEYWORDS
 
+extern const obj begin;
+extern const obj cond;
 extern const obj define;
+extern const obj else_s;
 extern const obj if_s;
 extern const obj lambda;
 
