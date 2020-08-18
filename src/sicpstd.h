@@ -13,6 +13,4 @@
 #pragma warning(disable : 4996)
 #endif
 
-
-
 #endif

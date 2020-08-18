@@ -72,11 +72,9 @@ static obj number(struct token *tkn)
 	size_t maxlen = (*s == '+' || *s == '-') ? MAX_DIGITS + 1 : MAX_DIGITS;
 	if (strlen(s) <= maxlen && (strchr(s, '.') == NULL)) {
 		return of_integer(atoll(tkn->value));
-		// eprintf(AREA, "Number has more than %d digits: %s", MAX_DIGITS,
-		// 	tkn->value);
-		// return error_parser();
+	} else {
+		return of_floating(strtod(tkn->value, NULL));
 	}
-	return of_floating(strtod(tkn->value, NULL));
 }
 
 static obj parse_list(obj lst, struct inport *port)

@@ -5,9 +5,9 @@
 #include "environment.h"
 #include "obj.h"
 
-obj eval(obj expr, obj env);
-bool is_compound_procedure(obj exp);
-obj procedure_parameters(obj p);
-obj procedure_body(obj p);
+obj eval(obj, obj);
+bool is_compound_procedure(obj);
+obj procedure_parameters(obj);
+obj procedure_body(obj);
 
 #endif

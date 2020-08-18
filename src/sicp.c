@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
 	if (port == NULL)
 		return 0;
 	while (!is_err(exp = readp(port)) && !is_eof(exp)) {
-		// printf("Evaluating: %s\n", errstr(exp));
 		write(eval(exp, tge));
 		newline();
 	}

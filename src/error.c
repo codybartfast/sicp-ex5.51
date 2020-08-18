@@ -69,6 +69,14 @@ obj error_argument_value(const char *area, const char *message, ...)
 			      message, args);
 }
 
+obj error_arity(const char *area, const char *message, ...)
+{
+	va_list args;
+	va_start(args, message);
+	return print_make_err(ERROR_ARGUMENT_VALUE, "Arity Error", area,
+			      message, args);
+}
+
 obj error_eval(const char *area, const char *message, ...)
 {
 	va_list args;

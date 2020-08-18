@@ -358,7 +358,7 @@ static obj cond_to_if(obj exp)
 static obj expand_clauses(obj clauses)
 {
 	if (is_null(clauses))
-		return fls;
+		return fls; // no else clause
 	obj first = car(clauses);
 	obj rest = cdr(clauses);
 	if (is_cond_else_clause(first)) {
@@ -375,7 +375,7 @@ static obj expand_clauses(obj clauses)
 }
 
 // ln 222
-static obj make_procedure(obj parameters, obj body, obj env)
+obj make_procedure(obj parameters, obj body, obj env)
 {
 	return list4(procedure, parameters, body, env);
 }

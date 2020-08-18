@@ -261,12 +261,11 @@ obj or_pp(const obj args)
 obj not_pp(const obj args)
 {
 	if (is_null(args))
-		return error_argument_type(AREA,
-					   "'not' expects 1 arg, but got 0");
+		return error_arity(AREA, "'not' expects 1 arg, but got 0");
 	if (!is_pair(args))
 		return err_improper("not", args);
 	if (!is_null(cdr(args)))
-		return error_argument_type(
+		return error_arity(
 			AREA, "'not' expects 1 arg, but got more than 1: (%s)",
 			errstr(args));
 	return is_false(car(args)) ? tru_o : fls_o;
