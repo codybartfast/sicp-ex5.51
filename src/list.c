@@ -6,41 +6,6 @@
 
 #define AREA "LIST"
 
-obj cadr(obj lst)
-{
-	return car(cdr(lst));
-}
-
-obj cddr(obj lst)
-{
-	return cdr(cdr(lst));
-}
-
-obj caadr(obj lst)
-{
-	return car(car(cdr(lst)));
-}
-
-obj caddr(obj lst)
-{
-	return car(cdr(cdr(lst)));
-}
-
-obj cdadr(obj lst)
-{
-	return cdr(car(cdr(lst)));
-}
-
-obj cdddr(obj lst)
-{
-	return cdr(cdr(cdr(lst)));
-}
-
-obj cadddr(obj lst)
-{
-	return car(cdr(cdr(cdr(lst))));
-}
-
 obj list2(obj a, obj b)
 {
 	return cons(a, cons(b, emptylst));
@@ -131,4 +96,145 @@ static obj reverse_i(obj lst, obj rev)
 obj reverse(obj lst)
 {
 	return reverse_i(lst, emptylst);
+}
+
+// ACCESSORS
+
+// TWO
+
+obj caar(obj lst)
+{
+	return car(car(lst));
+}
+
+obj cadr(obj lst)
+{
+	return car(cdr(lst));
+}
+obj cdar(obj lst)
+{
+	return cdr(car(lst));
+}
+
+obj cddr(obj lst)
+{
+	return cdr(cdr(lst));
+}
+
+// THREE
+
+obj caaar(obj lst)
+{
+	return car(car(car(lst)));
+}
+
+obj caadr(obj lst)
+{
+	return car(car(cdr(lst)));
+}
+obj cadar(obj lst)
+{
+	return car(cdr(car(lst)));
+}
+
+obj caddr(obj lst)
+{
+	return car(cdr(cdr(lst)));
+}
+
+obj cdaar(obj lst)
+{
+	return cdr(car(car(lst)));
+}
+
+obj cdadr(obj lst)
+{
+	return cdr(car(cdr(lst)));
+}
+obj cddar(obj lst)
+{
+	return cdr(cdr(car(lst)));
+}
+
+obj cdddr(obj lst)
+{
+	return cdr(cdr(cdr(lst)));
+}
+
+// FOUR
+
+obj caaaar(obj lst)
+{
+	return car(car(car(car(lst))));
+}
+
+obj caaadr(obj lst)
+{
+	return car(car(car(cdr(lst))));
+}
+obj caadar(obj lst)
+{
+	return car(car(cdr(car(lst))));
+}
+
+obj caaddr(obj lst)
+{
+	return car(car(cdr(cdr(lst))));
+}
+
+obj cadaar(obj lst)
+{
+	return car(cdr(car(car(lst))));
+}
+
+obj cadadr(obj lst)
+{
+	return car(cdr(car(cdr(lst))));
+}
+obj caddar(obj lst)
+{
+	return car(cdr(cdr(car(lst))));
+}
+
+obj cadddr(obj lst)
+{
+	return car(cdr(cdr(cdr(lst))));
+}
+
+obj cdaaar(obj lst)
+{
+	return cdr(car(car(car(lst))));
+}
+
+obj cdaadr(obj lst)
+{
+	return cdr(car(car(cdr(lst))));
+}
+obj cdadar(obj lst)
+{
+	return cdr(car(cdr(car(lst))));
+}
+
+obj cdaddr(obj lst)
+{
+	return cdr(car(cdr(cdr(lst))));
+}
+
+obj cddaar(obj lst)
+{
+	return cdr(cdr(car(car(lst))));
+}
+
+obj cddadr(obj lst)
+{
+	return cdr(cdr(car(cdr(lst))));
+}
+obj cdddar(obj lst)
+{
+	return cdr(cdr(cdr(car(lst))));
+}
+
+obj cddddr(obj lst)
+{
+	return cdr(cdr(cdr(cdr(lst))));
 }
