@@ -1,9 +1,8 @@
 #ifndef SICPSTD_H
 #define SICPSTD_H
 
-#define INTEGER int64_t
-#define FLOATING double
-#define FLOATING_FORMAT "%g"
+#define INTEGER long long
+#define FLOATING long double
 
 #ifdef __MACH__
 #define _ANSI_SOURCE

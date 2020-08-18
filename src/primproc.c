@@ -40,7 +40,7 @@ static obj divf(const FLOATING a, const FLOATING b)
 {
 	if (b == 0) {
 		return error_argument_value(
-			AREA, "divide by zero (/ " FLOATING_FORMAT " 0)", a);
+			AREA, "divide by zero (/ %Lg 0)", (long double)a);
 	}
 	return of_floating(a / b);
 }
