@@ -61,8 +61,8 @@ obj of_identifier(const char *id);
 bool is_boolean(obj);
 bool is_true(obj);
 bool is_false(obj);
-extern const obj cox;
-extern const obj dom;
+extern const obj tru;
+extern const obj fls;
 
 // NUMBER
 

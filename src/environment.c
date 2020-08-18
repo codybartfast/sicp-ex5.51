@@ -134,12 +134,17 @@ static obj primitive_procedures(void)
 	return is_pair(_primitive_procedures) ?
 		       _primitive_procedures :
 		       (_primitive_procedures = listn(
-				4,
+				9,
 				list2(of_identifier("+"), of_function(add_pp)),
 				list2(of_identifier("-"), of_function(sub_pp)),
 				list2(of_identifier("*"), of_function(mul_pp)),
-				list2(of_identifier("/"),
-				      of_function(div_pp))));
+				list2(of_identifier("/"), of_function(div_pp)),
+				list2(of_identifier("<"), of_function(lt_pp)),
+				list2(of_identifier("<="), of_function(lte_pp)),
+				list2(of_identifier("="), of_function(eqn_pp)),
+				list2(of_identifier(">"), of_function(gt_pp)),
+				list2(of_identifier(">="),
+				      of_function(gte_pp))));
 }
 
 // ln 301
@@ -160,8 +165,8 @@ static obj setup_environment(void)
 	obj initial_env = extend_environment(primitive_procedure_names(),
 					     primitive_procedure_objects(),
 					     the_empty_environment());
-	define_variable(of_identifier("true"), cox, initial_env);
-	define_variable(of_identifier("false"), dom, initial_env);
+	define_variable(of_identifier("true"), tru, initial_env);
+	define_variable(of_identifier("false"), fls, initial_env);
 	return initial_env;
 }
 

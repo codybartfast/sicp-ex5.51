@@ -64,8 +64,8 @@ bool is_false(obj dat)
 	return type(dat) == TYPE_BOOL && subtype(dat) == BOOL_FALSE;
 }
 
-const obj cox = OBJ_2(TYPE_BOOL, BOOL_TRUE);
-const obj dom = OBJ_2(TYPE_BOOL, BOOL_FALSE);
+const obj tru = OBJ_2(TYPE_BOOL, BOOL_TRUE);
+const obj fls = OBJ_2(TYPE_BOOL, BOOL_FALSE);
 
 // NUMBER
 
