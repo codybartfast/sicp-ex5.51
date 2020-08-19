@@ -3,4 +3,6 @@
 test_dir=$(dirname "${BASH_SOURCE[0]}")
 bin_dir=$test_dir/../bin
 
-cat $test_dir/source.txt | $bin_dir/sicp
+cat $test_dir/code/ex1.01__text.sicp | $bin_dir/sicp
+cat $test_dir/code/ex1.01_question.sicp | $bin_dir/sicp
+cat $test_dir/code/ex1.46_cbf.sicp | $bin_dir/sicp
