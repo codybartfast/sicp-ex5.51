@@ -74,4 +74,4 @@ circumference
 (* (cond ((> a b) a)
          ((< a b) b)
          (else -1))
-   (+ a 1))
+   (+ a 1)) ; comment

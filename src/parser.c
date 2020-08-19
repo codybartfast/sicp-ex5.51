@@ -27,7 +27,9 @@ obj read(void)
 
 obj readp(struct inport *port)
 {
-	struct token *tkn = read_token(port);
+	struct token *tkn;
+	while ((tkn = read_token(port))->type == TKN_COMMENT)
+		;
 	return parse(tkn, port);
 }
 

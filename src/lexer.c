@@ -18,7 +18,8 @@ char *lexer_error_message = NULL;
 static enum token_type scan(struct inport *);
 static enum token_type identifier(char c, struct inport *);
 static enum token_type number(char c, struct inport *);
-enum token_type peculiar(char c, struct inport *in);
+static enum token_type peculiar(char c, struct inport *in);
+static enum token_type comment(char c, struct inport *in);
 static void lexer_error(long position, char *msg);
 
 static struct strbldr *sb = NULL;
@@ -50,7 +51,7 @@ struct token *read_token(struct inport *in)
 	return &token;
 }
 
-enum token_type scan(struct inport *in)
+static enum token_type scan(struct inport *in)
 {
 	int c;
 
@@ -74,12 +75,14 @@ enum token_type scan(struct inport *in)
 		return peculiar(c, in);
 	if (is_digit(c) || c == '.')
 		return number(c, in);
+	if (c == ';')
+		return comment(';', in);
 	sprintf(error_msg, "Unexpected start of datum: '%c' (%d)", c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
 }
 
-enum token_type identifier(char c, struct inport *in)
+static enum token_type identifier(char c, struct inport *in)
 {
 	sb_addc(sb, c);
 	while (is_subsequent(c = in_peek(in))) {
@@ -88,7 +91,6 @@ enum token_type identifier(char c, struct inport *in)
 	if (c == EOF || is_delimiter(c)) {
 		return TKN_IDENTIFIER;
 	}
-	// need to check string length
 	sprintf(error_msg,
 		"Unexpected char in identifier starting '%." MSGLIM
 		"s': %c' (%d)",
@@ -97,7 +99,7 @@ enum token_type identifier(char c, struct inport *in)
 	return EOF;
 }
 
-enum token_type peculiar(char c, struct inport *in)
+static enum token_type peculiar(char c, struct inport *in)
 {
 	if (is_delimiter(in_peek(in))) {
 		sb_addc(sb, c);
@@ -113,7 +115,7 @@ enum token_type peculiar(char c, struct inport *in)
 	return EOF;
 }
 
-enum token_type number(char c, struct inport *in)
+static enum token_type number(char c, struct inport *in)
 {
 	int prdcnt = 0;
 	int lastc = -1;
@@ -140,15 +142,22 @@ enum token_type number(char c, struct inport *in)
 	return EOF;
 }
 
+static enum token_type comment(char c, struct inport *in)
+{
+	sb_addc(sb, c);
+	while ((c = in_readc(in)) != '\n' && c != '\r' && c != EOF)
+		sb_addc(sb, c);
+	return TKN_COMMENT;
+}
+
 void lexer_freetemp(void)
 {
 	sb_free(&sb);
 }
 
-void lexer_error(long position, char *msg)
+static void lexer_error(long position, char *msg)
 {
 	lexer_errored = true;
 	lexer_error_position = position;
 	lexer_error_message = msg;
-	// eprintf(AREA, msg);
 }

@@ -7,10 +7,11 @@
 
 enum token_type {
 	TKN_EOF = -1,
-	TKN_IDENTIFIER = 1,
-	TKN_NUMBER,
-	TKN_LIST_OPEN,
-	TKN_LIST_CLOSE
+	TKN_COMMENT = 1,
+	TKN_IDENTIFIER, // 2
+	TKN_LIST_OPEN, // 3
+	TKN_LIST_CLOSE, // 4
+	TKN_NUMBER, //5
 };
 
 struct token {
