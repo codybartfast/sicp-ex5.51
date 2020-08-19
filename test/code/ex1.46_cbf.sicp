@@ -13,7 +13,7 @@
         (improve-until-good-enough (improve guess))))
   improve-until-good-enough)
 
-    
+
 (define (sqrt-it-imp guess x)
   ((iterative-improve
     (lambda (y) (< (abs (- (* y y) x)) 0.00001))
@@ -28,11 +28,11 @@
 
 (define (fixed-point-it-imp f first-guess)
   ((iterative-improve
-    (lambda (g) (< (abs (- g (f g))) tolerence)) 
+    (lambda (g) (< (abs (- g (f g))) tolerence))
     f)
    first-guess))
 
-(define (1-over-golden)
+(define (one-over-golden)
   (fixed-point-it-imp (lambda (x) (/ 1 (+ 1 x))) 1.0))
 
-(1-over-golden)
+(one-over-golden)

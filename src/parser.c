@@ -82,7 +82,7 @@ static obj number(struct token *tkn)
 	if (strlen(s) <= maxlen && (strchr(s, '.') == NULL)) {
 		return of_integer(atoll(tkn->value));
 	} else {
-		return of_floating(strtod(tkn->value, NULL));
+		return of_floating(strtold(tkn->value, NULL));
 	}
 }
 

@@ -80,4 +80,4 @@ circumference
 (>= 1 2) (>= 2 2) (>= 2 1)      ; non-text
 (define (>= x y)
   (not (< x y)))
-(>= 1 2) (>= 2 2) (>= 2 1)
+(>= 1 2) (>= 2 2) (>= 2 1)      ; non-text

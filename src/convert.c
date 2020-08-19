@@ -43,7 +43,7 @@ obj cnv_number_string(obj num)
 		sprintf(buff, "%lld", (long long)to_integer(num));
 		break;
 	case NUMBER_FLOATING:
-		sprintf(buff, "%Lg", (long double)to_floating(num));
+		sprintf(buff, "%.15Lg", (long double)to_floating(num));
 		break;
 	default:
 		return error_internal(AREA,
