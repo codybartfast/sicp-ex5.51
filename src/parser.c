@@ -25,11 +25,21 @@ obj read(void)
 	return readp(dfltin());
 }
 
+static obj check_eof(void)
+{
+	return lexer_errored ?
+		       error_parser("LEXER", "%s (offset %ld)",
+				    lexer_error_message, lexer_error_position) :
+		       eof;
+}
+
 obj readp(struct inport *port)
 {
 	struct token *tkn;
 	while ((tkn = read_token(port))->type == TKN_COMMENT)
 		;
+	if (tkn->type == TKN_EOF)
+		return check_eof();
 	return parse(tkn, port);
 }
 
@@ -46,10 +56,7 @@ static obj parse(struct token *tkn, struct inport *port)
 		dat = parse_list(emptylst, port);
 		return is_err(dat) || is_eof(dat) ? dat : reverse(dat);
 	case TKN_EOF:
-		return lexer_errored ? error_parser("LEXER", "%s (offset %ld)",
-						    lexer_error_message,
-						    lexer_error_position) :
-				       eof;
+		return check_eof();
 	default:
 		return error_internal(AREA,
 				      "BUG: no parser case for token type: %d",
@@ -81,22 +88,25 @@ static obj number(struct token *tkn)
 
 static obj parse_list(obj lst, struct inport *port)
 {
-	obj fst;
+	obj dat;
 
 	struct token *tkn = read_token(port);
 	switch (tkn->type) {
 	case TKN_EOF:
-		return error_parser(AREA, "Open list at and of file");
+		if (is_err(dat = check_eof()))
+			return dat;
+		else
+			return error_parser(AREA, "Open list at and of file");
 	case TKN_LIST_CLOSE:
 		if (is_null(lst)) {
 			return error_parser(AREA, "Invalid syntax: \"()\"");
 		}
 		return lst;
 	default:
-		fst = parse(tkn, port);
-		return is_err(fst) || is_eof(fst) ?
-			       fst :
-			       parse_list(cons(fst, lst), port);
+		dat = parse(tkn, port);
+		return is_err(dat) || is_eof(dat) ?
+			       dat :
+			       parse_list(cons(dat, lst), port);
 	}
 }
 

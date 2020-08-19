@@ -32,7 +32,7 @@
     f)
    first-guess))
 
-(define (one-over-golden)
+(define (1-over-golden)
   (fixed-point-it-imp (lambda (x) (/ 1 (+ 1 x))) 1.0))
 
-(one-over-golden)
+(1-over-golden)

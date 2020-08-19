@@ -71,13 +71,16 @@ static enum token_type scan(struct inport *in)
 		sb_addc(sb, ')');
 		return TKN_LIST_CLOSE;
 	}
-	if (is_peculiar_identifier(c))
+	if (is_peculiar_identifier(c)) {
 		return peculiar(c, in);
-	if (is_digit(c) || c == '.')
+	}
+	if (is_digit(c) || c == '.') {
 		return number(c, in);
-	if (c == ';')
+	}
+	if (c == ';') {
 		return comment(';', in);
-	sprintf(error_msg, "Unexpected start of datum: '%c' (%d)", c, c);
+	}
+	sprintf(error_msg, "Unexpected start of datum: '%c' (0x%0X)", c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
 }
@@ -93,7 +96,7 @@ static enum token_type identifier(char c, struct inport *in)
 	}
 	sprintf(error_msg,
 		"Unexpected char in identifier starting '%." MSGLIM
-		"s': %c' (%d)",
+		"s': %c' (0x%0X)",
 		sb_string(sb), c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
@@ -109,8 +112,9 @@ static enum token_type peculiar(char c, struct inport *in)
 		return number(c, in);
 	}
 	char p = in_peek(in);
-	sprintf(error_msg, "Unexpected char following initial '%c': '%c' (%d)",
-		c, p, p);
+	sprintf(error_msg,
+		"Unexpected char following initial '%c': '%c' (0x%0X)", c, p,
+		p);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
 }
@@ -136,7 +140,8 @@ static enum token_type number(char c, struct inport *in)
 		return TKN_NUMBER;
 	}
 	sprintf(error_msg,
-		"Unexpected char in number starting '%." MSGLIM "s': '%c' (%d)",
+		"Unexpected char in number starting '%." MSGLIM
+		"s': '%c' (0x%0X)",
 		sb_string(sb), c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
