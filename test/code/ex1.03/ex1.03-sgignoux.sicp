@@ -1,0 +1,30 @@
+; Sébastien Gignoux's solution,
+; https://github.com/sgignoux/codology.net/tree/master/solutions/chapter-1
+
+(define (<= x y)
+  (not (> x y)))
+
+(define (square x) (* x x))
+(define (sum-square x y) (+ (square x) (square y)))
+
+(define (fun x y z)
+  (cond ((and (<= x y) (<= x z)) (sum-square y z))
+        ((and (<= y x) (<= y z)) (sum-square x z))
+        (else (sum-square x y))))
+
+(= (fun 10 10 10) 200)
+
+(= (fun 1 10 10) 200)
+(= (fun 10 1 10) 200)
+(= (fun 10 10 1) 200)
+
+(= (fun 1 10 100) 10100)
+(= (fun 1 100 10) 10100)
+(= (fun 10 1 100) 10100)
+(= (fun 10 100 1) 10100)
+(= (fun 100 10 1) 10100)
+(= (fun 100 1 10) 10100)
+
+(fun 3 4 5)
+(fun 13 12 5)
+(fun 7 4 17)

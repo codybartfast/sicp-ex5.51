@@ -86,7 +86,7 @@ static struct inport *expr(int argc, char *argv[])
 
 static struct inport *usage(void)
 {
-	printf("usage: [<path> | --expr <expression> | --version| --help]\n"
+	printf("usage: [<path> | --expr <expression> | --version | --help]\n"
 	       "  <path>                    evaluate contents of file <path>\n"
 	       "  -e, --expr <expression>   evaluate expression <expression>\n"
 	       "  -v, --version             display version information\n"

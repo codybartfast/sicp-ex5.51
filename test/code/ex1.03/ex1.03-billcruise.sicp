@@ -1,0 +1,34 @@
+; Bill Cruise's solution,
+; https://github.com/BillCruise/SICP/tree/master/ch_1
+
+(define (square x)
+   (* x x))
+
+(define (max x y)
+   (if (> x y) x y))
+
+(define (min x y)
+   (if (< x y) x y))
+
+(define (sum-of-highest-squares x y z)
+     (+ (square (max x y))
+       (square (max (min x y) z))))
+
+(define fun sum-of-highest-squares)
+
+(= (fun 10 10 10) 200)
+
+(= (fun 1 10 10) 200)
+(= (fun 10 1 10) 200)
+(= (fun 10 10 1) 200)
+
+(= (fun 1 10 100) 10100)
+(= (fun 1 100 10) 10100)
+(= (fun 10 1 100) 10100)
+(= (fun 10 100 1) 10100)
+(= (fun 100 10 1) 10100)
+(= (fun 100 1 10) 10100)
+
+(fun 3 4 5)
+(fun 13 12 5)
+(fun 7 4 17)

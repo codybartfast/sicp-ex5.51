@@ -1,0 +1,34 @@
+; SICP Wiki,
+; http://community.schemewiki.org/?sicp-solutions
+
+(define (>= x y)
+  (not (< x y)))
+
+(define (square x) (* x x))
+
+(define (sumsquares x y) (+ (square x) (square y)))
+
+(define (sqsumlargest a b c)
+  (cond
+    ((and (>= a c) (>= b c)) (sumsquares a b))
+    ((and (>= b a) (>= c a)) (sumsquares b c))
+    ((and (>= a b) (>= c b)) (sumsquares a c))))
+
+(define fun sqsumlargest)
+
+(= (fun 10 10 10) 200)
+
+(= (fun 1 10 10) 200)
+(= (fun 10 1 10) 200)
+(= (fun 10 10 1) 200)
+
+(= (fun 1 10 100) 10100)
+(= (fun 1 100 10) 10100)
+(= (fun 10 1 100) 10100)
+(= (fun 10 100 1) 10100)
+(= (fun 100 10 1) 10100)
+(= (fun 100 1 10) 10100)
+
+(fun 3 4 5)
+(fun 13 12 5)
+(fun 7 4 17)

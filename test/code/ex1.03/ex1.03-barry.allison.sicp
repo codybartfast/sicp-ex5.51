@@ -1,0 +1,29 @@
+; Barry Allison's solution,
+; https://gitlab.com/barry.allison/wizard-book-solutions/-/tree/master/ch01
+
+(define (<= x y)
+  (not (> x y)))
+
+(define (sum-larger-squares a b c)
+  (cond ((and (<= a b) (<= a c)) (+ (* b b) (* c c)))
+        ((and (<= b a) (<= b c)) (+ (* a a) (* c c)))
+        (else (+ (* a a) (* b b)))))
+
+(define fun sum-larger-squares)
+
+(= (fun 10 10 10) 200)
+
+(= (fun 1 10 10) 200)
+(= (fun 10 1 10) 200)
+(= (fun 10 10 1) 200)
+
+(= (fun 1 10 100) 10100)
+(= (fun 1 100 10) 10100)
+(= (fun 10 1 100) 10100)
+(= (fun 10 100 1) 10100)
+(= (fun 100 10 1) 10100)
+(= (fun 100 1 10) 10100)
+
+(fun 3 4 5)
+(fun 13 12 5)
+(fun 7 4 17)
