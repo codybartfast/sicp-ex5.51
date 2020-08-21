@@ -76,29 +76,29 @@ bool is_number(obj dat)
 	return type(dat) == TYPE_NUMBER;
 }
 
-obj of_integer(INTEGER n)
+obj of_Integer(Integer n)
 {
-	return (obj)OBJ_4(TYPE_NUMBER, NUMBER_INTEGER, integer, n);
+	return (obj)OBJ_4(TYPE_NUMBER, NUMBER_Integer, Integer, n);
 }
 
-INTEGER to_integer(obj dat)
+Integer to_Integer(obj dat)
 {
-	return dat.val.integer;
+	return dat.val.Integer;
 }
 
-obj of_floating(FLOATING n)
+obj of_Floating(Floating n)
 {
-	return (obj)OBJ_4(TYPE_NUMBER, NUMBER_FLOATING, floating, n);
+	return (obj)OBJ_4(TYPE_NUMBER, NUMBER_Floating, Floating, n);
 }
 
-FLOATING to_floating(obj dat)
+Floating to_Floating(obj dat)
 {
-	return dat.val.floating;
+	return dat.val.Floating;
 }
 
-const obj zero = OBJ_4(TYPE_NUMBER, NUMBER_INTEGER, integer, 0);
+const obj zero = OBJ_4(TYPE_NUMBER, NUMBER_Integer, Integer, 0);
 
-const obj one = OBJ_4(TYPE_NUMBER, NUMBER_INTEGER, integer, 1);
+const obj one = OBJ_4(TYPE_NUMBER, NUMBER_Integer, Integer, 1);
 
 // STRING
 

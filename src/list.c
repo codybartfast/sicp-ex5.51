@@ -65,7 +65,7 @@ obj length(obj lst)
 {
 	int len = length_u(lst);
 	return len < 0 ? error_argument_type(AREA, "'length' given non-list") :
-			 of_integer(len);
+			 of_Integer(len);
 }
 
 static obj map_u_i(obj (*func)(obj), obj lst, obj prj)

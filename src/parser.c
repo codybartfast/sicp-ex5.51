@@ -80,9 +80,9 @@ static obj number(struct token *tkn)
 	char *s = tkn->value;
 	size_t maxlen = (*s == '+' || *s == '-') ? MAX_DIGITS + 1 : MAX_DIGITS;
 	if (strlen(s) <= maxlen && (strchr(s, '.') == NULL)) {
-		return of_integer(atoll(tkn->value));
+		return of_Integer(atoll(tkn->value));
 	} else {
-		return of_floating(strtold(tkn->value, NULL));
+		return of_Floating(strtold(tkn->value, NULL));
 	}
 }
 

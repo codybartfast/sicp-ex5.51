@@ -29,63 +29,63 @@ static obj chkarity(char *fname, int exp, obj args)
 		return error_argument_type(
 			AREA, "'%s' given an improper list of arguments: %s",
 			errstr(args));
-	int act = to_integer(len);
+	int act = to_Integer(len);
 	if (act == exp)
 		return unspecified;
 	return error_arity(AREA, "'%s' expects %d args but was given %d: %s",
 			   fname, exp, act, errstr(args));
 }
 
-static FLOATING num_to_floating(const obj n)
+static Floating num_to_Floating(const obj n)
 {
 	switch (subtype(n)) {
-	case NUMBER_FLOATING:
-		return to_floating(n);
-	case NUMBER_INTEGER:
-		return (FLOATING)to_integer(n);
+	case NUMBER_Floating:
+		return to_Floating(n);
+	case NUMBER_Integer:
+		return (Floating)to_Integer(n);
 	default:
-		eprintf(AREA, "BUG! No num_tofloating case for: %d",
+		eprintf(AREA, "BUG! No num_toFloating case for: %d",
 			subtype(n));
 		return -1;
 	}
 }
 
-static obj divf(const FLOATING a, const FLOATING b)
+static obj divf(const Floating a, const Floating b)
 {
 	if (b == 0) {
 		return error_argument_value(AREA, "divide by zero (/ %Lg 0)",
 					    (long double)a);
 	}
-	return of_floating(a / b);
+	return of_Floating(a / b);
 }
 
 static obj applyop(const enum op op, const obj arg1, const obj arg2)
 {
-	if (subtype(arg1) == NUMBER_INTEGER &&
-	    subtype(arg2) == NUMBER_INTEGER) {
-		const INTEGER a = to_integer(arg1), b = to_integer(arg2);
+	if (subtype(arg1) == NUMBER_Integer &&
+	    subtype(arg2) == NUMBER_Integer) {
+		const Integer a = to_Integer(arg1), b = to_Integer(arg2);
 		switch (op) {
 		case ADD:
-			return of_integer(a + b);
+			return of_Integer(a + b);
 		case SUB:
-			return of_integer(a - b);
+			return of_Integer(a - b);
 		case MUL:
-			return of_integer(a * b);
+			return of_Integer(a * b);
 		case DIV:
 			if (b != 0 && a % b == 0)
-				return of_integer(a / b);
-			return divf((FLOATING)a, (FLOATING)b);
+				return of_Integer(a / b);
+			return divf((Floating)a, (Floating)b);
 		}
 	} else {
-		const FLOATING a = num_to_floating(arg1),
-			       b = num_to_floating(arg2);
+		const Floating a = num_to_Floating(arg1),
+			       b = num_to_Floating(arg2);
 		switch (op) {
 		case ADD:
-			return of_floating(a + b);
+			return of_Floating(a + b);
 		case SUB:
-			return of_floating(a - b);
+			return of_Floating(a - b);
 		case MUL:
-			return of_floating(a * b);
+			return of_Floating(a * b);
 		case DIV:
 			return divf(a, b);
 		}
@@ -168,9 +168,9 @@ obj div_pp(const obj args)
 
 static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)
 {
-	if (subtype(arg1) == NUMBER_INTEGER &&
-	    subtype(arg2) == NUMBER_INTEGER) {
-		const INTEGER a = to_integer(arg1), b = to_integer(arg2);
+	if (subtype(arg1) == NUMBER_Integer &&
+	    subtype(arg2) == NUMBER_Integer) {
+		const Integer a = to_Integer(arg1), b = to_Integer(arg2);
 		switch (cmp) {
 		case LT:
 			return a < b ? tru_o : fls_o;
@@ -184,8 +184,8 @@ static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)
 			return a > b ? tru_o : fls_o;
 		}
 	} else {
-		const FLOATING a = num_to_floating(arg1),
-			       b = num_to_floating(arg2);
+		const Floating a = num_to_Floating(arg1),
+			       b = num_to_Floating(arg2);
 		switch (cmp) {
 		case LT:
 			return a < b ? tru_o : fls_o;

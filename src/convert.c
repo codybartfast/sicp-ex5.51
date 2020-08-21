@@ -39,11 +39,11 @@ obj cnv_number_string(obj num)
 		return error_argument_type(
 			AREA, "number->string got non-number: %s", errstr(num));
 	switch (subtype(num)) {
-	case NUMBER_INTEGER:
-		sprintf(buff, "%lld", (long long)to_integer(num));
+	case NUMBER_Integer:
+		sprintf(buff, "%lld", (long long)to_Integer(num));
 		break;
-	case NUMBER_FLOATING:
-		sprintf(buff, "%.15Lg", (long double)to_floating(num));
+	case NUMBER_Floating:
+		sprintf(buff, "%.15Lg", (long double)to_Floating(num));
 		break;
 	default:
 		return error_internal(AREA,

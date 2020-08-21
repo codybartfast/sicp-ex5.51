@@ -1,8 +1,8 @@
 #ifndef SICPSTD_H
 #define SICPSTD_H
 
-#define INTEGER long long
-#define FLOATING long double
+typedef long long Integer;
+typedef long double Floating;
 
 #ifdef __MACH__
 #define _ANSI_SOURCE

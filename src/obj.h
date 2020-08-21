@@ -22,14 +22,14 @@ enum type {
 enum { SUBTYPE_NOT_SET = 0 };
 
 enum { BOOL_TRUE = 1, BOOL_FALSE = 2 };
-enum { NUMBER_INTEGER = 1, NUMBER_FLOATING };
+enum { NUMBER_Integer = 1, NUMBER_Floating };
 
 typedef struct obj {
 	uint8_t type;
 	uint8_t subtype;
 	union {
-		INTEGER integer;
-		FLOATING floating;
+		Integer Integer;
+		Floating Floating;
 		const char *string;
 		struct cell *reference;
 		struct obj (*primproc)(struct obj);
@@ -69,10 +69,10 @@ extern const obj fls;
 // NUMBER
 
 bool is_number(obj);
-obj of_integer(INTEGER);
-INTEGER to_integer(obj dat);
-obj of_floating(FLOATING);
-FLOATING to_floating(obj);
+obj of_Integer(Integer);
+Integer to_Integer(obj dat);
+obj of_Floating(Floating);
+Floating to_Floating(obj);
 extern const obj one;
 extern const obj zero;
 
