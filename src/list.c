@@ -55,7 +55,7 @@ int length_u(obj lst)
 		return 0;
 	}
 	if (!is_pair(lst)) {
-		eprintf(AREA, "Length given non-pair: %s");
+		eprintf(AREA, "'length' given non-pair: %s");
 		return -1;
 	}
 	return length_i(lst, 0);

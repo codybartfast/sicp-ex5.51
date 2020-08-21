@@ -22,6 +22,20 @@ static obj err_notnum(const char *fname, const obj np)
 				    errstr(np));
 }
 
+static obj chkarity(char *fname, int exp, obj args)
+{
+	obj len = length(args);
+	if (is_err(len))
+		return error_argument_type(
+			AREA, "'%s' given an improper list of arguments: %s",
+			errstr(args));
+	int act = to_integer(len);
+	if (act == exp)
+		return unspecified;
+	return error_arity(AREA, "'%s' expects %d args but was given %d: %s",
+			   fname, exp, act, errstr(args));
+}
+
 static FLOATING num_to_floating(const obj n)
 {
 	switch (subtype(n)) {
@@ -39,8 +53,8 @@ static FLOATING num_to_floating(const obj n)
 static obj divf(const FLOATING a, const FLOATING b)
 {
 	if (b == 0) {
-		return error_argument_value(
-			AREA, "divide by zero (/ %Lg 0)", (long double)a);
+		return error_argument_value(AREA, "divide by zero (/ %Lg 0)",
+					    (long double)a);
 	}
 	return of_floating(a / b);
 }
@@ -260,13 +274,8 @@ obj or_pp(const obj args)
 
 obj not_pp(const obj args)
 {
-	if (is_null(args))
-		return error_arity(AREA, "'not' expects 1 arg, but got 0");
-	if (!is_pair(args))
-		return err_improper("not", args);
-	if (!is_null(cdr(args)))
-		return error_arity(
-			AREA, "'not' expects 1 arg, but got more than 1: (%s)",
-			errstr(args));
+	obj chk;
+	if (is_err(chk = chkarity("not", 1, args)))
+		return chk;
 	return is_false(car(args)) ? tru_o : fls_o;
 }
