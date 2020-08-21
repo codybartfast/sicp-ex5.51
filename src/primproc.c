@@ -166,6 +166,18 @@ obj div_pp(const obj args)
 	}
 }
 
+obj abs_pp(const obj args)
+{
+	obj chk;
+	if (is_err(chk = chkarity("abs", 1, args)))
+		return chk;
+	obj isneg = gt_pp(cons(zero, args));
+	if (is_err(isneg))
+		return isneg;
+	obj val = car(args);
+	return is_false(isneg) ? val : applyop(SUB, zero, val);
+}
+
 static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)
 {
 	if (subtype(arg1) == NUMBER_Integer &&

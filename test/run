@@ -2,7 +2,7 @@
 
 test_dir=$(dirname "${BASH_SOURCE[0]}")
 export bin_dir=$test_dir/../bin
-source_dir=$test_dir/code #/ex1.03
+source_dir=$test_dir/code
 
 run() {
 	file=$1
@@ -13,11 +13,4 @@ run() {
 
 export -f run
 
-find $source_dir -maxdepth 2 -type f -exec bash -c 'run $0' {} \;
-
-# echo
-# for file in $source_dir/*; do
-# 	echo RUNNING: $file
-# 	cat $file | $bin_dir/sicp
-# 	echo
-# done
+find $source_dir -maxdepth 1 -type f -exec bash -c 'run $0' {} \;
