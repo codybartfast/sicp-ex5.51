@@ -8,6 +8,5 @@
 
 obj do_head(struct inport *);
 obj display_defined(obj _);
-obj initial_env(obj);
 
 #endif

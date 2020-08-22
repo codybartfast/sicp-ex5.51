@@ -5,20 +5,37 @@
 #include "parser.h"
 #include "primproc.h"
 
-obj do_head(struct inport *in)
+#define AREA "CUSTOM"
+
+static obj ex_arg(obj arg)
 {
-	obj exp = readp(in);
-	for (; is_pair(exp) && eq_symbol(car(exp), _ex); exp = readp(in)) {
-	}
-	return exp;
+	if (!is_string(arg))
+		return error_argument_type(
+			AREA, "%%ex expects a string of from \"1.1\"");
+	return arg;
 }
 
-obj initial_env(obj args)
+static obj exercise(obj args)
 {
 	obj r;
 	if (is_err(r = chkarity("%ex", 1, args)))
 		return r;
+	if (is_err(r = ex_arg(args)))
+		return r;
+
 	return unspecified;
+}
+
+obj do_head(struct inport *in)
+{
+	obj exp = readp(in);
+	if (is_pair(exp) && eq_symbol(car(exp), _ex)) {
+		obj r = exercise(cdr(exp));
+		if (is_err(r))
+			return r;
+		exp = readp(in);
+	}
+	return exp;
 }
 
 static obj defined(void)
