@@ -1,0 +1,7 @@
+; exercise 1.4, page 21
+
+(define (a-plus-abs-b a b)
+  ((if (> b 0) + -) a b))
+
+(a-plus-abs-b 2 2)              ; non-text
+(a-plus-abs-b 2 -3)             ; non-text
