@@ -8,7 +8,7 @@
 #define AREA "PRIMPROC"
 
 enum op { ADD, SUB, MUL, DIV };
-enum cmp { LT, LTE, EQ, GT, GTE };
+enum cmp { LT, LTE, EQ, GTE, GT };
 
 static obj err_improper(const char *fname, const obj np)
 {
@@ -190,9 +190,9 @@ static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)
 			return a <= b ? tru_o : fls_o;
 		case EQ:
 			return a == b ? tru_o : fls_o;
-		case GT:
-			return a >= b ? tru_o : fls_o;
 		case GTE:
+			return a >= b ? tru_o : fls_o;
+		case GT:
 			return a > b ? tru_o : fls_o;
 		}
 	} else {
@@ -205,9 +205,9 @@ static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)
 			return a <= b ? tru_o : fls_o;
 		case EQ:
 			return a == b ? tru_o : fls_o;
-		case GT:
-			return a >= b ? tru_o : fls_o;
 		case GTE:
+			return a >= b ? tru_o : fls_o;
+		case GT:
 			return a > b ? tru_o : fls_o;
 		}
 	}
@@ -256,14 +256,14 @@ obj eqn_pp(const obj args)
 	return chkfold("= (equal)", EQ, args);
 }
 
-obj gt_pp(const obj args)
-{
-	return chkfold("> (greater than)", GT, args);
-}
-
 obj gte_pp(const obj args)
 {
 	return chkfold(">= (greater than)", GTE, args);
+}
+
+obj gt_pp(const obj args)
+{
+	return chkfold("> (greater than)", GT, args);
 }
 
 obj and_pp(const obj args)
