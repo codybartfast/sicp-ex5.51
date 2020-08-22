@@ -22,7 +22,7 @@ static obj err_notnum(const char *fname, const obj np)
 				    errstr(np));
 }
 
-static obj chkarity(char *fname, int exp, obj args)
+obj chkarity(char *fname, int expct, obj args)
 {
 	obj len = length(args);
 	if (is_err(len))
@@ -30,10 +30,10 @@ static obj chkarity(char *fname, int exp, obj args)
 			AREA, "'%s' given an improper list of arguments: %s",
 			errstr(args));
 	int act = to_Integer(len);
-	if (act == exp)
+	if (act == expct)
 		return unspecified;
 	return error_arity(AREA, "'%s' expects %d args but was given %d: %s",
-			   fname, exp, act, errstr(args));
+			   fname, expct, act, errstr(args));
 }
 
 static Floating num_to_Floating(const obj n)

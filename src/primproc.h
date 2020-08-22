@@ -4,6 +4,8 @@
 
 #include "obj.h"
 
+obj chkarity(char *fname, int expct, obj args);
+
 obj add_pp(const obj);
 obj sub_pp(const obj);
 obj mul_pp(const obj);

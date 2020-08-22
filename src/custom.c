@@ -2,6 +2,24 @@
 #include "environment.h"
 #include "error.h"
 #include "list.h"
+#include "parser.h"
+#include "primproc.h"
+
+obj do_head(struct inport *in)
+{
+	obj exp = readp(in);
+	for (; is_pair(exp) && eq_symbol(car(exp), _ex); exp = readp(in)) {
+	}
+	return exp;
+}
+
+obj initial_env(obj args)
+{
+	obj r;
+	if (is_err(r = chkarity("%ex", 1, args)))
+		return r;
+	return unspecified;
+}
 
 static obj defined(void)
 {

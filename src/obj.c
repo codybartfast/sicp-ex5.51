@@ -225,6 +225,8 @@ const obj unspecified = OBJ_2(TYPE_UNSPECIFIED, SUBTYPE_NOT_SET);
 
 SYMBOL(ok)
 
+const obj _ex = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "%ex");
+
 // ERROR
 
 bool is_err(obj dat)

@@ -1,9 +1,10 @@
 #include "sicpstd.h"
 
-#include "version.h"
-#include "parser.h"
+#include "custom.h"
 #include "eval.h"
 #include "output.h"
+#include "parser.h"
+#include "version.h"
 
 static struct inport *parseargs(int argc, char *argv[]);
 static struct inport *version(void);
@@ -18,8 +19,13 @@ int main(int argc, char *argv[])
 
 	if (port == NULL)
 		return 0;
-	while (!is_err(exp = readp(port)) && !is_eof(exp)) {
-		write(eval(exp, tge));
+
+	exp = do_head(port);
+	for (; !is_err(exp) && !is_eof(exp); exp = readp(port)) {
+		obj dat = eval(exp, tge);
+		if (is_err(dat))
+			break;
+		write(dat);
 		newline();
 	}
 	parser_freetemp();

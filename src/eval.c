@@ -155,13 +155,6 @@ static bool is_variable(obj exp)
 	return is_symbol(exp);
 }
 
-// until we have a proper eq? - also in environment
-static bool eq_symbol(obj a, obj b)
-{
-	return is_symbol(a) && is_symbol(b) &&
-	       strcmp(to_string(a), to_string(b)) == 0;
-}
-
 // ln 122
 static bool is_tagged_list(obj exp, obj tag)
 {

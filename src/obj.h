@@ -121,6 +121,7 @@ bool is_eof(obj dat);
 extern const obj eof;
 extern const obj unspecified;
 extern const obj ok;
+extern const obj _ex;
 
 // ERROR
 
