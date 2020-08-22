@@ -12,6 +12,7 @@ enum token_type {
 	TKN_LIST_OPEN, // 3
 	TKN_LIST_CLOSE, // 4
 	TKN_NUMBER, //5
+	TKN_STRING, //6
 };
 
 struct token {

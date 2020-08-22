@@ -8,11 +8,6 @@
 
 #define AREA "PARSER"
 
-static obj parse(struct token *tkn, struct inport *port);
-static obj parse_list(obj lst, struct inport *port);
-static obj identifier(struct token *tkn);
-static obj number(struct token *);
-
 struct inport *default_in = NULL;
 static struct inport *dfltin(void)
 {
@@ -33,16 +28,45 @@ static obj check_eof(void)
 		       eof;
 }
 
-obj readp(struct inport *port)
+static char *token_string(struct token *tkn)
 {
-	struct token *tkn;
-	while ((tkn = read_token(port))->type == TKN_COMMENT)
-		;
-	if (tkn->type == TKN_EOF)
-		return check_eof();
-	return parse(tkn, port);
+	char *str = malloc((strlen(tkn->value) + 1) * sizeof(char));
+	if (str == NULL) {
+		return NULL;
+	}
+	strcpy(str, tkn->value);
+	return str;
 }
 
+static obj identifier(struct token *tkn)
+{
+	char *id = token_string(tkn);
+	if (id == NULL)
+		return error_memory(AREA, "Identifier");
+	return of_identifier(id);
+}
+
+static obj string(struct token *tkn)
+{
+	char *str = token_string(tkn);
+	if (str == NULL)
+		return error_memory(AREA, "String");
+	return of_string(str);
+}
+
+#define MAX_DIGITS 18
+static obj number(struct token *tkn)
+{
+	char *s = tkn->value;
+	size_t maxlen = (*s == '+' || *s == '-') ? MAX_DIGITS + 1 : MAX_DIGITS;
+	if (strlen(s) <= maxlen && (strchr(s, '.') == NULL)) {
+		return of_Integer(atoll(tkn->value));
+	} else {
+		return of_Floating(strtold(tkn->value, NULL));
+	}
+}
+
+static obj parse_list(obj, struct inport *);
 static obj parse(struct token *tkn, struct inport *port)
 {
 	obj dat;
@@ -55,34 +79,14 @@ static obj parse(struct token *tkn, struct inport *port)
 	case TKN_LIST_OPEN:
 		dat = parse_list(emptylst, port);
 		return is_err(dat) || is_eof(dat) ? dat : reverse(dat);
+	case TKN_STRING:
+		return string(tkn);
 	case TKN_EOF:
 		return check_eof();
 	default:
 		return error_internal(AREA,
 				      "BUG: no parser case for token type: %d",
 				      tkn->type);
-	}
-}
-
-static obj identifier(struct token *tkn)
-{
-	char *id = malloc((strlen(tkn->value) + 1) * sizeof(char));
-	if (id == NULL) {
-		return error_memory(AREA, "Identifier");
-	}
-	strcpy(id, tkn->value);
-	return of_identifier(id);
-}
-
-#define MAX_DIGITS 18
-static obj number(struct token *tkn)
-{
-	char *s = tkn->value;
-	size_t maxlen = (*s == '+' || *s == '-') ? MAX_DIGITS + 1 : MAX_DIGITS;
-	if (strlen(s) <= maxlen && (strchr(s, '.') == NULL)) {
-		return of_Integer(atoll(tkn->value));
-	} else {
-		return of_Floating(strtold(tkn->value, NULL));
 	}
 }
 
@@ -108,6 +112,16 @@ static obj parse_list(obj lst, struct inport *port)
 			       dat :
 			       parse_list(cons(dat, lst), port);
 	}
+}
+
+obj readp(struct inport *port)
+{
+	struct token *tkn;
+	while ((tkn = read_token(port))->type == TKN_COMMENT)
+		;
+	if (tkn->type == TKN_EOF)
+		return check_eof();
+	return parse(tkn, port);
 }
 
 void parser_freetemp(void)

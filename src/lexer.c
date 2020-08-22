@@ -16,6 +16,7 @@ long lexer_error_position = -1;
 char *lexer_error_message = NULL;
 
 static enum token_type scan(struct inport *);
+static enum token_type string(char c, struct inport *);
 static enum token_type identifier(char c, struct inport *);
 static enum token_type number(char c, struct inport *);
 static enum token_type peculiar(char c, struct inport *in);
@@ -71,16 +72,48 @@ static enum token_type scan(struct inport *in)
 		sb_addc(sb, ')');
 		return TKN_LIST_CLOSE;
 	}
+	if (c == '"') {
+		return string(c, in);
+	}
+	if (c == ';') {
+		return comment(';', in);
+	}
 	if (is_peculiar_identifier(c)) {
 		return peculiar(c, in);
 	}
 	if (is_digit(c) || c == '.') {
 		return number(c, in);
 	}
-	if (c == ';') {
-		return comment(';', in);
-	}
 	sprintf(error_msg, "Unexpected start of datum: '%c' (0x%0X)", c, c);
+	lexer_error(in->read_count, error_msg);
+	return EOF;
+}
+
+static enum token_type string(char c, struct inport *in)
+{
+	while ((c = in_readc(in)) != EOF) {
+		if (c == '"') {
+			return TKN_STRING;
+		} else if (c == '\\') {
+			int n = in_readc(in);
+			if (n == '"') {
+				sb_addc(sb, '"');
+			} else if (n == '\\') {
+				sb_addc(sb, '\\');
+			} else {
+				sprintf(error_msg,
+					"Invalid string escape: \"\\%c\" (0x%0X)",
+					n, n);
+				lexer_error(in->read_count, error_msg);
+				return EOF;
+			}
+		} else {
+			sb_addc(sb, c);
+		}
+	}
+	sprintf(error_msg,
+		"No closing '\"' in string starting: \"%." MSGLIM "s...\"",
+		sb_string(sb));
 	lexer_error(in->read_count, error_msg);
 	return EOF;
 }
