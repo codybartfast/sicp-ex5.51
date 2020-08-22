@@ -133,23 +133,20 @@ static obj _initial_procedures;
 static obj initial_procedures(void)
 {
 	obj initial_primprocs = listn(
-		16, // must match number of items below
+		13, // must match number of items below
 		list2(of_identifier("true"), tru_o),
 		list2(of_identifier("false"), fls_o),
 		list2(of_identifier("+"), of_function(add_pp)),
 		list2(of_identifier("-"), of_function(sub_pp)),
 		list2(of_identifier("*"), of_function(mul_pp)),
 		list2(of_identifier("/"), of_function(div_pp)),
-		list2(of_identifier("abs"), of_function(abs_pp)),
 		list2(of_identifier("<"), of_function(lt_pp)),
-		list2(of_identifier("<="), of_function(lte_pp)),
 		list2(of_identifier("="), of_function(eqn_pp)),
 		list2(of_identifier(">"), of_function(gt_pp)),
-		list2(of_identifier(">="), of_function(gte_pp)),
 		list2(of_identifier("and"), of_function(and_pp)),
 		list2(of_identifier("or"), of_function(or_pp)),
 		list2(of_identifier("not"), of_function(not_pp)),
-		// Additional procs not in the book
+		// Implementation specific, (not in book):
 		list2(of_identifier("%defined"), of_function(display_defined)));
 
 	return is_pair(_initial_procedures) ?

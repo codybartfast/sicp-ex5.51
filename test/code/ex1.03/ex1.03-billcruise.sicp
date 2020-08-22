@@ -1,9 +1,6 @@
 ; Bill Cruise's solution,
 ; https://github.com/BillCruise/SICP/tree/master/ch_1
 
-(define (square x)
-   (* x x))
-
 (define (max x y)
    (if (> x y) x y))
 

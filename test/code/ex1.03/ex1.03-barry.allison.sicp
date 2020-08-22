@@ -1,9 +1,6 @@
 ; Barry Allison's solution,
 ; https://gitlab.com/barry.allison/wizard-book-solutions/-/tree/master/ch01
 
-(define (<= x y)
-  (not (> x y)))
-
 (define (sum-larger-squares a b c)
   (cond ((and (<= a b) (<= a c)) (+ (* b b) (* c c)))
         ((and (<= b a) (<= b c)) (+ (* a a) (* c c)))

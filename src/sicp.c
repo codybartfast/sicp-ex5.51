@@ -14,13 +14,12 @@ static struct inport *usage(void);
 int main(int argc, char *argv[])
 {
 	obj exp;
-	struct inport *port = parseargs(argc, argv);
 	obj tge = the_global_environment();
-
+	struct inport *port = parseargs(argc, argv);
 	if (port == NULL)
 		return 0;
 
-	exp = do_head(port);
+	exp = do_head(tge, port);
 	for (; !is_err(exp) && !is_eof(exp); exp = readp(port)) {
 		obj dat = eval(exp, tge);
 		if (is_err(dat))
@@ -28,6 +27,7 @@ int main(int argc, char *argv[])
 		write(dat);
 		newline();
 	}
+
 	parser_freetemp();
 	in_close(port);
 	return 0;

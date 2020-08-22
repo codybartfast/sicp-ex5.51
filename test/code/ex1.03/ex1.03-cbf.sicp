@@ -1,7 +1,8 @@
 ; exercise 1.3, page 21
 
+(%ex "1.3")
+
 (define (sum-of-square-of-two-largest a b c)
-  (define (square x) (* x x))
   (define (sum-square a b)
     (+ (square a) (square b)))
   (if (< a b)

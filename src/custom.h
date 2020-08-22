@@ -6,7 +6,7 @@
 #include "obj.h"
 #include "output.h"
 
-obj do_head(struct inport *);
+obj do_head(obj, struct inport *);
 obj display_defined(obj _);
 
 #endif

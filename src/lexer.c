@@ -62,8 +62,6 @@ static enum token_type scan(struct inport *in)
 		return TKN_EOF;
 	}
 	token.position = in->read_count;
-	if (is_initial(c))
-		return identifier(c, in);
 	if (c == '(') {
 		sb_addc(sb, '(');
 		return TKN_LIST_OPEN;
@@ -72,11 +70,11 @@ static enum token_type scan(struct inport *in)
 		sb_addc(sb, ')');
 		return TKN_LIST_CLOSE;
 	}
-	if (c == '"') {
-		return string(c, in);
-	}
 	if (c == ';') {
 		return comment(';', in);
+	}
+	if (c == '"') {
+		return string(c, in);
 	}
 	if (is_peculiar_identifier(c)) {
 		return peculiar(c, in);
@@ -84,9 +82,20 @@ static enum token_type scan(struct inport *in)
 	if (is_digit(c) || c == '.') {
 		return number(c, in);
 	}
+	if (is_initial(c)) {
+		return identifier(c, in);
+	}
 	sprintf(error_msg, "Unexpected start of datum: '%c' (0x%0X)", c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
+}
+
+static enum token_type comment(char c, struct inport *in)
+{
+	sb_addc(sb, c);
+	while ((c = in_readc(in)) != '\n' && c != '\r' && c != EOF)
+		sb_addc(sb, c);
+	return TKN_COMMENT;
 }
 
 static enum token_type string(char c, struct inport *in)
@@ -114,23 +123,6 @@ static enum token_type string(char c, struct inport *in)
 	sprintf(error_msg,
 		"No closing '\"' in string starting: \"%." MSGLIM "s...\"",
 		sb_string(sb));
-	lexer_error(in->read_count, error_msg);
-	return EOF;
-}
-
-static enum token_type identifier(char c, struct inport *in)
-{
-	sb_addc(sb, c);
-	while (is_subsequent(c = in_peek(in))) {
-		sb_addc(sb, in_readc(in));
-	}
-	if (c == EOF || is_delimiter(c)) {
-		return TKN_IDENTIFIER;
-	}
-	sprintf(error_msg,
-		"Unexpected char in identifier starting '%." MSGLIM
-		"s': %c' (0x%0X)",
-		sb_string(sb), c, c);
 	lexer_error(in->read_count, error_msg);
 	return EOF;
 }
@@ -180,12 +172,21 @@ static enum token_type number(char c, struct inport *in)
 	return EOF;
 }
 
-static enum token_type comment(char c, struct inport *in)
+static enum token_type identifier(char c, struct inport *in)
 {
 	sb_addc(sb, c);
-	while ((c = in_readc(in)) != '\n' && c != '\r' && c != EOF)
-		sb_addc(sb, c);
-	return TKN_COMMENT;
+	while (is_subsequent(c = in_peek(in))) {
+		sb_addc(sb, in_readc(in));
+	}
+	if (c == EOF || is_delimiter(c)) {
+		return TKN_IDENTIFIER;
+	}
+	sprintf(error_msg,
+		"Unexpected char in identifier starting '%." MSGLIM
+		"s': %c' (0x%0X)",
+		sb_string(sb), c, c);
+	lexer_error(in->read_count, error_msg);
+	return EOF;
 }
 
 void lexer_freetemp(void)

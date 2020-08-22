@@ -1,39 +1,71 @@
 #include "custom.h"
+
+#include <ctype.h>
+#include <stdlib.h>
 #include "environment.h"
 #include "error.h"
+#include "eval.h"
 #include "list.h"
 #include "parser.h"
 #include "primproc.h"
 
 #define AREA "CUSTOM"
 
-static obj ex_arg(obj arg)
+static obj evalstr(char *e, obj env)
 {
-	if (!is_string(arg))
-		return error_argument_type(
-			AREA, "%%ex expects a string of from \"1.1\"");
-	return arg;
+	return eval(readp(openin_string(e)), env);
 }
 
-static obj exercise(obj args)
+static obj add_extras(int ex, obj env)
 {
-	obj r;
-	if (is_err(r = chkarity("%ex", 1, args)))
-		return r;
-	if (is_err(r = ex_arg(args)))
-		return r;
-
+	if (ex > 101) {
+		define_variable(of_identifier("abs"), of_function(abs_pp), env);
+		define_variable(of_identifier("<="), of_function(lte_pp), env);
+		define_variable(of_identifier(">="), of_function(gte_pp), env);
+		evalstr("(define (square x) (* x x))", env);
+	}
 	return unspecified;
 }
 
-obj do_head(struct inport *in)
+static int ex_num(obj arg)
+{
+	const char *str;
+	int ok = false;
+	if (is_string(arg)) {
+		str = to_string(arg);
+		if (isdigit(str[0]) && (str[1] == '.') && isdigit(str[2]) &&
+		    (str[3] == '\0' || (isdigit(str[3]) && str[4] == '\0'))) {
+			ok = true;
+		}
+	}
+	if (!ok) {
+		return -1;
+	}
+	return (100 * (str[0] - 48)) + atoi(str + 2);
+}
+
+static obj conf_ex(obj env, obj args)
+{
+	obj arg;
+	int ex;
+	if (is_err(arg = chkarity("%ex", 1, args)))
+		return arg;
+	if ((ex = ex_num(car(args))) == -1)
+		return error_argument_type(
+			AREA, "%%ex expects a string of from \"1.23\"");
+	return add_extras(ex, env);
+}
+
+obj do_head(obj env, struct inport *in)
 {
 	obj exp = readp(in);
 	if (is_pair(exp) && eq_symbol(car(exp), _ex)) {
-		obj r = exercise(cdr(exp));
+		obj r = conf_ex(env, cdr(exp));
 		if (is_err(r))
 			return r;
 		exp = readp(in);
+	} else {
+		add_extras(552, env);
 	}
 	return exp;
 }
