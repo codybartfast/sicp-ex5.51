@@ -8,7 +8,6 @@
 
 #define AREA "OUTPUT"
 
-static obj display(struct outport *, obj);
 static obj displaystr(obj);
 static obj displaypair(obj);
 
@@ -17,7 +16,7 @@ struct outport *defaullt_out = NULL;
 #define MSGSIZE 256
 static char msg[MSGSIZE];
 
-static struct outport *dfltout(void)
+struct outport *default_out(void)
 {
 	return defaullt_out == NULL ? (defaullt_out = openout_ptr(stdout)) :
 				      defaullt_out;
@@ -25,17 +24,17 @@ static struct outport *dfltout(void)
 
 obj newline(void)
 {
-	return newlinep(dfltout());
+	return newlinep(default_out());
 }
 
 obj newlinep(struct outport *out)
 {
-	return display(out, nl);
+	return displayp(out, nl);
 }
 
 obj write(obj dat)
 {
-	return writep(dfltout(), dat);
+	return writep(default_out(), dat);
 }
 
 obj writep(struct outport *op, obj dat)
@@ -52,7 +51,7 @@ obj writestr(obj dat)
 	return displaystr(dat);
 }
 
-static obj display(struct outport *op, obj dat)
+obj displayp(struct outport *op, obj dat)
 {
 	obj str;
 	if (is_compound_procedure(dat)) {
@@ -65,7 +64,7 @@ static obj display(struct outport *op, obj dat)
 	if (is_err(str))
 		return str;
 	out_writes(op, to_string(str));
-	return unspecified;
+	return emptystr;
 }
 
 static obj displaystr(obj dat)

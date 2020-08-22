@@ -79,6 +79,7 @@ extern const obj zero;
 // STRINGS
 
 bool is_string(obj);
+extern const obj emptystr;
 extern const obj nl;
 
 obj of_string(const char *str);

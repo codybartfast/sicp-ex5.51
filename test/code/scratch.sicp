@@ -3,3 +3,4 @@
 (abs 2)
 (abs -3.2)
 (abs 4.5)
+(%defined)

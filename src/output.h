@@ -5,6 +5,9 @@
 #include "obj.h"
 #include "outport.h"
 
+struct outport *default_out(void);
+
+obj displayp(struct outport *, obj);
 obj newline(void);
 obj newlinep(struct outport *);
 obj write(obj);

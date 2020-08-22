@@ -107,6 +107,7 @@ bool is_string(const obj dat)
 	return type(dat) == TYPE_STRING;
 }
 
+const obj emptystr = OBJ_4(TYPE_STRING, SUBTYPE_NOT_SET, string, "");
 const obj nl = OBJ_4(TYPE_STRING, SUBTYPE_NOT_SET, string, "\n");
 
 obj of_string(const char *str)
