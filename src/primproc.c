@@ -29,7 +29,7 @@ obj chkarity(char *fname, int expct, obj args)
 		return error_argument_type(
 			AREA, "'%s' given an improper list of arguments: %s",
 			errstr(args));
-	int act = to_Integer(len);
+	Integer act = to_Integer(len);
 	if (act == expct)
 		return unspecified;
 	return error_arity(AREA, "'%s' expects %d args but was given %d: %s",

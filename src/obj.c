@@ -184,7 +184,7 @@ obj set_cdr(obj pair, obj val)
 
 // PRIMITIVE PROCEDURES
 
-bool is_primproc(obj dat)
+bool is_primitive_procedure(obj dat)
 {
 	return type(dat) == TYPE_PRIMITIVE_PROCEDURE;
 }
@@ -213,8 +213,14 @@ SYMBOL(lambda)
 SYMBOL(procedure)
 
 // ECEVAL LABELS
-SYMBOL(ev_appl_accumulate_arg)
+SYMBOL(ev_appl_accum_last_arg)
 SYMBOL(ev_appl_did_operator)
+SYMBOL(ev_appl_accumulate_arg)
+SYMBOL(ev_assignment_1)
+SYMBOL(ev_definition_1)
+SYMBOL(ev_if_decide)
+SYMBOL(ev_sequence_continue)
+SYMBOL(return_caller)
 
 // MISC VALUES
 

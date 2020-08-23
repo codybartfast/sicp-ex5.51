@@ -9,126 +9,114 @@
 #include "list.h"
 #include "output.h"
 
-#define AREA "EVAL"
+#define AREA "MC-EVAL"
 
-static obj apply(obj procedure, obj arguments);
-static obj list_of_values(obj exps, obj env);
-static obj eval_if(obj exp, obj env);
-static obj eval_sequence(obj exps, obj env);
-static obj eval_definition(obj exp, obj env);
-static obj definition_variable(obj exp);
-static obj definition_value(obj exp);
+// static obj apply(obj procedure, obj arguments);
+// static obj list_of_values(obj exps, obj env);
+// static obj eval_if(obj exp, obj env);
+// static obj eval_sequence(obj exps, obj env);
+// static obj eval_definition(obj exp, obj env);
 static obj make_lambda(obj, obj);
-static obj if_predicate(obj);
-static obj if_consequent(obj);
-static obj if_alternate(obj);
 static obj make_if(obj predicate, obj consequent, obj alternative);
-static bool is_last_exp(obj seq);
-static obj first_exp(obj seq);
-static obj rest_exps(obj seq);
 static obj sequence_to_exp(obj seq);
 static obj make_begin(obj seq);
-static obj rest_operands(obj ops);
-static bool is_cond(obj);
+// static bool is_cond(obj);
 static obj cond_clauses(obj);
 static bool is_cond_else_clause(obj);
 static obj cond_predicate(obj);
 static obj cond_actions(obj);
-static obj cond_to_if(obj);
 static obj expand_clauses(obj);
-static obj procedure_environment(obj p);
-static obj apply_primitive_procedure(obj proc, obj args);
 
-static obj eval(obj exp, obj env)
-{
-	if (is_err(exp))
-		return exp;
+// static obj eval(obj exp, obj env)
+// {
+// 	if (is_err(exp))
+// 		return exp;
 
-	if (is_self_evaluating(exp))
-		return exp;
-	if (is_variable(exp))
-		return lookup_variable_value(exp, env);
-	if (is_definition(exp))
-		return eval_definition(exp, env);
-	if (is_if(exp))
-		return eval_if(exp, env);
-	if (is_lambda(exp))
-		return make_procedure(lambda_parameters(exp), lambda_body(exp),
-				      env);
-	if (is_cond(exp))
-		return eval(cond_to_if(exp), env);
-	if (is_application(exp)) {
-		obj proc, args;
-		proc = eval(operator(exp), env);
-		if (is_err(proc))
-			return proc;
-		args = list_of_values(operands(exp), env);
-		if (is_err(args))
-			return args;
-		return apply(proc, args);
-	}
-	return error_eval(AREA, "Unknown expression type: %s", errstr(exp));
-}
+// 	if (is_self_evaluating(exp))
+// 		return exp;
+// 	if (is_variable(exp))
+// 		return lookup_variable_value(exp, env);
+// 	if (is_definition(exp))
+// 		return eval_definition(exp, env);
+// 	if (is_if(exp))
+// 		return eval_if(exp, env);
+// 	if (is_lambda(exp))
+// 		return make_procedure(lambda_parameters(exp), lambda_body(exp),
+// 				      env);
+// 	if (is_cond(exp))
+// 		return eval(cond_to_if(exp), env);
+// 	if (is_application(exp)) {
+// 		obj proc, args;
+// 		proc = eval(operator(exp), env);
+// 		if (is_err(proc))
+// 			return proc;
+// 		args = list_of_values(operands(exp), env);
+// 		if (is_err(args))
+// 			return args;
+// 		return apply(proc, args);
+// 	}
+// 	return error_eval(AREA, "Unknown expression type: %s", errstr(exp));
+// }
 
-static obj apply(obj procedure, obj arguments)
-{
-	if (is_err(procedure))
-		return procedure;
+// static obj apply(obj procedure, obj arguments)
+// {
+// 	if (is_err(procedure))
+// 		return procedure;
 
-	if (is_primproc(procedure)) {
-		return apply_primitive_procedure(procedure, arguments);
-	} else if (is_compound_procedure(procedure)) {
-		return eval_sequence(
-			procedure_body(procedure),
-			extend_environment(procedure_parameters(procedure),
-					   arguments,
-					   procedure_environment(procedure)));
-	} else {
-		return error_eval(AREA, "Unknown procedure type: %s",
-				  errstr(procedure));
-	}
-}
+// 	if (is_primitive_procedure(procedure)) {
+// 		return apply_primitive_procedure(procedure, arguments);
+// 	} else if (is_compound_procedure(procedure)) {
+// 		return eval_sequence(
+// 			procedure_body(procedure),
+// 			extend_environment(procedure_parameters(procedure),
+// 					   arguments,
+// 					   procedure_environment(procedure)));
+// 	} else {
+// 		return error_eval(AREA, "Unknown procedure type: %s",
+// 				  errstr(procedure));
+// 	}
+// }
 
-// ln 72
-static obj list_of_values(obj exps, obj env)
-{
-	return no_operands(exps) ?
-		       emptylst :
-		       cons(eval(first_operand(exps), env),
-			    list_of_values(rest_operands(exps), env));
-}
+// // ln 72
+// static obj list_of_values(obj exps, obj env)
+// {
+// 	return no_operands(exps) ?
+// 		       emptylst :
+// 		       cons(eval(first_operand(exps), env),
+// 			    list_of_values(rest_operands(exps), env));
+// }
 
-// ln 80
-static obj eval_if(obj exp, obj env)
-{
-	obj p = eval(if_predicate(exp), env);
-	if (is_err(p))
-		return p;
-	if (is_true(p)) {
-		return eval(if_consequent(exp), env);
-	} else {
-		return eval(if_alternate(exp), env);
-	}
-}
+// // ln 80
+// static obj eval_if(obj exp, obj env)
+// {
+// 	obj p = eval(if_predicate(exp), env);
+// 	if (is_err(p))
+// 		return p;
+// 	if (is_true(p)) {
+// 		return eval(if_consequent(exp), env);
+// 	} else {
+// 		return eval(if_alternate(exp), env);
+// 	}
+// }
 
-// ln 85
-static obj eval_sequence(obj exps, obj env)
-{
-	if (is_last_exp(exps)) {
-		return eval(first_exp(exps), env);
-	} else {
-		eval(first_exp(exps), env);
-		return eval_sequence(rest_exps(exps), env);
-	}
-}
+// // ln 85
+// static obj eval_sequence(obj exps, obj env)
+// {
+// 	if (is_last_exp(exps)) {
+// 		return eval(first_exp(exps), env);
+// 	} else {
+// 		eval(first_exp(exps), env);
+// 		return eval_sequence(rest_exps(exps), env);
+// 	}
+// }
 
-// ln 100
-static obj eval_definition(obj exp, obj env)
-{
-	obj r = define_variable(definition_variable(exp),
-				eval(definition_value(exp), env), env);
-	return is_err(r) ? r : ok;
-}
+// // ln 100
+// static obj eval_definition(obj exp, obj env)
+// {
+// 	obj r = define_variable(definition_variable(exp),
+// 				eval(definition_value(exp), env), env);
+// 	return is_err(r) ? r : ok;
+// }
 
 // ln 110
 bool is_self_evaluating(obj exp)
@@ -148,6 +136,18 @@ static bool is_tagged_list(obj exp, obj tag)
 	return is_pair(exp) ? eq_symbol(car(exp), tag) : false;
 }
 
+// ln 129
+obj assignment_variable(obj exp)
+{
+	return cadr(exp);
+}
+
+// ln 130
+obj assignment_value(obj exp)
+{
+	return caddr(exp);
+}
+
 // ln 132
 bool is_definition(obj exp)
 {
@@ -155,13 +155,13 @@ bool is_definition(obj exp)
 }
 
 // ln 134
-static obj definition_variable(obj exp)
+obj definition_variable(obj exp)
 {
 	return is_symbol(cadr(exp)) ? cadr(exp) : caadr(exp);
 }
 
 // ln 138
-static obj definition_value(obj exp)
+obj definition_value(obj exp)
 {
 	return is_symbol(cadr(exp)) ?
 		       caddr(exp) :
@@ -170,7 +170,7 @@ static obj definition_value(obj exp)
 }
 
 // ln 144
-static bool is_lambda(obj exp)
+bool is_lambda(obj exp)
 {
 	return is_tagged_list(exp, lambda);
 }
@@ -200,19 +200,19 @@ bool is_if(obj exp)
 }
 
 // ln 152
-static obj if_predicate(obj exp)
+obj if_predicate(obj exp)
 {
 	return cadr(exp);
 }
 
 // ln 153
-static obj if_consequent(obj exp)
+obj if_consequent(obj exp)
 {
 	return caddr(exp);
 }
 
 // ln 155
-static obj if_alternate(obj exp)
+obj if_alternate(obj exp)
 {
 	if (!is_null(cdddr(exp))) {
 		return cadddr(exp);
@@ -227,20 +227,25 @@ static obj make_if(obj predicate, obj consequent, obj alternative)
 	return list4(if_s, predicate, consequent, alternative);
 }
 
+obj begin_actions(obj exp)
+{
+	return cdr(exp);
+}
+
 // ln 165
-static bool is_last_exp(obj seq)
+bool is_last_exp(obj seq)
 {
 	return is_null(cdr(seq));
 }
 
 // ln 166
-static obj first_exp(obj seq)
+obj first_exp(obj seq)
 {
 	return car(seq);
 }
 
 // ln 167
-static obj rest_exps(obj seq)
+obj rest_exps(obj seq)
 {
 	return cdr(seq);
 }
@@ -299,7 +304,7 @@ obj rest_operands(obj ops)
 }
 
 // ln 184
-static bool is_cond(obj exp)
+bool is_cond(obj exp)
 {
 	return is_tagged_list(exp, cond);
 }
@@ -329,7 +334,7 @@ static obj cond_actions(obj clause)
 }
 
 // ln 190
-static obj cond_to_if(obj exp)
+obj cond_to_if(obj exp)
 {
 	return expand_clauses(cond_clauses(exp));
 }
@@ -379,7 +384,7 @@ obj procedure_body(obj p)
 }
 
 // ln 227
-static obj procedure_environment(obj p)
+obj procedure_environment(obj p)
 {
 	return cadddr(p);
 }
@@ -391,7 +396,7 @@ static obj procedure_environment(obj p)
  **********************************/
 
 // ln 324
-static obj apply_primitive_procedure(obj proc, obj args)
+obj apply_primitive_procedure(obj proc, obj args)
 {
 	return (to_function(proc))(args);
 }

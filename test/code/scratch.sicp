@@ -1,13 +1,8 @@
-;some comment
-(abs 0)
-(abs -1)
-(abs 2)
-(abs -3.2)
-(abs 4.5)
-(<= 1 2)
-(<= 2 1)
-(<= 2 2)
-(>= 2 1)
-(>= 1 2)
-(>= 2 2)
-(%defined)
+(define (p) (p))
+
+(define (test x y)
+  (if (= x 0)
+      0
+      y))
+
+;(test 0 (p))

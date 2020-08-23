@@ -1,6 +1,7 @@
 #include "sicpstd.h"
 
 #include "custom.h"
+#include "environment.h"
 #include "eval.h"
 #include "output.h"
 #include "parser.h"

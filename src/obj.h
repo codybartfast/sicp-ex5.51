@@ -99,7 +99,7 @@ obj set_cdr(obj, obj);
 
 // PRIMITIVE PROCEDURES
 
-bool is_primproc(obj dat);
+bool is_primitive_procedure(obj dat);
 obj of_function(obj (*funptr)(obj));
 obj (*to_function(obj dat))(obj);
 
@@ -116,8 +116,14 @@ extern const obj lambda;
 extern const obj procedure;
 
 // ECEVAL LABELS
+extern const obj ev_appl_accum_last_arg;
 extern const obj ev_appl_accumulate_arg;
 extern const obj ev_appl_did_operator;
+extern const obj ev_assignment_1;
+extern const obj ev_definition_1;
+extern const obj ev_if_decide;
+extern const obj ev_sequence_continue;
+extern const obj return_caller;
 
 // MISC VALUES
 

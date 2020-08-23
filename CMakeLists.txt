@@ -13,6 +13,7 @@ set (SRC_CORE
 	src/inport.c
 	src/lexer.c
 	src/list.c
+	src/mceval.c
 	src/obj.c
 	src/outport.c
 	src/output.c
