@@ -6,7 +6,7 @@ source_dir=$test_dir/code
 
 run() {
 	file=$1
-	echo RUNNING: $file
+	echo running: $file
 	cat $file | $bin_dir/sicp
 	echo
 }

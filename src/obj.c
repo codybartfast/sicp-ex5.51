@@ -212,6 +212,10 @@ SYMBOL(lambda)
 // TAGS
 SYMBOL(procedure)
 
+// ECEVAL LABELS
+SYMBOL(ev_appl_accumulate_arg)
+SYMBOL(ev_appl_did_operator)
+
 // MISC VALUES
 
 bool is_eof(obj dat)

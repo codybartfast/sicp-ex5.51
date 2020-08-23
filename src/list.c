@@ -6,6 +6,11 @@
 
 #define AREA "LIST"
 
+obj list1(obj a)
+{
+	return cons(a, emptylst);
+}
+
 obj list2(obj a, obj b)
 {
 	return cons(a, cons(b, emptylst));
@@ -96,6 +101,21 @@ static obj reverse_i(obj lst, obj rev)
 obj reverse(obj lst)
 {
 	return reverse_i(lst, emptylst);
+}
+
+static obj append_i(obj lst1, obj lst2)
+{
+	if (is_null(lst1))
+		return lst2;
+	return append_i(cdr(lst1), cons(car(lst1), lst2));
+}
+
+obj append(obj lst1, obj lst2)
+{
+	lst1 = reverse(lst1);
+	if (is_err(lst1))
+		return lst1;
+	return append_i(lst1, lst2);
 }
 
 // ACCESSORS

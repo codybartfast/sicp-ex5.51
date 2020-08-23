@@ -115,6 +115,10 @@ extern const obj lambda;
 // EVAL TAGS
 extern const obj procedure;
 
+// ECEVAL LABELS
+extern const obj ev_appl_accumulate_arg;
+extern const obj ev_appl_did_operator;
+
 // MISC VALUES
 
 bool is_eof(obj dat);

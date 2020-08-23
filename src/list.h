@@ -4,6 +4,7 @@
 
 #include "obj.h"
 
+obj list1(obj);
 obj list2(obj, obj);
 obj list3(obj, obj, obj);
 obj list4(obj, obj, obj, obj);
@@ -12,6 +13,7 @@ obj length(obj);
 int length_u(obj);
 obj map_u(obj (*)(obj), obj);
 obj reverse(obj);
+obj append(obj, obj);
 
 obj caar(obj lst);
 obj cadr(obj lst);
