@@ -7,116 +7,18 @@
 #include <string.h>
 #include "error.h"
 #include "list.h"
-#include "output.h"
 
 #define AREA "MC-EVAL"
 
-// static obj apply(obj procedure, obj arguments);
-// static obj list_of_values(obj exps, obj env);
-// static obj eval_if(obj exp, obj env);
-// static obj eval_sequence(obj exps, obj env);
-// static obj eval_definition(obj exp, obj env);
 static obj make_lambda(obj, obj);
 static obj make_if(obj predicate, obj consequent, obj alternative);
 static obj sequence_to_exp(obj seq);
 static obj make_begin(obj seq);
-// static bool is_cond(obj);
 static obj cond_clauses(obj);
 static bool is_cond_else_clause(obj);
 static obj cond_predicate(obj);
 static obj cond_actions(obj);
 static obj expand_clauses(obj);
-
-// static obj eval(obj exp, obj env)
-// {
-// 	if (is_err(exp))
-// 		return exp;
-
-// 	if (is_self_evaluating(exp))
-// 		return exp;
-// 	if (is_variable(exp))
-// 		return lookup_variable_value(exp, env);
-// 	if (is_definition(exp))
-// 		return eval_definition(exp, env);
-// 	if (is_if(exp))
-// 		return eval_if(exp, env);
-// 	if (is_lambda(exp))
-// 		return make_procedure(lambda_parameters(exp), lambda_body(exp),
-// 				      env);
-// 	if (is_cond(exp))
-// 		return eval(cond_to_if(exp), env);
-// 	if (is_application(exp)) {
-// 		obj proc, args;
-// 		proc = eval(operator(exp), env);
-// 		if (is_err(proc))
-// 			return proc;
-// 		args = list_of_values(operands(exp), env);
-// 		if (is_err(args))
-// 			return args;
-// 		return apply(proc, args);
-// 	}
-// 	return error_eval(AREA, "Unknown expression type: %s", errstr(exp));
-// }
-
-// static obj apply(obj procedure, obj arguments)
-// {
-// 	if (is_err(procedure))
-// 		return procedure;
-
-// 	if (is_primitive_procedure(procedure)) {
-// 		return apply_primitive_procedure(procedure, arguments);
-// 	} else if (is_compound_procedure(procedure)) {
-// 		return eval_sequence(
-// 			procedure_body(procedure),
-// 			extend_environment(procedure_parameters(procedure),
-// 					   arguments,
-// 					   procedure_environment(procedure)));
-// 	} else {
-// 		return error_eval(AREA, "Unknown procedure type: %s",
-// 				  errstr(procedure));
-// 	}
-// }
-
-// // ln 72
-// static obj list_of_values(obj exps, obj env)
-// {
-// 	return no_operands(exps) ?
-// 		       emptylst :
-// 		       cons(eval(first_operand(exps), env),
-// 			    list_of_values(rest_operands(exps), env));
-// }
-
-// // ln 80
-// static obj eval_if(obj exp, obj env)
-// {
-// 	obj p = eval(if_predicate(exp), env);
-// 	if (is_err(p))
-// 		return p;
-// 	if (is_true(p)) {
-// 		return eval(if_consequent(exp), env);
-// 	} else {
-// 		return eval(if_alternate(exp), env);
-// 	}
-// }
-
-// // ln 85
-// static obj eval_sequence(obj exps, obj env)
-// {
-// 	if (is_last_exp(exps)) {
-// 		return eval(first_exp(exps), env);
-// 	} else {
-// 		eval(first_exp(exps), env);
-// 		return eval_sequence(rest_exps(exps), env);
-// 	}
-// }
-
-// // ln 100
-// static obj eval_definition(obj exp, obj env)
-// {
-// 	obj r = define_variable(definition_variable(exp),
-// 				eval(definition_value(exp), env), env);
-// 	return is_err(r) ? r : ok;
-// }
 
 // ln 110
 bool is_self_evaluating(obj exp)

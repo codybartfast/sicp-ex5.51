@@ -4,7 +4,6 @@
 #include "eval.h"
 
 #include <stdlib.h>
-#include "environment.h"
 #include "error.h"
 #include "list.h"
 #include "mceval.h"
@@ -17,17 +16,7 @@ static obj expr;
 static obj proc;
 static obj unev;
 static obj val;
-static obj stack = { TYPE_EMPTY_LIST, SUBTYPE_NOT_SET, { 0 } };
-
-bool have_init;
-static void init(void)
-{
-	if (have_init)
-		return;
-	stack = emptylst;
-	cont = return_caller;
-	return;
-}
+static obj stack;
 
 static void save(obj dat)
 {
@@ -71,8 +60,9 @@ static obj adjoin_arg(obj arg, obj arglist)
 
 obj eval(obj expression, obj env)
 {
-	init();
 	expr = expression;
+	stack = emptylst;
+	cont = return_caller;
 
 // 5.4.1 The Core of the Evaluator
 
@@ -98,6 +88,7 @@ eval_dispatch:
 	goto unknown_expression_type;
 
 // Evaluating Simple Expressions
+
 // ln 259
 ev_self_eval:
 	val = expr;
@@ -187,13 +178,7 @@ compound_apply:
 	unev = procedure_body(proc);
 	goto ev_sequence;
 
-	// 5.4.2 Sequence Evaluation and Tail Recursion
-
-// // ln 348
-// ev_begin:
-// 	unev = begin_actions(exp);
-// 	save(cont);
-// 	goto ev_sequence;
+// 5.4.2 Sequence Evaluation and Tail Recursion
 
 // ln 353
 ev_sequence:
@@ -240,25 +225,6 @@ ev_if_consequent:
 	expr = if_consequent(expr);
 	goto eval_dispatch;
 
-// Assignments and definitions
-
-// // ln 399
-// ev_assignment:
-// 	unev = assignment_variable(exp);
-// 	save(unev); //save variable for later
-// 	exp = assignment_value(exp);
-// 	save(env);
-// 	save(cont);
-// 	cont = ev_assignment_1;
-// 	goto eval_dispatch; // evaluate the assignment value
-// ev_assignment_1:
-// 	cont = restore();
-// 	env = restore();
-// 	unev = restore();
-// 	set_variable_value(unev, val, env);
-// 	val = ok;
-// 	goto go_cont;
-
 // ln 416
 ev_definition:
 	unev = definition_variable(expr);
@@ -284,13 +250,11 @@ ev_cond:
 unknown_expression_type:
 	return error_eval(AREA, "Unknown expression type: %s", errstr(expr));
 unknown_procedure_type:
-	// (restore continue)    ; clean up stack (from apply-dispatch)
+	cont = restore(); // clean up stack (from apply-dispatch)
 	return error_eval(AREA, "Unknown procedure type: %s",
 			  errstr(procedure));
 
 go_cont:
-	// eprintf(AREA, "expressionist: %s", errstr(exp));
-	// eprintf(AREA, "Going to: %s (%d)", to_string(cont), type(cont));
 	if (eq_symbol(cont, return_caller))
 		return val;
 	if (eq_symbol(cont, ev_appl_accum_last_arg))
@@ -299,14 +263,11 @@ go_cont:
 		goto ev_appl_accumulate_arg;
 	if (eq_symbol(cont, ev_appl_did_operator))
 		goto ev_appl_did_operator;
-	// if (eq_symbol(cont, ev_assignment_1))
-	// 	goto ev_assignment_1;
 	if (eq_symbol(cont, ev_definition_1))
 		goto ev_definition_1;
 	if (eq_symbol(cont, ev_if_decide))
 		goto ev_if_decide;
 	if (eq_symbol(cont, ev_sequence_continue))
 		goto ev_sequence_continue;
-	eprintf(AREA, "Goto... where?: %s", to_string(cont));
-	exit(1);
+	return error_internal(AREA, "BUG! Goto... where?: %s", to_string(cont));
 }

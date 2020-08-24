@@ -16,7 +16,7 @@ static obj the_empty_environment(void);
 static obj lvv_env_loop(obj var, obj env);
 static obj setup_environment(void);
 
-// until we have a proper eq?
+// until we have a proper eq? - also in mceval.c
 bool eq_symbol(obj a, obj b)
 {
 	return is_symbol(a) && is_symbol(b) &&
