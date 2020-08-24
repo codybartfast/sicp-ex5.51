@@ -1,0 +1,26 @@
+; Barry Allison's solution,
+; https://gitlab.com/barry.allison/wizard-book-solutions/-/tree/master/ch01
+
+(define (good-enough? guess last-guess x)
+  (< (abs (- guess last-guess)) (/ guess 100000)))
+  
+(define (cube-root x)
+  (cube-root-iter 1.0 0 x))
+
+(define (cube-root-iter guess last-guess x)
+  (if (good-enough? guess last-guess x)
+      guess
+      (cube-root-iter (improve-cube guess x)
+                      guess
+                      x)))
+
+(define (improve-cube guess x)
+  (/ (+ (/ x (square guess))
+        (* 2 guess))
+     3))
+
+(define (cbrt x)
+   (cube-root-iter 1.0 0 x))
+
+(cbrt 0.001)
+(cbrt 99999999999998)

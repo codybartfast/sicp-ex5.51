@@ -1,0 +1,29 @@
+; exercise 1.8, page 26
+
+(%ex "1.8")
+
+(define (cube n) (* n n n))
+
+(define (improve-cube guess x)
+  (/
+   (+
+    (/ x (square guess))
+    (* 2 guess))
+   3))
+
+(define (dist a b) (abs (- a b)))
+
+(define (good-enough-cube? guess x)
+  (< (dist 1 (/ (cube guess) x)) 0.001))
+
+(define (cube-root-iter guess x)
+  (if (good-enough-cube? guess x)
+      guess
+      (cube-root-iter (improve-cube guess x)
+                 x)))
+
+(define (cbrt x)
+   (cube-root-iter 1.0 x))
+
+(cbrt 0.001)
+(cbrt 99999999999998)

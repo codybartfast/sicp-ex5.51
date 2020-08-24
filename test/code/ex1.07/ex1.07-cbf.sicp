@@ -1,0 +1,29 @@
+; exercise 1.7, page 25
+
+(%ex "1.7")
+
+(define (sqrt-iter-new guess x)
+  (if (good-enough-new? guess x)
+      guess
+      (sqrt-iter-new (improve guess x)
+                 x)))
+
+(define (improve guess x)
+  (average guess (/ x guess)))
+
+(define (average x y)
+  (/ (+ x y) 2))
+
+(define (square x) (* x x ))
+
+(define (dist a b) (abs (- a b)))
+
+(define (good-enough-new? guess x)
+  (< (dist 1 (/ (square guess) x)) 0.001))
+
+
+(define (sqrt x)
+   (sqrt-iter-new 1 x))
+
+(sqrt 0.00000000123456)
+(sqrt 123456789012345)

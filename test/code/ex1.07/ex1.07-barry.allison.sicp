@@ -1,0 +1,24 @@
+; Barry Allison's solution,
+; https://gitlab.com/barry.allison/wizard-book-solutions/-/tree/master/ch01
+
+(define (improve guess x)
+  (average guess (/ x guess)))
+
+(define (average x y)
+  (/ (+ x y) 2))
+
+(define (sqrt x)
+  (sqrt-iter 1.0 0 x))
+
+(define (sqrt-iter guess last-guess x)
+  (if (good-enough? guess last-guess x)
+      guess
+      (sqrt-iter (improve guess x)
+                 guess
+                 x)))
+
+(define (good-enough? guess last-guess x)
+  (< (abs (- guess last-guess)) (/ guess 100000)))
+
+(sqrt 0.00000000123456)
+(sqrt 123456789012345)
