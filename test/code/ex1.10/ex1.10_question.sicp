@@ -1,3 +1,5 @@
+(%ex "1.10")
+
 ; exercise 1.10, page 26
 
 (define (A x y)
@@ -43,4 +45,3 @@
 (k 3)				; non-text
 (k 4)				; non-text
 (k 5)				; non-text
-

@@ -1,3 +1,5 @@
+(%ex "1.4")
+
 ; exercise 1.4, page 21
 
 (define (a-plus-abs-b a b)

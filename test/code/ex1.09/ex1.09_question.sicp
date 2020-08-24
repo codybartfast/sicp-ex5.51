@@ -1,3 +1,5 @@
+(%ex "1.9")
+
 ; exercise 1.9, page 36
 
 (define (inc n) (- n -1))	; non-text

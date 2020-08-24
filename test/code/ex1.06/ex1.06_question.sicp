@@ -1,6 +1,6 @@
-; exercise 1.6, page 25
-
 (%ex "1.6")
+
+; exercise 1.6, page 25
 
 (define (new-if predicate then-clause else-clause)
   (cond (predicate then-clause)

@@ -1,6 +1,6 @@
-; exercise 1.7, page 25
-
 (%ex "1.7")
+
+; exercise 1.7, page 25
 
 (define (sqrt-iter-new guess x)
   (if (good-enough-new? guess x)
@@ -20,7 +20,6 @@
 
 (define (good-enough-new? guess x)
   (< (dist 1 (/ (square guess) x)) 0.001))
-
 
 (define (sqrt x)
    (sqrt-iter-new 1 x))

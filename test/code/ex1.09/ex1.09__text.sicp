@@ -1,3 +1,5 @@
+(%ex "1.9")
+
 ; section 1.1.8, page 27
 (define (square x)
   (exp (double (log x))))
@@ -24,6 +26,7 @@
   (sqrt 16)			; non-text
 
 ; section 1.2.1, page 32
+
 (define (factorial n)
   (if (= n 1)
       1
@@ -32,6 +35,7 @@
 (factorial 9)                   ; non-text
 
 ; section 1.2.1, page 33
+
 (define (factorial n)
   (define (iter product counter)
     (if (> counter n)
@@ -43,6 +47,7 @@
 (factorial 8)                   ; non-text
 
 ; section 1.2.1, page 34
+
 (define (factorial n)
   (fact-iter 1 1 n))
 

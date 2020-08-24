@@ -1,3 +1,5 @@
+(%ex "1.5")
+
 ; exercise 1.5, page 21
 
 (define (p) (p))
