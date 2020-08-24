@@ -12,6 +12,9 @@ static struct inport *version(void);
 static struct inport *expr(int argc, char *argv[]);
 static struct inport *usage(void);
 
+#include <limits.h>
+#include <stdio.h>
+
 int main(int argc, char *argv[])
 {
 	obj exp;
@@ -31,6 +34,7 @@ int main(int argc, char *argv[])
 
 	parser_freetemp();
 	in_close(port);
+
 	return 0;
 }
 

@@ -78,7 +78,7 @@ bool is_number(obj dat)
 
 obj of_Integer(Integer n)
 {
-	return (obj)OBJ_4(TYPE_NUMBER, NUMBER_Integer, Integer, n);
+	return (obj)OBJ_4(TYPE_NUMBER, NUMBER_INTEGER, Integer, n);
 }
 
 Integer to_Integer(obj dat)
@@ -88,7 +88,7 @@ Integer to_Integer(obj dat)
 
 obj of_Floating(Floating n)
 {
-	return (obj)OBJ_4(TYPE_NUMBER, NUMBER_Floating, Floating, n);
+	return (obj)OBJ_4(TYPE_NUMBER, NUMBER_FLOATING, Floating, n);
 }
 
 Floating to_Floating(obj dat)
@@ -96,9 +96,9 @@ Floating to_Floating(obj dat)
 	return dat.val.Floating;
 }
 
-const obj zero = OBJ_4(TYPE_NUMBER, NUMBER_Integer, Integer, 0);
+const obj zero = OBJ_4(TYPE_NUMBER, NUMBER_INTEGER, Integer, 0);
 
-const obj one = OBJ_4(TYPE_NUMBER, NUMBER_Integer, Integer, 1);
+const obj one = OBJ_4(TYPE_NUMBER, NUMBER_INTEGER, Integer, 1);
 
 // STRING
 

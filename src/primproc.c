@@ -10,6 +10,11 @@
 enum op { ADD, SUB, MUL, DIV };
 enum cmp { LT, LTE, EQ, GTE, GT };
 
+const Integer add_max = (((Integer)1) << ((sizeof(Integer) * 8) - 2)) - 1;
+const Integer add_min = -(((Integer)1) << ((sizeof(Integer) * 8) - 2));
+const Integer mul_max = ((Integer)1) << ((sizeof(Integer) * 4) - 1);
+const Integer mul_min = -mul_max;
+
 static obj err_improper(const char *fname, const obj np)
 {
 	return error_argument_value(AREA, "%s given an improper list: %s",
@@ -39,9 +44,9 @@ obj chkarity(char *fname, int expct, obj args)
 static Floating num_to_Floating(const obj n)
 {
 	switch (subtype(n)) {
-	case NUMBER_Floating:
+	case NUMBER_FLOATING:
 		return to_Floating(n);
-	case NUMBER_Integer:
+	case NUMBER_INTEGER:
 		return (Floating)to_Integer(n);
 	default:
 		eprintf(AREA, "BUG! No num_toFloating case for: %d",
@@ -59,10 +64,42 @@ static obj divf(const Floating a, const Floating b)
 	return of_Floating(a / b);
 }
 
-static obj applyop(const enum op op, const obj arg1, const obj arg2)
+static obj chkszadd(obj n)
 {
-	if (subtype(arg1) == NUMBER_Integer &&
-	    subtype(arg2) == NUMBER_Integer) {
+	Integer i;
+	return (subtype(n) == NUMBER_INTEGER &&
+		((i = to_Integer(n)) < mul_min || mul_max < i)) ?
+		       of_Floating(i) :
+		       n;
+}
+
+static obj chkszmul(obj n)
+{
+	Integer i;
+	return (subtype(n) == NUMBER_INTEGER &&
+		((i = to_Integer(n)) < mul_min || mul_max < i)) ?
+		       of_Floating(i) :
+		       n;
+}
+
+static obj applyop(const enum op op, obj arg1, obj arg2)
+{
+	switch (op) {
+	case ADD:
+	case SUB:
+		arg1 = chkszadd(arg1);
+		arg2 = chkszadd(arg2);
+		break;
+	case MUL:
+		arg1 = chkszmul(arg1);
+		arg2 = chkszmul(arg2);
+		break;
+	default:
+		break;
+	}
+
+	if (subtype(arg1) == NUMBER_INTEGER &&
+	    subtype(arg2) == NUMBER_INTEGER) {
 		const Integer a = to_Integer(arg1), b = to_Integer(arg2);
 		switch (op) {
 		case ADD:
@@ -180,8 +217,8 @@ obj abs_pp(const obj args)
 
 static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)
 {
-	if (subtype(arg1) == NUMBER_Integer &&
-	    subtype(arg2) == NUMBER_Integer) {
+	if (subtype(arg1) == NUMBER_INTEGER &&
+	    subtype(arg2) == NUMBER_INTEGER) {
 		const Integer a = to_Integer(arg1), b = to_Integer(arg2);
 		switch (cmp) {
 		case LT:

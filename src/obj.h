@@ -22,7 +22,7 @@ enum type {
 enum { SUBTYPE_NOT_SET = 0 };
 
 enum { BOOL_TRUE = 1, BOOL_FALSE = 2 };
-enum { NUMBER_Integer = 1, NUMBER_Floating };
+enum { NUMBER_INTEGER = 1, NUMBER_FLOATING };
 
 typedef struct obj {
 	uint8_t type;
