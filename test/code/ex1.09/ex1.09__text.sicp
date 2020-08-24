@@ -1,0 +1,56 @@
+; section 1.1.8, page 27
+(define (square x)
+  (exp (double (log x))))
+
+(define (double x) (+ x x))
+
+(square 4)			; non-text
+
+; section 1.1.8, page 30
+
+(define (sqrt x)
+  (define (average x y)
+    (/ (+ x y) 2))
+  (define (good-enough? guess)
+    (< (abs (- (square guess) x)) 0.001))
+  (define (improve guess)
+    (average guess (/ x guess)))
+  (define (sqrt-iter guess)
+    (if (good-enough? guess)
+        guess
+        (sqrt-iter (improve guess))))
+  (sqrt-iter 1.0))
+
+  (sqrt 16)			; non-text
+
+; section 1.2.1, page 32
+(define (factorial n)
+  (if (= n 1)
+      1
+      (* n (factorial (- n 1)))))
+
+(factorial 9)                   ; non-text
+
+; section 1.2.1, page 33
+(define (factorial n)
+  (define (iter product counter)
+    (if (> counter n)
+        product
+        (iter (* counter product)
+              (+ counter 1))))
+  (iter 1 1))
+
+(factorial 8)                   ; non-text
+
+; section 1.2.1, page 34
+(define (factorial n)
+  (fact-iter 1 1 n))
+
+(define (fact-iter product counter max-count)
+  (if (> counter max-count)
+      product
+      (fact-iter (* counter product)
+                 (+ counter 1)
+                 max-count)))
+
+(factorial 7)                   ; non-text

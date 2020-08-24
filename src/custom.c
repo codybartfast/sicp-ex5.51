@@ -18,6 +18,10 @@ static obj evalstr(char *e, obj env)
 
 static obj add_extras(int ex, obj env)
 {
+	if (ex >= 109) {
+		define_variable(of_identifier("exp"), of_function(exp_pp), env);
+		define_variable(of_identifier("log"), of_function(log_pp), env);
+	}
 	if (ex > 101) {
 		//define_variable(of_identifier("abs"), of_function(abs_pp), env);
 		evalstr("(define (abs x) (if (< x 0) (- x) x))", env);

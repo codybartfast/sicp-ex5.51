@@ -1,5 +1,6 @@
 #include "primproc.h"
 
+#include "math.h"
 #include "stdbool.h"
 #include "error.h"
 #include "output.h"
@@ -213,6 +214,26 @@ obj abs_pp(const obj args)
 		return isneg;
 	obj val = car(args);
 	return is_false(isneg) ? val : applyop(SUB, zero, val);
+}
+
+obj exp_pp(const obj args)
+{
+	obj chk, val;
+	if (is_err(chk = chkarity("exp", 1, args)))
+		return chk;
+	if (!is_number(val = car(args)))
+		err_notnum("exp", val);
+	return of_Floating(exp(num_to_Floating(val)));
+}
+
+obj log_pp(const obj args)
+{
+	obj chk, val;
+	if (is_err(chk = chkarity("log", 1, args)))
+		return chk;
+	if (!is_number(val = car(args)))
+		err_notnum("log", val);
+	return of_Floating(log(num_to_Floating(val)));
 }
 
 static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)
