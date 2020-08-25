@@ -17,7 +17,7 @@ enum cmp { LT, LTE, EQ, GTE, GT };
 const Integer add_max = (((Integer)1) << ((sizeof(Integer) * 8) - 2)) - 1;
 const Integer add_min = -(((Integer)1) << ((sizeof(Integer) * 8) - 2));
 const Integer mul_max = ((Integer)1) << ((sizeof(Integer) * 4) - 1);
-const Integer mul_min = -mul_max;
+const Integer mul_min = -(((Integer)1) << ((sizeof(Integer) * 4) - 1));
 
 static obj err_improper(const char *fname, const obj np)
 {

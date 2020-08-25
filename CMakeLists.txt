@@ -31,4 +31,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 
 add_executable (sicp ${SRC_CORE} src/sicp.c)
 
-target_link_libraries(sicp m)
+if(MSVC)
+	target_link_libraries(sicp)
+else()
+	target_link_libraries(sicp m)
+endif()
