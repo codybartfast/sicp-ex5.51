@@ -43,7 +43,7 @@
                 "-Wmissing-prototypes", // function declarations
                 "-Wstrict-prototypes", // "specified argument types"
                 "-Wold-style-definition", // don't support K&R fun dec/def
-                "-Wno-psabi", // disable warning of ABI changes (long dobule in struct)
+                //"-Wno-psabi", // disable warning of ABI changes (long dobule in struct)
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

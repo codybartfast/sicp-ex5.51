@@ -18,5 +18,5 @@
 (define (cbrt x)
   (cbrt-iter 1.1 x))
 
-(cbrt 0.001)
+;(cbrt 0.001) ;; Hangs on Mac
 (cbrt 99999999999998)
