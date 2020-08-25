@@ -18,10 +18,6 @@ static obj evalstr(char *e, obj env)
 
 static obj add_extras(int ex, obj env)
 {
-	if (ex >= 109) {
-		define_variable(of_identifier("exp"), of_function(exp_pp), env);
-		define_variable(of_identifier("log"), of_function(log_pp), env);
-	}
 	if (ex > 101) {
 		//define_variable(of_identifier("abs"), of_function(abs_pp), env);
 		evalstr("(define (abs x) (if (< x 0) (- x) x))", env);
@@ -33,6 +29,14 @@ static obj add_extras(int ex, obj env)
 		evalstr("(define (>= x y) (not (< x y)))", env);
 
 		evalstr("(define (square x) (* x x))", env);
+	}
+	if (ex >= 109) {
+		define_variable(of_identifier("exp"), of_function(exp_pp), env);
+		define_variable(of_identifier("log"), of_function(log_pp), env);
+	}
+	if (ex >= 115) {
+		define_variable(of_identifier("remainder"), of_function(rem_pp),
+				env);
 	}
 	return unspecified;
 }

@@ -38,10 +38,20 @@ obj chkarity(char *fname, int expct, obj args)
 			AREA, "'%s' given an improper list of arguments: %s",
 			errstr(args));
 	Integer act = to_integer(len);
-	if (act == expct)
-		return unspecified;
-	return error_arity(AREA, "'%s' expects %d args but was given %d: %s",
-			   fname, expct, act, errstr(args));
+	if (act != expct)
+		return error_arity(AREA,
+				   "'%s' expects %d args but was given %d: %s",
+				   fname, expct, act, errstr(args));
+	return args;
+}
+
+static obj allnum(char *fname, obj args)
+{
+	for (; is_pair(args); args = cdr(args)) {
+		if (!is_number(car(args)))
+			return err_notnum(fname, car(args));
+	}
+	return args;
 }
 
 static Floating num_to_floating(const obj n)
@@ -54,7 +64,29 @@ static Floating num_to_floating(const obj n)
 	default:
 		eprintf(AREA, "BUG! No num_to_floating case for: %d",
 			subtype(n));
-		return -1;
+		exit(1);
+	}
+}
+
+static obj num_to_integer(const char *fname, const obj n)
+{
+	Floating f;
+	Integer i;
+	switch (subtype(n)) {
+	case NUMBER_FLOATING:
+		f = to_floating(n);
+		i = f;
+		return (i == f) ?
+			       of_integer(i) :
+			       error_argument_value(AREA,
+						    "%s got a non-integer: %Lg",
+						    fname, (long double)f);
+	case NUMBER_INTEGER:
+		return n;
+	default:
+		return error_internal(AREA,
+				      "BUG! No num_to_integer case for: %d",
+				      subtype(n));
 	}
 }
 
@@ -206,13 +238,33 @@ obj div_pp(const obj args)
 	}
 }
 
+obj rem_pp(const obj args)
+{
+	obj err, a, b;
+	char *fname = "remainder";
+
+	if (is_err(err = chkarity(fname, 2, args)))
+		return err;
+	if (is_err(err = allnum(fname, args)))
+		return err;
+	a = num_to_integer(fname, car(args));
+	b = num_to_integer(fname, cadr(args));
+	if (is_err(a))
+		return a;
+	if (is_err(b))
+		return b;
+	return of_integer(to_integer(a) % to_integer(b));
+}
+
 static obj applyun(char *fname, enum un op, obj args)
 {
 	obj err, n;
+
 	if (is_err(err = chkarity(fname, 1, args)))
 		return err;
-	if (!is_number(n = car(args)))
-		return err_notnum(fname, n);
+	if (is_err(err = allnum(fname, args)))
+		return err;
+	n = car(args);
 	switch (op) {
 	case ABS:
 		return (subtype(n) == NUMBER_INTEGER) ?

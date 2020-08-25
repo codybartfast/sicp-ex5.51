@@ -158,6 +158,8 @@ ev_appl_accum_last_arg:
 
 // ln 324
 apply_dispatch:
+	if (is_err(proc))
+		return proc;
 	if (is_primitive_procedure(proc))
 		goto primitive_apply;
 	if (is_compound_procedure(proc))
@@ -253,8 +255,7 @@ unknown_expression_type:
 	return error_eval(AREA, "Unknown expression type: %s", errstr(expr));
 unknown_procedure_type:
 	cont = restore(); // clean up stack (from apply-dispatch)
-	return error_eval(AREA, "Unknown procedure type: %s",
-			  errstr(procedure));
+	return error_eval(AREA, "Unknown procedure type: %s", errstr(proc));
 
 go_cont:
 	if (eq_symbol(cont, return_caller))

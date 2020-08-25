@@ -10,6 +10,9 @@ obj add_pp(const obj);
 obj sub_pp(const obj);
 obj mul_pp(const obj);
 obj div_pp(const obj);
+
+obj rem_pp(const obj);
+
 obj abs_pp(const obj);
 obj exp_pp(const obj);
 obj log_pp(const obj);
