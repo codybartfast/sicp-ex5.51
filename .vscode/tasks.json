@@ -6,7 +6,7 @@
         {
             "type": "shell",
             "label": "Build SICP",
-            "command": "/usr/bin/gcc",
+            "command": "/usr/local/bin/gcc",
             "args": [
                 "-lm", // load maths module
                 //
