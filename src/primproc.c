@@ -1,7 +1,8 @@
 #include "primproc.h"
 
-#include "math.h"
-#include "stdbool.h"
+#include <math.h>
+#include <stdbool.h>
+#include <stdlib.h>
 #include "error.h"
 #include "output.h"
 #include "list.h"
@@ -9,6 +10,7 @@
 #define AREA "PRIMPROC"
 
 enum op { ADD, SUB, MUL, DIV };
+enum un { ABS, EXP, LOG };
 enum cmp { LT, LTE, EQ, GTE, GT };
 
 const Integer add_max = (((Integer)1) << ((sizeof(Integer) * 8) - 2)) - 1;
@@ -42,7 +44,7 @@ obj chkarity(char *fname, int expct, obj args)
 			   fname, expct, act, errstr(args));
 }
 
-static Floating num_to_Floating(const obj n)
+static Floating num_to_floating(const obj n)
 {
 	switch (subtype(n)) {
 	case NUMBER_FLOATING:
@@ -50,7 +52,7 @@ static Floating num_to_Floating(const obj n)
 	case NUMBER_INTEGER:
 		return (Floating)to_integer(n);
 	default:
-		eprintf(AREA, "BUG! No num_toFloating case for: %d",
+		eprintf(AREA, "BUG! No num_to_floating case for: %d",
 			subtype(n));
 		return -1;
 	}
@@ -115,8 +117,8 @@ static obj applyop(const enum op op, obj arg1, obj arg2)
 			return divf((Floating)a, (Floating)b);
 		}
 	} else {
-		const Floating a = num_to_Floating(arg1),
-			       b = num_to_Floating(arg2);
+		const Floating a = num_to_floating(arg1),
+			       b = num_to_floating(arg2);
 		switch (op) {
 		case ADD:
 			return of_floating(a + b);
@@ -204,36 +206,40 @@ obj div_pp(const obj args)
 	}
 }
 
+static obj applyun(char *fname, enum un op, obj args)
+{
+	obj err, n;
+	if (is_err(err = chkarity(fname, 1, args)))
+		return err;
+	if (!is_number(n = car(args)))
+		return err_notnum(fname, n);
+	switch (op) {
+	case ABS:
+		return (subtype(n) == NUMBER_INTEGER) ?
+			       of_integer(abs(to_integer(n))) :
+			       of_floating(abs(to_floating(n)));
+	case EXP:
+		return of_floating(exp(num_to_floating(n)));
+	case LOG:
+		return of_floating(log(num_to_floating(n)));
+	default:
+		return error_internal(AREA, "BUG! no unary case for %d", op);
+	}
+}
+
 obj abs_pp(const obj args)
 {
-	obj chk;
-	if (is_err(chk = chkarity("abs", 1, args)))
-		return chk;
-	obj isneg = gt_pp(cons(zero, args));
-	if (is_err(isneg))
-		return isneg;
-	obj val = car(args);
-	return is_false(isneg) ? val : applyop(SUB, zero, val);
+	return applyun("abs", ABS, args);
 }
 
 obj exp_pp(const obj args)
 {
-	obj chk, val;
-	if (is_err(chk = chkarity("exp", 1, args)))
-		return chk;
-	if (!is_number(val = car(args)))
-		err_notnum("exp", val);
-	return of_floating(exp(num_to_Floating(val)));
+	return applyun("exp", EXP, args);
 }
 
 obj log_pp(const obj args)
 {
-	obj chk, val;
-	if (is_err(chk = chkarity("log", 1, args)))
-		return chk;
-	if (!is_number(val = car(args)))
-		err_notnum("log", val);
-	return of_floating(log(num_to_Floating(val)));
+	return applyun("log", LOG, args);
 }
 
 static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)
@@ -254,8 +260,8 @@ static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)
 			return a > b ? tru_o : fls_o;
 		}
 	} else {
-		const Floating a = num_to_Floating(arg1),
-			       b = num_to_Floating(arg2);
+		const Floating a = num_to_floating(arg1),
+			       b = num_to_floating(arg2);
 		switch (cmp) {
 		case LT:
 			return a < b ? tru_o : fls_o;
