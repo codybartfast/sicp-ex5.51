@@ -1,0 +1,21 @@
+; exercise 1.11, page 42
+
+(%ex "1.12")
+
+(define (pascal row col)
+  (cond
+    ((> col row) -1)
+    ((= col 0) 1)
+    ((= col row) 1)
+    (else
+     (+
+      (pascal (- row 1) (- col 1))
+      (pascal (- row 1) col)))))
+
+(define pasc pascal)
+
+(pasc 0 0)
+(pasc 5 5)
+(pasc 5 3)
+(pasc 6 4)
+(pasc 9 5)

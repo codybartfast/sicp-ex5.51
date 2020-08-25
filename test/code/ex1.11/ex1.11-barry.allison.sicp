@@ -1,0 +1,38 @@
+; Barry Allison's solution,
+; https://gitlab.com/barry.allison/wizard-book-solutions/-/tree/master/ch01
+
+(define (sub1 n) (- n 1))
+(define (zero? n) (= n 0))
+
+(define (f-rec n)
+  (if (< n 3)
+      n
+      (+ (* 1 (f-rec (- n 1)))
+         (* 2 (f-rec (- n 2)))
+         (* 3 (f-rec (- n 3))))))
+
+(define (fi n)
+    (f-iter 0 1 2 n))
+
+(define (f-iter a b c count)
+  (if (zero? count)
+      a
+      (f-iter b
+              c
+              (+ c (* 2 b) (* 3 a))
+              (sub1 count))))
+
+(define fibr f-rec)
+(define fibi fi)
+
+(fibr 0)
+(fibr 3)
+(fibr 4)
+(fibr 6)
+(fibr 12)
+
+(fibi 0)
+(fibi 3)
+(fibi 4)
+(fibi 6)
+(fibi 12)

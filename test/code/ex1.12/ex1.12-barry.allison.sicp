@@ -1,0 +1,19 @@
+; Barry Allison's solution,
+; https://gitlab.com/barry.allison/wizard-book-solutions/-/tree/master/ch01
+
+(define (sub1 n) (- n 1))
+
+(define (pascal row col)
+  (cond ((= row 1) 1)
+        ((= col 1) 1)
+        ((= col row) 1)
+        (else (+ (pascal (sub1 row) (sub1 col))
+                 (pascal (sub1 row) col)))))
+
+(define (pasc r c) (pascal (+ r 1) (+ c 1)))
+
+(pasc 0 0)
+(pasc 5 5)
+(pasc 5 3)
+(pasc 6 4)
+(pasc 9 5)

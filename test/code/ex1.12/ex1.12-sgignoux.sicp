@@ -1,0 +1,16 @@
+; Sébastien Gignoux's solution,
+; https://github.com/sgignoux/codology.net/tree/master/solutions/chapter-1
+
+(define (pascal row col)
+  (cond ((= row 1) 1)
+        ((or (= col 1) (= col row)) 1)
+        (else (+ (pascal (- row 1)  (- col 1))
+                 (pascal (- row 1) col)))))
+
+(define (pasc r c) (pascal (+ r 1) (+ c 1)))
+
+(pasc 0 0)
+(pasc 5 5)
+(pasc 5 3)
+(pasc 6 4)
+(pasc 9 5)

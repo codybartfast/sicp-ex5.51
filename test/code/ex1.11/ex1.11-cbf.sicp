@@ -1,0 +1,32 @@
+; exercise 1.11, page 42
+
+(%ex "1.11")
+
+(define (f-rec n)
+  (if (< n 3) n
+      (+ (f-rec (- n 1))
+         (* 2 (f-rec (- n 2)))
+         (* 3 (f-rec (- n 3))))))
+
+(define (f-itr n)
+  (define (iter m f-prev f-pre-prev f-pre-pre-prev)
+    (define f-this (+ f-prev (* 2 f-pre-prev) (* 3 f-pre-pre-prev)))
+    (if (= n m)
+        f-this
+        (iter (+ m 1) f-this f-prev f-pre-prev)))
+  (if (< n 3) n (iter 3 2 1 0)))
+
+(define fibr f-rec)
+(define fibi f-itr)
+
+(fibr 0)
+(fibr 3)
+(fibr 4)
+(fibr 6)
+(fibr 12)
+
+(fibi 0)
+(fibi 3)
+(fibi 4)
+(fibi 6)
+(fibi 12)

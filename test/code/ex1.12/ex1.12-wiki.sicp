@@ -1,0 +1,15 @@
+; SICP Wiki,
+; http://community.schemewiki.org/?sicp-solutions
+
+(define (pascal r c) 
+  (if (or (= c 1) (= c r)) 
+      1 
+      (+ (pascal (- r 1) (- c 1)) (pascal (- r 1) c)))) 
+
+(define (pasc r c) (pascal (+ r 1) (+ c 1)))
+
+(pasc 0 0)
+(pasc 5 5)
+(pasc 5 3)
+(pasc 6 4)
+(pasc 9 5)
