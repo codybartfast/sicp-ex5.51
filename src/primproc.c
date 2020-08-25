@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <tgmath.h>
 #include "error.h"
 #include "output.h"
 #include "list.h"
@@ -268,8 +269,8 @@ static obj applyun(char *fname, enum un op, obj args)
 	switch (op) {
 	case ABS:
 		return (subtype(n) == NUMBER_INTEGER) ?
-			       of_integer(abs(to_integer(n))) :
-			       of_floating(abs(to_floating(n)));
+			       of_integer(llabs(to_integer(n))) :
+			       of_floating(fabsl(to_floating(n)));
 	case EXP:
 		return of_floating(exp(num_to_floating(n)));
 	case LOG:
