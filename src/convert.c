@@ -40,10 +40,10 @@ obj cnv_number_string(obj num)
 			AREA, "number->string got non-number: %s", errstr(num));
 	switch (subtype(num)) {
 	case NUMBER_INTEGER:
-		sprintf(buff, "%lld", (long long)to_Integer(num));
+		sprintf(buff, "%lld", (long long)to_integer(num));
 		break;
 	case NUMBER_FLOATING:
-		sprintf(buff, "%.15Lg", (long double)to_Floating(num));
+		sprintf(buff, "%.15Lg", (long double)to_floating(num));
 		break;
 	default:
 		return error_internal(AREA,

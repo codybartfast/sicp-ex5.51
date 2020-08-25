@@ -76,22 +76,22 @@ bool is_number(obj dat)
 	return type(dat) == TYPE_NUMBER;
 }
 
-obj of_Integer(Integer n)
+obj of_integer(Integer n)
 {
 	return (obj)OBJ_4(TYPE_NUMBER, NUMBER_INTEGER, Integer, n);
 }
 
-Integer to_Integer(obj dat)
+Integer to_integer(obj dat)
 {
 	return dat.val.Integer;
 }
 
-obj of_Floating(Floating n)
+obj of_floating(Floating n)
 {
 	return (obj)OBJ_4(TYPE_NUMBER, NUMBER_FLOATING, Floating, n);
 }
 
-Floating to_Floating(obj dat)
+Floating to_floating(obj dat)
 {
 	return dat.val.Floating;
 }

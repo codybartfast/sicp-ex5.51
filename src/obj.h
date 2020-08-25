@@ -69,10 +69,10 @@ extern const obj fls;
 // NUMBER
 
 bool is_number(obj);
-obj of_Integer(Integer);
-Integer to_Integer(obj dat);
-obj of_Floating(Floating);
-Floating to_Floating(obj);
+obj of_integer(Integer);
+Integer to_integer(obj dat);
+obj of_floating(Floating);
+Floating to_floating(obj);
 extern const obj one;
 extern const obj zero;
 
