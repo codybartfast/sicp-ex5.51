@@ -175,6 +175,8 @@ compound_apply:
 	unev = procedure_parameters(proc);
 	env = procedure_environment(proc);
 	env = extend_environment(unev, argl, env);
+	if (is_err(env))
+		return env;
 	unev = procedure_body(proc);
 	goto ev_sequence;
 
