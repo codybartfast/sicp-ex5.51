@@ -45,6 +45,7 @@ static obj add_extras(int ex, obj env)
 	}
 	if (ex >= 116) {
 		evalstr("(define (even? n) (= (remainder n 2) 0))", env);
+		evalstr("(define (odd? n) (= (remainder n 2) 1))", env);
 	}
 	return unspecified;
 }
