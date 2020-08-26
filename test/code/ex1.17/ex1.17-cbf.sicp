@@ -1,0 +1,21 @@
+; exercise 1.17, page 46
+
+(%ex "1.17")
+
+(define (halve n) (/ n 2))
+(define (double n) (* n 2))
+
+(define (*-rec a b)
+  (cond
+    ((= a 0) 0)
+    ((= a 1) b)
+    ((even? a) (*-rec (halve a) (double b)))
+    (else (+ b (*-rec (- a 1) b)))))
+
+(define *-Olog *-rec)
+
+(*-Olog 0 1)
+(*-Olog 1 0)
+(*-Olog 2 2)
+(*-Olog 5 11)
+(*-Olog 17 19)

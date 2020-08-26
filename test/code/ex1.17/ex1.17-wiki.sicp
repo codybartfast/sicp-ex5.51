@@ -1,0 +1,18 @@
+; SICP Wiki,
+; http://community.schemewiki.org/?sicp-solutions
+
+(define (double x) (+ x x))
+(define (halve x) (/ x 2))
+
+(define (* a b)
+  (cond ((= b 0) 0)
+        ((even? b) (double (* a (halve b))))
+        (else (+ a (* a (- b 1))))))
+
+(define *-Olog *)
+
+(*-Olog 0 1)
+(*-Olog 1 0)
+(*-Olog 2 2)
+(*-Olog 5 11)
+(*-Olog 17 19)

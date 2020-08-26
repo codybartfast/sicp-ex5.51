@@ -1,0 +1,18 @@
+; Barry Allison's solution,
+; https://gitlab.com/barry.allison/wizard-book-solutions/-/tree/master/ch01
+
+(define (double n) (+ n n))
+(define (halve n) (/ n 2))
+
+(define (fast-* b n)
+  (cond ((= n 0) 0)
+        ((even? n) (double (fast-* b (halve n))))
+        (else (+ b (fast-* b (- n 1))))))
+
+(define *-Olog fast-*)
+
+(*-Olog 0 1)
+(*-Olog 1 0)
+(*-Olog 2 2)
+(*-Olog 5 11)
+(*-Olog 17 19)
