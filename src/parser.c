@@ -94,7 +94,9 @@ static obj parse_list(obj lst, struct inport *port)
 {
 	obj dat;
 
-	struct token *tkn = read_token(port);
+	struct token *tkn;
+	while ((tkn = read_token(port))->type == TKN_COMMENT)
+		;
 	switch (tkn->type) {
 	case TKN_EOF:
 		if (is_err(dat = check_eof()))

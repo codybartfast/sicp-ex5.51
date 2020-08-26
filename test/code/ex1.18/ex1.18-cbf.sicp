@@ -1,0 +1,19 @@
+; exercise 1.18, page 47
+
+(%ex "1.18")
+
+(define (halve n) (/ n 2))
+(define (double n) (* n 2))
+
+(define (*-iter a b)
+  (define (iter a b s)
+    (cond ((= a 0) s)
+          ((even? a) (iter (halve a) (double b) s))
+          (else (iter (- a 1) b (+ s b)))))
+  (iter a b 0))
+
+(*-iter 0 1)
+(*-iter 1 0)
+(*-iter 2 2)
+(*-iter 5 11)
+(*-iter 17 19)
