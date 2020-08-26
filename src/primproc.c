@@ -55,21 +55,20 @@ static obj allnum(char *fname, obj args)
 	return args;
 }
 
-static Floating num_to_floating(const obj n)
+static obj cnv_to_fltnum(const obj n)
 {
 	switch (subtype(n)) {
 	case NUMBER_FLOATING:
-		return to_floating(n);
+		return n;
 	case NUMBER_INTEGER:
-		return (Floating)to_integer(n);
+		return of_floating(to_integer(n));
 	default:
-		eprintf(AREA, "BUG! No num_to_floating case for: %d",
-			subtype(n));
-		exit(1);
+		return error_internal(
+			AREA, "BUG! No cnv_to_fltnum case for: %d", subtype(n));
 	}
 }
 
-static obj num_to_integer(const char *fname, const obj n)
+static obj cnv_to_intnum(const char *fname, const obj n)
 {
 	Floating f;
 	Integer i;
@@ -85,9 +84,8 @@ static obj num_to_integer(const char *fname, const obj n)
 	case NUMBER_INTEGER:
 		return n;
 	default:
-		return error_internal(AREA,
-				      "BUG! No num_to_integer case for: %d",
-				      subtype(n));
+		return error_internal(
+			AREA, "BUG! No cnv_to_intnum case for: %d", subtype(n));
 	}
 }
 
@@ -150,8 +148,17 @@ static obj applyop(const enum op op, obj arg1, obj arg2)
 			return divf((Floating)a, (Floating)b);
 		}
 	} else {
-		const Floating a = num_to_floating(arg1),
-			       b = num_to_floating(arg2);
+		Floating a, b;
+		obj ao = cnv_to_fltnum(arg1);
+		obj bo = cnv_to_fltnum(arg2);
+
+		if (is_err(ao))
+			return ao;
+		if (is_err(bo))
+			return bo;
+		a = to_floating(ao);
+		b = to_floating(bo);
+
 		switch (op) {
 		case ADD:
 			return of_floating(a + b);
@@ -248,8 +255,8 @@ obj rem_pp(const obj args)
 		return err;
 	if (is_err(err = allnum(fname, args)))
 		return err;
-	a = num_to_integer(fname, car(args));
-	b = num_to_integer(fname, cadr(args));
+	a = cnv_to_intnum(fname, car(args));
+	b = cnv_to_intnum(fname, cadr(args));
 	if (is_err(a))
 		return a;
 	if (is_err(b))
@@ -272,9 +279,9 @@ static obj applyun(char *fname, enum un op, obj args)
 			       of_integer(llabs(to_integer(n))) :
 			       of_floating(fabsl(to_floating(n)));
 	case EXP:
-		return of_floating(exp(num_to_floating(n)));
+		return of_floating(exp(to_floating(cnv_to_fltnum(n))));
 	case LOG:
-		return of_floating(log(num_to_floating(n)));
+		return of_floating(log(to_floating(cnv_to_fltnum(n))));
 	default:
 		return error_internal(AREA, "BUG! no unary case for %d", op);
 	}
@@ -313,8 +320,17 @@ static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)
 			return a > b ? tru_o : fls_o;
 		}
 	} else {
-		const Floating a = num_to_floating(arg1),
-			       b = num_to_floating(arg2);
+		Floating a, b;
+		obj ao = cnv_to_fltnum(arg1);
+		obj bo = cnv_to_fltnum(arg2);
+
+		if (is_err(ao))
+			return ao;
+		if (is_err(bo))
+			return bo;
+		a = to_floating(ao);
+		b = to_floating(bo);
+
 		switch (cmp) {
 		case LT:
 			return a < b ? tru_o : fls_o;
