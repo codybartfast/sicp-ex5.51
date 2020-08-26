@@ -1,5 +1,6 @@
 #include "sicpstd.h"
 
+#include <string.h>
 #include "custom.h"
 #include "environment.h"
 #include "eval.h"
@@ -46,7 +47,8 @@ static struct inport *parseargs(int argc, char *argv[])
 	if (argc <= 1)
 		return openin_ptr(stdin);
 	s = argv[1];
-	haveoptions = (*s == '-' || *s == '/' || *s == '?');
+	printf("arg1: %s\n", s);
+	haveoptions = (*s == '-' || *s == '?' || (*s == '/' && strlen(s) == 2));
 	if (!haveoptions)
 		return (argc == 2) ? openin_file(argv[1]) : usage();
 

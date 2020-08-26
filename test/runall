@@ -7,10 +7,10 @@ source_dir=$test_dir/code
 run() {
 	file=$1
 	echo running: $file
-	cat $file | $bin_dir/sicp
+	$bin_dir/sicp $file
 	echo
 }
 
 export -f run
 
-find $source_dir -maxdepth 2 -type f -exec bash -c 'run $0' {} \;
+find $source_dir -type f -exec bash -c 'run $0' {} \;

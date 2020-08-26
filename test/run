@@ -4,13 +4,5 @@ test_dir=$(dirname "${BASH_SOURCE[0]}")
 export bin_dir=$test_dir/../bin
 source_dir=$test_dir/code
 
-run() {
-	file=$1
-	echo running: $file
-	cat $file | $bin_dir/sicp
-	echo
-}
-
-export -f run
-
-find $source_dir -maxdepth 1 -type f -exec bash -c 'run $0' {} \;
+echo running: $file
+$bin_dir/sicp $source_dir/scratch.sicp
