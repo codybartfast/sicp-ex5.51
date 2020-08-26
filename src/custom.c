@@ -33,6 +33,11 @@ static obj add_extras(int ex, obj env)
 	if (ex >= 109) {
 		define_variable(of_identifier("exp"), of_function(exp_pp), env);
 		define_variable(of_identifier("log"), of_function(log_pp), env);
+		// inc and dec could be 'defined' but making them primitive
+		// avoids the risk of loops in questions where + is defined in
+		// terms of inc
+		define_variable(of_identifier("inc"), of_function(inc_pp), env);
+		define_variable(of_identifier("dec"), of_function(dec_pp), env);
 	}
 	if (ex >= 115) {
 		define_variable(of_identifier("remainder"), of_function(rem_pp),

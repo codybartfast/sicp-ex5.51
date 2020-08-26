@@ -2,9 +2,6 @@
 
 ; exercise 1.9, page 36
 
-(define (inc n) (- n -1))	; non-text
-(define (dec n) (- n 1))	; non-text
-
 (define (+ a b)
   (if (= a 0)
       b

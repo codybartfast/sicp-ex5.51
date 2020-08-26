@@ -11,7 +11,7 @@
 #define AREA "PRIMPROC"
 
 enum op { ADD, SUB, MUL, DIV };
-enum un { ABS, EXP, LOG };
+enum un { ABS, EXP, LOG, INC, DEC };
 enum cmp { LT, LTE, EQ, GTE, GT };
 
 const Integer add_max = (((Integer)1) << ((sizeof(Integer) * 8) - 2)) - 1;
@@ -282,6 +282,10 @@ static obj applyun(char *fname, enum un op, obj args)
 		return of_floating(exp(to_floating(cnv_to_fltnum(n))));
 	case LOG:
 		return of_floating(log(to_floating(cnv_to_fltnum(n))));
+	case INC:
+		return applyop(ADD, n, one);
+	case DEC:
+		return applyop(SUB, n, one);
 	default:
 		return error_internal(AREA, "BUG! no unary case for %d", op);
 	}
@@ -300,6 +304,16 @@ obj exp_pp(const obj args)
 obj log_pp(const obj args)
 {
 	return applyun("log", LOG, args);
+}
+
+obj inc_pp(const obj args)
+{
+	return applyun("inc", INC, args);
+}
+
+obj dec_pp(const obj args)
+{
+	return applyun("dec", DEC, args);
 }
 
 static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)
