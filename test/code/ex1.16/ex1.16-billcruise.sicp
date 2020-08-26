@@ -1,0 +1,19 @@
+; Bill Cruise's solution,
+; https://github.com/BillCruise/SICP/tree/master/ch_1
+
+(define (expt-iter b n a)
+   (cond ((= n 0) a)
+         ((even? n) (expt-iter (square b) (/ n 2) a))
+         (else (expt-iter  b (- n 1) (* a b)))))
+
+(define (fast-expt b n)
+   (expt-iter b n 1))
+
+(define fast-expti fast-expt)
+
+(fast-expti 2 0)
+(fast-expti 2 1)
+(fast-expti 2 4)
+(fast-expti 2 16)
+(fast-expti 2 32)
+(fast-expti 17 7)

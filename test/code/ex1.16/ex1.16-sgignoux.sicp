@@ -1,0 +1,19 @@
+; Sébastien Gignoux's solution,
+; https://github.com/sgignoux/codology.net/tree/master/solutions/chapter-1
+
+(define (fast-expt-iter a b n)
+  (cond ((= n 0)
+         a)
+        ((even? n)
+         (fast-expt-iter a (* b b) (/ n 2)))
+        (else
+         (fast-expt-iter (* a b) b (- n 1)))))
+
+(define (fast-expti b n) (fast-expt-iter 1 b n))
+
+(fast-expti 2 0)
+(fast-expti 2 1)
+(fast-expti 2 4)
+(fast-expti 2 16)
+(fast-expti 2 32)
+(fast-expti 17 7)

@@ -38,6 +38,9 @@ static obj add_extras(int ex, obj env)
 		define_variable(of_identifier("remainder"), of_function(rem_pp),
 				env);
 	}
+	if (ex >= 116) {
+		evalstr("(define (even? n) (= (remainder n 2) 0))", env);
+	}
 	return unspecified;
 }
 

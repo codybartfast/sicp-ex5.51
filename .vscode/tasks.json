@@ -27,11 +27,12 @@
                 "src/primproc.c",
                 "src/sicp.c",
                 "src/strbldr.c",
+                //
                 "-O3", // Optimization Level. Tail Call Optimization seem to need >= 2
                 "-std=c17", // 'ISO C 2017' standard
                 "-o",
                 "${workspaceFolder}/bin/sicp", // output e.g., "${fileDirname}/sicp",
-                "-g", // Produce debugging info in os native format.
+                // "-g", // Produce debugging info in os native format.
                 //
                 // Warnings
                 // https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#Warning-Options

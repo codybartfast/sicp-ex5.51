@@ -4,5 +4,7 @@ test_dir=$(dirname "${BASH_SOURCE[0]}")
 export bin_dir=$test_dir/../bin
 source_dir=$test_dir/code
 
+file=scratch.sicp
+
 echo running: $file
-$bin_dir/sicp $source_dir/scratch.sicp
+$bin_dir/sicp $source_dir/$file
