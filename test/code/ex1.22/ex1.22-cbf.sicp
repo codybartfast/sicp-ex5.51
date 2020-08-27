@@ -13,9 +13,10 @@
 
 (define (report-prime elapsed-time)
   (display " *** ")
-  (display elapsed-time))
+  (display (seconds elapsed-time)))
 
 (define (search-for-primes even-start count)
+  (newline)
   (display "First three primes above ")
   (display even-start)
   (display ":")
