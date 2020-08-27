@@ -1,0 +1,11 @@
+(%ex "1.19")
+
+; section 1.2.5, page 49
+
+(define (gcd a b)
+  (if (= b 0)
+      a
+      (gcd b (remainder a b))))
+
+(gcd 16 28)
+(gcd 206 40)
