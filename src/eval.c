@@ -81,6 +81,8 @@ eval_dispatch:
 		goto ev_if;
 	if (is_lambda(expr))
 		goto ev_lambda;
+	if (is_begin(expr))
+		goto ev_begin;
 	if (is_cond(expr))
 		goto ev_cond;
 	if (is_application(expr))
@@ -173,6 +175,12 @@ primitive_apply:
 		return val;
 	cont = restore();
 	goto go_cont;
+
+// ln 348
+ev_begin:
+	unev = begin_actions(expr);
+	save(cont);
+	goto ev_sequence;
 
 // ln 338
 compound_apply:

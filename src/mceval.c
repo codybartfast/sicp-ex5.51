@@ -23,7 +23,7 @@ static obj expand_clauses(obj);
 // ln 110
 bool is_self_evaluating(obj exp)
 {
-	return is_number(exp);
+	return is_number(exp) || is_string(exp);
 }
 
 // ln 115
@@ -129,6 +129,13 @@ static obj make_if(obj predicate, obj consequent, obj alternative)
 	return list4(if_s, predicate, consequent, alternative);
 }
 
+// ln 163
+bool is_begin(obj exp)
+{
+	return is_tagged_list(exp, begin);
+}
+
+// ln 164
 obj begin_actions(obj exp)
 {
 	return cdr(exp);

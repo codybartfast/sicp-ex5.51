@@ -19,6 +19,7 @@ bool is_if(obj);
 obj if_predicate(obj);
 obj if_consequent(obj);
 obj if_alternate(obj);
+bool is_begin(obj);
 obj begin_actions(obj exp);
 bool is_last_exp(obj seq);
 obj first_exp(obj seq);
