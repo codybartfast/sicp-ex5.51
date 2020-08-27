@@ -8,6 +8,7 @@
 struct outport *default_out(void);
 
 obj display(obj);
+obj displaydat(obj);
 obj displayp(struct outport *, obj);
 obj newline(obj);
 obj newlinep(struct outport *);

@@ -21,6 +21,7 @@ obj dec_pp(const obj);
 
 obj random_pp(const obj);
 obj runtime_pp(const obj);
+obj ticks_pp(const obj);
 obj seconds_pp(const obj);
 
 obj lt_pp(const obj);

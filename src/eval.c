@@ -7,6 +7,8 @@
 #include "error.h"
 #include "list.h"
 #include "mceval.h"
+#include "output.h"
+#include "primproc.h"
 
 #define AREA "EVAL"
 
@@ -58,6 +60,19 @@ static obj adjoin_arg(obj arg, obj arglist)
 	return append(arglist, list1(arg));
 }
 
+// new
+static void timed_eval(obj start)
+{
+	obj end = runtime_pp(emptylst);
+	obj elapsed = sub_pp(list2(end, start));
+	obj seconds = seconds_pp(list1(elapsed));
+	newline(emptylst);
+	displaydat(of_string(";;; Time: "));
+	displaydat(seconds);
+	displaydat(of_string("s"));
+	newline(emptylst);
+}
+
 obj eval(obj expression, obj env)
 {
 	expr = expression;
@@ -85,6 +100,8 @@ eval_dispatch:
 		goto ev_begin;
 	if (is_cond(expr))
 		goto ev_cond;
+	if (is_time(expr))
+		goto ev_timed;
 	if (is_application(expr))
 		goto ev_application;
 	goto unknown_expression_type;
@@ -260,6 +277,19 @@ ev_cond:
 	expr = cond_to_if(expr);
 	goto eval_dispatch;
 
+// new
+ev_timed:
+	save(runtime_pp(emptylst));
+	save(cont);
+	cont = ev_timed_done;
+	expr = cons(begin, cdr(expr));
+	goto eval_dispatch;
+
+ev_timed_done:
+	cont = restore();
+	timed_eval(restore());
+	goto go_cont;
+
 // ln 433
 unknown_expression_type:
 	return error_eval(AREA, "Unknown expression type: %s", errstr(expr));
@@ -282,5 +312,7 @@ go_cont:
 		goto ev_if_decide;
 	if (eq_symbol(cont, ev_sequence_continue))
 		goto ev_sequence_continue;
+	if (eq_symbol(cont, ev_timed_done))
+		goto ev_timed_done;
 	return error_internal(AREA, "BUG! Goto... where?: %s", to_string(cont));
 }

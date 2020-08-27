@@ -38,5 +38,7 @@ obj procedure_parameters(obj);
 obj procedure_body(obj);
 obj procedure_environment(obj p);
 obj apply_primitive_procedure(obj proc, obj args);
+bool is_time(obj);
+obj timed_expr(obj);
 
 #endif

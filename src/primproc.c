@@ -361,6 +361,13 @@ obj runtime_pp(obj args)
 	return of_integer(clock());
 }
 
+obj ticks_pp(obj args)
+{
+	if (is_err(args = chkarity("clicks", 0, args)))
+		return args;
+	return of_integer(CLOCKS_PER_SEC);
+}
+
 obj seconds_pp(obj args)
 {
 	char *fname = "seconds";

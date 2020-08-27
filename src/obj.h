@@ -113,6 +113,7 @@ extern const obj define;
 extern const obj else_s;
 extern const obj if_s;
 extern const obj lambda;
+extern const obj time_s;
 
 // EVAL TAGS
 extern const obj procedure;
@@ -125,6 +126,7 @@ extern const obj ev_assignment_1;
 extern const obj ev_definition_1;
 extern const obj ev_if_decide;
 extern const obj ev_sequence_continue;
+extern const obj ev_timed_done;
 extern const obj return_caller;
 
 // MISC VALUES

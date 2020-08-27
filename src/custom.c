@@ -73,6 +73,8 @@ static obj add_extras(int ex, obj env)
 				env);
 		define_variable(of_identifier("runtime"),
 				of_function(runtime_pp), env);
+		define_variable(of_identifier("ticks"),
+				of_function(ticks_pp), env);
 		define_variable(of_identifier("seconds"),
 				of_function(seconds_pp), env);
 	}
@@ -137,7 +139,12 @@ static obj display_definedp(struct outport *out)
 		displayp(out, lpad);
 		displayp(out, car(names));
 	}
-	return emptystr;
+	newline(emptylst);
+	displayp(out, of_string("Custom Special Forms:"));
+	newline(emptylst);
+	displayp(out, lpad);
+	displayp(out, of_string("time"));
+	return _void;
 }
 
 obj display_defined(obj _)

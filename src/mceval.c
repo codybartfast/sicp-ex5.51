@@ -309,3 +309,14 @@ obj apply_primitive_procedure(obj proc, obj args)
 {
 	return (to_function(proc))(args);
 }
+
+// new
+bool is_time(obj exp)
+{
+	return is_tagged_list(exp, time_s);
+}
+
+obj timed_expr(obj exp)
+{
+	return cadr(exp);
+}

@@ -39,7 +39,12 @@ obj display(obj args)
 {
 	if (is_err(args = chkarity("display", 1, args)))
 		return args;
-	return displayp(default_out(), car(args));
+	return displaydat(car(args));
+}
+
+obj displaydat(obj dat)
+{
+	return displayp(default_out(), dat);
 }
 
 obj write(obj dat)

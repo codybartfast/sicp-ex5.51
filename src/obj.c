@@ -208,6 +208,7 @@ SYMBOL(define)
 const obj else_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "else");
 const obj if_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "if");
 SYMBOL(lambda)
+const obj time_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "time");
 
 // TAGS
 SYMBOL(procedure)
@@ -220,6 +221,7 @@ SYMBOL(ev_assignment_1)
 SYMBOL(ev_definition_1)
 SYMBOL(ev_if_decide)
 SYMBOL(ev_sequence_continue)
+SYMBOL(ev_timed_done)
 SYMBOL(return_caller)
 
 // MISC VALUES
