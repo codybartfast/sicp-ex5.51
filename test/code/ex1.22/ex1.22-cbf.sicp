@@ -1,6 +1,6 @@
-; exercise 1.22, page 54
-
 (%ex "1.22")
+
+; exercise 1.22, page 54
 
 (define (timed-prime-test n)
   (newline)

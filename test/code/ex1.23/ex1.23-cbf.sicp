@@ -1,6 +1,6 @@
-; exercise 1.23, page 54
-
 (%ex "1.23")
+
+; exercise 1.23, page 54
 
 (define repeat-count 10)
 
@@ -23,10 +23,9 @@
           (else
            (prime? n)           
            (prime-repeat (- repeat-count 1)))))
-  (display "    ") 
   (display n)
   (display " *** ")
-  (time (prime-repeat repeat)))
+  (ignore (time (prime-repeat repeat))))
 
 (define (report-prime prime? n)
   (report-prime-repeat prime? n repeat-count))

@@ -1,0 +1,59 @@
+(%ex "1.24")
+
+; exercise 1.24, page 55
+
+(define repeat-count 10)
+
+(define (report-prime-repeat prime? n repeat)
+  (define (prime-repeat repeat-count)
+    (cond ((= 0 repeat-count)
+           (prime? n))
+          (else
+           (prime? n)           
+           (prime-repeat (- repeat-count 1)))))
+  (display n)
+  (display " *** ")
+  (ignore (time (prime-repeat repeat))))
+
+(define (report-prime prime? n)
+  (report-prime-repeat prime? n repeat-count))
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m))
+                    m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))
+
+(define (fermat-test n)
+  (define (try-it a)
+    (= (expmod a n n) a))
+  (try-it (+ 1 (random (- n 1)))))
+
+(define (fast-prime? n times)
+  (cond ((= times 0) true)
+        ((fermat-test n) (fast-prime? n (- times 1)))
+        (else false)))
+
+(define (fast-prime-8? n)
+  (fast-prime? n 8))
+
+(newline)
+(display "Using fast-prime:")
+(report-prime fast-prime-8? 2)
+(report-prime fast-prime-8? 2)
+(report-prime fast-prime-8? 2)
+(report-prime fast-prime-8? 1009)
+(report-prime fast-prime-8? 1013)
+(report-prime fast-prime-8? 1019)
+(report-prime fast-prime-8? 10007)
+(report-prime fast-prime-8? 10009)
+(report-prime fast-prime-8? 10037)
+(report-prime fast-prime-8? 100003)
+(report-prime fast-prime-8? 100019)
+(report-prime fast-prime-8? 100043)
+(report-prime fast-prime-8? 1000003)
+(report-prime fast-prime-8? 1000033)
+(report-prime fast-prime-8? 1000037)
