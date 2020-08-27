@@ -19,7 +19,9 @@ obj log_pp(const obj);
 obj inc_pp(const obj);
 obj dec_pp(const obj);
 
-obj rnd_pp(const obj);
+obj random_pp(const obj);
+obj runtime_pp(const obj);
+obj seconds_pp(const obj);
 
 obj lt_pp(const obj);
 obj lte_pp(const obj);

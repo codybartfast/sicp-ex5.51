@@ -7,8 +7,9 @@
 
 struct outport *default_out(void);
 
+obj display(obj);
 obj displayp(struct outport *, obj);
-obj newline(void);
+obj newline(obj);
 obj newlinep(struct outport *);
 obj write(obj);
 obj writep(struct outport *, obj);

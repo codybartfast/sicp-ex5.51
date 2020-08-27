@@ -5,6 +5,7 @@
 #include "mceval.h"
 #include "error.h"
 #include "list.h"
+#include "primproc.h"
 
 #define AREA "OUTPUT"
 
@@ -22,14 +23,23 @@ struct outport *default_out(void)
 				      defaullt_out;
 }
 
-obj newline(void)
+obj newline(obj args)
 {
+	if (is_err(args = chkarity("newline", 0, args)))
+		return args;
 	return newlinep(default_out());
 }
 
 obj newlinep(struct outport *out)
 {
 	return displayp(out, nl);
+}
+
+obj display(obj args)
+{
+	if (is_err(args = chkarity("display", 1, args)))
+		return args;
+	return displayp(default_out(), car(args));
 }
 
 obj write(obj dat)
@@ -43,12 +53,25 @@ obj writep(struct outport *op, obj dat)
 	if (is_err(str))
 		return str;
 	out_writes(op, to_string(str));
-	return unspecified;
+	return _void;
 }
 
 obj writestr(obj dat)
 {
-	return displaystr(dat);
+	struct strbldr *sb;
+
+	switch (type(dat)) {
+	case TYPE_STRING:
+		sb = new_strbldr();
+		if (sb == NULL)
+			return error_memory(AREA, "writestr");
+		sb_addc(sb, '"');
+		sb_adds(sb, to_string(dat));
+		sb_addc(sb, '"');
+		return of_string(sb_string(sb));
+	default:
+		return displaystr(dat);
+	}
 }
 
 obj displayp(struct outport *op, obj dat)
@@ -64,7 +87,7 @@ obj displayp(struct outport *op, obj dat)
 	if (is_err(str))
 		return str;
 	out_writes(op, to_string(str));
-	return emptystr;
+	return _void;
 }
 
 static obj displaystr(obj dat)
@@ -90,6 +113,8 @@ static obj displaystr(obj dat)
 		return of_string("()");
 	case TYPE_PRIMITIVE_PROCEDURE:
 		return of_string("<primitive procedure>");
+	case TYPE_VOID:
+		return of_string("");
 	case TYPE_ERROR:
 		sprintf(msg, "Error-Object, subtype: %d", subtype(dat));
 		return of_string(msg);

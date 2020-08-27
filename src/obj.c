@@ -228,14 +228,19 @@ bool is_eof(obj dat)
 {
 	return type(dat) == TYPE_EOF;
 }
-
 const obj eof = OBJ_2(TYPE_EOF, SUBTYPE_NOT_SET);
 
-const obj unspecified = OBJ_2(TYPE_UNSPECIFIED, SUBTYPE_NOT_SET);
+const obj _ex = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "%ex");
 
 SYMBOL(ok)
 
-const obj _ex = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "%ex");
+const obj unspecified = OBJ_2(TYPE_UNSPECIFIED, SUBTYPE_NOT_SET);
+
+bool is_void(obj dat)
+{
+	return type(dat) == TYPE_VOID;
+}
+const obj _void = OBJ_2(TYPE_VOID, SUBTYPE_NOT_SET);
 
 // ERROR
 

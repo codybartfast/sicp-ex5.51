@@ -29,9 +29,12 @@ int main(int argc, char *argv[])
 		obj dat = eval(exp, tge);
 		if (is_err(dat))
 			break;
+		if (is_void(dat))
+			continue;
 		write(dat);
-		newline();
+		newline(emptylst);
 	}
+	newline(emptylst);
 
 	parser_freetemp();
 	in_close(port);

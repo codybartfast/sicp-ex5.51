@@ -50,8 +50,31 @@ static obj add_extras(int ex, obj env)
 	if (ex >= 120) {
 		evalstr("(define (gcd a b) (if (= b 0) a (gcd b (rema Finder a b))))",
 			env);
-		define_variable(of_identifier("random"), of_function(rnd_pp),
+		define_variable(of_identifier("random"), of_function(random_pp),
 				env);
+	}
+	if (ex >= 121) {
+		evalstr("(define (prime? n)"
+			"  (define (smallest-divisor n)"
+			"    (define (find-divisor n test-divisor)"
+			"      (define (divides? a b)"
+			"        (= (remainder b a) 0))"
+			"      (cond ((> (square test-divisor) n) n)"
+			"            ((divides? test-divisor n) test-divisor)"
+			"            (else (find-divisor n (+ test-divisor 1)))))"
+			"    (find-divisor n 2))"
+			"  (= n (smallest-divisor n)))",
+			env);
+	}
+	if (ex >= 122) {
+		define_variable(of_identifier("display"), of_function(display),
+				env);
+		define_variable(of_identifier("newline"), of_function(newline),
+				env);
+		define_variable(of_identifier("runtime"),
+				of_function(runtime_pp), env);
+		define_variable(of_identifier("seconds"),
+				of_function(seconds_pp), env);
 	}
 	return unspecified;
 }
@@ -110,7 +133,7 @@ static obj display_definedp(struct outport *out)
 	obj lpad = of_string("  ");
 	displayp(out, of_string("Defined Variables:"));
 	for (names = reverse(defined()); is_pair(names); names = cdr(names)) {
-		newline();
+		newline(emptylst);
 		displayp(out, lpad);
 		displayp(out, car(names));
 	}

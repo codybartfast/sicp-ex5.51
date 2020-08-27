@@ -318,7 +318,7 @@ obj dec_pp(const obj args)
 	return applyun("dec", DEC, args);
 }
 
-obj rnd_pp(obj args)
+obj random_pp(obj args)
 {
 	static bool seeded = false;
 	obj nobj;
@@ -328,9 +328,9 @@ obj rnd_pp(obj args)
 		srand(time(NULL));
 		seeded = true;
 	}
-	if(is_err(args = chkarity("random", 1, args)))
+	if (is_err(args = chkarity("random", 1, args)))
 		return args;
-	if(is_err(args = allnum("random", args)))
+	if (is_err(args = allnum("random", args)))
 		return args;
 	nobj = car(args);
 	if (subtype(nobj) != NUMBER_INTEGER)
@@ -347,6 +347,36 @@ obj rnd_pp(obj args)
 		;
 
 	return of_integer(r % n);
+}
+
+obj runtime_pp(obj args)
+{
+	char *fname = "runtime";
+
+	if (is_err(args = chkarity(fname, 0, args)))
+		return args;
+	if (is_err(args = allnum(fname, args)))
+		return args;
+
+	return of_integer(clock());
+}
+
+obj seconds_pp(obj args)
+{
+	char *fname = "seconds";
+	obj nobj;
+
+	if (is_err(args = chkarity(fname, 1, args)))
+		return args;
+	if (is_err(args = allnum(fname, args)))
+		return args;
+	nobj = car(args);
+	if (subtype(nobj) != NUMBER_INTEGER)
+		return error_argument_value(AREA, "%s expects an integer: %s",
+					    fname, errstr(nobj));
+
+	return of_floating(((Floating)to_integer(nobj)) /
+			   ((Floating)CLOCKS_PER_SEC));
 }
 
 static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)

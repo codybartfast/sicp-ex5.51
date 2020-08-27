@@ -13,10 +13,12 @@ enum type {
 	TYPE_STRING, // 4
 	TYPE_EMPTY_LIST, // 5
 	TYPE_REFERENCE, // 6
-	TYPE_PRIMITIVE_PROCEDURE, // 7
-	TYPE_UNSPECIFIED, // 8
-	TYPE_EOF, // 9
-	TYPE_ERROR // 10
+
+	TYPE_EOF, // 7
+	TYPE_PRIMITIVE_PROCEDURE, // 8
+	TYPE_UNSPECIFIED, // 9
+	TYPE_VOID, // 10
+	TYPE_ERROR // 11
 };
 
 enum { SUBTYPE_NOT_SET = 0 };
@@ -129,9 +131,11 @@ extern const obj return_caller;
 
 bool is_eof(obj dat);
 extern const obj eof;
-extern const obj unspecified;
-extern const obj ok;
 extern const obj _ex;
+extern const obj ok;
+extern const obj unspecified;
+bool is_void(obj dat);
+extern const obj _void;
 
 // ERROR
 
