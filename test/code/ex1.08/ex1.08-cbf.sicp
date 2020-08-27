@@ -1,6 +1,6 @@
-; exercise 1.8, page 26
-
 (%ex "1.8")
+
+; exercise 1.8, page 26
 
 (define (cube n) (* n n n))
 

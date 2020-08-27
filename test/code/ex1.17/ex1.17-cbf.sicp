@@ -1,6 +1,6 @@
-; exercise 1.17, page 46
-
 (%ex "1.17")
+
+; exercise 1.17, page 46
 
 (define (halve n) (/ n 2))
 (define (double n) (* n 2))

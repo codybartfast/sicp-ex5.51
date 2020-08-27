@@ -1,6 +1,6 @@
-; exercise 1.16, page 46
-
 (%ex "1.16")
+
+; exercise 1.16, page 46
 
 (define (exp-iter b n)
   (define (iter b n a)

@@ -1,6 +1,6 @@
-; exercise 1.21, page 53
-
 (%ex "1.21")
+
+; exercise 1.21, page 53
 
 (define (smallest-divisor n)
   (define (find-divisor n test-divisor)

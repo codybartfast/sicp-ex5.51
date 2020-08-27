@@ -1,6 +1,6 @@
-; exercise 1.11, page 42
-
 (%ex "1.11")
+
+; exercise 1.11, page 42
 
 (define (f-rec n)
   (if (< n 3) n

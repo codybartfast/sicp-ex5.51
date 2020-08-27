@@ -1,6 +1,6 @@
-; exercise 1.11, page 42
-
 (%ex "1.12")
+
+; exercise 1.11, page 42
 
 (define (pascal row col)
   (cond
