@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <tgmath.h>
+#include <time.h>
 #include "error.h"
 #include "output.h"
 #include "list.h"
@@ -48,9 +49,10 @@ obj chkarity(char *fname, int expct, obj args)
 
 static obj allnum(char *fname, obj args)
 {
-	for (; is_pair(args); args = cdr(args)) {
-		if (!is_number(car(args)))
-			return err_notnum(fname, car(args));
+	obj lst;
+	for (lst = args; is_pair(lst); lst = cdr(lst)) {
+		if (!is_number(car(lst)))
+			return err_notnum(fname, car(lst));
 	}
 	return args;
 }
@@ -314,6 +316,37 @@ obj inc_pp(const obj args)
 obj dec_pp(const obj args)
 {
 	return applyun("dec", DEC, args);
+}
+
+obj rnd_pp(obj args)
+{
+	static bool seeded = false;
+	obj nobj;
+	Integer n, limit, r;
+
+	if (!seeded) {
+		srand(time(NULL));
+		seeded = true;
+	}
+	if(is_err(args = chkarity("random", 1, args)))
+		return args;
+	if(is_err(args = allnum("random", args)))
+		return args;
+	nobj = car(args);
+	if (subtype(nobj) != NUMBER_INTEGER)
+		return error_argument_type(
+			AREA, "random expects an integer but got %s",
+			errstr(nobj));
+	n = to_integer(nobj);
+	if (n <= 0 || RAND_MAX < n)
+		return error_argument_value(
+			AREA, "random expects a value between 1 and %d, got %s",
+			RAND_MAX, errstr(nobj));
+	limit = RAND_MAX - (RAND_MAX % n);
+	while ((r = rand()) >= limit)
+		;
+
+	return of_integer(r % n);
 }
 
 static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)

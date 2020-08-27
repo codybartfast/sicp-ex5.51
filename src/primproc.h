@@ -19,6 +19,8 @@ obj log_pp(const obj);
 obj inc_pp(const obj);
 obj dec_pp(const obj);
 
+obj rnd_pp(const obj);
+
 obj lt_pp(const obj);
 obj lte_pp(const obj);
 obj eqn_pp(const obj);

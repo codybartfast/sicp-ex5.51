@@ -47,6 +47,12 @@ static obj add_extras(int ex, obj env)
 		evalstr("(define (even? n) (= (remainder n 2) 0))", env);
 		evalstr("(define (odd? n) (= (remainder n 2) 1))", env);
 	}
+	if (ex >= 120) {
+		evalstr("(define (gcd a b) (if (= b 0) a (gcd b (rema Finder a b))))",
+			env);
+		define_variable(of_identifier("random"), of_function(rnd_pp),
+				env);
+	}
 	return unspecified;
 }
 

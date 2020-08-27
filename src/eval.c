@@ -169,6 +169,8 @@ apply_dispatch:
 // ln 331
 primitive_apply:
 	val = apply_primitive_procedure(proc, argl);
+	if (is_err(val))
+		return val;
 	cont = restore();
 	goto go_cont;
 
