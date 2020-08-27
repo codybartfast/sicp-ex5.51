@@ -63,12 +63,12 @@ static obj adjoin_arg(obj arg, obj arglist)
 // new
 static void timed_eval(obj start)
 {
-	obj end = runtime_pp(emptylst);
-	obj elapsed = sub_pp(list2(end, start));
-	obj seconds = seconds_pp(list1(elapsed));
+	obj end = runtime(emptylst);
+	obj elapsed = sub(list2(end, start));
+	obj secs = seconds(list1(elapsed));
 	newline(emptylst);
 	displaydat(of_string(";;; Time: "));
-	displaydat(seconds);
+	displaydat(secs);
 	displaydat(of_string("s"));
 	newline(emptylst);
 }
@@ -279,7 +279,7 @@ ev_cond:
 
 // new
 ev_timed:
-	save(runtime_pp(emptylst));
+	save(runtime(emptylst));
 	save(cont);
 	cont = ev_timed_done;
 	expr = cons(begin, cdr(expr));

@@ -206,12 +206,12 @@ static obj reduce(const char *fname, const enum op op, const obj acc,
 	}
 }
 
-obj add_pp(const obj args)
+obj add(const obj args)
 {
 	return reduce("+ (add)", ADD, zero, args);
 }
 
-obj sub_pp(const obj args)
+obj sub(const obj args)
 {
 	const char *fname = "- (sub)";
 	obj err;
@@ -227,12 +227,12 @@ obj sub_pp(const obj args)
 	}
 }
 
-obj mul_pp(const obj args)
+obj mul(const obj args)
 {
 	return reduce("* (mul)", MUL, one, args);
 }
 
-obj div_pp(const obj args)
+obj divd(const obj args)
 {
 	const char *fname = "/ (div)";
 	obj err;
@@ -248,7 +248,7 @@ obj div_pp(const obj args)
 	}
 }
 
-obj rem_pp(const obj args)
+obj rem(const obj args)
 {
 	obj err, a, b;
 	char *fname = "remainder";
@@ -293,32 +293,32 @@ static obj applyun(char *fname, enum un op, obj args)
 	}
 }
 
-obj abs_pp(const obj args)
+obj absl(const obj args)
 {
 	return applyun("abs", ABS, args);
 }
 
-obj exp_pp(const obj args)
+obj expn(const obj args)
 {
 	return applyun("exp", EXP, args);
 }
 
-obj log_pp(const obj args)
+obj logn(const obj args)
 {
 	return applyun("log", LOG, args);
 }
 
-obj inc_pp(const obj args)
+obj inc(const obj args)
 {
 	return applyun("inc", INC, args);
 }
 
-obj dec_pp(const obj args)
+obj dec(const obj args)
 {
 	return applyun("dec", DEC, args);
 }
 
-obj random_pp(obj args)
+obj rnd(obj args)
 {
 	static bool seeded = false;
 	obj nobj;
@@ -349,7 +349,7 @@ obj random_pp(obj args)
 	return of_integer(r % n);
 }
 
-obj runtime_pp(obj args)
+obj runtime(obj args)
 {
 	char *fname = "runtime";
 
@@ -361,14 +361,14 @@ obj runtime_pp(obj args)
 	return of_integer(clock());
 }
 
-obj ticks_pp(obj args)
+obj ticks(obj args)
 {
 	if (is_err(args = chkarity("clicks", 0, args)))
 		return args;
 	return of_integer(CLOCKS_PER_SEC);
 }
 
-obj seconds_pp(obj args)
+obj seconds(obj args)
 {
 	char *fname = "seconds";
 	obj nobj;
@@ -458,50 +458,50 @@ static obj chkfold(char *fname, enum cmp cmp, obj args)
 	return fold(fname, cmp, car(args), cdr(args));
 }
 
-obj lt_pp(const obj args)
+obj lt(const obj args)
 {
 	return chkfold("< (less than)", LT, args);
 }
 
-obj lte_pp(const obj args)
+obj lte(const obj args)
 {
 	return chkfold("<= (less than or equal)", LTE, args);
 }
 
-obj eqn_pp(const obj args)
+obj eqn(const obj args)
 {
 	return chkfold("= (equal)", EQ, args);
 }
 
-obj gte_pp(const obj args)
+obj gte(const obj args)
 {
 	return chkfold(">= (greater than)", GTE, args);
 }
 
-obj gt_pp(const obj args)
+obj gt(const obj args)
 {
 	return chkfold("> (greater than)", GT, args);
 }
 
-obj and_pp(const obj args)
+obj and(const obj args)
 {
 	if (is_null(args))
 		return tru_o;
 	if (!is_pair(args))
 		return err_improper("and", args);
-	return is_false(car(args)) ? fls_o : and_pp(cdr(args));
+	return is_false(car(args)) ? fls_o : and(cdr(args));
 }
 
-obj or_pp(const obj args)
+obj or(const obj args)
 {
 	if (is_null(args))
 		return fls_o;
 	if (!is_pair(args))
 		return err_improper("or", args);
-	return is_true(car(args)) ? tru_o : or_pp(cdr(args));
+	return is_true(car(args)) ? tru_o : or(cdr(args));
 }
 
-obj not_pp(const obj args)
+obj not(const obj args)
 {
 	obj chk;
 	if (is_err(chk = chkarity("not", 1, args)))

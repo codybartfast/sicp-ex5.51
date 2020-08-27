@@ -6,32 +6,32 @@
 
 obj chkarity(char *fname, int expct, obj args);
 
-obj add_pp(const obj);
-obj sub_pp(const obj);
-obj mul_pp(const obj);
-obj div_pp(const obj);
+obj add(const obj);
+obj sub(const obj);
+obj mul(const obj);
+obj divd(const obj);
 
-obj rem_pp(const obj);
+obj rem(const obj);
 
-obj abs_pp(const obj);
-obj exp_pp(const obj);
-obj log_pp(const obj);
-obj inc_pp(const obj);
-obj dec_pp(const obj);
+obj absl(const obj);
+obj expn(const obj);
+obj logn(const obj);
+obj inc(const obj);
+obj dec(const obj);
 
-obj random_pp(const obj);
-obj runtime_pp(const obj);
-obj ticks_pp(const obj);
-obj seconds_pp(const obj);
+obj rnd(const obj);
+obj runtime(const obj);
+obj ticks(const obj);
+obj seconds(const obj);
 
-obj lt_pp(const obj);
-obj lte_pp(const obj);
-obj eqn_pp(const obj);
-obj gte_pp(const obj);
-obj gt_pp(const obj);
+obj lt(const obj);
+obj lte(const obj);
+obj eqn(const obj);
+obj gte(const obj);
+obj gt(const obj);
 
-obj and_pp(const obj);
-obj or_pp(const obj);
-obj not_pp(const obj);
+obj and(const obj);
+obj or(const obj);
+obj not(const obj);
 
 #endif

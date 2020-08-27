@@ -19,28 +19,28 @@ static obj evalstr(char *e, obj env)
 static obj add_extras(int ex, obj env)
 {
 	if (ex > 101) {
-		//define_variable(of_identifier("abs"), of_function(abs_pp), env);
+		//define_variable(of_identifier("abs"), of_function(absl), env);
 		evalstr("(define (abs x) (if (< x 0) (- x) x))", env);
 
-		//define_variable(of_identifier("<="), of_function(lte_pp), env);
+		//define_variable(of_identifier("<="), of_function(lte), env);
 		evalstr("(define (<= x y) (not (> x y)))", env);
 
-		//define_variable(of_identifier(">="), of_function(gte_pp), env);
+		//define_variable(of_identifier(">="), of_function(gte), env);
 		evalstr("(define (>= x y) (not (< x y)))", env);
 
 		evalstr("(define (square x) (* x x))", env);
 	}
 	if (ex >= 109) {
-		define_variable(of_identifier("exp"), of_function(exp_pp), env);
-		define_variable(of_identifier("log"), of_function(log_pp), env);
+		define_variable(of_identifier("exp"), of_function(expn), env);
+		define_variable(of_identifier("log"), of_function(logn), env);
 		// inc and dec could be 'defined' but making them primitive
 		// avoids the risk of loops in questions where + is defined in
 		// terms of inc
-		define_variable(of_identifier("inc"), of_function(inc_pp), env);
-		define_variable(of_identifier("dec"), of_function(dec_pp), env);
+		define_variable(of_identifier("inc"), of_function(inc), env);
+		define_variable(of_identifier("dec"), of_function(dec), env);
 	}
 	if (ex >= 115) {
-		define_variable(of_identifier("remainder"), of_function(rem_pp),
+		define_variable(of_identifier("remainder"), of_function(rem),
 				env);
 	}
 	if (ex >= 116) {
@@ -50,7 +50,7 @@ static obj add_extras(int ex, obj env)
 	if (ex >= 120) {
 		evalstr("(define (gcd a b) (if (= b 0) a (gcd b (rema Finder a b))))",
 			env);
-		define_variable(of_identifier("random"), of_function(random_pp),
+		define_variable(of_identifier("random"), of_function(rnd),
 				env);
 	}
 	if (ex >= 121) {
@@ -72,11 +72,11 @@ static obj add_extras(int ex, obj env)
 		define_variable(of_identifier("newline"), of_function(newline),
 				env);
 		define_variable(of_identifier("runtime"),
-				of_function(runtime_pp), env);
+				of_function(runtime), env);
 		define_variable(of_identifier("ticks"),
-				of_function(ticks_pp), env);
+				of_function(ticks), env);
 		define_variable(of_identifier("seconds"),
-				of_function(seconds_pp), env);
+				of_function(seconds), env);
 	}
 	return unspecified;
 }
