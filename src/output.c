@@ -156,3 +156,8 @@ static obj displaypair(obj pair)
 	sb_free(&sb);
 	return of_string(s);
 }
+
+obj ignore(obj args){
+	(void)args;
+	return _void;
+}

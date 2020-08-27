@@ -50,8 +50,7 @@ static obj add_extras(int ex, obj env)
 	if (ex >= 120) {
 		evalstr("(define (gcd a b) (if (= b 0) a (gcd b (rema Finder a b))))",
 			env);
-		define_variable(of_identifier("random"), of_function(rnd),
-				env);
+		define_variable(of_identifier("random"), of_function(rnd), env);
 	}
 	if (ex >= 121) {
 		evalstr("(define (prime? n)"
@@ -69,14 +68,16 @@ static obj add_extras(int ex, obj env)
 	if (ex >= 122) {
 		define_variable(of_identifier("display"), of_function(display),
 				env);
+		define_variable(of_identifier("ignore"), of_function(ignore),
+				env);
 		define_variable(of_identifier("newline"), of_function(newline),
 				env);
-		define_variable(of_identifier("runtime"),
-				of_function(runtime), env);
-		define_variable(of_identifier("ticks"),
-				of_function(ticks), env);
-		define_variable(of_identifier("seconds"),
-				of_function(seconds), env);
+		define_variable(of_identifier("runtime"), of_function(runtime),
+				env);
+		define_variable(of_identifier("seconds"), of_function(seconds),
+				env);
+		define_variable(of_identifier("ticks"), of_function(ticks),
+				env);
 	}
 	return unspecified;
 }
