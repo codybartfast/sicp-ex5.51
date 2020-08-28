@@ -1,0 +1,28 @@
+(%ex "1.36")
+
+; exercise 1.36, page 70
+
+(define tolerance 0.00001)
+
+(define (fp-display f average first-guess)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (let ((next (average guess (f guess))))
+      (display "        ")(display guess)(newline)
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try first-guess))
+
+(define (x^x=1000-f x)
+  (/ (log 1000) (log x)))
+
+(define (damp-none guess f-of-guess)
+  f-of-guess)
+
+(define (damp-mean guess f-of-guess)
+  (/ (+ guess f-of-guess) 2))
+
+(fp-display x^x=1000-f damp-none 2.0)
+(fp-display x^x=1000-f damp-mean 2.0)

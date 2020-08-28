@@ -1,0 +1,60 @@
+(%ex "1.37")
+
+; exercise 1.37, page 71
+
+(define (cont-frac-rec n d k)
+  (define (recur i)
+    (if (= i k)
+        (/ (n i) (d i))
+        (/ (n i) (+ (d i) (recur (+ i 1))))))
+  (recur 1))
+
+(define (cont-frac-itr n d k)
+  (define (iter i nextTerm)
+    (let ((currentTerm (/ (n i) (+ (d i) nextTerm))))
+      (if (= i 1)
+          currentTerm
+          (iter (- i 1) currentTerm))))
+  (iter k 0))
+
+(define (golden-cf-rec k)
+  (cont-frac-rec
+        (lambda (i) 1.0)
+        (lambda (i) 1.0)
+        k))
+
+(define (golden-cf-itr k)
+  (cont-frac-itr
+        (lambda (i) 1.0)
+        (lambda (i) 1.0)
+        k))
+
+(display "
+Recursive:
+")
+(golden-cf-rec 04)
+(golden-cf-rec 05)
+(golden-cf-rec 06)
+(golden-cf-rec 07)
+(golden-cf-rec 08)
+(golden-cf-rec 09)
+(golden-cf-rec 10)
+(golden-cf-rec 11)
+(golden-cf-rec 12)
+(golden-cf-rec 13)
+(golden-cf-rec 14)
+
+(display "
+Iterative:
+")
+(golden-cf-itr 04)
+(golden-cf-itr 05)
+(golden-cf-itr 06)
+(golden-cf-itr 07)
+(golden-cf-itr 08)
+(golden-cf-itr 09)
+(golden-cf-itr 10)
+(golden-cf-itr 11)
+(golden-cf-itr 12)
+(golden-cf-itr 13)
+(golden-cf-itr 14)

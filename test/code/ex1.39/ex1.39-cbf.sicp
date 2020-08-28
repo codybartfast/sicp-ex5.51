@@ -1,0 +1,26 @@
+(%ex "1.39")
+
+; exercise 1.39, page 72
+
+(define (cont-frac n d k)
+  (define (iter i nextTerm)
+    (let ((currentTerm (/ (n i) (+ (d i) nextTerm))))
+      (if (= i 1)
+          currentTerm
+          (iter (- i 1) currentTerm))))
+  (iter k 0))
+
+(define (tan-cf x k)
+  (define (n i)
+    (if (= i 1) x (- (* x x))))
+  (define (d i)
+    (- (* i 2) 1))
+  (cont-frac n d k))
+
+(display "
+Tan 0.5 (expect 0.54630248984):
+")
+(tan-cf 0.5 1)
+(tan-cf 0.5 2)
+(tan-cf 0.5 4)
+(tan-cf 0.5 8)
