@@ -112,6 +112,7 @@ extern const obj cond;
 extern const obj define;
 extern const obj else_s;
 extern const obj if_s;
+extern const obj let;
 extern const obj lambda;
 extern const obj time_s;
 

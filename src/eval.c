@@ -100,6 +100,8 @@ eval_dispatch:
 		goto ev_cond;
 	if (is_time(expr))
 		goto ev_timed;
+	if (is_let(expr))
+		goto ev_let;
 	if (is_application(expr))
 		goto ev_application;
 	goto unknown_expression_type;
@@ -287,6 +289,11 @@ ev_timed_done:
 	cont = restore();
 	timed_eval(restore());
 	goto go_cont;
+
+// new
+ev_let:
+	expr = let_to_combination(expr);
+	goto eval_dispatch;
 
 // ln 433
 unknown_expression_type:

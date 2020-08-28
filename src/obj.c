@@ -207,6 +207,7 @@ SYMBOL(cond)
 SYMBOL(define)
 const obj else_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "else");
 const obj if_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "if");
+SYMBOL(let)
 SYMBOL(lambda)
 const obj time_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "time");
 

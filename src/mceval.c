@@ -310,7 +310,7 @@ obj apply_primitive_procedure(obj proc, obj args)
 	return (to_function(proc))(args);
 }
 
-// new
+// new - time expression's evaluation
 bool is_time(obj exp)
 {
 	return is_tagged_list(exp, time_s);
@@ -319,4 +319,51 @@ bool is_time(obj exp)
 obj timed_expr(obj exp)
 {
 	return cadr(exp);
+}
+
+// new - let->combination
+bool is_let(obj exp)
+{
+	return is_tagged_list(exp, let);
+}
+
+static obj let_bindings(obj letx)
+{
+	return cadr(letx);
+}
+
+static obj let_body(obj letx)
+{
+	return cddr(letx);
+}
+
+static obj let_var(obj binding)
+{
+	return car(binding);
+}
+
+static obj let_val(obj binding)
+{
+	return cadr(binding);
+}
+
+static obj let_variables(obj exp)
+{
+	return map_u(let_var, let_bindings(exp));
+}
+
+static obj let_values(obj exp)
+{
+	return map_u(let_val, let_bindings(exp));
+}
+
+static obj make_proc_call(obj proc, obj args)
+{
+	return cons(proc, args);
+}
+
+obj let_to_combination(obj letx)
+{
+	return make_proc_call(make_lambda(let_variables(letx), let_body(letx)),
+			      (let_values(letx)));
 }
