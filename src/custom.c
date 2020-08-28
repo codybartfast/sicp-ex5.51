@@ -29,6 +29,7 @@ static obj add_extras(int ex, obj env)
 		evalstr("(define (>= x y) (not (< x y)))", env);
 
 		evalstr("(define (square x) (* x x))", env);
+		evalstr("(define (cube x) (* x x x))", env);
 	}
 	if (ex >= 109) {
 		define_variable(of_identifier("exp"), of_function(expn), env);

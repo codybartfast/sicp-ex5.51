@@ -1,8 +1,6 @@
 ; Sébastien Gignoux's solution,
 ; https://github.com/sgignoux/codology.net/tree/master/solutions/chapter-1
 
-(define (cube x) (* x x x))
-
 (define (good-enough? previous-guess guess)
   (< (abs (/ (- guess previous-guess) guess)) 0.00000000001))
 

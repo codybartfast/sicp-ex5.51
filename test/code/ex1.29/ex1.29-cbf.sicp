@@ -2,8 +2,6 @@
 
 ; exercise 1.29, page 60
 
-(define (cube n)
-  (* n n n))
 
 (define (sum term a next b)
   (if (> a b)

@@ -2,8 +2,6 @@
 
 ; exercise 1.32, page 61
 
-(define (cube x) (* x x x))
-
 (define (quotient a b)
 	(/ (- a (remainder a b))
 	   b))

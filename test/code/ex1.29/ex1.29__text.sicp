@@ -2,7 +2,6 @@
 
 ; section 1.3, page 56
 
-(define (cube x) (* x x x))
 (cube 3)
 (* 3 3 3)
 
