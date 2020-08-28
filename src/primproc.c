@@ -12,7 +12,16 @@
 #define AREA "PRIMPROC"
 
 enum op { ADD, SUB, MUL, DIV };
-enum un { ABS, EXP, LOG, INC, DEC, SIN, COS };
+enum un {
+	ABS,
+	EXP,
+	LOG,
+	INC,
+	DEC,
+	SIN,
+	COS,
+	FLR,
+};
 enum cmp { LT, LTE, EQ, GTE, GT };
 
 const Integer add_max = (((Integer)1) << ((sizeof(Integer) * 8) - 2)) - 1;
@@ -292,6 +301,8 @@ static obj applyun(char *fname, enum un op, obj args)
 		return of_floating(sin(to_floating(cnv_to_fltnum(n))));
 	case COS:
 		return of_floating(cos(to_floating(cnv_to_fltnum(n))));
+	case FLR:
+		return of_floating(floor(to_floating(cnv_to_fltnum(n))));
 	default:
 		return error_internal(AREA, "BUG! no unary case for %d", op);
 	}
@@ -330,6 +341,11 @@ obj sine(const obj args)
 obj cosine(const obj args)
 {
 	return applyun("cos", COS, args);
+}
+
+obj flr(const obj args)
+{
+	return applyun("floor", FLR, args);
 }
 
 obj rnd(obj args)

@@ -94,6 +94,10 @@ static obj add_extras(int ex, obj env)
 		evalstr("(define (positive? x) (< 0 x))", env);
 		evalstr("(define (negative? x) (< x 0))", env);
 	}
+	if (ex >= 145) {
+		// not in the book but most answers use it.
+		define_variable(of_identifier("floor"), of_function(flr), env);
+	}
 	return unspecified;
 }
 

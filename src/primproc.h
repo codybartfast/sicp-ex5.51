@@ -20,6 +20,7 @@ obj inc(const obj);
 obj dec(const obj);
 obj sine(const obj);
 obj cosine(const obj);
+obj flr(const obj);
 
 obj rnd(const obj);
 obj runtime(const obj);
