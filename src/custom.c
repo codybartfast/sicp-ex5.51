@@ -40,6 +40,9 @@ static obj add_extras(int ex, obj env)
 		define_variable(of_identifier("inc"), of_function(inc), env);
 		define_variable(of_identifier("dec"), of_function(dec), env);
 	}
+	if (ex >= 106) {
+		evalstr("(define (average x y) (/ (+ x y) 2))", env);
+	}
 	if (ex >= 115) {
 		define_variable(of_identifier("remainder"), of_function(rem),
 				env);
@@ -85,6 +88,7 @@ static obj add_extras(int ex, obj env)
 	}
 	if (ex >= 135) {
 		define_variable(of_identifier("sin"), of_function(sine), env);
+		define_variable(of_identifier("cos"), of_function(cosine), env);
 		define_variable(of_identifier("error"), of_function(user_error),
 				env);
 		evalstr("(define (positive? x) (< 0 x))", env);

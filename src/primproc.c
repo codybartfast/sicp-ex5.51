@@ -12,7 +12,7 @@
 #define AREA "PRIMPROC"
 
 enum op { ADD, SUB, MUL, DIV };
-enum un { ABS, EXP, LOG, SIN, INC, DEC };
+enum un { ABS, EXP, LOG, INC, DEC, SIN, COS };
 enum cmp { LT, LTE, EQ, GTE, GT };
 
 const Integer add_max = (((Integer)1) << ((sizeof(Integer) * 8) - 2)) - 1;
@@ -284,12 +284,14 @@ static obj applyun(char *fname, enum un op, obj args)
 		return of_floating(exp(to_floating(cnv_to_fltnum(n))));
 	case LOG:
 		return of_floating(log(to_floating(cnv_to_fltnum(n))));
-	case SIN:
-		return of_floating(sin(to_floating(cnv_to_fltnum(n))));
 	case INC:
 		return applyop(ADD, n, one);
 	case DEC:
 		return applyop(SUB, n, one);
+	case SIN:
+		return of_floating(sin(to_floating(cnv_to_fltnum(n))));
+	case COS:
+		return of_floating(cos(to_floating(cnv_to_fltnum(n))));
 	default:
 		return error_internal(AREA, "BUG! no unary case for %d", op);
 	}
@@ -310,11 +312,6 @@ obj logn(const obj args)
 	return applyun("log", LOG, args);
 }
 
-obj sine(const obj args){
-	return applyun("sin", SIN, args);
-}
-
-
 obj inc(const obj args)
 {
 	return applyun("inc", INC, args);
@@ -323,6 +320,16 @@ obj inc(const obj args)
 obj dec(const obj args)
 {
 	return applyun("dec", DEC, args);
+}
+
+obj sine(const obj args)
+{
+	return applyun("sin", SIN, args);
+}
+
+obj cosine(const obj args)
+{
+	return applyun("cos", COS, args);
 }
 
 obj rnd(obj args)
@@ -490,7 +497,7 @@ obj gt(const obj args)
 	return chkfold("> (greater than)", GT, args);
 }
 
-obj and(const obj args)
+obj and (const obj args)
 {
 	if (is_null(args))
 		return tru_o;
@@ -499,13 +506,13 @@ obj and(const obj args)
 	return is_false(car(args)) ? fls_o : and(cdr(args));
 }
 
-obj or(const obj args)
+obj or (const obj args)
 {
 	if (is_null(args))
 		return fls_o;
 	if (!is_pair(args))
 		return err_improper("or", args);
-	return is_true(car(args)) ? tru_o : or(cdr(args));
+	return is_true(car(args)) ? tru_o : or (cdr(args));
 }
 
 obj not(const obj args)
