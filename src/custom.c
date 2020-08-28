@@ -83,6 +83,13 @@ static obj add_extras(int ex, obj env)
 	if (ex >= 129) {
 		evalstr("(define (identity x) x)", env);
 	}
+	if (ex >= 135) {
+		define_variable(of_identifier("sin"), of_function(sine), env);
+		define_variable(of_identifier("error"), of_function(user_error),
+				env);
+		evalstr("(define (positive? x) (< 0 x))", env);
+		evalstr("(define (negative? x) (< x 0))", env);
+	}
 	return unspecified;
 }
 

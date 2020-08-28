@@ -16,6 +16,7 @@ obj rem(const obj);
 obj absl(const obj);
 obj expn(const obj);
 obj logn(const obj);
+obj sine(const obj);
 obj inc(const obj);
 obj dec(const obj);
 

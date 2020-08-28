@@ -12,7 +12,7 @@
 #define AREA "PRIMPROC"
 
 enum op { ADD, SUB, MUL, DIV };
-enum un { ABS, EXP, LOG, INC, DEC };
+enum un { ABS, EXP, LOG, SIN, INC, DEC };
 enum cmp { LT, LTE, EQ, GTE, GT };
 
 const Integer add_max = (((Integer)1) << ((sizeof(Integer) * 8) - 2)) - 1;
@@ -284,6 +284,8 @@ static obj applyun(char *fname, enum un op, obj args)
 		return of_floating(exp(to_floating(cnv_to_fltnum(n))));
 	case LOG:
 		return of_floating(log(to_floating(cnv_to_fltnum(n))));
+	case SIN:
+		return of_floating(sin(to_floating(cnv_to_fltnum(n))));
 	case INC:
 		return applyop(ADD, n, one);
 	case DEC:
@@ -307,6 +309,11 @@ obj logn(const obj args)
 {
 	return applyun("log", LOG, args);
 }
+
+obj sine(const obj args){
+	return applyun("sin", SIN, args);
+}
+
 
 obj inc(const obj args)
 {
