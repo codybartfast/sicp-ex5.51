@@ -79,6 +79,8 @@ static obj parse(struct token *tkn, struct inport *port)
 	case TKN_LIST_OPEN:
 		dat = parse_list(emptylst, port);
 		return is_err(dat) || is_eof(dat) ? dat : reverse(dat);
+	case TKN_LIST_CLOSE:
+		return error_parser(AREA, "unexpected: ')'");
 	case TKN_STRING:
 		return string(tkn);
 	case TKN_EOF:
