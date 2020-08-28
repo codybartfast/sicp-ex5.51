@@ -348,6 +348,22 @@ obj flr(const obj args)
 	return applyun("floor", FLR, args);
 }
 
+#ifdef _WIN32
+#define PLAT_RAND_MAX UINT_MAX
+#else
+#define PLAT_RAND_MAX RAND_MAX
+#endif
+
+static Integer plat_rand(void)
+{
+	Integer r;
+#ifdef _WIN32
+	return rand_s(&r);
+#else
+	return rand();
+#endif
+}
+
 obj rnd(obj args)
 {
 	static bool seeded = false;
@@ -368,14 +384,13 @@ obj rnd(obj args)
 			AREA, "random expects an integer but got %s",
 			errstr(nobj));
 	n = to_integer(nobj);
-	if (n <= 0 || RAND_MAX < n)
+	if (n <= 0 || PLAT_RAND_MAX < n)
 		return error_argument_value(
-			AREA, "random expects a value between 1 and %d, got %s",
-			RAND_MAX, errstr(nobj));
-	limit = RAND_MAX - (RAND_MAX % n);
-	while ((r = rand()) >= limit)
+			AREA, "random expects a value from 1 to %d, got %s",
+			PLAT_RAND_MAX, errstr(nobj));
+	limit = PLAT_RAND_MAX - (PLAT_RAND_MAX % n);
+	while ((r = plat_rand()) >= limit)
 		;
-
 	return of_integer(r % n);
 }
 
