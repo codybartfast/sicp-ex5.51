@@ -1,0 +1,45 @@
+(%ex "1.31")
+
+; exercise 1.31, page 60
+
+(define (quotient a b)
+	(/ (- a (remainder a b))
+	   b))
+
+(define (prod-iter term a next b)
+  (define (iter a result)
+    (if (> a b)
+        result
+        (iter (next a) (* result (term a)))))
+  (iter a 1))
+
+(define (pi-term i)
+  (/
+   (* 2 (quotient (+ i 3) 2))
+   (+ 1 (* 2 (quotient (+ i 2) 2)))))
+
+(define (pi-iter n)
+  (* 4.0 (prod-iter pi-term 0 inc n)))
+
+(display "Iterative product of terms:
+    The product of numbers from 1 to 6: ")
+(prod-iter identity 1 inc 6)
+
+(display "    Estimate of π with 100 steps ")
+(pi-iter 100)
+(newline)
+
+(define (prod-rec term a next b)
+  (if (= a b)
+      (term a)
+      (* (term a) (prod-rec term (next a) next b))))
+
+(define (pi-rec n)
+  (* 4.0 (prod-rec pi-term 0 inc n)))
+
+(display "Recursive product of terms:
+    The product of numbers from 1 to 6: ")
+(prod-rec identity 1 inc 6)
+
+(display "    Estimate of π with 100 steps ")
+(pi-rec 100)

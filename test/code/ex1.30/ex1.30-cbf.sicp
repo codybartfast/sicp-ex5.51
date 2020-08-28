@@ -1,0 +1,29 @@
+(%ex "1.30")
+
+; exercise 1.30, page 60
+
+(define (cube x) (* x x x))
+
+(define (sum-iter term a next b)
+  (define (iter a result)
+    (if (> a b)
+        result
+        (iter (next a) (+ result (term a)))))
+  (iter a 0))
+
+(define (simpson-iter f a b n)
+  (define h (/ (- b a) n))
+  (define (y k) (f (+ a (* k h))))
+  (define (term k)
+    (cond
+      ((= k 0) (y 0))
+      ((= k n) (y n))
+      ((even? k) (* 2 (y k)))
+      (else (* 4 (y k)))))
+  (* (/ h  3)
+     (sum-iter term 0 inc n)))
+
+(simpson-iter cube 0 1 2)
+(simpson-iter cube 0 1 100)
+(simpson-iter cube 0 1 1000)
+(simpson-iter cube 0 1 10000)

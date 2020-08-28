@@ -79,6 +79,9 @@ static obj add_extras(int ex, obj env)
 		define_variable(of_identifier("ticks"), of_function(ticks),
 				env);
 	}
+	if (ex >= 129) {
+		evalstr("(define (identity x) x)", env);
+	}
 	return unspecified;
 }
 
