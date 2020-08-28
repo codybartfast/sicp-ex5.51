@@ -1,5 +1,10 @@
 #include "primproc.h"
 
+#ifdef _WIN32
+#define _CRT_SILENCE_NONCONFORMING_TGMATH_H
+#endif
+
+#include <limits.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -72,7 +77,7 @@ static obj cnv_to_fltnum(const obj n)
 	case NUMBER_FLOATING:
 		return n;
 	case NUMBER_INTEGER:
-		return of_floating(to_integer(n));
+		return of_floating((Floating)to_integer(n));
 	default:
 		return error_internal(
 			AREA, "BUG! No cnv_to_fltnum case for: %d", subtype(n));
@@ -86,7 +91,7 @@ static obj cnv_to_intnum(const char *fname, const obj n)
 	switch (subtype(n)) {
 	case NUMBER_FLOATING:
 		f = to_floating(n);
-		i = f;
+		i = (Integer)f;
 		return (i == f) ?
 			       of_integer(i) :
 			       error_argument_value(AREA,
@@ -114,7 +119,7 @@ static obj chkszadd(obj n)
 	Integer i;
 	return (subtype(n) == NUMBER_INTEGER &&
 		((i = to_integer(n)) < mul_min || mul_max < i)) ?
-		       of_floating(i) :
+		       of_floating((Floating)i) :
 		       n;
 }
 
@@ -123,7 +128,7 @@ static obj chkszmul(obj n)
 	Integer i;
 	return (subtype(n) == NUMBER_INTEGER &&
 		((i = to_integer(n)) < mul_min || mul_max < i)) ?
-		       of_floating(i) :
+		       of_floating((Floating)i) :
 		       n;
 }
 
@@ -349,6 +354,7 @@ obj flr(const obj args)
 }
 
 #ifdef _WIN32
+errno_t rand_s(unsigned *);
 #define PLAT_RAND_MAX UINT_MAX
 #else
 #define PLAT_RAND_MAX RAND_MAX
@@ -356,8 +362,8 @@ obj flr(const obj args)
 
 static Integer plat_rand(void)
 {
-	Integer r;
 #ifdef _WIN32
+	unsigned r;
 	return rand_s(&r);
 #else
 	return rand();
@@ -371,7 +377,7 @@ obj rnd(obj args)
 	Integer n, limit, r;
 
 	if (!seeded) {
-		srand(time(NULL));
+		srand((unsigned)time(NULL));
 		seeded = true;
 	}
 	if (is_err(args = chkarity("random", 1, args)))
