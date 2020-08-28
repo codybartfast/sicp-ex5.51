@@ -1,0 +1,37 @@
+(%ex "1.44")
+
+; exercise 1.44, page 78
+
+(define dx 0.00001)
+
+(define (compose f g)
+  (lambda (x) (f (g x))))
+
+(define (repeated f n)
+  (if (= n 1)
+      (lambda (x) (f x))
+      (compose f (repeated f (- n 1)))))
+
+(define (smooth-with-delta delta)
+    (lambda (f)
+      (lambda (x)
+        (/ (+ (f (- x delta)) (f x) (f (+ x delta))) 3))))
+
+(define (repeated-smooth-with-delta delta n)
+  (if (= n 0)
+      identity
+      (repeated (smooth-with-delta delta) n)))
+
+(define (repeated-smooth n)
+  (repeated-smooth-with-delta dx n))
+
+(define smooth
+  (repeated-smooth 1))
+
+(define (apply-repeated-smoothing-of-cube-to-three repeat-count)
+  (((repeated-smooth repeat-count) cube) 3))
+
+(apply-repeated-smoothing-of-cube-to-three 0)
+(apply-repeated-smoothing-of-cube-to-three 1)
+(apply-repeated-smoothing-of-cube-to-three 2)
+(apply-repeated-smoothing-of-cube-to-three 3)

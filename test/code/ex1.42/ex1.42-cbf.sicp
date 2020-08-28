@@ -1,0 +1,8 @@
+(%ex "1.42")
+
+; exercise 1.42, page 77
+
+(define (compose f g)
+  (lambda (x) (f (g x))))
+
+((compose square inc) 6)

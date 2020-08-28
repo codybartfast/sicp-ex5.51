@@ -1,0 +1,8 @@
+(%ex "1.41")
+
+; exercise 1.41, page 77
+
+(define (double f)
+        (lambda (x) (f (f x))))
+
+(((double (double double)) inc) 5)

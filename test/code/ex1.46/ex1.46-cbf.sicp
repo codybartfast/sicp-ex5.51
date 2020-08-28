@@ -1,0 +1,35 @@
+(%ex "1.46")
+
+; exercise 1.46, page 78
+
+(define tolerence 0.0001)
+
+(define (iterative-improve good-enough? improve)
+  (define (improve-until-good-enough guess)
+    (if (good-enough? guess)
+        guess
+        (improve-until-good-enough (improve guess))))
+  improve-until-good-enough)
+
+
+(define (sqrt-it-imp guess x)
+  ((iterative-improve
+    (lambda (y) (< (abs (- (* y y) x)) 0.00001))
+    (lambda (g) (average g (/ x g))))
+   x))
+
+(sqrt-it-imp 1 2)
+(sqrt-it-imp 1 64)
+(sqrt-it-imp 1 144)
+
+
+(define (fixed-point-it-imp f first-guess)
+  ((iterative-improve
+    (lambda (g) (< (abs (- g (f g))) tolerence))
+    f)
+   first-guess))
+
+(define (one-over-golden)
+  (fixed-point-it-imp (lambda (x) (/ 1 (+ 1 x))) 1.0))
+
+(one-over-golden)
