@@ -66,11 +66,9 @@ static void timed_eval(obj start)
 	obj end = runtime(emptylst);
 	obj elapsed = sub(list2(end, start));
 	obj secs = seconds(list1(elapsed));
-	newline(emptylst);
-	displaydat(of_string(";;; Time: "));
+	displaydat(of_string(" [ time: "));
 	displaydat(secs);
-	displaydat(of_string("s"));
-	newline(emptylst);
+	displaydat(of_string("s ] "));
 }
 
 obj eval(obj expression, obj env)

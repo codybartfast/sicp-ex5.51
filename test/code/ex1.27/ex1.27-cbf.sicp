@@ -1,0 +1,44 @@
+(%ex "1.27")
+
+; exercise 1.27, page 55
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m))
+                    m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))
+
+(define (fermat-test-all? n)
+  (define (iter? n a)
+    (cond
+      ((>= a n) true)
+      ((not (= (expmod a n n) a)) false)
+      (else (iter? n (+ a 1)))))
+  (iter? n 2))
+
+(define (carmichael? n)
+  (if (not (prime? n))
+      (fermat-test-all? n)
+      false))
+
+(define (find-carmichaels limit)
+  (display "Looking for Carmichael numbers up to ")
+  (display limit)
+  (newline)
+  (define (iter n)
+    (cond ((> n limit)
+           (display "Done.")
+	   (newline))
+        (else
+          (if (carmichael? n)
+	    (begin (display "    Carmichael: ")  
+	           (display n)
+	           (newline))
+            (ignore))
+         (iter (+ n 1)) )))
+  (iter 2))
+
+(find-carmichaels 3000)

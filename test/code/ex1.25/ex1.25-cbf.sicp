@@ -1,0 +1,50 @@
+(%ex "1.25")
+
+; exercise 1.25, page 55
+
+(define repeat-count 10)
+
+(define (report-prime-repeat prime? n repeat)
+  (define (prime-repeat repeat-count)
+    (cond ((= 0 repeat-count)
+           (prime? n))
+          (else
+           (prime? n)           
+           (prime-repeat (- repeat-count 1)))))
+  (display "    ")
+  (display n)
+  (display " *** ")
+  (time (prime-repeat repeat))
+  (newline))
+
+(define (report-prime prime? n)
+  (report-prime-repeat prime? n repeat-count))
+
+(define (report-prime-single prime? n)
+  (report-prime-repeat prime? n 1))
+
+(define (fast-expt b n)
+  (cond ((= n 0) 1)
+        ((even? n) (square (fast-expt b (/ n 2))))
+        (else (* b (fast-expt b (- n 1))))))
+
+(define (expmod-fe base exp m)
+  (remainder (fast-expt base exp) m))
+
+(define (fermat-test-fe n)
+  (define (try-it a)
+    (= (expmod-fe a n n) a))
+  (try-it (+ 1 (random (- n 1)))))
+
+(define (fast-prime-fe? n times)
+  (cond ((= times 0) true)
+        ((fermat-test-fe n) (fast-prime-fe? n (- times 1)))
+        (else false)))
+
+(define (fast-prime-fe-8? n)
+  (fast-prime-fe? n 8))
+
+(report-prime fast-prime-fe-8? 2)
+(report-prime fast-prime-fe-8? 2)
+(report-prime fast-prime-fe-8? 13)
+(report-prime fast-prime-fe-8? 16)

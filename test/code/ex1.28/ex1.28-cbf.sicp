@@ -1,0 +1,66 @@
+(%ex "1.28")
+
+; exercise 1.28, page 56
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m))
+                    m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))
+
+(define (non-trivial-root a n)
+  (cond
+    ((= a 1) false)
+    ((= a (- n 1)) false)
+    (else (= 1 (remainder (square a) n)))))
+
+(define (rm-test-one a n)
+  (define (expmod-rm base exp n)
+    (cond ((= exp 0) 1)
+          ((even? exp)
+           (define squared (square (expmod base (/ exp 2) n)))
+           (if (non-trivial-root a n)
+               0
+               (remainder squared n)))
+          (else
+           (remainder (* base (expmod-rm base (- exp 1) n))
+                      n))))
+  (= (expmod-rm a (- n 0) n) a))
+
+(define (rabin-miller? n)
+  (define (iter? n a)
+    (cond
+      ((>= a n) true)
+      ((not (rm-test-one a n)) false)
+      (else (iter? n (+ a 1)))))
+  (iter? n 2))
+
+(define (rabin-miller2? n)
+  (define (iter? n a)
+    (cond
+      ((>= a n) true)
+      ;((not (= (expmod a n n) a)) false)
+      ((not (= (expmod a (- n 1) n) 1)) false)
+      (else (iter? n (+ a 1)))))
+  (iter? n 2))
+  
+(newline)
+(display "Rabin Miller")
+(newline)
+(rabin-miller? 56)
+(rabin-miller? 59)
+(rabin-miller? 560)
+(rabin-miller? 561)
+(rabin-miller? 1009)
+
+(newline)
+(display "Rabin Miller 2")
+(newline)
+(rabin-miller2? 56)
+(rabin-miller2? 59)
+(rabin-miller2? 560)
+(rabin-miller2? 561)
+(rabin-miller2? 1009)

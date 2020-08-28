@@ -25,7 +25,8 @@
            (prime-repeat (- repeat-count 1)))))
   (display n)
   (display " *** ")
-  (ignore (time (prime-repeat repeat))))
+  (time (prime-repeat repeat))
+  (newline))
 
 (define (report-prime prime? n)
   (report-prime-repeat prime? n repeat-count))

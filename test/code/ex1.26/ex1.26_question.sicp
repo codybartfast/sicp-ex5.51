@@ -1,0 +1,15 @@
+(%ex "1.25")
+
+; exercise 1.25, page 55
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (* (expmod base (/ exp 2) m)
+                       (expmod base (/ exp 2) m))
+                    m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))
+
+(expmod 2 6 11)
