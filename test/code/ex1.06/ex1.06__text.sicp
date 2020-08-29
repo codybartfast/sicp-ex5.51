@@ -1,11 +1,5 @@
 (%ex "1.6")
 
-; section 1.1.7, page 22
-
-(define (sqrt x)
-  (the y (and (>= y 0)
-              (= (square y) x))))
-
 ; section 1.1.7, page 23
 
 (define (sqrt-iter guess x)
