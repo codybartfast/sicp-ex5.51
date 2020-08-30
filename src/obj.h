@@ -93,6 +93,7 @@ bool is_pair(obj);
 bool is_null(obj dat);
 
 extern const obj emptylst;
+obj pcons(obj, obj);
 obj cons(obj, obj);
 obj car(obj);
 obj set_car(obj, obj);

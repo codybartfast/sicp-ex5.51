@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "error.h"
+#include "storage.h"
 
 #define OBJ_4(TYPE, STYPE, VTYPE, VALUE)                                       \
 	{                                                                      \
@@ -134,14 +135,24 @@ bool is_null(obj dat)
 
 const obj emptylst = OBJ_2(TYPE_EMPTY_LIST, SUBTYPE_NOT_SET);
 
-obj cons(obj car, obj cdr)
+static obj consnogc(obj car, obj cdr, bool nogc)
 {
-	struct cell *ptr = (struct cell *)calloc(sizeof(struct cell), 1);
+	struct cell *ptr = newcell(nogc);
 	if (ptr == NULL) {
 		return error_memory(AREA, "Reference");
 	}
 	*ptr = (struct cell){ true, .pair = { car, cdr } };
 	return (obj)OBJ_4(TYPE_REFERENCE, SUBTYPE_NOT_SET, reference, ptr);
+}
+
+obj pcons(obj car, obj cdr)
+{
+	return consnogc(car, cdr, true);
+}
+
+obj cons(obj car, obj cdr)
+{
+	return consnogc(car, cdr, false);
 }
 
 obj car(obj pair)
