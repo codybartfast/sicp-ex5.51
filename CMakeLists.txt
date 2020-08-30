@@ -21,7 +21,8 @@ set (SRC_CORE
 	src/output.c
 	src/parser.c
 	src/primproc.c
-	src/sicpstd.h
+#	src/sicpstd.h
+	src/storage.c
 	src/strbldr.c
 	)
 
