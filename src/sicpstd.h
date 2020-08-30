@@ -3,6 +3,7 @@
 
 typedef long long Integer;
 typedef long double Floating;
+#define LG_PRECISION ".15"
 
 #ifdef __MACH__
 #define _ANSI_SOURCE
