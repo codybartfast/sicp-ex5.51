@@ -18,7 +18,8 @@ enum type {
 	TYPE_PRIMITIVE_PROCEDURE, // 8
 	TYPE_UNSPECIFIED, // 9
 	TYPE_VOID, // 10
-	TYPE_ERROR // 11
+	TYPE_BROKEN_HEART, // 11
+	TYPE_ERROR // 12
 };
 
 enum { SUBTYPE_NOT_SET = 0 };
@@ -139,6 +140,8 @@ extern const obj ok;
 extern const obj unspecified;
 bool is_void(obj dat);
 extern const obj _void;
+bool is_broken_heart(obj dat);
+extern const obj broken_heart;
 
 // ERROR
 

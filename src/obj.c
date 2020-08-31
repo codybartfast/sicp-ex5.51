@@ -250,6 +250,12 @@ SYMBOL(ok)
 
 const obj unspecified = OBJ_2(TYPE_UNSPECIFIED, SUBTYPE_NOT_SET);
 
+bool is_broken_heart(obj dat)
+{
+	return type(dat) == TYPE_BROKEN_HEART;
+}
+const obj broken_heart = OBJ_2(TYPE_BROKEN_HEART, SUBTYPE_NOT_SET);
+
 bool is_void(obj dat)
 {
 	return type(dat) == TYPE_VOID;
