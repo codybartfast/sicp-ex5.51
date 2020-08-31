@@ -133,6 +133,10 @@ bool is_null(obj dat)
 	return type(dat) == TYPE_EMPTY_LIST;
 }
 
+struct cell *to_reference(obj dat){
+	return dat.val.reference;
+}
+
 const obj emptylst = OBJ_2(TYPE_EMPTY_LIST, SUBTYPE_NOT_SET);
 
 static obj consnogc(obj car, obj cdr, bool nogc)

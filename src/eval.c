@@ -73,14 +73,14 @@ static void timed_eval(obj start)
 	displaydat(of_string("s ] "));
 }
 
-obj root(void)
+obj getroot(void)
 {
 	int actlen;
 	obj lst = rootlst;
 
 	if ((actlen = length_u(rootlst)) != 7) // intentionally not using rootlen
 		return error_internal(
-			AREA, "Bug! root() got list of unexpected length: %d");
+			AREA, "Bug! getroot() got list of unexpected length: %d");
 	set_car(lst, argl);
 	lst = cdr(lst);
 	set_car(lst, cont);
@@ -96,6 +96,31 @@ obj root(void)
 	set_car(lst, stack);
 
 	return rootlst;
+}
+
+obj setroot(obj rootlst){
+	int actlen;
+	obj lst = rootlst;
+
+	if ((actlen = length_u(rootlst)) != 7) // intentionally not using rootlen
+		return error_internal(
+			AREA, "Bug! setroot() got list of unexpected length: %d");
+
+	argl = car(lst);
+	lst = cdr(lst);
+	cont = car(lst);
+	lst = cdr(lst);
+	expr = car(lst);
+	lst = cdr(lst);
+	proc = car(lst);
+	lst = cdr(lst);
+	unev = car(lst);
+	lst = cdr(lst);
+	val = car(lst);
+	lst = cdr(lst);
+	stack = car(lst);
+
+	return unspecified;
 }
 
 static bool initdone = false;

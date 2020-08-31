@@ -6,6 +6,8 @@
 #include "obj.h"
 
 obj eval(obj exp, obj env);
-obj root(void);
+obj getroot(void);
+obj setroot(obj);
+
 
 #endif
