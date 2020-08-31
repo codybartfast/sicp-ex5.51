@@ -141,7 +141,7 @@ static obj consnogc(obj car, obj cdr, bool nogc)
 	if (ptr == NULL) {
 		return error_memory(AREA, "Reference");
 	}
-	*ptr = (struct cell){ true, .pair = { car, cdr } };
+	*ptr = (struct cell){ .pair = { car, cdr } };
 	return (obj)OBJ_4(TYPE_REFERENCE, SUBTYPE_NOT_SET, reference, ptr);
 }
 

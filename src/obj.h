@@ -44,7 +44,6 @@ struct pair {
 };
 
 struct cell {
-	bool is_pair;
 	union {
 		struct obj object;
 		struct pair pair;
