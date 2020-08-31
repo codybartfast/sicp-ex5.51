@@ -7,23 +7,23 @@
 const int blksiz = 4 * (1 << 20); // 4MB
 #define MAXBLKS 800 // 800 * 4 MB a bit under 4GB
 
-const int offmax = blksiz / sizeof(struct cell); // cells per block
-struct cell *blocksA[MAXBLKS];
-struct cell *blocksB[MAXBLKS];
-struct cell **blocks = blocksA;
+const int offmax = blksiz / sizeof(struct pair); // pairs per block
+struct pair *blocksA[MAXBLKS];
+struct pair *blocksB[MAXBLKS];
+struct pair **blocks = blocksA;
 int blkcnt = 0;
 int lstblk = -1;
 static int curblk = 0;
 static int offset = 0;
-static struct cell *next = NULL;
+static struct pair *next = NULL;
 static bool addnext = false;
 
 #include <stdio.h>
 #include "error.h"
 
-static struct cell **oldblks;
-static obj old;
-static struct cell *scan;
+static struct pair **oldblks;
+static obj new;
+static struct pair *scan, old;
 static int scnblk, scnoff;
 
 static void incnext(void)
@@ -37,68 +37,67 @@ static void incnext(void)
 
 static void relocate_pair(void)
 {
-	obj oldcar = car(old);
-	if (is_broken_heart(oldcar)) {
-		next->object = cdr(old); // ref obj, not the pair?
+	if (is_broken_heart(old.car)) {
+		new = cdr(old.cdr); // ref obj, not the pair?
 		return;
 	}
-	// use next to store pair ?
-	*next = (struct cell){ .pair = { old, cdr(old) } };
+	// new location of pair ?
+	new = (struct obj){ TYPE_REFERENCE,
+			    SUBTYPE_NOT_SET,
+			    { .reference = next } };
+	// update free pointer
+	incnext(); 
+	// copy car and cdr to free memory
+	set_car(new, old.car);
+	set_cdr(new, old.cdr);
 	// set car as broken heart
-	set_car(old, broken_heart);
-	// set cdr as pointer to new location
-	set_cdr(old, (struct obj){ TYPE_REFERENCE,
-				   SUBTYPE_NOT_SET,
-				   { .reference = next } });
-
-	// advance nxt
-	incnext();
+	old.car = broken_heart;
+	old.cdr = new;
 	//
 	// update next, ofset, blk
 }
 
 static void relocate_old_result_in_new(void)
 {
-	if (is_pair(old))
+	if (is_pair(old.car))
 		relocate_pair();
 	else
-		next->object = old;
+		new = old.car;
 	return;
 }
 
-static struct cell *collect(void)
+static struct pair *collect(void)
 {
-	// if (blocks == blocksA) {
-	// 	oldblks = blocksA;
-	// 	blocks = blocksB;
-	// } else {
-	// 	oldblks = blocksB;
-	// 	blocks = blocksA;
-	// }
+	if (blocks == blocksA) {
+		oldblks = blocksA;
+		blocks = blocksB;
+	} else {
+		oldblks = blocksB;
+		blocks = blocksA;
+	}
 
-	// curblk = offset = 0;
-	// next = blocks[curblk] + offset;
-	// scnblk = scnoff = 0;
-	// scan = blocks[scnblk] + scnoff;
-	// old = getroot();
+	curblk = offset = 0;
+	next = blocks[curblk] + offset;
+	scnblk = scnoff = 0;
+	scan = blocks[scnblk] + scnoff;
+	old = *getroot().val.reference;
 
-	// relocate_old_result_in_new();
-	// setroot((struct obj){
-	// 	TYPE_REFERENCE, SUBTYPE_NOT_SET, { .reference = next } });
+	relocate_old_result_in_new();
+	setroot((struct obj){
+		TYPE_REFERENCE, SUBTYPE_NOT_SET, { .reference = next } });
 
-	// gc-loop
-	// while (scnoff != offset || scnblk != curblk) {
+	// gc - loop while (scnoff != offset || scnblk != curblk)
+	// {
 	// 	old = scan->object;
 	// 	relocate_old_result_in_new();
-
 	// }
 	// no flip - we started with it instead.
 	return next;
 }
 
-static struct cell *addblock(void)
+static struct pair *addblock(void)
 {
-	struct cell *block;
+	struct pair *block;
 
 	addnext = false;
 	if (blkcnt >= MAXBLKS)
@@ -114,12 +113,12 @@ static struct cell *addblock(void)
 	return blocks[lstblk = blkcnt++];
 }
 
-static struct cell *makespace(bool nogc)
+static struct pair *makespace(bool nogc)
 {
 	if (nogc || addnext) {
 		return addblock();
 	}
-	next = collect();
+	//next = collect();
 	if (curblk == lstblk) {
 		if (offset == offmax)
 			return addblock();
@@ -129,7 +128,7 @@ static struct cell *makespace(bool nogc)
 	return next;
 }
 
-static struct cell *getnext(bool nogc)
+static struct pair *getnext(bool nogc)
 {
 	if (offset == offmax) {
 		if (curblk == lstblk) {
@@ -142,14 +141,14 @@ static struct cell *getnext(bool nogc)
 	return blocks[curblk] + offset++;
 }
 
-static struct cell *init(void)
+static struct pair *init(void)
 {
 	return next = makespace(true);
 }
 
-struct cell *newcell(bool nogc)
+struct pair *newpair(bool nogc)
 {
-	struct cell *rslt;
+	struct pair *rslt;
 
 	if (next == NULL) {
 		if (init() == NULL)

@@ -133,19 +133,20 @@ bool is_null(obj dat)
 	return type(dat) == TYPE_EMPTY_LIST;
 }
 
-struct cell *to_reference(obj dat){
-	return dat.val.reference;
-}
+// struct cell *to_reference(obj dat)
+// {
+// 	return dat.val.reference;
+// }
 
 const obj emptylst = OBJ_2(TYPE_EMPTY_LIST, SUBTYPE_NOT_SET);
 
 static obj consnogc(obj car, obj cdr, bool nogc)
 {
-	struct cell *ptr = newcell(nogc);
+	struct pair *ptr = newpair(nogc);
 	if (ptr == NULL) {
 		return error_memory(AREA, "Reference");
 	}
-	*ptr = (struct cell){ .pair = { car, cdr } };
+	*ptr = (struct pair){ car, cdr };
 	return (obj)OBJ_4(TYPE_REFERENCE, SUBTYPE_NOT_SET, reference, ptr);
 }
 
@@ -164,7 +165,7 @@ obj car(obj pair)
 	if (!is_pair(pair)) {
 		return error_argument_type(AREA, "car expects a pair");
 	} else {
-		return pair.val.reference->pair.car;
+		return pair.val.reference->car;
 	}
 }
 
@@ -173,7 +174,7 @@ obj set_car(obj pair, obj val)
 	if (!is_pair(pair)) {
 		return error_argument_type(AREA, "set_car expects a pair");
 	} else {
-		pair.val.reference->pair.car = val;
+		pair.val.reference->car = val;
 		return unspecified;
 	}
 }
@@ -183,7 +184,7 @@ obj cdr(obj pair)
 	if (!is_pair(pair)) {
 		return error_argument_type(AREA, "cdr expects a pair");
 	} else {
-		return pair.val.reference->pair.cdr;
+		return pair.val.reference->cdr;
 	}
 }
 
@@ -192,7 +193,7 @@ obj set_cdr(obj pair, obj val)
 	if (!is_pair(pair)) {
 		return error_argument_type(AREA, "set_cdr expects a pair");
 	} else {
-		pair.val.reference->pair.cdr = val;
+		pair.val.reference->cdr = val;
 		return unspecified;
 	}
 }

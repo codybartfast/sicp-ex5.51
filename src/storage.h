@@ -5,6 +5,6 @@
 #include <stdbool.h>
 #include "obj.h"
 
-struct cell *newcell(bool nogc);
+struct pair *newpair(bool nogc);
 
 #endif

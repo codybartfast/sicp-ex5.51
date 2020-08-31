@@ -34,7 +34,7 @@ typedef struct obj {
 		Integer Integer;
 		Floating Floating;
 		const char *string;
-		struct cell *reference;
+		struct pair *reference;
 		struct obj (*primproc)(struct obj);
 	} val;
 } obj;
@@ -42,13 +42,6 @@ typedef struct obj {
 struct pair {
 	struct obj car;
 	struct obj cdr;
-};
-
-struct cell {
-	union {
-		struct obj object;
-		struct pair pair;
-	};
 };
 
 enum type type(obj);
@@ -91,7 +84,7 @@ const char *to_string(const obj dat);
 
 bool is_pair(obj);
 bool is_null(obj dat);
-struct cell *to_reference(obj dat);
+// struct cell *to_reference(obj dat);
 
 extern const obj emptylst;
 obj pcons(obj, obj);
