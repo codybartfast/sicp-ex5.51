@@ -6,5 +6,6 @@
 #include "obj.h"
 
 obj eval(obj exp, obj env);
+obj root(void);
 
 #endif

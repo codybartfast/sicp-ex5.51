@@ -13,6 +13,8 @@ static struct inport *version(void);
 static struct inport *expr(int argc, char *argv[]);
 static struct inport *usage(void);
 
+#include <stdio.h>
+
 int main(int argc, char *argv[])
 {
 	obj exp;

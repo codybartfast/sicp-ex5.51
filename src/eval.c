@@ -19,6 +19,8 @@ static obj proc;
 static obj unev;
 static obj val;
 static obj stack;
+const int rootlen = 7;
+static obj rootlst;
 
 static void save(obj dat)
 {
@@ -71,10 +73,58 @@ static void timed_eval(obj start)
 	displaydat(of_string("s ] "));
 }
 
+obj root(void)
+{
+	int actlen;
+	obj lst = rootlst;
+
+	if ((actlen = length_u(rootlst)) != 7) // intentionally not using rootlen
+		return error_internal(
+			AREA, "Bug! root() got list of unexpected length: %d");
+	set_car(lst, argl);
+	lst = cdr(lst);
+	set_car(lst, cont);
+	lst = cdr(lst);
+	set_car(lst, expr);
+	lst = cdr(lst);
+	set_car(lst, proc);
+	lst = cdr(lst);
+	set_car(lst, unev);
+	lst = cdr(lst);
+	set_car(lst, val);
+	lst = cdr(lst);
+	set_car(lst, stack);
+
+	return rootlst;
+}
+
+static bool initdone = false;
+static obj init(void)
+{
+	int actlen;
+
+	stack = emptylst;
+	initdone = true;
+	rootlst = pcons(
+		argl,
+		pcons(cont,
+		      pcons(expr,
+			    pcons(proc,
+				  pcons(unev,
+					pcons(val, pcons(stack, emptylst)))))));
+	if ((actlen = length_u(rootlst)) != rootlen)
+		return error_internal(
+			AREA, "Bug! root wrong length. is: %d, expected %d",
+			actlen, rootlen);
+	return unspecified;
+}
+
 obj eval(obj expression, obj env)
 {
+	if (!initdone) {
+		init();
+	}
 	expr = expression;
-	stack = emptylst;
 	cont = return_caller;
 
 // 5.4.1 The Core of the Evaluator

@@ -1,6 +1,8 @@
 #include "storage.h"
 
 #include <stdlib.h>
+#include "eval.h"
+#include "list.h"
 
 // cell (at time of writinng) is 40 or 80 bytes, so using a multiple of five.
 const int blksiz = 5 * (1 << 20); // 5MB
@@ -16,6 +18,7 @@ static int offset = 0;
 static struct cell *next = NULL;
 
 #include <stdio.h>
+#include "error.h"
 
 static struct cell *addblock(void)
 {
@@ -37,6 +40,11 @@ static struct cell *addblock(void)
 static struct cell *makespace(bool nogc)
 {
 	printf("Making Space: %d\n", blkcnt);
+
+	if (!nogc) {
+		obj expr = caddr(root());
+		printf("Expr: %s\n", errstr(expr));
+	}
 	(void)nogc;
 	return addblock();
 }
