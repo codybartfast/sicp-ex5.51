@@ -4,12 +4,12 @@
 
 // cell (at time of writinng) is 40 or 80 bytes, so using a multiple of five.
 const int blksiz = 5 * (1 << 20); // 5MB
-#define MAXBLKS 300 // 800 * 5 MB a bit under 4GB
+#define MAXBLKS 800 // 800 * 5 MB a bit under 4GB
 
 const int offmax = blksiz / sizeof(struct cell); // cells per block
 struct cell *blocksA[MAXBLKS];
 struct cell *blocksB[MAXBLKS];
-struct cell **blocks;
+struct cell **blocks = blocksA;
 int blkcnt = 0;
 static int curblk = 0;
 static int offset = 0;
@@ -54,20 +54,21 @@ static struct cell *getnext(bool nogc)
 	return blocks[curblk] + offset++;
 }
 
+static struct cell *init(void)
+{
+	return next = makespace(true);
+}
+
 struct cell *newcell(bool nogc)
 {
-	struct cell *rslt;
+	struct cell *new;
 
 	if (next == NULL) {
-		// init
-		blocks = blocksB;
-		next = makespace(nogc);
-		if (next == NULL)
+		if (init() == NULL)
 			return NULL;
 	}
-	rslt = next;
-	next = getnext(nogc);
-	if (next == NULL)
+	new = next;
+	if ((next = getnext(nogc)) == NULL)
 		return NULL;
-	return rslt;
+	return new;
 }
