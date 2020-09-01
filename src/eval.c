@@ -9,8 +9,11 @@
 #include "mceval.h"
 #include "output.h"
 #include "primproc.h"
+#include "storage.h"
 
 #define AREA "EVAL"
+
+enum reg { ARGL, CONT, ENV, EXPR, PROC, STACK, UNEV, VAL };
 
 static obj argl;
 static obj cont;
@@ -19,12 +22,44 @@ static obj proc;
 static obj unev;
 static obj val;
 static obj stack;
-const int rootlen = 7;
+static obj env;
+// tge
+const int rootlen = 9;
 static obj rootlst;
 
-static void save(obj dat)
+static void save(enum reg reg)
 {
-	stack = cons(dat, stack);
+	struct pair *pair = newpair(true);
+
+	switch (reg) {
+	case ARGL:
+		pair->car = argl;
+		break;
+	case CONT:
+		pair->car = cont;
+		break;
+	case ENV:
+		pair->car = env;
+		break;
+	case EXPR:
+		pair->car = expr;
+		break;
+	case PROC:
+		pair->car = proc;
+		break;
+	case STACK:
+		pair->car = stack;
+		break;
+	case UNEV:
+		pair->car = unev;
+		break;
+	case VAL:
+		pair->car = val;
+		break;
+	}
+	pair->cdr = stack;
+
+	stack = (obj){ TYPE_PAIRPTR, SUBTYPE_NOT_SET, .val.reference = pair };
 	if (is_err(stack)) {
 		eprintf(AREA, "save / cons memory error");
 		exit(1);
@@ -59,7 +94,7 @@ static bool is_last_operand(obj exp)
 // ln 186 (but this time in book order)
 static obj adjoin_arg(obj arg, obj arglist)
 {
-	return append(arglist, list1(arg));
+	return append(arglist, list1(arg)); // MEM: both in registers
 }
 
 // new
@@ -73,16 +108,48 @@ static void timed_eval(obj start)
 	displaydat(of_string("s ] "));
 }
 
+static bool initdone = false;
+static obj init(void)
+{
+	int actlen;
+
+	stack = emptylst;
+	initdone = true;
+	rootlst = cons(
+		argl,
+		cons(cont,
+		     cons(expr,
+			  cons(proc,
+			       cons(unev,
+				    cons(val,
+					 cons(stack,
+					      cons(env,
+						   cons(the_global_environment(),
+							emptylst)))))))));
+	if ((actlen = length_u(rootlst)) != rootlen) {
+		error_internal(
+			AREA,
+			"Bug! init, root wrong length. is: %d, expected %d",
+			actlen, rootlen);
+		exit(1);
+	}
+	return unspecified;
+}
+
 obj getroot(void)
 {
 	int actlen;
 	obj lst = rootlst;
 
-	if ((actlen = length_u(rootlst)) != 7) // intentionally not using rootlen
+	if ((actlen = length_u(rootlst)) !=
+	    9) // intentionally not using rootlen
 		return error_internal(
-			AREA, "Bug! getroot() got list of unexpected length: %d");
+			AREA,
+			"Bug! getroot() got list of unexpected length: %d ",
+			actlen);
 	set_car(lst, argl);
 	lst = cdr(lst);
+	// printf("cont: %s\n", errstr(cont));
 	set_car(lst, cont);
 	lst = cdr(lst);
 	set_car(lst, expr);
@@ -94,18 +161,28 @@ obj getroot(void)
 	set_car(lst, val);
 	lst = cdr(lst);
 	set_car(lst, stack);
+	lst = cdr(lst);
+	set_car(lst, env);
+	lst = cdr(lst);
+	set_car(lst, the_global_environment());
 
 	return rootlst;
 }
 
-obj setroot(obj rootlst){
+obj setroot(obj rlst)
+{
 	int actlen;
-	obj lst = rootlst;
+	obj lst = rootlst = rlst;
 
-	if ((actlen = length_u(rootlst)) != 7) // intentionally not using rootlen
+	// intentionally not using rootlen
+	if ((actlen = length_u(rootlst)) != 9) {
+		eprintf(AREA, "IN SET ROOT");
 		return error_internal(
-			AREA, "Bug! setroot() got list of unexpected length: %d");
-
+			AREA,
+			"Bug! setroot() got list of unexpected length: %d",
+			actlen);
+	}
+	// printf("Setting ROOOT\n");
 	argl = car(lst);
 	lst = cdr(lst);
 	cont = car(lst);
@@ -119,37 +196,21 @@ obj setroot(obj rootlst){
 	val = car(lst);
 	lst = cdr(lst);
 	stack = car(lst);
+	lst = cdr(lst);
+	env = car(lst);
+	lst = cdr(lst);
+	set_global_environment(car(lst));
 
 	return unspecified;
 }
 
-static bool initdone = false;
-static obj init(void)
-{
-	int actlen;
-
-	stack = emptylst;
-	initdone = true;
-	rootlst = pcons(
-		argl,
-		pcons(cont,
-		      pcons(expr,
-			    pcons(proc,
-				  pcons(unev,
-					pcons(val, pcons(stack, emptylst)))))));
-	if ((actlen = length_u(rootlst)) != rootlen)
-		return error_internal(
-			AREA, "Bug! root wrong length. is: %d, expected %d",
-			actlen, rootlen);
-	return unspecified;
-}
-
-obj eval(obj expression, obj env)
+obj eval(obj expression, obj _environment)
 {
 	if (!initdone) {
 		init();
 	}
 	expr = expression;
+	env = _environment;
 	cont = return_caller;
 
 // 5.4.1 The Core of the Evaluator
@@ -200,10 +261,10 @@ ev_lambda:
 
 // ln 277
 ev_application:
-	save(cont);
-	save(env);
+	save(CONT);
+	save(ENV);
 	unev = operands(expr);
-	save(unev);
+	save(UNEV);
 	expr = operator(expr);
 	cont = ev_appl_did_operator;
 	goto eval_dispatch;
@@ -216,16 +277,16 @@ ev_appl_did_operator:
 	proc = val; // the operator
 	if (no_operands(unev))
 		goto apply_dispatch;
-	save(proc);
+	save(PROC);
 
 // ln 295
 ev_appl_operand_loop:
-	save(argl);
+	save(ARGL);
 	expr = first_operand(unev);
 	if (is_last_operand(unev))
 		goto ev_appl_last_arg;
-	save(env);
-	save(unev);
+	save(ENV);
+	save(UNEV);
 	cont = ev_appl_accumulate_arg;
 	goto eval_dispatch;
 
@@ -271,7 +332,7 @@ primitive_apply:
 // ln 348
 ev_begin:
 	unev = begin_actions(expr);
-	save(cont);
+	save(CONT);
 	goto ev_sequence;
 
 // ln 338
@@ -291,8 +352,8 @@ ev_sequence:
 	expr = first_exp(unev);
 	if (is_last_exp(unev))
 		goto ev_sequence_last_exp;
-	save(unev);
-	save(env);
+	save(UNEV);
+	save(ENV);
 	cont = ev_sequence_continue;
 	goto eval_dispatch;
 ev_sequence_continue:
@@ -308,9 +369,9 @@ ev_sequence_last_exp:
 
 // ln 374
 ev_if:
-	save(expr); // save expression for later
-	save(env);
-	save(cont);
+	save(EXPR); // save expression for later
+	save(ENV);
+	save(CONT);
 	cont = ev_if_decide;
 	expr = if_predicate(expr);
 	goto eval_dispatch; // evaluate the predicate
@@ -334,10 +395,10 @@ ev_if_consequent:
 // ln 416
 ev_definition:
 	unev = definition_variable(expr);
-	save(unev); // save variable for later
+	save(UNEV); // save variable for later
 	expr = definition_value(expr);
-	save(env);
-	save(cont);
+	save(ENV);
+	save(CONT);
 	cont = ev_definition_1;
 	goto eval_dispatch; // evaluate the definition value
 ev_definition_1:
@@ -354,15 +415,19 @@ ev_cond:
 
 // new
 ev_timed:
-	save(runtime(emptylst));
-	save(cont);
+	save(UNEV);
+	unev = runtime(emptylst);
+	save(UNEV);
+	save(CONT);
 	cont = ev_timed_done;
 	expr = cons(begin, cdr(expr));
 	goto eval_dispatch;
 
 ev_timed_done:
 	cont = restore();
-	timed_eval(restore());
+	unev = restore();
+	timed_eval(unev);
+	unev = restore();
 	goto go_cont;
 
 // new

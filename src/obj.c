@@ -125,7 +125,7 @@ const char *to_string(const obj dat)
 
 bool is_pair(obj dat)
 {
-	return type(dat) == TYPE_REFERENCE;
+	return type(dat) == TYPE_PAIRPTR;
 }
 
 bool is_null(obj dat)
@@ -140,30 +140,23 @@ bool is_null(obj dat)
 
 const obj emptylst = OBJ_2(TYPE_EMPTY_LIST, SUBTYPE_NOT_SET);
 
-static obj consnogc(obj car, obj cdr, bool nogc)
+obj cons(obj car, obj cdr)
 {
-	struct pair *ptr = newpair(nogc);
+	struct pair *ptr = newpair(false );
 	if (ptr == NULL) {
 		return error_memory(AREA, "Reference");
 	}
 	*ptr = (struct pair){ car, cdr };
-	return (obj)OBJ_4(TYPE_REFERENCE, SUBTYPE_NOT_SET, reference, ptr);
-}
-
-obj pcons(obj car, obj cdr)
-{
-	return consnogc(car, cdr, true);
-}
-
-obj cons(obj car, obj cdr)
-{
-	return consnogc(car, cdr, false);
+	return (obj)OBJ_4(TYPE_PAIRPTR, SUBTYPE_NOT_SET, reference, ptr);
 }
 
 obj car(obj pair)
 {
 	if (!is_pair(pair)) {
-		return error_argument_type(AREA, "car expects a pair");
+		// return error_argument_type(AREA, "set_car expects a pair (got type: %d)", type(pair));
+		error_argument_type(AREA, "car expects a pair (got type: %d)",
+				    type(pair));
+		exit(1);
 	} else {
 		return pair.val.reference->car;
 	}
@@ -172,7 +165,12 @@ obj car(obj pair)
 obj set_car(obj pair, obj val)
 {
 	if (!is_pair(pair)) {
-		return error_argument_type(AREA, "set_car expects a pair");
+		// return error_argument_type(AREA, "set_car expects a pair (got type: %d)", type(pair));
+		error_argument_type(AREA,
+				    "set_car expects a pair (got type: %d)",
+				    type(pair));
+		exit(1);
+
 	} else {
 		pair.val.reference->car = val;
 		return unspecified;
@@ -182,7 +180,10 @@ obj set_car(obj pair, obj val)
 obj cdr(obj pair)
 {
 	if (!is_pair(pair)) {
-		return error_argument_type(AREA, "cdr expects a pair");
+		// return error_argument_type(AREA, "cdr expects a pair (got type: %d)", type(pair));
+		error_argument_type(AREA, "cdr expects a pair (got type: %d)",
+				    type(pair));
+		exit(1);
 	} else {
 		return pair.val.reference->cdr;
 	}
@@ -191,7 +192,11 @@ obj cdr(obj pair)
 obj set_cdr(obj pair, obj val)
 {
 	if (!is_pair(pair)) {
-		return error_argument_type(AREA, "set_cdr expects a pair");
+		// return error_argument_type(AREA, "cdr expects a pair (got type: %d)", type(pair));
+		error_argument_type(AREA,
+				    "set_cdr expects a pair (got type: %d)",
+				    type(pair));
+		exit(1);
 	} else {
 		pair.val.reference->cdr = val;
 		return unspecified;

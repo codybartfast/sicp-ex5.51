@@ -145,7 +145,7 @@ static obj initial_procedures(void)
 		list2(of_identifier(">"), of_function(gt)),
 		list2(of_identifier("and"), of_function(and)),
 		list2(of_identifier("or"), of_function(or)),
-		list2(of_identifier("not"), of_function(not)),
+		list2(of_identifier("not"), of_function(not )),
 		// Implementation specific, (not in book):
 		list2(of_identifier("%defined"), of_function(display_defined)));
 
@@ -179,8 +179,14 @@ static obj setup_environment(void)
 static obj _the_global_environment;
 obj the_global_environment(void)
 {
-	if (is_pair(_the_global_environment))
-		return _the_global_environment;
-	_the_global_environment = setup_environment();
+	if (!is_pair(_the_global_environment))
+		_the_global_environment = setup_environment();
+	// printf("TGE: %p\n", _the_global_environment.val.reference);
 	return _the_global_environment;
+}
+
+// new
+void set_global_environment(obj tge)
+{
+	_the_global_environment = tge;
 }

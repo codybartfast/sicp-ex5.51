@@ -3,7 +3,8 @@
     "editor.insertSpaces": false,
     "files.associations": {
         "type_traits": "c",
-        "cmath": "c"
+        "cmath": "c",
+        "system_error": "c"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "LineCount.includes": [

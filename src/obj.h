@@ -12,7 +12,7 @@ enum type {
 	TYPE_NUMBER, // 3
 	TYPE_STRING, // 4
 	TYPE_EMPTY_LIST, // 5
-	TYPE_REFERENCE, // 6
+	TYPE_PAIRPTR, // 6
 
 	TYPE_EOF, // 7
 	TYPE_PRIMITIVE_PROCEDURE, // 8
@@ -87,7 +87,7 @@ bool is_null(obj dat);
 // struct cell *to_reference(obj dat);
 
 extern const obj emptylst;
-obj pcons(obj, obj);
+//obj pcons(obj, obj);
 obj cons(obj, obj);
 obj car(obj);
 obj set_car(obj, obj);

@@ -18,14 +18,14 @@ static struct inport *usage(void);
 int main(int argc, char *argv[])
 {
 	obj exp;
-	obj tge = the_global_environment();
+	//obj tge = the_global_environment();
 	struct inport *port = parseargs(argc, argv);
 	if (port == NULL)
 		return 0;
 
-	exp = do_head(tge, port);
+	exp = do_head(the_global_environment(), port);
 	for (; !is_err(exp) && !is_eof(exp); exp = readp(port)) {
-		obj dat = eval(exp, tge);
+		obj dat = eval(exp, the_global_environment());
 		if (is_err(dat))
 			break;
 		if (is_void(dat))

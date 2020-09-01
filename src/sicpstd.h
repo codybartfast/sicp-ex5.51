@@ -1,8 +1,8 @@
 #ifndef SICPSTD_H
 #define SICPSTD_H
 
-typedef long long Integer;
-typedef long double Floating;
+typedef long Integer;
+typedef double Floating;
 #define LG_PRECISION ".15"
 
 #ifdef __MACH__

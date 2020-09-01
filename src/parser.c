@@ -114,7 +114,7 @@ static obj parse_list(obj lst, struct inport *port)
 		dat = parse(tkn, port);
 		if (is_err(dat) || is_eof(dat))
 			return dat;
-		lst = pcons(dat, lst);
+		lst = cons(dat, lst);
 		return (is_err(lst)) ? lst : parse_list(lst, port);
 	}
 }
