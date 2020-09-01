@@ -9,12 +9,12 @@
 const int blksiz = 4 * (1 << 20); // 4MB
 #define MAXBLKS 800 // 800 * 4 MB a bit under 4GB
 
-const int offmax = blksiz / sizeof(struct pair); // pairs per block
-struct pair *blocksA[MAXBLKS];
-struct pair *blocksB[MAXBLKS];
-struct pair **blocks = blocksA;
-int blkcnt = 0;
-int lstblk = -1;
+static int offmax; // pairs per block
+static struct pair *blocksA[MAXBLKS];
+static struct pair *blocksB[MAXBLKS];
+static struct pair **blocks = blocksA;
+static int blkcnt = 0;
+static int lstblk = -1;
 static int curblk = 0;
 static int offset = 0;
 static struct pair *next = NULL;
@@ -238,6 +238,7 @@ static struct pair *getfree(bool gc)
 
 static struct pair *init(void)
 {
+	offmax = blksiz / sizeof(struct pair);
 	return next = makespace(false);
 }
 
