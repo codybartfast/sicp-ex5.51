@@ -84,9 +84,7 @@ static void relocate_pair(void)
 		return;
 	}
 	// new location for pair
-	new = (struct obj){ TYPE_PAIRPTR,
-			    SUBTYPE_NOT_SET,
-			    { .reference = next } };
+	new = of_pair(next);
 	// update free pointer
 	incnext();
 	// copy car and cdr to free memory

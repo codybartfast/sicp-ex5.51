@@ -133,12 +133,18 @@ bool is_null(obj dat)
 	return type(dat) == TYPE_EMPTY_LIST;
 }
 
+obj of_pair(struct pair *ptr)
+{
+	return (obj)OBJ_4(TYPE_PAIRPTR, SUBTYPE_NOT_SET, reference, ptr);
+}
+
 // struct cell *to_reference(obj dat)
 // {
 // 	return dat.val.reference;
 // }
 
 const obj emptylst = OBJ_2(TYPE_EMPTY_LIST, SUBTYPE_NOT_SET);
+
 
 obj cons(obj car, obj cdr)
 {
@@ -147,7 +153,7 @@ obj cons(obj car, obj cdr)
 		return error_memory(AREA, "Reference");
 	}
 	*ptr = (struct pair){ car, cdr };
-	return (obj)OBJ_4(TYPE_PAIRPTR, SUBTYPE_NOT_SET, reference, ptr);
+	return of_pair(ptr);
 }
 
 obj car(obj pair)

@@ -181,7 +181,6 @@ obj the_global_environment(void)
 {
 	if (!is_pair(_the_global_environment))
 		_the_global_environment = setup_environment();
-	// printf("TGE: %p\n", _the_global_environment.val.reference);
 	return _the_global_environment;
 }
 

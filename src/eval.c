@@ -75,37 +75,37 @@ static void save(enum reg reg)
 	// Oh!  That's right, you just avoided putting corrupt data on the stack!
 	//
 
-	struct pair *pair = newpair(true);
+	struct pair *ptr = newpair(true);
 
 	switch (reg) {
 	case ARGL:
-		pair->car = argl;
+		ptr->car = argl;
 		break;
 	case CONT:
-		pair->car = cont;
+		ptr->car = cont;
 		break;
 	case ENV:
-		pair->car = env;
+		ptr->car = env;
 		break;
 	case EXPR:
-		pair->car = expr;
+		ptr->car = expr;
 		break;
 	case PROC:
-		pair->car = proc;
+		ptr->car = proc;
 		break;
 	case STACK:
-		pair->car = stack;
+		ptr->car = stack;
 		break;
 	case UNEV:
-		pair->car = unev;
+		ptr->car = unev;
 		break;
 	case VAL:
-		pair->car = val;
+		ptr->car = val;
 		break;
 	}
-	pair->cdr = stack;
+	ptr->cdr = stack;
 
-	stack = (obj){ TYPE_PAIRPTR, SUBTYPE_NOT_SET, .val.reference = pair };
+	stack = of_pair(ptr);
 	if (is_err(stack)) {
 		eprintf(AREA, "save / cons memory error");
 		exit(1);
