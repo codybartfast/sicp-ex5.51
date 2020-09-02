@@ -4,7 +4,8 @@
     "files.associations": {
         "type_traits": "c",
         "cmath": "c",
-        "system_error": "c"
+        "system_error": "c",
+        "*.sicp": "scheme",
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "LineCount.includes": [

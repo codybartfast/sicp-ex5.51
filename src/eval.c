@@ -15,20 +15,66 @@
 
 enum reg { ARGL, CONT, ENV, EXPR, PROC, STACK, UNEV, VAL };
 
-static obj argl;
-static obj cont;
-static obj expr;
-static obj proc;
-static obj unev;
-static obj val;
-static obj stack;
-static obj env;
-// tge
+static obj argl; // 1
+static obj cont; // 2
+static obj env; // 3
+static obj expr; // 4
+static obj proc; // 5
+static obj stack; // 6
+static obj unev; // 7
+static obj val; // 8
+// Plus... the_global_environment //9
 const int rootlen = 9;
+
 static obj rootlst;
+
+// ln 182
+static obj empty_arglist(void)
+{
+	return emptylst;
+}
+
+// ln 185
+static bool is_last_operand(obj exp)
+{
+	return is_null(cdr(exp));
+}
+
+// ln 186 (but this time in book order)
+static obj adjoin_arg(obj arg, obj arglist)
+{
+	return append(arglist, list1(arg));
+}
+
+// not in book
+static void timed_eval(obj start)
+{
+	obj end = runtime(emptylst);
+	obj elapsed = sub(list2(end, start));
+	obj secs = seconds(list1(elapsed));
+	displaydat(of_string(" [ time: "));
+	displaydat(secs);
+	displaydat(of_string("s ] "));
+}
 
 static void save(enum reg reg)
 {
+	// Why use an enum?  Why not just pass the obj to save as an argument?
+	//
+	//      Because the call to newpair (below) allows garbage collection.
+	//
+	// So?  The argument obj wouldn't be reachable from the GC 'root' list.
+	//
+	// So?  If the arg(ument) is a pointer to a pair (i.e., is_pair), and a
+	//      collection occurs, then the arg's pointer will not be updated
+	//      because the garbage collector doesn't know about it.
+	//
+	// So?  The arg would still point to the pair's original location (now a
+	//      'broken heart') and not to the pair's new location.
+	//
+	// Oh!  That's right, you just avoided putting corrupt data on the stack!
+	//
+
 	struct pair *pair = newpair(true);
 
 	switch (reg) {
@@ -79,33 +125,76 @@ static obj restore(void)
 	}
 }
 
-// ln 182
-static obj empty_arglist(void)
+// used for garbage collection
+obj getroot(void)
 {
-	return emptylst;
+	int actlen;
+	obj lst = rootlst;
+
+	// intentionally not using rootlen here, change number manually after
+	// modifying body below.
+	if ((actlen = length_u(rootlst)) != 9) {
+		return error_internal(
+			AREA,
+			"Bug! getroot() got list of unexpected length: %d ",
+			actlen);
+	}
+	// order must match setroot
+	set_car(lst, argl);
+	lst = cdr(lst);
+	set_car(lst, cont);
+	lst = cdr(lst);
+	set_car(lst, env);
+	lst = cdr(lst);
+	set_car(lst, expr);
+	lst = cdr(lst);
+	set_car(lst, proc);
+	lst = cdr(lst);
+	set_car(lst, stack);
+	lst = cdr(lst);
+	set_car(lst, unev);
+	lst = cdr(lst);
+	set_car(lst, val);
+	lst = cdr(lst);
+	set_car(lst, the_global_environment());
+
+	return rootlst;
 }
 
-// ln 185
-static bool is_last_operand(obj exp)
+// used for garbage collection
+obj setroot(obj rlst)
 {
-	return is_null(cdr(exp));
-}
+	int actlen;
+	obj lst = rootlst = rlst;
 
-// ln 186 (but this time in book order)
-static obj adjoin_arg(obj arg, obj arglist)
-{
-	return append(arglist, list1(arg)); // MEM: both in registers
-}
+	// intentionally not using rootlen here, change number manually after
+	// modifying body below.
+	if ((actlen = length_u(rootlst)) != 9) {
+		return error_internal(
+			AREA,
+			"Bug! setroot() got list of unexpected length: %d",
+			actlen);
+	}
+	// order must match getroot
+	argl = car(lst);
+	lst = cdr(lst);
+	cont = car(lst);
+	lst = cdr(lst);
+	env = car(lst);
+	lst = cdr(lst);
+	expr = car(lst);
+	lst = cdr(lst);
+	proc = car(lst);
+	lst = cdr(lst);
+	stack = car(lst);
+	lst = cdr(lst);
+	unev = car(lst);
+	lst = cdr(lst);
+	val = car(lst);
+	lst = cdr(lst);
+	set_global_environment(car(lst));
 
-// new
-static void timed_eval(obj start)
-{
-	obj end = runtime(emptylst);
-	obj elapsed = sub(list2(end, start));
-	obj secs = seconds(list1(elapsed));
-	displaydat(of_string(" [ time: "));
-	displaydat(secs);
-	displaydat(of_string("s ] "));
+	return unspecified;
 }
 
 static bool initdone = false;
@@ -115,17 +204,18 @@ static obj init(void)
 
 	stack = emptylst;
 	initdone = true;
-	rootlst = cons(
-		argl,
-		cons(cont,
-		     cons(expr,
-			  cons(proc,
-			       cons(unev,
-				    cons(val,
-					 cons(stack,
-					      cons(env,
-						   cons(the_global_environment(),
-							emptylst)))))))));
+	// preallocate storage for gc root
+	rootlst = listn(9,
+			unspecified, // 1
+			unspecified, // 2
+			unspecified, // 3
+			unspecified, // 4
+			unspecified, // 5
+			unspecified, // 6
+			unspecified, // 7
+			unspecified, // 8
+			unspecified //  9
+	);
 	if ((actlen = length_u(rootlst)) != rootlen) {
 		error_internal(
 			AREA,
@@ -133,74 +223,6 @@ static obj init(void)
 			actlen, rootlen);
 		exit(1);
 	}
-	return unspecified;
-}
-
-obj getroot(void)
-{
-	int actlen;
-	obj lst = rootlst;
-
-	if ((actlen = length_u(rootlst)) !=
-	    9) // intentionally not using rootlen
-		return error_internal(
-			AREA,
-			"Bug! getroot() got list of unexpected length: %d ",
-			actlen);
-	set_car(lst, argl);
-	lst = cdr(lst);
-	// printf("cont: %s\n", errstr(cont));
-	set_car(lst, cont);
-	lst = cdr(lst);
-	set_car(lst, expr);
-	lst = cdr(lst);
-	set_car(lst, proc);
-	lst = cdr(lst);
-	set_car(lst, unev);
-	lst = cdr(lst);
-	set_car(lst, val);
-	lst = cdr(lst);
-	set_car(lst, stack);
-	lst = cdr(lst);
-	set_car(lst, env);
-	lst = cdr(lst);
-	set_car(lst, the_global_environment());
-
-	return rootlst;
-}
-
-obj setroot(obj rlst)
-{
-	int actlen;
-	obj lst = rootlst = rlst;
-
-	// intentionally not using rootlen
-	if ((actlen = length_u(rootlst)) != 9) {
-		eprintf(AREA, "IN SET ROOT");
-		return error_internal(
-			AREA,
-			"Bug! setroot() got list of unexpected length: %d",
-			actlen);
-	}
-	// printf("Setting ROOOT\n");
-	argl = car(lst);
-	lst = cdr(lst);
-	cont = car(lst);
-	lst = cdr(lst);
-	expr = car(lst);
-	lst = cdr(lst);
-	proc = car(lst);
-	lst = cdr(lst);
-	unev = car(lst);
-	lst = cdr(lst);
-	val = car(lst);
-	lst = cdr(lst);
-	stack = car(lst);
-	lst = cdr(lst);
-	env = car(lst);
-	lst = cdr(lst);
-	set_global_environment(car(lst));
-
 	return unspecified;
 }
 
