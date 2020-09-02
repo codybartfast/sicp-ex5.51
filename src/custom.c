@@ -8,6 +8,7 @@
 #include "list.h"
 #include "parser.h"
 #include "primproc.h"
+#include "storage.h"
 
 #define AREA "CUSTOM"
 
@@ -132,6 +133,7 @@ static obj conf_ex(obj env, obj args)
 
 obj do_head(obj env, struct inport *in)
 {
+	disable_gc = true;
 	obj exp = readp(in);
 	if (is_pair(exp) && eq_symbol(car(exp), _ex)) {
 		obj r = conf_ex(env, cdr(exp));
@@ -141,6 +143,7 @@ obj do_head(obj env, struct inport *in)
 	} else {
 		add_extras(552, env);
 	}
+	disable_gc = false;
 	return exp;
 }
 

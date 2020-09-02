@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "obj.h"
 
-struct pair *newpair(bool nogc);
+struct pair *newpair(bool gc_safe);
+extern bool disable_gc;
 
 #endif

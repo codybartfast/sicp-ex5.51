@@ -6,10 +6,13 @@
 
 #define AREA "STORAGE"
 
-const int blksiz = 4 * (1 << 20); // 4MB
-#define MAXBLKS 800 // 800 * 4 MB a bit under 4GB
+const int blksiz = (1 << 22); // 4MB
+#define MAXBLKS 250 // total blocks is double this (a bit under 2GB)
+
+bool disable_gc = false;
 
 static int offmax; // pairs per block
+static int low_avail; // threshold for garbage collection
 static struct pair *blocksA[MAXBLKS];
 static struct pair *blocksB[MAXBLKS];
 static struct pair **blocks = blocksA;
@@ -23,155 +26,104 @@ static bool addnext = false;
 #include <stdio.h>
 #include "error.h"
 
-static struct pair **oldblks;
-static obj old, new;
 static struct pair *scan;
 static int scnblk = 0, scnoff = 0;
 
-// static void display(obj lst, int depth, char *msg)
-// {
-// 	return;
-// 	// obj fst;
-// 	// if (msg != NULL) {
-// 	// 	printf("\n**********\n%s\n**********\n", msg);
-// 	// }
-// 	// if (!is_pair(lst)) {
-// 	// 	if (is_null(lst))
-// 	// 		printf("  END OF LIST\n");
-// 	// 	else {
-// 	// 		printf("  IMPROPER - ends with %s\n", errstr(lst));
-// 	// 	}
-// 	// 	return;
-// 	// }
-// 	// fst = car(lst);
-// 	// printf("  Pair: [%p]\n", lst.val.reference);
-// 	// if (is_pair(fst)) {
-// 	// 	printf("    list: (%s ...)\n", errstr(car(fst)));
-// 	// } else {
-// 	// 	printf("    car: %s\n", errstr(fst));
-// 	// }
-// 	// display(cdr(lst), depth - 1, NULL);
-// 	// if (msg != NULL)
-// 	// 	printf("\n");
-// }
-
-static void incnext(void)
+static struct pair *nextfree(void)
 {
+	struct pair *rslt = next;
+
 	if (++offset == offmax) {
 		curblk++;
 		offset = 0;
 	}
 	next = blocks[curblk] + offset;
-
-	//printf("snack? %d %d\n", curblk, offset);
+	return rslt;
 }
 
-static void incscan(void)
+static struct pair *nextscan(void)
 {
+	struct pair *rslt = scan;
+
 	if (++scnoff == offmax) {
 		scnblk++;
 		scnoff = 0;
 	}
 	scan = blocks[scnblk] + scnoff;
+	return rslt;
 }
 
-static void relocate_pair(void)
+static void update_obj(obj *objptr)
 {
-	if (is_broken_heart(car(old))) {
-		// "Dereferencing broken heart\n");
+	// Receives an address in the new blocks.  But if that address contains
+	// a pointer to a pair (i.e., is_pair) then we know that pair pointer
+	// always points to a location in the old block.
+	obj old;
+	obj new;
 
-		new = cdr(old); // ref obj, not the pair?
+	if (!is_pair(*objptr)) {
+		// not a pair pointer - nothing to do.
 		return;
 	}
-	// new location for pair
-	new = of_pair(next);
-	// update free pointer
-	incnext();
-	// copy car and cdr to free memory
-	set_car(new, car(old));
-	set_cdr(new, cdr(old));
-	// set car as broken heart
-	set_car(old, broken_heart);
-	set_cdr(old, new);
-	// printf("Relocating: %p -> %p\n", old.val.reference, new.val.reference);
-}
-
-static void relocate_old_result_in_new(void)
-{
-	if (is_pair(old)) {
-		relocate_pair();
-	} else {
-		new = old;
+	// address in the old blocks that pair pointer still points to.
+	old = *objptr;
+	if (is_broken_heart(car(old))) {
+		// Pair pointer points to an old address that has already
+		// been copied, update the scan's car or cdr to point to the
+		// address the pair data was copied to.
+		*objptr = cdr(old);
+		return;
 	}
-	return;
+	// The pair pointer points to an address in the old blocks and we
+	// have not yet copied the data to the new blocks.
+
+	// Get a free address in the new blocks for the pair data.
+	new = of_pair(nextfree());
+	// Copy car from pair in old blocks to the car of pair in new blocks
+	set_car(new, car(old));
+	// And the cdr
+	set_cdr(new, cdr(old));
+
+	// set car of pair at the old address as a broken heart
+	set_car(old, broken_heart);
+	// set cdr of pair at the old adderss as the address of the new pair
+	set_cdr(old, new);
+
+	// update the scan's car or cdr to be the new address of the new pair
+	*objptr = new;
 }
 
 static struct pair *collect(void)
 {
-	obj newroot;
-	// printf("COLLECTING\n");
+	// pull reg values from evaluator
+	obj root = getroot();
 
-	if (blocks == blocksA) {
-		oldblks = blocksA;
-		blocks = blocksB;
-	} else {
-		oldblks = blocksB;
-		blocks = blocksA;
-	}
+	// gc-flip (at start instead of end)
+	blocks = (blocks == blocksA) ? blocksB : blocksA;
 
+	// begin garbage collection
 	curblk = offset = 0;
 	scnblk = scnoff = 0;
 	scan = next = *blocks;
-	old = getroot();
 
-	newroot = old;
-	// display(newroot, 5, "START");
-
-	relocate_old_result_in_new();
-	newroot = new;
-	// display(newroot, 5, "MOVE ROOT");
+	// relocate root
+	update_obj(&root);
 
 	// gc-loop
 	while (scnoff != offset || scnblk != curblk) {
-		old = scan->car;
-		relocate_old_result_in_new();
-		scan->car = new;
-		old = scan->cdr;
-		relocate_old_result_in_new();
-		scan->cdr = new;
-		incscan();
+		update_obj(&scan->car);
+		update_obj(&scan->cdr);
+		nextscan();
 	}
 
-	// no flip - we started with it instead.
-	// display(newroot, 5, "NIGH");
-
-	// int i;
-	// printf("Original:   %p\n", *blocksA);
-	// printf("Compressed: %p\n", *blocksB);
-	// for (int i = 0; i <= offset; i++) {
-	// 	struct pair *addr = blocks[curblk] + i;
-	// 	printf("Addr: %p ", addr);
-	// 	if (is_pair(addr->car)) {
-	// 		printf("car:%p ", addr->car.val.reference);
-	// 	} else {
-	// 		printf("car:------%d------- ", addr->car.type);
-	// 	}
-	// 	if (is_pair(addr->cdr)) {
-	// 		printf("cdr:%p ", addr->cdr.val.reference);
-	// 	} else {
-	// 		printf("car:------%d------- ", addr->cdr.type);
-	// 	}
-	// 	printf("\n");
-	// }
-
-	setroot(newroot);
+	// push new reg values back into the evaluator
+	setroot(root);
 	return next;
 }
 
 static struct pair *addblock(void)
 {
 	struct pair *block;
-	// printf("ADDBLOCK\n");
 
 	addnext = false;
 	if (blkcnt >= MAXBLKS)
@@ -185,82 +137,55 @@ static struct pair *addblock(void)
 		return NULL;
 	blocksB[blkcnt] = block;
 	curblk = lstblk = blkcnt++;
-	offset = 0;
-	next = blocks[lstblk];
-	// if (next == NULL)
-	// 	printf("Where's my lunch?\n");
-	return next;
+	return next = blocks[curblk] + (offset = 0);
 }
 
-static struct pair *makespace(bool gc)
+static struct pair *makespace(bool gc_safe)
 {
-	long all, usd;
-	if (!gc || addnext) {
+	long capacity, used;
+	if (!gc_safe || addnext) {
+		return addblock();
+	}
+	if (disable_gc) {
 		return addblock();
 	}
 	next = collect();
-	// printf("POST: used %d / %d\n", offset, offmax);
-
 	if (curblk == lstblk && offset == offmax) {
 		return addblock();
 	}
-
-	all = blkcnt * offmax;
-	usd = (curblk * offmax) + offset;
-	// printf("RAM: %ld, All: %ld, usd: %ld\n", all * sizeof(struct pair), all, usd);
-	if(2 * usd > all)
+	capacity = blkcnt * offmax;
+	used = (curblk * offmax) + offset;
+	if (used > capacity / 4)
 		addnext = true;
-	return next;}
-
-static struct pair *getfree(bool gc)
-{
-	int avail;
-	offset++;
-	if (curblk < lstblk) {
-		if (offset < offmax) {
-			return next = blocks[curblk] + offset;
-		} else {
-			return next = blocks[++curblk] + (offset = 0);
-		}
-	}
-
-	avail = offmax - offset;
-	if (avail == 0) {
-		return makespace(gc);
-	} else if (gc && avail < offmax / 16) {
-		return makespace(gc);
-	} else {
-		return next = blocks[curblk] + offset;
-	}
+	return next;
 }
 
 static struct pair *init(void)
 {
 	offmax = blksiz / sizeof(struct pair);
-	return next = makespace(false);
+	low_avail = offmax / 16;
+	low_avail = low_avail > 1000 ? 1000 : low_avail;
+	return makespace(false);
 }
 
-struct pair *newpair(bool gc)
+static struct pair *getfree(bool gc_safe)
 {
-	struct pair *rslt;
+	if (curblk == lstblk) {
+		int avail = (offmax - offset);
+		if ((gc_safe && avail <= low_avail) || avail == 1) {
+			makespace(gc_safe);
+		}
+	}
+	return nextfree();
+}
 
-	if (next == NULL) {
-		// printf("Early in the Morning\n");
+bool needinit = true;
+struct pair *newpair(bool gc_safe)
+{
+	if (needinit) {
+		needinit = false;
 		if (init() == NULL)
 			return NULL;
 	}
-	// if (next == NULL)
-	// 	printf("coffee\n");
-	struct pair *gnr = getfree(gc);
-	rslt = gnr;
-	// printf("NEWPAIR: gnr - %p\n", gnr);
-	if ((gnr) == NULL) {
-		// printf("Late at night\n");
-		return NULL;
-	}
-	if (next == NULL) {
-		// printf("In the midnight hour\n");
-	}
-	// printf("NEWPAIR: final - %p\n", rslt);
-	return rslt;
+	return getfree(gc_safe);
 }

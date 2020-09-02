@@ -138,17 +138,11 @@ obj of_pair(struct pair *ptr)
 	return (obj)OBJ_4(TYPE_PAIRPTR, SUBTYPE_NOT_SET, reference, ptr);
 }
 
-// struct cell *to_reference(obj dat)
-// {
-// 	return dat.val.reference;
-// }
-
 const obj emptylst = OBJ_2(TYPE_EMPTY_LIST, SUBTYPE_NOT_SET);
-
 
 obj cons(obj car, obj cdr)
 {
-	struct pair *ptr = newpair(false );
+	struct pair *ptr = newpair(false);
 	if (ptr == NULL) {
 		return error_memory(AREA, "Reference");
 	}
@@ -159,7 +153,6 @@ obj cons(obj car, obj cdr)
 obj car(obj pair)
 {
 	if (!is_pair(pair)) {
-		// return error_argument_type(AREA, "set_car expects a pair (got type: %d)", type(pair));
 		error_argument_type(AREA, "car expects a pair (got type: %d)",
 				    type(pair));
 		exit(1);
@@ -171,7 +164,6 @@ obj car(obj pair)
 obj set_car(obj pair, obj val)
 {
 	if (!is_pair(pair)) {
-		// return error_argument_type(AREA, "set_car expects a pair (got type: %d)", type(pair));
 		error_argument_type(AREA,
 				    "set_car expects a pair (got type: %d)",
 				    type(pair));
@@ -186,7 +178,6 @@ obj set_car(obj pair, obj val)
 obj cdr(obj pair)
 {
 	if (!is_pair(pair)) {
-		// return error_argument_type(AREA, "cdr expects a pair (got type: %d)", type(pair));
 		error_argument_type(AREA, "cdr expects a pair (got type: %d)",
 				    type(pair));
 		exit(1);
@@ -198,7 +189,6 @@ obj cdr(obj pair)
 obj set_cdr(obj pair, obj val)
 {
 	if (!is_pair(pair)) {
-		// return error_argument_type(AREA, "cdr expects a pair (got type: %d)", type(pair));
 		error_argument_type(AREA,
 				    "set_cdr expects a pair (got type: %d)",
 				    type(pair));

@@ -85,7 +85,6 @@ const char *to_string(const obj dat);
 bool is_pair(obj);
 bool is_null(obj dat);
 obj of_pair(struct pair *);
-// struct cell *to_reference(obj dat);
 
 extern const obj emptylst;
 //obj pcons(obj, obj);

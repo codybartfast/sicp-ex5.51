@@ -184,6 +184,10 @@ obj the_global_environment(void)
 	return _the_global_environment;
 }
 
+obj tge(void){
+	return the_global_environment();
+}
+
 // new
 void set_global_environment(obj tge)
 {
