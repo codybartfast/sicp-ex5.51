@@ -1,5 +1,5 @@
 ## Addtions to github version
-/test/code/scratch.sicp
+/test/code/*
 /out
 /build
 *.out

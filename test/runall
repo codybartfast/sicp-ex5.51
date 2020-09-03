@@ -13,4 +13,4 @@ run() {
 
 export -f run
 
-find $source_dir -type f -exec bash -c 'run $0' {} \;
+find $source_dir -type f -name '*.sicp' -exec bash -c 'run $0' {} \;

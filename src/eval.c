@@ -76,7 +76,10 @@ static void save(enum reg reg)
 	//
 
 	struct pair *ptr = newpair(true);
-
+	if (ptr == NULL) {
+		eprintf(AREA, "save / cons memory error");
+		exit(1);
+	}
 	switch (reg) {
 	case ARGL:
 		ptr->car = argl;
@@ -104,12 +107,7 @@ static void save(enum reg reg)
 		break;
 	}
 	ptr->cdr = stack;
-
 	stack = of_pair(ptr);
-	if (is_err(stack)) {
-		eprintf(AREA, "save / cons memory error");
-		exit(1);
-	}
 	return;
 }
 
@@ -203,7 +201,6 @@ static obj init(void)
 	int actlen;
 
 	stack = emptylst;
-	initdone = true;
 	// preallocate storage for gc root
 	rootlst = listn(9,
 			unspecified, // 1
@@ -223,6 +220,7 @@ static obj init(void)
 			actlen, rootlen);
 		exit(1);
 	}
+	initdone = true;
 	return unspecified;
 }
 

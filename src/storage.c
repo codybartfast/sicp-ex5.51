@@ -6,8 +6,15 @@
 
 #define AREA "STORAGE"
 
-const int blksiz = (1 << 22); // 4MB
-#define MAXBLKS 250 // total blocks is double this (a bit under 2GB)
+// maximum usable ram = blksiz * maxblks
+// maximum allocation = blksiz * (maxblks * 2)
+// maximum usable pairs = blksiz * maxblks / sizeof(pair)
+// e.g. If blksiz = (1 << 20), MAXBLKS = 1024 & sizeof(pair) = 32
+// 	max usable = 1GB
+//	max allocated = 2GB
+//      max pairs = 32,768 * 1,024 = 2,834,432
+const int blksiz = (1 << 20);
+#define MAXBLKS 1024
 
 bool disable_gc = false;
 
@@ -16,19 +23,12 @@ static int low_avail; // threshold for garbage collection
 static struct pair *blocksA[MAXBLKS];
 static struct pair *blocksB[MAXBLKS];
 static struct pair **blocks = blocksA;
-static int blkcnt = 0;
-static int lstblk = -1;
-static int curblk = 0;
-static int offset = 0;
-static struct pair *next = NULL;
+static int blkcnt;
+static int lstblk;
 static bool addnext = false;
 
-#include <stdio.h>
-#include "error.h"
-
-static struct pair *scan;
-static int scnblk = 0, scnoff = 0;
-
+static struct pair *next;
+static int curblk, offset;
 static struct pair *nextfree(void)
 {
 	struct pair *rslt = next;
@@ -41,6 +41,8 @@ static struct pair *nextfree(void)
 	return rslt;
 }
 
+static struct pair *scan;
+static int scnblk, scnoff;
 static struct pair *nextscan(void)
 {
 	struct pair *rslt = scan;
@@ -86,7 +88,7 @@ static void update_obj(obj *objptr)
 
 	// set car of pair at the old address as a broken heart
 	set_car(old, broken_heart);
-	// set cdr of pair at the old adderss as the address of the new pair
+	// set cdr of pair at the old address as the address of the new pair
 	set_cdr(old, new);
 
 	// update the scan's car or cdr to be the new address of the new pair
@@ -126,7 +128,7 @@ static struct pair *addblock(void)
 	struct pair *block;
 
 	addnext = false;
-	if (blkcnt >= MAXBLKS)
+	if (blkcnt == MAXBLKS)
 		return NULL;
 	block = calloc(blksiz, 1);
 	if (block == NULL)
@@ -142,29 +144,28 @@ static struct pair *addblock(void)
 
 static struct pair *makespace(bool gc_safe)
 {
-	long capacity, used;
-	if (!gc_safe || addnext) {
-		return addblock();
-	}
-	if (disable_gc) {
+	if (!gc_safe || addnext || disable_gc) {
 		return addblock();
 	}
 	next = collect();
-	if (curblk == lstblk && offset == offmax) {
+	if (curblk == lstblk && offset == (offmax - 1)) {
 		return addblock();
+	} else {
+		long capacity = blkcnt * offmax;
+		long used = (curblk * offmax) + offset;
+		if (used > capacity / 4)
+			addnext = true;
+		return next;
 	}
-	capacity = blkcnt * offmax;
-	used = (curblk * offmax) + offset;
-	if (used > capacity / 4)
-		addnext = true;
-	return next;
 }
 
 static struct pair *init(void)
 {
 	offmax = blksiz / sizeof(struct pair);
 	low_avail = offmax / 16;
+	low_avail = low_avail < 1 ? 1 : low_avail;
 	low_avail = low_avail > 1000 ? 1000 : low_avail;
+	addnext = true;
 	return makespace(false);
 }
 
@@ -172,8 +173,12 @@ static struct pair *getfree(bool gc_safe)
 {
 	if (curblk == lstblk) {
 		int avail = (offmax - offset);
-		if ((gc_safe && avail <= low_avail) || avail == 1) {
-			makespace(gc_safe);
+		if (avail <= low_avail) {
+			if (avail == 1 || gc_safe) {
+				if (makespace(gc_safe) == NULL) {
+					return NULL;
+				}
+			}
 		}
 	}
 	return nextfree();
