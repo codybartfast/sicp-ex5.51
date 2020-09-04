@@ -99,6 +99,11 @@ static obj add_extras(int ex, obj env)
 		// not in the book but most answers use it.
 		define_variable(of_identifier("floor"), of_function(flr), env);
 	}
+	if (ex >= 201) {
+		define_variable(of_identifier("cons"), of_function(consp), env);
+		define_variable(of_identifier("car"), of_function(carp), env);
+		define_variable(of_identifier("cdr"), of_function(cdrp), env);
+	}
 	return unspecified;
 }
 

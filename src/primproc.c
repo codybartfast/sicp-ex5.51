@@ -559,3 +559,27 @@ obj not(const obj args)
 		return chk;
 	return is_false(car(args)) ? tru_o : fls_o;
 }
+
+obj consp(const obj args)
+{
+	obj chk;
+	if (is_err(chk = chkarity("cons", 2, args)))
+		return chk;
+	return cons(car(args), cadr(args));
+}
+
+obj carp(const obj args)
+{
+	obj chk;
+	if (is_err(chk = chkarity("car", 1, args)))
+		return chk;
+	return caar(args);
+}
+
+obj cdrp(const obj args)
+{
+	obj chk;
+	if (is_err(chk = chkarity("cdr", 1, args)))
+		return chk;
+	return cdar(args);
+}

@@ -37,4 +37,8 @@ obj and(const obj);
 obj or(const obj);
 obj not(const obj);
 
+obj consp(const obj);
+obj carp(const obj);
+obj cdrp(const obj);
+
 #endif
