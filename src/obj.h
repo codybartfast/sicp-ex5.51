@@ -82,7 +82,7 @@ const char *to_string(const obj dat);
 
 // PAIRS
 
-bool is_pair(obj);
+bool is_pairptr(obj);
 bool is_null(obj dat);
 obj of_pair(struct pair *);
 

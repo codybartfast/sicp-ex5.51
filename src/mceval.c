@@ -35,7 +35,7 @@ bool is_variable(obj exp)
 // ln 122
 static bool is_tagged_list(obj exp, obj tag)
 {
-	return is_pair(exp) ? eq_symbol(car(exp), tag) : false;
+	return is_pairptr(exp) ? eq_symbol(car(exp), tag) : false;
 }
 
 // ln 129
@@ -179,7 +179,7 @@ static obj make_begin(obj seq)
 // ln 175
 bool is_application(obj exp)
 {
-	return is_pair(exp);
+	return is_pairptr(exp);
 }
 
 // ln 176

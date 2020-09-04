@@ -102,7 +102,7 @@ static obj displaystr(obj dat)
 			of_string("<procedure>"), procedure_parameters(dat),
 			procedure_body(dat), of_string("<procedure-env>")));
 	}
-	if (is_pair(dat)) {
+	if (is_pairptr(dat)) {
 		return displaypair(dat);
 	}
 	switch (type(dat)) {
@@ -143,7 +143,7 @@ static obj displaypair(obj pair)
 		sb_adds(sb, to_string(displaystr(car(pair))));
 		if (!is_null(pair = cdr(pair)))
 			sb_addc(sb, ' ');
-		if (!is_null(pair) && !is_pair(pair)) {
+		if (!is_null(pair) && !is_pairptr(pair)) {
 			eprintf(AREA, "Can't handle improper lists");
 			exit(1);
 		}
@@ -157,7 +157,8 @@ static obj displaypair(obj pair)
 	return of_string(s);
 }
 
-obj ignore(obj args){
+obj ignore(obj args)
+{
 	(void)args;
 	return _void;
 }

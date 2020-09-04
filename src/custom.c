@@ -135,7 +135,7 @@ obj do_head(obj env, struct inport *in)
 {
 	disable_gc = true;
 	obj exp = readp(in);
-	if (is_pair(exp) && eq_symbol(car(exp), _ex)) {
+	if (is_pairptr(exp) && eq_symbol(car(exp), _ex)) {
 		obj r = conf_ex(env, cdr(exp));
 		if (is_err(r))
 			return r;
@@ -157,7 +157,8 @@ static obj display_definedp(struct outport *out)
 	obj names;
 	obj lpad = of_string("  ");
 	displayp(out, of_string("Defined Variables:"));
-	for (names = reverse(defined()); is_pair(names); names = cdr(names)) {
+	for (names = reverse(defined()); is_pairptr(names);
+	     names = cdr(names)) {
 		newline(emptylst);
 		displayp(out, lpad);
 		displayp(out, car(names));

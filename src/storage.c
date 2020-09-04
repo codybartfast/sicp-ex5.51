@@ -13,7 +13,7 @@
 //      initial = 1MB usable, 2MB allocated, 32,768 pairs available.
 // 	max usable = 1GB
 //	max allocated = 2GB
-//      max available pairs = (32,768 * 1,024) = 2,834,432
+//      max available pairs = (32,768 * 1,024) = 33,554,432
 const int blksiz = (1 << 20);
 #define MAXBLKS 1024
 
@@ -64,7 +64,7 @@ static void update_obj(obj *objptr)
 	obj old;
 	obj new;
 
-	if (!is_pair(*objptr)) {
+	if (!is_pairptr(*objptr)) {
 		// not a pair pointer - nothing to do.
 		return;
 	}

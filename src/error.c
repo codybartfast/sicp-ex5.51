@@ -122,7 +122,7 @@ obj error_unbound_variable(const char *area, const char *message, ...)
 obj user_error(obj args)
 {
 	obj dat;
-	if (!is_pair(args)) {
+	if (!is_pairptr(args)) {
 		return error_arity(
 			AREA, "'error' got no args (expects a message string)");
 	}
@@ -134,7 +134,7 @@ obj user_error(obj args)
 	}
 	displaydat(of_string("ERROR: "));
 	displaydat(dat);
-	for (dat = cdr(args); is_pair(dat); dat = cdr(dat)) {
+	for (dat = cdr(args); is_pairptr(dat); dat = cdr(dat)) {
 		displaydat(of_string(" "));
 		write(car(dat));
 	}

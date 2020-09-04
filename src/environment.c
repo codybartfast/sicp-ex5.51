@@ -149,7 +149,7 @@ static obj initial_procedures(void)
 		// Implementation specific, (not in book):
 		list2(of_identifier("%defined"), of_function(display_defined)));
 
-	return is_pair(_initial_procedures) ?
+	return is_pairptr(_initial_procedures) ?
 		       _initial_procedures :
 		       (_initial_procedures = reverse(initial_primprocs));
 }
@@ -179,7 +179,7 @@ static obj setup_environment(void)
 static obj _the_global_environment;
 obj the_global_environment(void)
 {
-	if (!is_pair(_the_global_environment))
+	if (!is_pairptr(_the_global_environment))
 		_the_global_environment = setup_environment();
 	return _the_global_environment;
 }

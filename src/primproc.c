@@ -64,7 +64,7 @@ obj chkarity(char *fname, int expct, obj args)
 static obj allnum(char *fname, obj args)
 {
 	obj lst;
-	for (lst = args; is_pair(lst); lst = cdr(lst)) {
+	for (lst = args; is_pairptr(lst); lst = cdr(lst)) {
 		if (!is_number(car(lst)))
 			return err_notnum(fname, car(lst));
 	}
@@ -195,7 +195,7 @@ static obj checkcar(const char *fname, const obj args)
 		return error_argument_value(
 			AREA, "%s requires at least one argument", fname);
 	}
-	if (!is_pair(args)) {
+	if (!is_pairptr(args)) {
 		return err_improper(fname, args);
 	} else {
 		const obj fst = car(args);
@@ -210,7 +210,7 @@ static obj reduce(const char *fname, const enum op op, const obj acc,
 {
 	if (is_null(args))
 		return acc;
-	if (!is_pair(args))
+	if (!is_pairptr(args))
 		return err_improper(fname, args);
 	else {
 		const obj num = car(args);
@@ -487,7 +487,7 @@ static obj fold(const char *fname, const enum cmp cmp, const obj prv,
 {
 	if (is_null(args))
 		return tru_o;
-	if (!is_pair(args))
+	if (!is_pairptr(args))
 		return err_improper(fname, args);
 	else {
 		const obj num = car(args);
@@ -538,7 +538,7 @@ obj and (const obj args)
 {
 	if (is_null(args))
 		return tru_o;
-	if (!is_pair(args))
+	if (!is_pairptr(args))
 		return err_improper("and", args);
 	return is_false(car(args)) ? fls_o : and(cdr(args));
 }
@@ -547,7 +547,7 @@ obj or (const obj args)
 {
 	if (is_null(args))
 		return fls_o;
-	if (!is_pair(args))
+	if (!is_pairptr(args))
 		return err_improper("or", args);
 	return is_true(car(args)) ? tru_o : or (cdr(args));
 }
