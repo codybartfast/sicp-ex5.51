@@ -23,7 +23,7 @@ static obj proc; // 5
 static obj stack; // 6
 static obj unev; // 7
 static obj val; // 8
-// Plus... the_global_environment //9
+// Plus... the_global_environment // 9
 const int rootlen = 9;
 
 static obj rootlst;
@@ -75,39 +75,36 @@ static void save(enum reg reg)
 	// Oh!  That's right, you just avoided putting corrupt data on the stack!
 	//
 
-	struct pair *ptr = newpair(true);
-	if (ptr == NULL) {
-		eprintf(AREA, "save / cons memory error");
-		exit(1);
-	}
 	switch (reg) {
 	case ARGL:
-		ptr->car = argl;
+		stack = consgc(&argl, &stack);
 		break;
 	case CONT:
-		ptr->car = cont;
+		stack = consgc(&cont, &stack);
 		break;
 	case ENV:
-		ptr->car = env;
+		stack = consgc(&env, &stack);
 		break;
 	case EXPR:
-		ptr->car = expr;
+		stack = consgc(&expr, &stack);
 		break;
 	case PROC:
-		ptr->car = proc;
+		stack = consgc(&proc, &stack);
 		break;
 	case STACK:
-		ptr->car = stack;
+		stack = consgc(&stack, &stack);
 		break;
 	case UNEV:
-		ptr->car = unev;
+		stack = consgc(&unev, &stack);
 		break;
 	case VAL:
-		ptr->car = val;
+		stack = consgc(&val, &stack);
 		break;
 	}
-	ptr->cdr = stack;
-	stack = of_pair(ptr);
+	if (is_err(stack)) {
+		eprintf(AREA, "Halting - Reached Memory Limit");
+		exit(1);
+	}
 	return;
 }
 
@@ -231,7 +228,7 @@ obj eval(obj expression, obj _environment)
 	}
 	expr = expression;
 	env = _environment;
-	cont = return_caller;
+	cont = ev_return_caller;
 
 // 5.4.1 The Core of the Evaluator
 
@@ -463,7 +460,7 @@ unknown_procedure_type:
 	return error_eval(AREA, "Unknown procedure type: %s", errstr(proc));
 
 go_cont:
-	if (eq_symbol(cont, return_caller))
+	if (eq_symbol(cont, ev_return_caller))
 		return val;
 	if (eq_symbol(cont, ev_appl_accum_last_arg))
 		goto ev_appl_accum_last_arg;

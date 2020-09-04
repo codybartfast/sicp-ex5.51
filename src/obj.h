@@ -87,8 +87,8 @@ bool is_null(obj dat);
 obj of_pair(struct pair *);
 
 extern const obj emptylst;
-//obj pcons(obj, obj);
 obj cons(obj, obj);
+obj consgc(obj *, obj *);
 obj car(obj);
 obj set_car(obj, obj);
 obj cdr(obj);
@@ -123,7 +123,7 @@ extern const obj ev_definition_1;
 extern const obj ev_if_decide;
 extern const obj ev_sequence_continue;
 extern const obj ev_timed_done;
-extern const obj return_caller;
+extern const obj ev_return_caller;
 
 // MISC VALUES
 

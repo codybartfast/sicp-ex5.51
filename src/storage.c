@@ -10,9 +10,10 @@
 // maximum allocation = blksiz * (maxblks * 2)
 // maximum usable pairs = blksiz * maxblks / sizeof(pair)
 // e.g. If blksiz = (1 << 20), MAXBLKS = 1024 & sizeof(pair) = 32
+//      initial = 1MB usable, 2MB allocated, 32,768 pairs available.
 // 	max usable = 1GB
 //	max allocated = 2GB
-//      max pairs = 32,768 * 1,024 = 2,834,432
+//      max available pairs = (32,768 * 1,024) = 2,834,432
 const int blksiz = (1 << 20);
 #define MAXBLKS 1024
 
@@ -95,7 +96,7 @@ static void update_obj(obj *objptr)
 	*objptr = new;
 }
 
-static struct pair *collect(void)
+static struct pair *collect_garbage(void)
 {
 	// pull reg values from evaluator
 	obj root = getroot();
@@ -128,15 +129,18 @@ static struct pair *addblock(void)
 	struct pair *block;
 
 	addnext = false;
-	if (blkcnt == MAXBLKS)
+	if (blkcnt == MAXBLKS) {
 		return NULL;
+	}
 	block = calloc(blksiz, 1);
-	if (block == NULL)
+	if (block == NULL) {
 		return NULL;
+	}
 	blocksA[blkcnt] = block;
 	block = calloc(blksiz, 1);
-	if (block == NULL)
+	if (block == NULL) {
 		return NULL;
+	}
 	blocksB[blkcnt] = block;
 	curblk = lstblk = blkcnt++;
 	return next = blocks[curblk] + (offset = 0);
@@ -147,14 +151,15 @@ static struct pair *makespace(bool gc_safe)
 	if (!gc_safe || addnext || disable_gc) {
 		return addblock();
 	}
-	next = collect();
+	next = collect_garbage();
 	if (curblk == lstblk && offset == (offmax - 1)) {
 		return addblock();
 	} else {
 		long capacity = blkcnt * offmax;
 		long used = (curblk * offmax) + offset;
-		if (used > capacity / 4)
+		if (used > capacity / 4) {
 			addnext = true;
+		}
 		return next;
 	}
 }
@@ -162,9 +167,8 @@ static struct pair *makespace(bool gc_safe)
 static struct pair *init(void)
 {
 	offmax = blksiz / sizeof(struct pair);
-	low_avail = offmax / 16;
-	low_avail = low_avail < 1 ? 1 : low_avail;
-	low_avail = low_avail > 1000 ? 1000 : low_avail;
+	low_avail = offmax / 128;
+	low_avail = (low_avail < 1) ? 1 : (low_avail > 256) ? 256 : low_avail;
 	addnext = true;
 	return makespace(false);
 }
@@ -173,11 +177,9 @@ static struct pair *getfree(bool gc_safe)
 {
 	if (curblk == lstblk) {
 		int avail = (offmax - offset);
-		if (avail <= low_avail) {
-			if (avail == 1 || gc_safe) {
-				if (makespace(gc_safe) == NULL) {
-					return NULL;
-				}
+		if (avail <= low_avail && (avail == 1 || gc_safe)) {
+			if (makespace(gc_safe) == NULL) {
+				return NULL;
 			}
 		}
 	}
@@ -189,8 +191,9 @@ struct pair *newpair(bool gc_safe)
 {
 	if (needinit) {
 		needinit = false;
-		if (init() == NULL)
+		if (init() == NULL) {
 			return NULL;
+		}
 	}
 	return getfree(gc_safe);
 }

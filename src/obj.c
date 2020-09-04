@@ -144,9 +144,19 @@ obj cons(obj car, obj cdr)
 {
 	struct pair *ptr = newpair(false);
 	if (ptr == NULL) {
-		return error_memory(AREA, "Reference");
+		return error_memory(AREA, "Reached Memory Limit: cons");
 	}
 	*ptr = (struct pair){ car, cdr };
+	return of_pair(ptr);
+}
+
+obj consgc(obj *car, obj *cdr)
+{
+	struct pair *ptr = newpair(true);
+	if (ptr == NULL) {
+		return error_memory(AREA, "Reached Memory Limit: consgc");
+	}
+	*ptr = (struct pair){ *car, *cdr };
 	return of_pair(ptr);
 }
 
@@ -240,7 +250,7 @@ SYMBOL(ev_definition_1)
 SYMBOL(ev_if_decide)
 SYMBOL(ev_sequence_continue)
 SYMBOL(ev_timed_done)
-SYMBOL(return_caller)
+SYMBOL(ev_return_caller)
 
 // MISC VALUES
 
