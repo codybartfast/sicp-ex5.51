@@ -134,19 +134,23 @@ static obj displaypair(obj pair)
 {
 	char *s;
 	struct strbldr *sb;
+	bool donefst = false;
 
 	if ((sb = new_strbldr()) == NULL)
 		return error_memory(AREA, "StrBldr");
 	sb_addc(sb, '(');
 
-	while (!is_null(pair)) {
-		sb_adds(sb, to_string(displaystr(car(pair))));
-		if (!is_null(pair = cdr(pair)))
+	for (; is_pairptr(pair); pair = cdr(pair)) {
+		if (donefst) {
 			sb_addc(sb, ' ');
-		if (!is_null(pair) && !is_pairptr(pair)) {
-			eprintf(AREA, "Can't handle improper lists");
-			exit(1);
+		} else {
+			donefst = true;
 		}
+		sb_adds(sb, to_string(displaystr(car(pair))));
+	};
+	if (!is_null(pair)) {
+		sb_adds(sb, " . ");
+		sb_adds(sb, to_string(displaystr(pair)));
 	}
 	sb_addc(sb, ')');
 	s = sb_copy(sb);
