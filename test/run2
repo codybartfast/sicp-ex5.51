@@ -1,0 +1,16 @@
+#!/bin/bash
+
+test_dir=$(dirname "${BASH_SOURCE[0]}")
+export bin_dir=$test_dir/../bin
+source_dir=$test_dir/code/ch2
+
+run() {
+	file=$1
+	echo running: $file
+	$bin_dir/sicp $file
+	echo
+}
+
+export -f run
+
+find $source_dir -type f -name '*.sicp' -exec bash -c 'run $0' {} \;

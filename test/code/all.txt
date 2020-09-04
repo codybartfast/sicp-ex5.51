@@ -1,0 +1,1441 @@
+;(define A 1)
+;(define Defiant 1)
+;(define Homeless 1)
+;(define Q 1)
+;(define Adorable 1)
+;(define Delightful 1)
+;(define Homely 1)
+;(define Quaint 1)
+;(define Adventurous 1)
+;(define Depressed 1)
+;(define Horrible 1)
+;(define R 1)
+;(define Aggressive 1)
+;(define Determined 1)
+;(define Hungry 1)
+;(define Real 1)
+;(define Agreeable 1)
+;(define Different 1)
+;(define Hurt 1)
+;(define Relieved 1)
+;(define Alert 1)
+;(define Difficult 1)
+;(define I 1)
+;(define Repulsive 1)
+;(define Alive 1)
+;(define Disgusted 1)
+;(define Ill 1)
+;(define Rich 1)
+;(define Amused 1)
+;(define Distinct 1)
+;(define Important 1)
+;(define S 1)
+;(define Angry 1)
+;(define Disturbed 1)
+;(define Impossible 1)
+;(define Scary 1)
+;(define Annoyed 1)
+;(define Dizzy 1)
+;(define Inexpensive	1)
+;(define Selfish	1)
+;(define Annoying	1)
+;(define Doubtful	1)
+;(define Innocent	1)
+;(define Shiny	1)
+;(define Anxious	1)
+;(define Drab	1)
+;(define Inquisitive	1)
+;(define Shy	1)
+;(define Arrogant	1)
+;(define Dull	1)
+;(define Itchy	1)
+;(define Silly	1)
+;(define Ashamed	1)
+;(define E	1)
+;(define J	1)
+;(define Sleepy	1)
+;(define Attractive	1)
+;(define Eager	1)
+;(define Jealous	1)
+;(define Smiling	1)
+;(define Average	1)
+;(define Easy	1)
+;(define Jittery	1)
+;(define Smoggy	1)
+;(define Awful	1)
+;(define Elated	1)
+;(define Jolly 1)
+;(define Sore 1)
+;(define B 1)
+;(define Elegant 1)
+;(define Joyous 1)
+;(define Sparkling 1)
+;(define Bad 1)
+;(define Embarrassed 1)
+;(define K 1)
+;(define Splendid 1)
+;(define Beautiful 1)
+;(define Enchanting 1)
+;(define Kind 1)
+;(define Spotless 1)
+;(define Better 1)
+;(define Encouraging 1)
+;(define L 1)
+;(define Stormy 1)
+;(define Bewildered 1)
+;(define Energetic 1)
+;(define Lazy 1)
+;(define Strange 1)
+;(define Black 1)
+;(define Enthusiastic 1)
+;(define Light 1)
+;(define Stupid 1)
+;(define Bloody 1)
+;(define Envious 1)
+;(define Lively 1)
+;(define Successful 1)
+;(define Blue 1)
+;(define Evil 1)
+;(define Lonely 1)
+;(define Super 1)
+;(define Blue-eyed 1)
+;(define Excited 1)
+;(define Long 1)
+;(define T 1)
+;(define Blushing 1)
+;(define Expensive 1)
+;(define Lovely 1)
+;(define Talented 1)
+;(define Bored 1)
+;(define Exuberant 1)
+;(define Lucky 1)
+;(define Tame 1)
+;(define Brainy 1)
+;(define F 1)
+;(define M 1)
+;(define Tender 1)
+;(define Brave 1)
+;(define Fair 1)
+;(define Magnificent 1)
+;(define Tense 1)
+;(define Breakable 1)
+;(define Faithful 1)
+;(define Misty 1)
+;(define Terrible 1)
+;(define Bright 1)
+;(define Famous 1)
+;(define Modern 1)
+;(define Tasty 1)
+;(define Busy 1)
+;(define Fancy 1)
+;(define Motionless 1)
+;(define Thankful 1)
+;(define C 1)
+;(define Fantastic 1)
+;(define Muddy 1)
+;(define Thoughtful 1)
+;(define Calm 1)
+;(define Fierce 1)
+;(define Mushy 1)
+;(define Thoughtless 1)
+;(define Careful 1)
+;(define Filthy 1)
+;(define Mysterious 1)
+;(define Tired 1)
+;(define Cautious 1)
+;(define Fine 1)
+;(define N 1)
+;(define Tough 1)
+;(define Charming 1)
+;(define Foolish 1)
+;(define Nasty 1)
+;(define Troubled 1)
+;(define Cheerful 1)
+;(define Fragile 1)
+;(define Naughty 1)
+;(define U 1)
+;(define Clean 1)
+;(define Frail 1)
+;(define Nervous 1)
+;(define Ugliest 1)
+;(define Clear 1)
+;(define Frantic 1)
+;(define Nice 1)
+;(define Ugly 1)
+;(define Clever 1)
+;(define Friendly 1)
+;(define Nutty 1)
+;(define Uninterested 1)
+;(define Cloudy 1)
+;(define Frightened 1)
+;(define O 1)
+;(define Unsightly 1)
+;(define Clumsy 1)
+;(define Funny 1)
+;(define Obedient 1)
+;(define Unusual 1)
+;(define Colorful 1)
+;(define G 1)
+;(define Obnoxious 1)
+;(define Upset 1)
+;(define Combative 1)
+;(define Gentle 1)
+;(define Odd 1)
+;(define Uptight 1)
+;(define Comfortable 1)
+;(define Gifted 1)
+;(define Old-fashioned 1)
+;(define V 1)
+;(define Concerned 1)
+;(define Glamorous 1)
+;(define Open 1)
+;(define Vast 1)
+;(define Condemned 1)
+;(define Gleaming 1)
+;(define Outrageous 1)
+;(define Victorious 1)
+;(define Confused 1)
+;(define Glorious 1)
+;(define Outstanding 1)
+;(define Vivacious 1)
+;(define Cooperative 1)
+;(define Good 1)
+;(define P 1)
+;(define W 1)
+;(define Courageous 1)
+;(define Gorgeous 1)
+;(define Panicky 1)
+;(define Wandering 1)
+;(define Crazy 1)
+;(define Graceful 1)
+;(define Perfect 1)
+;(define Weary 1)
+;(define Creepy 1)
+;(define Grieving 1)
+;(define Plain 1)
+;(define Wicked 1)
+;(define Crowded 1)
+;(define Grotesque 1)
+;(define Pleasant 1)
+;(define Wide-eyed 1)
+;(define Cruel 1)
+;(define Grumpy 1)
+;(define Poised 1)
+;(define Wild 1)
+;(define Curious 1)
+;(define H 1)
+;(define Poor 1)
+;(define Witty 1)
+;(define Cute 1)
+;(define Handsome 1)
+;(define Powerful 1)
+;(define Worrisome 1)
+;(define D 1)
+;(define Happy 1)
+;(define Precious 1)
+;(define Worried 1)
+;(define Dangerous 1)
+;(define Healthy 1)
+;(define Prickly 1)
+;(define Wrong 1)
+;(define Dark 1)
+;(define Helpful 1)
+;(define Proud 1)
+;(define Z 1)
+;(define Dead 1)
+;(define Helpless 1)
+;(define Putrid 1)
+;(define Zany 1)
+;(define Defeated 1)
+;(define Hilarious 1)
+;(define Puzzled 1)
+;(define Zealous 1)
+
+; exercise 1.3, page 21
+
+(define (sum-of-square-of-two-largest a b c)
+  (define (sum-square a b)
+    (+ (square a) (square b)))
+  (if (< a b)
+      (if (< a c)
+          (sum-square b c)
+          (sum-square b a))
+      (if (< b c)
+          (sum-square a c)
+          (sum-square a b))))
+
+(define fun sum-of-square-of-two-largest)
+
+(= (fun 10 10 10) 200)
+
+(= (fun 1 10 10) 200)
+(= (fun 10 1 10) 200)
+(= (fun 10 10 1) 200)
+
+(= (fun 1 10 100) 10100)
+(= (fun 1 100 10) 10100)
+(= (fun 10 1 100) 10100)
+(= (fun 10 100 1) 10100)
+(= (fun 100 10 1) 10100)
+(= (fun 100 1 10) 10100)
+
+(fun 3 4 5)
+(fun 13 12 5)
+(fun 7 4 17)
+
+
+; exercise 1.7, page 25
+
+(define (sqrt-iter-new guess x)
+  (if (good-enough-new? guess x)
+      guess
+      (sqrt-iter-new (improve guess x)
+                 x)))
+
+(define (improve guess x)
+  (average guess (/ x guess)))
+
+(define (square x) (* x x ))
+
+(define (dist a b) (abs (- a b)))
+
+(define (good-enough-new? guess x)
+  (< (dist 1 (/ (square guess) x)) 0.001))
+
+(define (sqrt x)
+   (sqrt-iter-new 1 x))
+
+(sqrt 0.00000000123456)
+(sqrt 123456789012345)
+
+
+; exercise 1.8, page 26
+
+(define (improve-cube guess x)
+  (/
+   (+
+    (/ x (square guess))
+    (* 2 guess))
+   3))
+
+(define (dist a b) (abs (- a b)))
+
+(define (good-enough-cube? guess x)
+  (< (dist 1 (/ (cube guess) x)) 0.001))
+
+(define (cube-root-iter guess x)
+  (if (good-enough-cube? guess x)
+      guess
+      (cube-root-iter (improve-cube guess x)
+                 x)))
+
+(define (cbrt x)
+   (cube-root-iter 1.0 x))
+
+(cbrt 0.001)
+(cbrt 99999999999998)
+
+
+; exercise 1.11, page 42
+
+(define (f-rec n)
+  (if (< n 3) n
+      (+ (f-rec (- n 1))
+         (* 2 (f-rec (- n 2)))
+         (* 3 (f-rec (- n 3))))))
+
+(define (f-itr n)
+  (define (iter m f-prev f-pre-prev f-pre-pre-prev)
+    (define f-this (+ f-prev (* 2 f-pre-prev) (* 3 f-pre-pre-prev)))
+    (if (= n m)
+        f-this
+        (iter (+ m 1) f-this f-prev f-pre-prev)))
+  (if (< n 3) n (iter 3 2 1 0)))
+
+(define fibr f-rec)
+(define fibi f-itr)
+
+(fibr 0)
+(fibr 3)
+(fibr 4)
+(fibr 6)
+(fibr 12)
+
+(fibi 0)
+(fibi 3)
+(fibi 4)
+(fibi 6)
+(fibi 12)
+
+
+; exercise 1.11, page 42
+
+(define (pascal row col)
+  (cond
+    ((> col row) -1)
+    ((= col 0) 1)
+    ((= col row) 1)
+    (else
+     (+
+      (pascal (- row 1) (- col 1))
+      (pascal (- row 1) col)))))
+
+(define pasc pascal)
+
+(pasc 0 0)
+(pasc 5 5)
+(pasc 5 3)
+(pasc 6 4)
+(pasc 9 5)
+
+
+; exercise 1.16, page 46
+
+(define (exp-iter b n)
+  (define (iter b n a)
+    (cond ((= n 0) a)
+          ((even? n)  (iter (square b) (/ n 2)  a))
+          (else (iter b (- n 1) (* a b)))))
+  (iter b n 1))
+
+(define fast-expti exp-iter)
+
+(fast-expti 2 0)
+(fast-expti 2 1)
+(fast-expti 2 4)
+(fast-expti 2 16)
+(fast-expti 2 32)
+(fast-expti 17 7)
+
+
+; exercise 1.17, page 46
+
+(define (halve n) (/ n 2))
+(define (double n) (* n 2))
+
+(define (*-rec a b)
+  (cond
+    ((= a 0) 0)
+    ((= a 1) b)
+    ((even? a) (*-rec (halve a) (double b)))
+    (else (+ b (*-rec (- a 1) b)))))
+
+(define *-Olog *-rec)
+
+(*-Olog 0 1)
+(*-Olog 1 0)
+(*-Olog 2 2)
+(*-Olog 5 11)
+(*-Olog 17 19)
+
+
+; exercise 1.18, page 47
+
+(define (halve n) (/ n 2))
+(define (double n) (* n 2))
+
+(define (*-iter a b)
+  (define (iter a b s)
+    (cond ((= a 0) s)
+          ((even? a) (iter (halve a) (double b) s))
+          (else (iter (- a 1) b (+ s b)))))
+  (iter a b 0))
+
+(*-iter 0 1)
+(*-iter 1 0)
+(*-iter 2 2)
+(*-iter 5 11)
+(*-iter 17 19)
+
+
+; exercise 1.19, page 47
+
+(define (fib n)
+  (fib-iter 1 0 0 1 n))
+(define (fib-iter a b p q count)
+  (cond ((= count 0) b)
+        ((even? count)
+         (fib-iter a
+                   b
+                   (+ (square q) (square p))	; compute p'
+                   (+ (* 2 p q) (square q))  	; compute q'
+                   (/ count 2)))
+        (else (fib-iter (+ (* b q) (* a q) (* a p))
+                        (+ (* b p) (* a q))
+                        p
+                        q
+                        (- count 1)))))
+
+(fib 0)
+(fib 3)
+(fib 4)
+(fib 6)
+(fib 12)
+(fib 73)
+
+
+; exercise 1.21, page 53
+
+(define (smallest-divisor n)
+  (define (find-divisor n test-divisor)
+    (define (divides? a b)
+      (= (remainder b a) 0))
+    (cond ((> (square test-divisor) n) n)
+          ((divides? test-divisor n) test-divisor)
+          (else (find-divisor n (+ 1 test-divisor)))))
+  (find-divisor n 2))
+
+(smallest-divisor 199)
+(smallest-divisor 1999)
+(smallest-divisor 19999)
+
+
+; exercise 1.22, page 54
+
+(define (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (runtime)))
+
+(define (start-prime-test n start-time)
+  (if (prime? n)
+      (report-prime (- (runtime) start-time))))
+
+(define (report-prime elapsed-time)
+  (display " *** ")
+  (display (seconds elapsed-time)))
+
+(define (search-for-primes even-start count)
+  (newline)
+  (display "First three primes above ")
+  (display even-start)
+  (display ":")
+  (define (iter candidate count)
+    (cond ((> count 0) 
+           (cond ((prime? candidate)
+                  (timed-prime-test candidate)
+                  (iter (+ candidate 2) (- count 1)))
+                 (else
+                  (iter (+ candidate 2) count))))))
+  (iter (inc even-start) count)
+  (newline))
+
+(search-for-primes 1000 3)
+(search-for-primes 10000 3)
+(search-for-primes 100000 3)
+(search-for-primes 1000000 3)
+
+
+; exercise 1.23, page 54
+
+(define repeat-count 10)
+
+(define (smallest-divisor n)
+  (define (find-divisor n test-divisor)
+    (define (divides? a b)
+      (= (remainder b a) 0))
+    (cond ((> (square test-divisor) n) n)
+          ((divides? test-divisor n) test-divisor)
+          (else (find-divisor n (+ 1 test-divisor)))))
+  (find-divisor n 2))
+
+(define (sd-all-prime? n)
+  (= n (smallest-divisor n)))
+
+(define (report-prime-repeat prime? n repeat)
+  (define (prime-repeat repeat-count)
+    (cond ((= 0 repeat-count)
+           (prime? n))
+          (else
+           (prime? n)           
+           (prime-repeat (- repeat-count 1)))))
+  (display n)
+  (display " *** ")
+  (time (prime-repeat repeat))
+  (newline))
+
+(define (report-prime prime? n)
+  (report-prime-repeat prime? n repeat-count))
+
+(define (smallest-divisor-next n)
+  (define (next n)
+    (if (= n 2) 3 (+ n 2)))
+  (define (find-divisor n test-divisor)
+    (define (square n) (* n n))
+    (define (divides? a b)
+      (= (remainder b a) 0))
+    (cond ((> (square test-divisor) n) n)
+          ((divides? test-divisor n) test-divisor)
+          (else (find-divisor n (next test-divisor)))))
+  (find-divisor n 2))
+
+(define (sd-next-prime? n)
+  (= n (smallest-divisor-next n)))
+
+(newline)
+(display "Using orignal smallest-divisor:")
+(report-prime sd-all-prime? 2)
+(report-prime sd-all-prime? 2)
+(report-prime sd-all-prime? 2)
+(report-prime sd-all-prime? 1009)
+(report-prime sd-all-prime? 1013)
+(report-prime sd-all-prime? 1019)
+(report-prime sd-all-prime? 10007)
+(report-prime sd-all-prime? 10009)
+(report-prime sd-all-prime? 10037)
+(report-prime sd-all-prime? 100003)
+(report-prime sd-all-prime? 100019)
+(report-prime sd-all-prime? 100043)
+(report-prime sd-all-prime? 1000003)
+(report-prime sd-all-prime? 1000033)
+(report-prime sd-all-prime? 1000037)
+
+(newline)
+(display "Using smallest-divisor with next:")
+(report-prime sd-next-prime? 2)
+(report-prime sd-next-prime? 2)
+(report-prime sd-next-prime? 2)
+(report-prime sd-next-prime? 1009)
+(report-prime sd-next-prime? 1013)
+(report-prime sd-next-prime? 1019)
+(report-prime sd-next-prime? 10007)
+(report-prime sd-next-prime? 10009)
+(report-prime sd-next-prime? 10037)
+(report-prime sd-next-prime? 100003)
+(report-prime sd-next-prime? 100019)
+(report-prime sd-next-prime? 100043)
+(report-prime sd-next-prime? 1000003)
+(report-prime sd-next-prime? 1000033)
+(report-prime sd-next-prime? 1000037)
+
+
+; exercise 1.24, page 55
+
+(define repeat-count 10)
+
+(define (report-prime-repeat prime? n repeat)
+  (define (prime-repeat repeat-count)
+    (cond ((= 0 repeat-count)
+           (prime? n))
+          (else
+           (prime? n)           
+           (prime-repeat (- repeat-count 1)))))
+  (display n)
+  (display " *** ")
+  (time (prime-repeat repeat))
+  (newline))
+
+(define (report-prime prime? n)
+  (report-prime-repeat prime? n repeat-count))
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m))
+                    m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))
+
+(define (fermat-test n)
+  (define (try-it a)
+    (= (expmod a n n) a))
+  (try-it (+ 1 (random (- n 1)))))
+
+(define (fast-prime? n times)
+  (cond ((= times 0) true)
+        ((fermat-test n) (fast-prime? n (- times 1)))
+        (else false)))
+
+(define (fast-prime-8? n)
+  (fast-prime? n 8))
+
+(newline)
+(display "Using fast-prime:")
+(report-prime fast-prime-8? 2)
+(report-prime fast-prime-8? 2)
+(report-prime fast-prime-8? 2)
+(report-prime fast-prime-8? 1009)
+(report-prime fast-prime-8? 1013)
+(report-prime fast-prime-8? 1019)
+(report-prime fast-prime-8? 10007)
+(report-prime fast-prime-8? 10009)
+(report-prime fast-prime-8? 10037)
+(report-prime fast-prime-8? 100003)
+(report-prime fast-prime-8? 100019)
+(report-prime fast-prime-8? 100043)
+(report-prime fast-prime-8? 1000003)
+(report-prime fast-prime-8? 1000033)
+(report-prime fast-prime-8? 1000037)
+
+
+; exercise 1.25, page 55
+
+(define repeat-count 10)
+
+(define (report-prime-repeat prime? n repeat)
+  (define (prime-repeat repeat-count)
+    (cond ((= 0 repeat-count)
+           (prime? n))
+          (else
+           (prime? n)           
+           (prime-repeat (- repeat-count 1)))))
+  (display "    ")
+  (display n)
+  (display " *** ")
+  (time (prime-repeat repeat))
+  (newline))
+
+(define (report-prime prime? n)
+  (report-prime-repeat prime? n repeat-count))
+
+(define (report-prime-single prime? n)
+  (report-prime-repeat prime? n 1))
+
+(define (fast-expt b n)
+  (cond ((= n 0) 1)
+        ((even? n) (square (fast-expt b (/ n 2))))
+        (else (* b (fast-expt b (- n 1))))))
+
+(define (expmod-fe base exp m)
+  (remainder (fast-expt base exp) m))
+
+(define (fermat-test-fe n)
+  (define (try-it a)
+    (= (expmod-fe a n n) a))
+  (try-it (+ 1 (random (- n 1)))))
+
+(define (fast-prime-fe? n times)
+  (cond ((= times 0) true)
+        ((fermat-test-fe n) (fast-prime-fe? n (- times 1)))
+        (else false)))
+
+(define (fast-prime-fe-8? n)
+  (fast-prime-fe? n 8))
+
+(report-prime fast-prime-fe-8? 2)
+(report-prime fast-prime-fe-8? 2)
+(report-prime fast-prime-fe-8? 13)
+(report-prime fast-prime-fe-8? 16)
+
+
+; exercise 1.27, page 55
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m))
+                    m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))
+
+(define (fermat-test-all? n)
+  (define (iter? n a)
+    (cond
+      ((>= a n) true)
+      ((not (= (expmod a n n) a)) false)
+      (else (iter? n (+ a 1)))))
+  (iter? n 2))
+
+(define (carmichael? n)
+  (if (not (prime? n))
+      (fermat-test-all? n)
+      false))
+
+(define (find-carmichaels limit)
+  (display "Looking for Carmichael numbers up to ")
+  (display limit)
+  (newline)
+  (define (iter n)
+    (cond ((> n limit)
+           (display "Done.")
+	   (newline))
+        (else
+          (if (carmichael? n)
+	    (begin (display "    Carmichael: ")  
+	           (display n)
+	           (newline))
+            (ignore))
+         (iter (+ n 1)) )))
+  (iter 2))
+
+(find-carmichaels 3000)
+
+
+; exercise 1.28, page 56
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m))
+                    m))
+        (else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m))))
+
+(define (non-trivial-root a n)
+  (cond
+    ((= a 1) false)
+    ((= a (- n 1)) false)
+    (else (= 1 (remainder (square a) n)))))
+
+(define (rm-test-one a n)
+  (define (expmod-rm base exp n)
+    (cond ((= exp 0) 1)
+          ((even? exp)
+           (define squared (square (expmod base (/ exp 2) n)))
+           (if (non-trivial-root a n)
+               0
+               (remainder squared n)))
+          (else
+           (remainder (* base (expmod-rm base (- exp 1) n))
+                      n))))
+  (= (expmod-rm a (- n 0) n) a))
+
+(define (rabin-miller? n)
+  (define (iter? n a)
+    (cond
+      ((>= a n) true)
+      ((not (rm-test-one a n)) false)
+      (else (iter? n (+ a 1)))))
+  (iter? n 2))
+
+(define (rabin-miller2? n)
+  (define (iter? n a)
+    (cond
+      ((>= a n) true)
+      ;((not (= (expmod a n n) a)) false)
+      ((not (= (expmod a (- n 1) n) 1)) false)
+      (else (iter? n (+ a 1)))))
+  (iter? n 2))
+  
+(newline)
+(display "Rabin Miller")
+(newline)
+(rabin-miller? 56)
+(rabin-miller? 59)
+(rabin-miller? 560)
+(rabin-miller? 561)
+(rabin-miller? 1009)
+
+(newline)
+(display "Rabin Miller 2")
+(newline)
+(rabin-miller2? 56)
+(rabin-miller2? 59)
+(rabin-miller2? 560)
+(rabin-miller2? 561)
+(rabin-miller2? 1009)
+
+
+; exercise 1.29, page 60
+
+
+(define (sum term a next b)
+  (if (> a b)
+      0
+      (+ (term a) (sum term (next a) next b))))
+
+(define (inc n)
+  (+ n 1))
+
+(define (simpson f a b n)
+  (define h (/ (- b a) n))
+  (define (y k) (f (+ a (* k h))))
+  (define (term k)
+    (cond
+      ((= k 0) (y 0))
+      ((= k n) (y n))
+      ((even? k) (* 2 (y k)))
+      (else (* 4 (y k)))))
+  (* (/ h  3)
+     (sum term 0 inc n)))
+
+
+(simpson cube 0 1 2)
+(simpson cube 0 1 100)
+(simpson cube 0 1 1000)
+(simpson cube 0 1 10000)
+
+(define (integral f a b dx)
+  (define (add-dx x) (+ x dx))
+  (* (sum f (+ a (/ dx 2.0)) add-dx b)
+     dx))
+
+(integral cube 0 1 0.5)
+(integral cube 0 1 0.01)
+(integral cube 0 1 0.001)
+(integral cube 0 1 0.0001)
+
+
+; exercise 1.30, page 60
+
+(define (sum-iter term a next b)
+  (define (iter a result)
+    (if (> a b)
+        result
+        (iter (next a) (+ result (term a)))))
+  (iter a 0))
+
+(define (simpson-iter f a b n)
+  (define h (/ (- b a) n))
+  (define (y k) (f (+ a (* k h))))
+  (define (term k)
+    (cond
+      ((= k 0) (y 0))
+      ((= k n) (y n))
+      ((even? k) (* 2 (y k)))
+      (else (* 4 (y k)))))
+  (* (/ h  3)
+     (sum-iter term 0 inc n)))
+
+(simpson-iter cube 0 1 2)
+(simpson-iter cube 0 1 100)
+(simpson-iter cube 0 1 1000)
+(simpson-iter cube 0 1 10000)
+
+
+; exercise 1.31, page 60
+
+(define (quotient a b)
+	(/ (- a (remainder a b))
+	   b))
+
+(define (prod-iter term a next b)
+  (define (iter a result)
+    (if (> a b)
+        result
+        (iter (next a) (* result (term a)))))
+  (iter a 1))
+
+(define (pi-term i)
+  (/
+   (* 2 (quotient (+ i 3) 2))
+   (+ 1 (* 2 (quotient (+ i 2) 2)))))
+
+(define (pi-iter n)
+  (* 4.0 (prod-iter pi-term 0 inc n)))
+
+(display "Iterative product of terms:
+    The product of numbers from 1 to 6: ")
+(prod-iter identity 1 inc 6)
+
+(display "    Estimate of π with 100 steps ")
+(pi-iter 100)
+(newline)
+
+(define (prod-rec term a next b)
+  (if (= a b)
+      (term a)
+      (* (term a) (prod-rec term (next a) next b))))
+
+(define (pi-rec n)
+  (* 4.0 (prod-rec pi-term 0 inc n)))
+
+(display "Recursive product of terms:
+    The product of numbers from 1 to 6: ")
+(prod-rec identity 1 inc 6)
+
+(display "    Estimate of π with 100 steps ")
+(pi-rec 100)
+
+
+; exercise 1.32, page 61
+
+(define (quotient a b)
+	(/ (- a (remainder a b))
+	   b))
+
+(define (pi-term i)
+  (/
+   (* 2 (quotient (+ i 3) 2))
+   (+ 1 (* 2 (quotient (+ i 2) 2)))))
+
+(define (acc-iter combiner null-value term a next b)
+  (define (iter a result)
+    (if (> a b)
+        result
+        (iter (next a) (combiner result (term a)))))
+  (iter a null-value))
+
+(define (sum-acc-iter term a next b)
+  (acc-iter + 0 term a next b))
+
+(define (prod-acc-iter term a next b)
+  (acc-iter * 1 term a next b))
+
+(define (simpson-acc-iter f a b n)
+  (define h (/ (- b a) n))
+  (define (y k) (f (+ a (* k h))))
+  (define (term k)
+    (cond
+      ((= k 0) (y 0))
+      ((= k n) (y n))
+      ((even? k) (* 2 (y k)))
+      (else (* 4 (y k)))))
+  (* (/ h  3)
+     (sum-acc-iter term 0 inc n)))
+
+(define (pi-acc-iter n)
+  (* 4.0 (prod-acc-iter pi-term 0 inc n)))
+
+(display "
+Implementing product and sum in terms of general accumulators:
+")
+
+(simpson-acc-iter cube 0 1 2)
+(simpson-acc-iter cube 0 1 100)
+(simpson-acc-iter cube 0 1 1000)
+(simpson-acc-iter cube 0 1 10000)
+
+(display "Estimate of π with 100 steps (prod-acc-iter): ")
+(pi-acc-iter 100)
+(newline)
+
+(define (acc-rec combiner null-value term a next b)
+  (if (> a b)
+      null-value
+      (combiner (term a)
+                (acc-rec combiner null-value term (next a) next b))))
+
+(define (sum-acc-rec term a next b)
+  (acc-rec + 0 term a next b))
+
+(define (prod-acc-rec term a next b)
+  (acc-rec * 1 term a next b))
+
+(define (simpson-acc-rec f a b n)
+  (define h (/ (- b a) n))
+  (define (y k) (f (+ a (* k h))))
+  (define (term k)
+    (cond
+      ((= k 0) (y 0))
+      ((= k n) (y n))
+      ((even? k) (* 2 (y k)))
+      (else (* 4 (y k)))))
+  (* (/ h  3)
+     (sum-acc-rec term 0 inc n)))
+
+(define (pi-acc-rec n)
+  (* 4.0 (prod-acc-rec pi-term 0 inc n)))
+
+(display "
+Implementing product and sum in terms of general accumulators:
+")
+
+(simpson-acc-rec cube 0 1 2)
+(simpson-acc-rec cube 0 1 100)
+(simpson-acc-rec cube 0 1 1000)
+(simpson-acc-rec cube 0 1 10000)
+
+(display "Estimate of π with 100 steps (prod-acc-rec): ")
+(pi-acc-rec 100)
+
+
+; exercise 1.33, page 61
+
+(define (prime? n)
+  (define (smallest-divisor-next-inline n)
+    (define (find-divisor n test-divisor)
+      (define (square n) (* n n))
+      (define (divides? a b)
+        (= (remainder b a) 0))
+      (cond ((> (square test-divisor) n) n)
+            ((divides? test-divisor n) test-divisor)
+            (else (find-divisor n (if (= test-divisor 2)
+                                      3 
+                                      (+ test-divisor 2))))))
+    (find-divisor n 2))
+  (if (< n 2)
+      false
+      (= n (smallest-divisor-next-inline n))))
+
+(define (gcd a b)
+  (if (= b 0)
+      a
+      (gcd b (remainder a b))))
+
+(define
+  (filtered-accumulate include-a? combiner null-value term a next b)
+  (define (iter a result)
+    (if (> a b) result
+        (if (include-a? a)
+            (iter (next a) (combiner result (term a)))
+            (iter (next a) result))))
+  (iter a null-value))
+
+(define (sum-square-primes a b)
+  (define (square n) (* n n))
+  (filtered-accumulate prime? + 0 square a inc b))
+
+(display "
+Sum Square Primes:
+")
+(sum-square-primes 1 5)
+(sum-square-primes 1000 1020)
+
+(define (product-of-coprimes n)
+  (define (coprime? a)
+    (= 1 (gcd a n)))
+  (filtered-accumulate coprime? * 1 identity 2 inc n))
+
+(display "
+Product of Coprimes:
+")
+(product-of-coprimes 12)
+(product-of-coprimes 11)
+
+
+; exercise 1.35, page 70
+
+(define tolerance 0.00001)
+
+(define (fixed-point f first-guess)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try first-guess))
+
+(define (golden-f x) (+ 1 (/ 1 x)))
+
+(fixed-point golden-f 1.0)
+
+
+; exercise 1.36, page 70
+
+(define tolerance 0.00001)
+
+(define (fp-display f average first-guess)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (let ((next (average guess (f guess))))
+      (display "        ")(display guess)(newline)
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try first-guess))
+
+(define (x^x=1000-f x)
+  (/ (log 1000) (log x)))
+
+(define (damp-none guess f-of-guess)
+  f-of-guess)
+
+(define (damp-mean guess f-of-guess)
+  (/ (+ guess f-of-guess) 2))
+
+(fp-display x^x=1000-f damp-none 2.0)
+(fp-display x^x=1000-f damp-mean 2.0)
+
+
+; exercise 1.37, page 71
+
+(define (cont-frac-rec n d k)
+  (define (recur i)
+    (if (= i k)
+        (/ (n i) (d i))
+        (/ (n i) (+ (d i) (recur (+ i 1))))))
+  (recur 1))
+
+(define (cont-frac-itr n d k)
+  (define (iter i nextTerm)
+    (let ((currentTerm (/ (n i) (+ (d i) nextTerm))))
+      (if (= i 1)
+          currentTerm
+          (iter (- i 1) currentTerm))))
+  (iter k 0))
+
+(define (golden-cf-rec k)
+  (cont-frac-rec
+        (lambda (i) 1.0)
+        (lambda (i) 1.0)
+        k))
+
+(define (golden-cf-itr k)
+  (cont-frac-itr
+        (lambda (i) 1.0)
+        (lambda (i) 1.0)
+        k))
+
+(display "
+Recursive:
+")
+(golden-cf-rec 04)
+(golden-cf-rec 05)
+(golden-cf-rec 06)
+(golden-cf-rec 07)
+(golden-cf-rec 08)
+(golden-cf-rec 09)
+(golden-cf-rec 10)
+(golden-cf-rec 11)
+(golden-cf-rec 12)
+(golden-cf-rec 13)
+(golden-cf-rec 14)
+
+(display "
+Iterative:
+")
+(golden-cf-itr 04)
+(golden-cf-itr 05)
+(golden-cf-itr 06)
+(golden-cf-itr 07)
+(golden-cf-itr 08)
+(golden-cf-itr 09)
+(golden-cf-itr 10)
+(golden-cf-itr 11)
+(golden-cf-itr 12)
+(golden-cf-itr 13)
+(golden-cf-itr 14)
+
+
+; exercise 1.38, page 71
+
+(define (cont-frac n d k)
+  (define (iter i nextTerm)
+    (let ((currentTerm (/ (n i) (+ (d i) nextTerm))))
+      (if (= i 1)
+          currentTerm
+          (iter (- i 1) currentTerm))))
+  (iter k 0))
+
+(define (e-2 k)
+  (define (n i) 1)
+  (define (d i)
+    (if (= (remainder i 3) 2)
+        (* 2 (/ (+ i 1) 3))
+        1))
+  (cont-frac n d k))
+
+(e-2 1)
+(e-2 2)
+(e-2 4)
+(e-2 8)
+(e-2 16)
+(e-2 32)
+
+
+; exercise 1.39, page 72
+
+(define (cont-frac n d k)
+  (define (iter i nextTerm)
+    (let ((currentTerm (/ (n i) (+ (d i) nextTerm))))
+      (if (= i 1)
+          currentTerm
+          (iter (- i 1) currentTerm))))
+  (iter k 0))
+
+(define (tan-cf x k)
+  (define (n i)
+    (if (= i 1) x (- (* x x))))
+  (define (d i)
+    (- (* i 2) 1))
+  (cont-frac n d k))
+
+(display "
+Tan 0.5 (expect 0.54630248984):
+")
+(tan-cf 0.5 1)
+(tan-cf 0.5 2)
+(tan-cf 0.5 4)
+(tan-cf 0.5 8)
+
+
+; exercise 1.40, page 77
+
+(define (cubic a b c)
+  (lambda (x)
+    (+
+     (cube x)
+     (* a (square x))
+     (* b x)
+     c)))
+
+(define dx 0.00001)
+
+(define (deriv g)
+  (lambda (x)
+    (/ (- (g (+ x dx)) (g x))
+       dx)))
+
+(define (newton-transform g)
+  (lambda (x)
+    (- x (/ (g x) ((deriv g) x)))))
+
+(define (newtons-method f guess)
+  (fixed-point (newton-transform f) guess))
+
+(define (fixed-point f first-guess)
+  (define tolerance 0.00001)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try first-guess))
+
+(newtons-method (cubic 1 1 1) 1)
+(newtons-method (cubic 3 -5 7) 1)
+
+
+; exercise 1.42, page 77
+
+(define (compose f g)
+  (lambda (x) (f (g x))))
+
+((compose square inc) 6)
+
+
+; exercise 1.43, page 77
+
+(define (compose f g)
+  (lambda (x) (f (g x))))
+
+(define (repeated f n)
+  (if (= n 1)
+      (lambda (x) (f x))
+      (compose f (repeated f (- n 1)))))
+
+((repeated square 2) 5)
+
+
+; exercise 1.44, page 78
+
+(define dx 0.00001)
+
+(define (compose f g)
+  (lambda (x) (f (g x))))
+
+(define (repeated f n)
+  (if (= n 1)
+      (lambda (x) (f x))
+      (compose f (repeated f (- n 1)))))
+
+(define (smooth-with-delta delta)
+    (lambda (f)
+      (lambda (x)
+        (/ (+ (f (- x delta)) (f x) (f (+ x delta))) 3))))
+
+(define (repeated-smooth-with-delta delta n)
+  (if (= n 0)
+      identity
+      (repeated (smooth-with-delta delta) n)))
+
+(define (repeated-smooth n)
+  (repeated-smooth-with-delta dx n))
+
+(define smooth
+  (repeated-smooth 1))
+
+(define (apply-repeated-smoothing-of-cube-to-three repeat-count)
+  (((repeated-smooth repeat-count) cube) 3))
+
+(apply-repeated-smoothing-of-cube-to-three 0)
+(apply-repeated-smoothing-of-cube-to-three 1)
+(apply-repeated-smoothing-of-cube-to-three 2)
+(apply-repeated-smoothing-of-cube-to-three 3)
+
+
+; exercise 1.45, page 78
+
+(define (expt b n)
+  (expt-iter b n 1))
+
+(define (expt-iter b counter product)
+  (if (= counter 0)
+      product
+      (expt-iter b
+                (- counter 1)
+                (* b product))))
+
+(define (compose f g)
+  (lambda (x) (f (g x))))
+
+(define (repeated f n)
+  (if (= n 1)
+      (lambda (x) (f x))
+      (compose f (repeated f (- n 1)))))
+
+(define (fixed-point f first-guess)
+  (define tolerance 0.00001)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try first-guess))
+
+(define (average-damp f)
+  (lambda (x) (average x (f x))))
+
+(define (repeated-damp n)
+  (repeated average-damp n))
+
+(define (root-damp x n damp-count)
+  (fixed-point
+    ((repeated-damp damp-count) (lambda (y) (/ x  (expt y (- n 1))  )))
+   5.0))
+
+(root-damp 9 2 1)
+(root-damp 81 4 2)
+(root-damp 2187 8 3)
+(root-damp 1000 16 4)
+(root-damp 1000 50 6)
+
+(define (calc-damp n)
+  (floor (/ (log n) (log 2))))
+
+(define (root x n)
+  (root-damp x n (calc-damp n)))
+
+(root 9 2)
+(root 81 4)
+(root 2187 8)
+(root 1000 16)
+(root 1000 50)
+
+
+; exercise 1.46, page 78
+
+(define tolerence 0.0001)
+
+(define (iterative-improve good-enough? improve)
+  (define (improve-until-good-enough guess)
+    (if (good-enough? guess)
+        guess
+        (improve-until-good-enough (improve guess))))
+  improve-until-good-enough)
+
+
+(define (sqrt-it-imp guess x)
+  ((iterative-improve
+    (lambda (y) (< (abs (- (* y y) x)) 0.00001))
+    (lambda (g) (average g (/ x g))))
+   x))
+
+(sqrt-it-imp 1 2)
+(sqrt-it-imp 1 64)
+(sqrt-it-imp 1 144)
+
+
+(define (fixed-point-it-imp f first-guess)
+  ((iterative-improve
+    (lambda (g) (< (abs (- g (f g))) tolerence))
+    f)
+   first-guess))
+
+(define (one-over-golden)
+  (fixed-point-it-imp (lambda (x) (/ 1 (+ 1 x))) 1.0))
+
+(one-over-golden)
+
+;(define (loop) (loop))(loop)

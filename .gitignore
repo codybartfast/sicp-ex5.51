@@ -1,5 +1,6 @@
 ## Addtions to github version
 /test/code/*
+!/test/code/*/
 /out
 /build
 *.out

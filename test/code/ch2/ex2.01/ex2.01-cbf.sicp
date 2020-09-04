@@ -1,0 +1,40 @@
+(%ex "2.01")
+
+; exercise 2.1, page 87
+
+(define (numer x) (car x))
+(define (denom x) (cdr x))
+
+(define (make-rat-orig n d)
+  (let ((g (gcd n d)))
+    (cons (/ n g) (/ d g))))
+
+(define (make-rat n d)
+  (define g (gcd n d))
+  (let ((n (/ n g))
+       (d (/ d g)))
+    (if (> 0 d)
+        (cons (- n)  (- d))
+        (cons n d))))
+
+(define (compare d n)
+  (display "Given ")
+  (display d)
+  (display " / ")
+  (display n)
+  (newline)
+  (define (decon rat)
+    (display (numer rat))
+    (display " / " )
+    (display (denom rat))
+    (newline))
+  (display "      original:  ")
+  (decon (make-rat-orig d n))
+  (display "        better:  ")
+  (decon (make-rat d n))
+  (newline))
+
+(compare 2 4)
+(compare 3 -9)
+(compare -5 20)
+(compare -7 -35)
