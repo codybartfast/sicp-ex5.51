@@ -104,6 +104,10 @@ static obj add_extras(int ex, obj env)
 		define_variable(of_identifier("car"), of_function(carp), env);
 		define_variable(of_identifier("cdr"), of_function(cdrp), env);
 	}
+	if (ex >= 203) {
+		define_variable(of_identifier("sqrt"), of_function(sqroot),
+				env);
+	}
 	return unspecified;
 }
 

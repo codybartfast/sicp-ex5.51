@@ -26,6 +26,7 @@ enum un {
 	SIN,
 	COS,
 	FLR,
+	SQRT
 };
 enum cmp { LT, LTE, EQ, GTE, GT };
 
@@ -308,6 +309,8 @@ static obj applyun(char *fname, enum un op, obj args)
 		return of_floating(cos(to_floating(cnv_to_fltnum(n))));
 	case FLR:
 		return of_floating(floor(to_floating(cnv_to_fltnum(n))));
+	case SQRT:
+		return of_floating(sqrt(to_floating(cnv_to_fltnum(n))));
 	default:
 		return error_internal(AREA, "BUG! no unary case for %d", op);
 	}
@@ -351,6 +354,11 @@ obj cosine(const obj args)
 obj flr(const obj args)
 {
 	return applyun("floor", FLR, args);
+}
+
+obj sqroot(const obj args)
+{
+	return applyun("sqrt", SQRT, args);
 }
 
 #ifdef _WIN32
