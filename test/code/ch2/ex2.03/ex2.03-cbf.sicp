@@ -1,0 +1,123 @@
+(%ex "2.3")
+
+; exercise 2.3, page 90
+
+(define (make-point x y)
+  (cons x y))
+
+(define (x-point p)
+  (car p))
+
+(define (y-point p)
+  (cdr p))
+
+(define (make-segment start end)
+  (cons start end))
+
+(define (start-segment seg)
+  (car seg))
+
+(define (end-segment seg)
+  (cdr seg))
+
+(define (make-aligned-rect point opposite-point)
+  (cons point opposite-point))
+
+(define (get-segs-aligned aligned-rect)
+  (let ((point (car aligned-rect))
+        (op-pt (cdr aligned-rect)))
+    (cons
+     (make-segment point (make-point (x-point point) (y-point op-pt)))
+     (make-segment point (make-point (x-point op-pt) (y-point point))))))
+
+; Vector rectanges:
+(define (make-rect vertex vect1 vect2)
+  (cons vertex (cons vect1 vect2)))
+
+(define (get-segs-rect rect)
+  (let ((vertex (car rect))
+        (vect1 (car (cdr rect)))
+        (vect2 (cdr (cdr rect)))
+        (apply-vect (lambda (point vect)
+                      (make-point
+                       (+ (x-point point) (car vect))
+                       (+ (y-point point) (cdr vect))))))
+    (cons
+     (make-segment vertex (apply-vect vertex vect1))
+     (make-segment vertex (apply-vect vertex vect2)))))
+
+; Abstractions:
+
+(define (length-segment seg)
+  (sqrt (+ (square (- (x-point (end-segment seg))
+                      (x-point (start-segment seg))))
+           (square (- (y-point (end-segment seg))
+                      (y-point (start-segment seg)))))))
+
+
+(define (perimeter get-segs rect)
+  (let ((seg1 (car (get-segs rect)))
+        (seg2 (cdr (get-segs rect))))
+    (+ (* 2 (length-segment seg1))
+       (* 2 (length-segment seg2)))))
+
+(define(area get-segs rect)
+   (let ((seg1 (car (get-segs rect)))
+        (seg2 (cdr (get-segs rect))))
+     (* (length-segment seg1) (length-segment seg2))))
+
+
+(define (describe-rect get-segs rect)
+  (let ((seg1 (car (get-segs rect)))
+        (seg2 (cdr (get-segs rect))))
+   (display "got rect: ")(display rect)(newline)
+   (display "seg1: ")(display seg1)(newline)
+   (display "seg2: ")(display seg2)(newline)
+   (display "perimeter: ")(display (perimeter get-segs rect))(newline)
+   (display "area: ")(display (area get-segs rect))(newline)
+   (newline)))
+
+(newline)
+(display "Describing 'Aligned' rectangles:")(newline)
+(display "================================")(newline)
+(describe-rect get-segs-aligned
+               (make-aligned-rect
+                (make-point 2 4)
+                (make-point 8 16)))
+
+(describe-rect get-segs-aligned
+               (make-aligned-rect
+                (make-point 8 16)
+                (make-point 2 4)))
+
+(describe-rect get-segs-aligned
+               (make-aligned-rect
+                 (make-point -2 -2)
+                (make-point 3 8)))
+
+(newline)
+(display "Describing 'Vector' rectangles:")(newline)
+(display "===============================")(newline)
+(describe-rect get-segs-rect
+               (make-rect
+                (make-point 2 4)
+                (cons 6 0)
+                (cons 0 12)))
+
+(describe-rect get-segs-rect
+               (make-rect
+                (make-point 8 16)
+                (cons -6 0)
+                (cons 0 -12)))
+
+(describe-rect get-segs-rect
+              (make-rect
+               (make-point -2 -2)
+               (cons 5 0)
+               (cons 0 10)))
+
+(describe-rect get-segs-rect
+               (make-rect
+                (make-point -2 -2)
+                (cons 3 4)
+                (cons 8 -6)))

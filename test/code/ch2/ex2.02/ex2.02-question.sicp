@@ -1,0 +1,11 @@
+(%ex "2.2")
+
+; exercise 2.2, page 89
+
+(define (print-point p)
+  (newline)
+  (display "(")
+  (display (x-point p))
+  (display ",")
+  (display (y-point p))
+  (display ")"))
