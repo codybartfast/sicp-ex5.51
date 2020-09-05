@@ -106,9 +106,6 @@ static obj parse_list(obj lst, struct inport *port)
 		else
 			return error_parser(AREA, "Open list at and of file");
 	case TKN_LIST_CLOSE:
-		if (is_null(lst)) {
-			return error_parser(AREA, "Invalid syntax: \"()\"");
-		}
 		return lst;
 	default:
 		dat = parse(tkn, port);
