@@ -1,0 +1,5 @@
+(%ex "2.7")
+
+; exercise 2.7, page 94
+
+(define (make-interval a b) (cons a b))

@@ -1,0 +1,35 @@
+(%ex "2.8")
+
+; exercise 2.8, page 95
+
+(define (make-interval a b) (cons a b))
+
+(define (upper-bound a)
+  (let ((x (car a))
+        (y (cdr a)))
+    (if (> x y) x y)))
+
+(define (lower-bound a)
+  (let ((x (car a))
+        (y (cdr a)))
+    (if (< x y) x y)))
+
+(define (add-interval x y)
+  (make-interval (+ (lower-bound x) (lower-bound y))
+                 (+ (upper-bound x) (upper-bound y))))
+
+(define (negate-interval x)
+  (make-interval (- (lower-bound x))
+                 (- (upper-bound x))))
+
+(define (sub-interval x y)
+  (add-interval x (negate-interval y)))
+
+
+(let ((fortyish (make-interval 39 41))
+      (tenish (make-interval 9 11)))
+  (newline)
+  (display "  fourty-ish:           ")(display fortyish)(newline)
+  (display "  ten-ish:              ")(display tenish)(newline)
+  (display "  fourty-ish - ten-ish: ")(display
+       (sub-interval fortyish tenish)))

@@ -1,0 +1,40 @@
+(%ex "2.9")
+
+; exercise 2.9, page 95
+
+(define (make-interval a b) (cons a b))
+
+(define (upper-bound a)
+  (let ((x (car a))
+        (y (cdr a)))
+    (if (> x y) x y)))
+
+(define (lower-bound a)
+  (let ((x (car a))
+        (y (cdr a)))
+    (if (< x y) x y)))
+
+(define (mul-interval x y)
+  (let ((p1 (* (lower-bound x) (lower-bound y)))
+        (p2 (* (lower-bound x) (upper-bound y)))
+        (p3 (* (upper-bound x) (lower-bound y)))
+        (p4 (* (upper-bound x) (upper-bound y))))
+    (make-interval (min p1 p2 p3 p4)
+                   (max p1 p2 p3 p4))))
+
+(define (interval-width x)
+   (/ (- (upper-bound x) (lower-bound x))
+      2))
+
+(let ((x (make-interval 9 11))
+      (y (make-interval 999999 1000001)))  
+  (newline)
+  (display "Lets try 'wx * wy' as a guess for the width after multiplication:")
+  (display "x: ")(display (lower-bound x))(display "-")
+    (display (upper-bound x)) (newline)
+  (display "y: ")(display (lower-bound y))(display "-")
+    (display (upper-bound y)) (newline)
+  (display "Estimate: ")(display (* (interval-width x) (interval-width y)))
+    (newline)
+  (display "Actual: ")(display (interval-width  (mul-interval x y)))
+    (newline))

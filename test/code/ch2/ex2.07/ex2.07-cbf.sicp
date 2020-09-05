@@ -1,0 +1,27 @@
+(%ex "2.7")
+
+; exercise 2.7, page 94
+
+(define (make-interval a b) (cons a b))
+
+(define (upper-bound a)
+  (let ((x (car a))
+        (y (cdr a)))
+    (if (> x y) x y)))
+
+(define (lower-bound a)
+  (let ((x (car a))
+        (y (cdr a)))
+    (if (< x y) x y)))
+
+(let((bound-test1 (make-interval 4 6))
+     (bound-test2 (make-interval 4 -6))
+     (bound-test3 (make-interval -14 -6))
+     (test-bounds (lambda (interval)
+     (display "interval: ")(display interval)(newline)
+     (display "    Upper bound: ")(display (upper-bound interval))(newline)
+     (display "    Lower bound: ")(display (lower-bound interval))(newline)
+     (newline))))
+  (test-bounds bound-test1)
+  (test-bounds bound-test2)
+  (test-bounds bound-test3))

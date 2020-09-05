@@ -1,0 +1,36 @@
+
+(%ex "2.12")
+
+; exercise 2.12, page 96
+
+(define (make-interval a b) (cons a b))
+
+(define (upper-bound a)
+  (let ((x (car a))
+        (y (cdr a)))
+    (if (> x y) x y)))
+
+(define (lower-bound a)
+  (let ((x (car a))
+        (y (cdr a)))
+    (if (< x y) x y)))
+
+(define (make-center-percent c %)
+  (let ((tol (/ (* % c) 100)))
+    (make-interval (- c tol) (+ c tol))))
+
+(define (center interval)
+  (/ (+ (lower-bound interval)
+        (upper-bound interval))
+     2))
+
+(define (percentage interval)
+  (/ (* 50 ; 100% / 2 because tolerance is half of interval)
+        (- (upper-bound interval) (lower-bound interval)))
+     (center interval)))
+
+(let ((interval (make-center-percent 100 3)))
+  (display "Creating interval with centre 100 and percentage 3") (newline)
+  (display "Got: ") (display interval) (newline)
+  (display "Center: ") (display (center interval)) (newline)
+  (display "Percentage: ") (display (percentage interval)))

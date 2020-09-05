@@ -1,4 +1,4 @@
 #!/bin/bash
 
 test_dir=$(dirname "${BASH_SOURCE[0]}")
-$test_dir/runall | grep -i error
+$test_dir/runall | grep "ERROR: ("
