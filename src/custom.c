@@ -23,11 +23,11 @@ static obj add_extras(int ex, obj env)
 		//define_variable(of_identifier("abs"), of_function(absl), env);
 		evalstr("(define (abs x) (if (< x 0) (- x) x))", env);
 
-		//define_variable(of_identifier("<="), of_function(lte), env);
-		evalstr("(define (<= x y) (not (> x y)))", env);
+		define_variable(of_identifier("<="), of_function(lte), env);
+		//evalstr("(define (<= x y) (not (> x y)))", env);
 
-		//define_variable(of_identifier(">="), of_function(gte), env);
-		evalstr("(define (>= x y) (not (< x y)))", env);
+		define_variable(of_identifier(">="), of_function(gte), env);
+		//evalstr("(define (>= x y) (not (< x y)))", env);
 
 		evalstr("(define (square x) (* x x))", env);
 		evalstr("(define (cube x) (* x x x))", env);
@@ -107,6 +107,13 @@ static obj add_extras(int ex, obj env)
 	if (ex >= 203) {
 		define_variable(of_identifier("sqrt"), of_function(sqroot),
 				env);
+	}
+	if (ex >= 205) {
+		evalstr("(define (expt b n)"
+			"  (define (expt-iter b c p)"
+			"    (if (= c 0) p (expt-iter b (- c 1) (* b p))))"
+			"  (expt-iter b n 1))",
+			env);
 	}
 	return unspecified;
 }
