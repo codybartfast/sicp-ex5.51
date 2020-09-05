@@ -16,18 +16,8 @@
 
 #define AREA "PRIMPROC"
 
-enum op { ADD, SUB, MUL, DIV };
-enum un {
-	ABS,
-	EXP,
-	LOG,
-	INC,
-	DEC,
-	SIN,
-	COS,
-	FLR,
-	SQRT
-};
+enum op { ADD, SUB, MUL, DIV, MIN, MAX };
+enum un { ABS, EXP, LOG, INC, DEC, SIN, COS, FLR, SQRT };
 enum cmp { LT, LTE, EQ, GTE, GT };
 
 const Integer add_max = (((Integer)1) << ((sizeof(Integer) * 8) - 2)) - 1;
@@ -163,6 +153,10 @@ static obj applyop(const enum op op, obj arg1, obj arg2)
 			if (b != 0 && a % b == 0)
 				return of_integer(a / b);
 			return divf((Floating)a, (Floating)b);
+		case MIN:
+			return (a < b) ? arg1 : arg2;
+		case MAX:
+			return (a > b) ? arg1 : arg2;
 		}
 	} else {
 		Floating a, b;
@@ -185,6 +179,10 @@ static obj applyop(const enum op op, obj arg1, obj arg2)
 			return of_floating(a * b);
 		case DIV:
 			return divf(a, b);
+		case MIN:
+			return (a < b) ? arg1 : arg2;
+		case MAX:
+			return (a > b) ? arg1 : arg2;
 		}
 	}
 	return error_internal(AREA, "BUG! no apply op case for %d", op);
@@ -261,6 +259,20 @@ obj divd(const obj args)
 			return reduce(fname, DIV, fst, rst);
 		}
 	}
+}
+
+obj min(const obj args)
+{
+	if (!is_pairptr(args))
+		error_arity(AREA, "'min' expects at least 1 argument");
+	return reduce("min", MIN, car(args), cdr(args));
+}
+
+obj max(const obj args)
+{
+	if (!is_pairptr(args))
+		error_arity(AREA, "'max' expects at least 1 argument");
+	return reduce("max", MAX, car(args), cdr(args));
 }
 
 obj rem(const obj args)

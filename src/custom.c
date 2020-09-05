@@ -115,6 +115,10 @@ static obj add_extras(int ex, obj env)
 			"  (expt-iter b n 1))",
 			env);
 	}
+	if (ex >= 207) {
+		define_variable(of_identifier("min"), of_function(min), env);
+		define_variable(of_identifier("max"), of_function(max), env);
+	}
 	return unspecified;
 }
 

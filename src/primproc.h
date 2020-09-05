@@ -10,7 +10,8 @@ obj add(const obj);
 obj sub(const obj);
 obj mul(const obj);
 obj divd(const obj);
-
+obj min(const obj);
+obj max(const obj);
 obj rem(const obj);
 
 obj absl(const obj);
@@ -34,8 +35,8 @@ obj eqn(const obj);
 obj gte(const obj);
 obj gt(const obj);
 
-obj and(const obj);
-obj or(const obj);
+obj and (const obj);
+obj or (const obj);
 obj not(const obj);
 
 obj consp(const obj);
