@@ -1,0 +1,26 @@
+(%ex "2.5")
+
+; exercise 2.5, page 92
+
+(define (exp-in f n)
+  (if (= 0 (remainder n f))
+      (+ 1 (exp-in f (/ n f)))
+      0))
+
+(define (eCons a b)
+  (* (expt 2 a) (expt 3 b)))
+
+(define (eCar z)
+  (exp-in 2 z))
+
+(define (eCdr z)
+  (exp-in 3 z))
+
+(let ((x 13)
+      (y 17))
+  (let ((z (eCons x y)))
+   (display "x: ")(display x)(newline)
+   (display "y: ")(display y)(newline)
+   (display "'value' of (eCons x y): ")(display z)(newline)
+   (display "car: ")(display (eCar z))(newline)
+   (display "cdr: ")(display (eCdr z))(newline)))

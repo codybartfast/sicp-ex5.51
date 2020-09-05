@@ -1,0 +1,19 @@
+(%ex "2.4")
+
+; exercise 2.4, page 92
+
+(define (cons x y)
+  (lambda (m) (m x y)))
+
+(define (car z)
+  (z (lambda (p q) p)))
+
+(define (cdr z)
+  (z (lambda (p q) q)))
+
+(let ((x "I am X")
+      (y "I am Y"))
+  (let ((z (cons x y)))
+    (display "Check it works with an example:")(newline)
+    (display "(car z): ")(display (car z))(newline)
+    (display "(cdr z): ")(display (cdr z))(newline)))

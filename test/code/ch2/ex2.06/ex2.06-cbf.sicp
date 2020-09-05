@@ -1,0 +1,51 @@
+(%ex "2.6")
+
+; exercise 2.6, page 93
+
+(define zero (lambda (f) (lambda (x) x)))
+
+(define (add-1 n)
+  (lambda (f) (lambda (x) (f ((n f) x)))))
+
+(define one (lambda (f) (lambda (x) (f x))))
+
+(define two (lambda (f) (lambda (x) (f (f x)))))
+
+(define three (add-1 two))
+
+(define x (display ""))
+(define (f x) (display "I") (display x))
+
+(define (present desc getval)
+  (display desc)(getval)(display "'")(newline)
+)
+
+(present "zero:      '" (lambda () ((zero f) x)))
+(present "one:       '" (lambda () ((one f) x)))
+(present "two:       '" (lambda () ((two f) x)))
+(present "one add-1: '" (lambda () (((add-1 one) f) x)))
+(present "two add-1: '" (lambda () (((add-1 two) f) x)))
+(present "three:     '" (lambda () ((three f) x)))
+
+(define (add n m)
+  (lambda (f) (lambda (x) ((m f)((n f) x)))))
+
+(define (mult n m)
+  (lambda (f) (n (m f))))
+
+(define (Expt n m)
+  (lambda (f) ((m n) f)))
+
+(newline)
+(present "one + two:   '" (lambda () (((add one two) f) x)))
+(present "two + three: '" (lambda () (((add two three) f) x)))
+(newline)
+(present "two * two:     '" (lambda () (((mult two two) f) x)))
+(present "two * three:   '" (lambda () (((mult two three) f) x)))
+(present "three * three: '" (lambda () (((mult three three) f) x)))
+(newline)
+(present "two ^ zero:    '" (lambda () (((Expt two zero) f) x)))
+(present "two ^ one:     '" (lambda () (((Expt two one) f) x)))
+(present "two ^ two:     '" (lambda () (((Expt two two) f) x)))
+(present "two ^ three:   '" (lambda () (((Expt two three) f) x)))
+(present "three ^ three: '" (lambda () (((Expt three three) f) x)))
