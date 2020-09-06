@@ -123,6 +123,76 @@ static obj add_extras(int ex, obj env)
 	}
 	if (ex >= 217) {
 		define_variable(of_identifier("nil"), emptylst, env);
+		define_variable(of_identifier("list"), of_function(list), env);
+		evalstr("(define (list-ref items n)"
+			"  (if (= n 0)"
+			"      (car items)"
+			"      (list-ref (cdr items) (- n 1))))",
+			env);
+		define_variable(of_identifier("null?"), of_function(is_null_p),
+				env);
+		define_variable(of_identifier("length"), of_function(length_p),
+				env);
+		define_variable(of_identifier("reverse"),
+				of_function(reverse_p), env);
+		define_variable(of_identifier("append"), of_function(append_p),
+				env);
+		define_variable(of_identifier("caar"), of_function(caar_p),
+				env);
+		define_variable(of_identifier("cadr"), of_function(cadr_p),
+				env);
+		define_variable(of_identifier("cdar"), of_function(cdar_p),
+				env);
+		define_variable(of_identifier("cddr"), of_function(cddr_p),
+				env);
+		define_variable(of_identifier("caaar"), of_function(caaar_p),
+				env);
+		define_variable(of_identifier("caadr"), of_function(caadr_p),
+				env);
+		define_variable(of_identifier("cadar"), of_function(cadar_p),
+				env);
+		define_variable(of_identifier("caddr"), of_function(caddr_p),
+				env);
+		define_variable(of_identifier("cdaar"), of_function(cdaar_p),
+				env);
+		define_variable(of_identifier("cdadr"), of_function(cdadr_p),
+				env);
+		define_variable(of_identifier("cddar"), of_function(cddar_p),
+				env);
+		define_variable(of_identifier("cdddr"), of_function(cdddr_p),
+				env);
+		define_variable(of_identifier("caaaar"), of_function(caaaar_p),
+				env);
+		define_variable(of_identifier("caaadr"), of_function(caaadr_p),
+				env);
+		define_variable(of_identifier("caadar"), of_function(caadar_p),
+				env);
+		define_variable(of_identifier("caaddr"), of_function(caaddr_p),
+				env);
+		define_variable(of_identifier("cadaar"), of_function(cadaar_p),
+				env);
+		define_variable(of_identifier("cadadr"), of_function(cadadr_p),
+				env);
+		define_variable(of_identifier("caddar"), of_function(caddar_p),
+				env);
+		define_variable(of_identifier("cadddr"), of_function(cadddr_p),
+				env);
+		define_variable(of_identifier("cdaaar"), of_function(cdaaar_p),
+				env);
+		define_variable(of_identifier("cdaadr"), of_function(cdaadr_p),
+				env);
+		define_variable(of_identifier("cdadar"), of_function(cdadar_p),
+				env);
+		define_variable(of_identifier("cdaddr"), of_function(cdaddr_p),
+				env);
+		define_variable(of_identifier("cddaar"), of_function(cddaar_p),
+				env);
+		define_variable(of_identifier("cddadr"), of_function(cddadr_p),
+				env);
+		define_variable(of_identifier("cdddar"), of_function(cdddar_p),
+				env);
+		define_variable(of_identifier("cddddr"), of_function(cddddr_p),
+				env);
 	}
 	return unspecified;
 }

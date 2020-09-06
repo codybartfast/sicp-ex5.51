@@ -1,8 +1,9 @@
 #include "list.h"
 
-#include "stdarg.h"
+#include <stdarg.h>
 #include "error.h"
 #include "obj.h"
+#include "primproc.h"
 
 #define AREA "LIST"
 
@@ -43,6 +44,16 @@ obj listn(int argc, ...)
 	return reverse(listn_i(argc, els, emptylst));
 }
 
+obj list(obj args)
+{
+	return args;
+}
+
+obj is_null_p(obj args)
+{
+	return is_null(car(args)) ? tru_o : fls_o;
+}
+
 static int length_i(obj lst, int len)
 {
 	if (is_null(lst))
@@ -71,6 +82,14 @@ obj length(obj lst)
 	int len = length_u(lst);
 	return len < 0 ? error_argument_type(AREA, "'length' given non-list") :
 			 of_integer(len);
+}
+
+obj length_p(obj args)
+{
+	obj chk = chkarity("length", 1, args);
+	if (is_err(chk))
+		return chk;
+	return length(car(chk));
 }
 
 static obj map_u_i(obj (*func)(obj), obj lst, obj prj)
@@ -103,6 +122,14 @@ obj reverse(obj lst)
 	return reverse_i(lst, emptylst);
 }
 
+obj reverse_p(obj args)
+{
+	args = chkarity("reverse", 1, args);
+	if (is_err(args))
+		return args;
+	return reverse(car(args));
+}
+
 static obj append_i(obj lst1, obj lst2)
 {
 	if (is_null(lst1))
@@ -118,7 +145,15 @@ obj append(obj lst1, obj lst2)
 	return append_i(lst1, lst2);
 }
 
-// ACCESSORS
+obj append_p(obj args)
+{
+	obj chk = chkarity("append", 2, args);
+	if (is_err(chk))
+		return chk;
+	return append(car(chk), cadr(chk));
+}
+
+// ACCESSORS - internal
 
 // TWO
 
@@ -257,4 +292,173 @@ obj cdddar(obj lst)
 obj cddddr(obj lst)
 {
 	return cdr(cdr(cdr(cdr(lst))));
+}
+
+// ACCESSORS - primitive
+
+// TWO
+
+obj caar_p(obj args)
+{
+	args = chkarity("caar", 1, args);
+	return is_err(args) ? args : car(car(car(args)));
+}
+
+obj cadr_p(obj args)
+{
+	args = chkarity("cadr", 1, args);
+	return is_err(args) ? args : car(cdr(car(args)));
+}
+obj cdar_p(obj args)
+{
+	args = chkarity("cdar", 1, args);
+	return is_err(args) ? args : cdr(car(car(args)));
+}
+
+obj cddr_p(obj args)
+{
+	args = chkarity("cddr", 1, args);
+	return is_err(args) ? args : cdr(cdr(car(args)));
+}
+
+// THREE
+
+obj caaar_p(obj args)
+{
+	args = chkarity("caaar", 1, args);
+	return is_err(args) ? args : car(car(car(car(args))));
+}
+
+obj caadr_p(obj args)
+{
+	args = chkarity("caadr", 1, args);
+	return is_err(args) ? args : car(car(cdr(car(args))));
+}
+obj cadar_p(obj args)
+{
+	args = chkarity("cadar", 1, args);
+	return is_err(args) ? args : car(cdr(car(car(args))));
+}
+
+obj caddr_p(obj args)
+{
+	args = chkarity("caddr", 1, args);
+	return is_err(args) ? args : car(cdr(cdr(car(args))));
+}
+
+obj cdaar_p(obj args)
+{
+	args = chkarity("cdaar", 1, args);
+	return is_err(args) ? args : cdr(car(car(car(args))));
+}
+
+obj cdadr_p(obj args)
+{
+	args = chkarity("cdadr", 1, args);
+	return is_err(args) ? args : cdr(car(cdr(car(args))));
+}
+obj cddar_p(obj args)
+{
+	args = chkarity("cddar", 1, args);
+	return is_err(args) ? args : cdr(cdr(car(car(args))));
+}
+
+obj cdddr_p(obj args)
+{
+	args = chkarity("cdddr", 1, args);
+	return is_err(args) ? args : cdr(cdr(cdr(car(args))));
+}
+
+// FOUR
+
+obj caaaar_p(obj args)
+{
+	args = chkarity("caaaar", 1, args);
+	return is_err(args) ? args : car(car(car(car(car(args)))));
+}
+
+obj caaadr_p(obj args)
+{
+	args = chkarity("caaadr", 1, args);
+	return is_err(args) ? args : car(car(car(cdr(car(args)))));
+}
+obj caadar_p(obj args)
+{
+	args = chkarity("caadar", 1, args);
+	return is_err(args) ? args : car(car(cdr(car(car(args)))));
+}
+
+obj caaddr_p(obj args)
+{
+	args = chkarity("caaddr", 1, args);
+	return is_err(args) ? args : car(car(cdr(cdr(car(args)))));
+}
+
+obj cadaar_p(obj args)
+{
+	args = chkarity("cadaar", 1, args);
+	return is_err(args) ? args : car(cdr(car(car(car(args)))));
+}
+
+obj cadadr_p(obj args)
+{
+	args = chkarity("cadadr", 1, args);
+	return is_err(args) ? args : car(cdr(car(cdr(car(args)))));
+}
+obj caddar_p(obj args)
+{
+	args = chkarity("caddar", 1, args);
+	return is_err(args) ? args : car(cdr(cdr(car(car(args)))));
+}
+
+obj cadddr_p(obj args)
+{
+	args = chkarity("cadddr", 1, args);
+	return is_err(args) ? args : car(cdr(cdr(cdr(car(args)))));
+}
+
+obj cdaaar_p(obj args)
+{
+	args = chkarity("cdaaar", 1, args);
+	return is_err(args) ? args : cdr(car(car(car(car(args)))));
+}
+
+obj cdaadr_p(obj args)
+{
+	args = chkarity("cdaadr", 1, args);
+	return is_err(args) ? args : cdr(car(car(cdr(car(args)))));
+}
+obj cdadar_p(obj args)
+{
+	args = chkarity("cdadar", 1, args);
+	return is_err(args) ? args : cdr(car(cdr(car(car(args)))));
+}
+
+obj cdaddr_p(obj args)
+{
+	args = chkarity("cdaddr", 1, args);
+	return is_err(args) ? args : cdr(car(cdr(cdr(car(args)))));
+}
+
+obj cddaar_p(obj args)
+{
+	args = chkarity("cddaar", 1, args);
+	return is_err(args) ? args : cdr(cdr(car(car(car(args)))));
+}
+
+obj cddadr_p(obj args)
+{
+	args = chkarity("cddadr", 1, args);
+	return is_err(args) ? args : cdr(cdr(car(cdr(car(args)))));
+}
+obj cdddar_p(obj args)
+{
+	args = chkarity("cdddar", 1, args);
+	return is_err(args) ? args : cdr(cdr(cdr(car(car(args)))));
+}
+
+obj cddddr_p(obj args)
+{
+	args = chkarity("cddddr", 1, args);
+	return is_err(args) ? args : cdr(cdr(cdr(cdr(car(args)))));
 }
