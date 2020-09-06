@@ -76,10 +76,8 @@ static int direct_read(struct inport *port)
 	switch (port->kind) {
 	case INKIND_PTR:
 	case INKIND_FILE:
-		port->read_count++;
 		return getc(port->file);
 	case INKIND_STRING:
-		port->read_count++;
 		return (*port->next == '\0') ? EOF : *(port->next++);
 	default:
 		eprintf(AREA, "BUG! No case for inport kind: %d", port->kind);

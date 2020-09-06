@@ -11,7 +11,6 @@ struct inport {
 	char *text;
 	char *next;
 	int peeked;
-	long read_count;
 	long line;
 	long column;
 	long offset;

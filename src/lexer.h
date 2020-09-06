@@ -15,14 +15,20 @@ enum token_type {
 	TKN_STRING, //6
 };
 
+struct location {
+	long line;
+	long column;
+	long offset;
+};
+
 struct token {
 	enum token_type type;
 	char *value;
-	long position;
+	struct location location;
 };
 
 extern bool lexer_errored;
-extern long lexer_error_position;
+extern struct location lexer_error_location;
 extern char *lexer_error_message;
 
 struct token *read_token(struct inport *);
