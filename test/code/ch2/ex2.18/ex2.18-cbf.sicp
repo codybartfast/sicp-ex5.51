@@ -1,0 +1,49 @@
+(%ex "2.18")
+
+; exercise 2.18, page 103
+
+(define lst (list 1 4 9 16 25))
+
+(define (reverse-rec-append lst)
+  (if (null? lst) lst
+      (append (reverse-rec-append (cdr lst)) (list (car lst)))))
+
+(display "reverse-rec-append of ")
+(display lst)
+(display ": ")
+(display (reverse-rec-append lst))
+(newline)
+
+(define (reverse-itr lst)
+  (define (iter lst reversed)
+    (if (null? lst) reversed
+        (iter (cdr lst) (cons (car lst) reversed))))
+  (iter lst nil))
+
+(display "reverse-itr of ")
+(display lst)
+(display ": ")
+(display (reverse-itr lst))
+(newline)
+
+; function builder
+(define (reverse-rec-fb list)
+  (lambda (get-reverse-of-predecessors)
+    (if (null? list)
+        (get-reverse-of-predecessors)
+        ((reverse-rec-fb (cdr list))
+                  (lambda ()
+                    (display "About to call cons with: ")
+                    (display (car list))
+                    (newline)
+                    (cons (car list) (get-reverse-of-predecessors)))))))
+
+(define (reverse-rec list)
+  ((reverse-rec-fb list) (lambda () nil)))
+
+(let ((rslt (reverse-rec lst)))
+  (display "reverse-rec of ")
+  (display lst)
+  (display ": ")
+  (display rslt)
+  (newline))

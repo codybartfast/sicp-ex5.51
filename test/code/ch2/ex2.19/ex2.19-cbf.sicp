@@ -1,0 +1,47 @@
+(%ex "2.19")
+
+; exercise 2.19, page 103
+
+(define uk-coins (list 200 100 50 20 10 5 2 1))
+(define us-coins (list 50 25 10 5 1))
+
+(define (first-denomination ds)
+  (car ds))
+
+(define (except-first-denomination ds)
+  (cdr ds))
+
+(define (no-more? ds)
+  (null? ds))
+
+(define (cc amount ds)
+  (cond
+    ((= amount 0) 1)
+    ((or (< amount 0)(no-more? ds)) 0)
+    (else
+     (+ (cc (- amount (first-denomination ds)) ds)
+        (cc amount (except-first-denomination ds))))))
+
+
+(display "UK coin count for £0.50: ")
+(display (cc 50 uk-coins))(newline)
+(display "US coin count for $1.00: ")
+(display (cc 100 us-coins))(newline)
+; (newline)
+; (display "My guess... we get the same result.")(newline)
+; (display "Because I don't think the algorithm makes any assumption")(newline)
+; (display "about the size of the coins. Performance may be worse")(newline)
+; (display "as 'backing-off' will require more steps, e.g., need to")(newline)
+; (display "back-off by a penny 5 times before using 5p or nickle.")(newline)
+; (newline)
+; (display "Let's see...")(newline)
+; (newline)
+
+(define uk-coins-rev (reverse uk-coins))
+
+; (display "Reversed UK denominations: ")(display uk-coins-rev)
+; (newline)
+(display "UK coin count for £0.50 (rev): ")
+(display (cc 50 uk-coins-rev))
+(newline)
+; (display "Phew. (And appears noticably slower.)")

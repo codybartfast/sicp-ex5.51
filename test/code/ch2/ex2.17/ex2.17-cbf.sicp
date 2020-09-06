@@ -1,0 +1,16 @@
+
+(%ex "2.17")
+
+; exercise 2.17, page 103
+
+(define (last-pair lst)
+  (let ((tail (cdr lst)))
+    (if (null? tail)
+        lst
+        (last-pair tail))))
+
+(let ((lst (list 23 72 149 34)))
+  (display "last-pair of ")
+  (display lst)
+  (display ": ")
+  (display (last-pair lst)))
