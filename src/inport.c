@@ -89,17 +89,25 @@ static int direct_read(struct inport *port)
 
 int in_readc(struct inport *port)
 {
+	char c;
 	if (port == NULL) {
 		eprintf(AREA, "read_char received a null port.");
 		return EOF;
 	}
 	if (port->peeked == NO_PEEK)
-		return direct_read(port);
+		c = direct_read(port);
 	else {
-		int c = port->peeked;
+		c = port->peeked;
 		port->peeked = NO_PEEK;
-		return c;
 	}
+	port->offset++;
+	if (c == '\n') {
+		port->line++;
+		port->column = 0;
+	} else {
+		port->column++;
+	}
+	return c;
 }
 
 int in_peek(struct inport *port)
@@ -116,12 +124,11 @@ int in_peek(struct inport *port)
 
 struct inport *new_inport(void)
 {
-	struct inport *port = (struct inport *)malloc(sizeof(struct inport));
+	struct inport *port = (struct inport *)calloc(sizeof(struct inport), 1);
 	if (port == NULL) {
 		eprintf(AREA, "no memory for inport struct");
 		return NULL;
 	}
-	*port = (struct inport){ 0 };
 	port->peeked = NO_PEEK;
 	return port;
 }

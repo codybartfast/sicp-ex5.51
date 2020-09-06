@@ -12,6 +12,9 @@ struct inport {
 	char *next;
 	int peeked;
 	long read_count;
+	long line;
+	long column;
+	long offset;
 };
 
 struct inport *openin_ptr(FILE *);
