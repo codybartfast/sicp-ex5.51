@@ -10,8 +10,8 @@ obj add(const obj);
 obj sub(const obj);
 obj mul(const obj);
 obj divd(const obj);
-obj min(const obj);
-obj max(const obj);
+obj minimum(const obj);
+obj maximum(const obj);
 obj rem(const obj);
 
 obj absl(const obj);

@@ -1,4 +1,4 @@
 @echo off
 set test_dir=%~dp0
 
-%test_dir%runall | find /i "error"
+%test_dir%runall | find "ERROR: ("

@@ -261,14 +261,14 @@ obj divd(const obj args)
 	}
 }
 
-obj min(const obj args)
+obj minimum(const obj args)
 {
 	if (!is_pairptr(args))
 		error_arity(AREA, "'min' expects at least 1 argument");
 	return reduce("min", MIN, car(args), cdr(args));
 }
 
-obj max(const obj args)
+obj maximum(const obj args)
 {
 	if (!is_pairptr(args))
 		error_arity(AREA, "'max' expects at least 1 argument");

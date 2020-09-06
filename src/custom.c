@@ -116,8 +116,8 @@ static obj add_extras(int ex, obj env)
 			env);
 	}
 	if (ex >= 207) {
-		define_variable(of_identifier("min"), of_function(min), env);
-		define_variable(of_identifier("max"), of_function(max), env);
+		define_variable(of_identifier("min"), of_function(minimum), env);
+		define_variable(of_identifier("max"), of_function(maximum), env);
 	}
 	return unspecified;
 }

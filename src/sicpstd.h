@@ -15,5 +15,4 @@ typedef int64_t Integer;
 typedef double Floating;
 #define LG_PRECISION ".15"
 
-
 #endif
