@@ -12,6 +12,7 @@ obj listn(int argc, ...);
 obj list(obj);
 obj is_null_p(obj);
 obj length(obj);
+int length_i(obj, int, bool);
 int length_u(obj);
 obj length_p(obj);
 obj map_u(obj (*)(obj), obj);

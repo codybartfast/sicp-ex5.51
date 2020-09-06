@@ -19,6 +19,7 @@ static enum token_type scan(struct inport *);
 static enum token_type string(char c, struct inport *);
 static enum token_type identifier(char c, struct inport *);
 static enum token_type number(char c, struct inport *);
+static enum token_type dot(char c, struct inport *in);
 static enum token_type peculiar(char c, struct inport *in);
 static enum token_type comment(char c, struct inport *in);
 static void lexer_error(struct inport *in, char *msg);
@@ -78,10 +79,13 @@ static enum token_type scan(struct inport *in)
 	if (c == '"') {
 		return string(c, in);
 	}
+	if (c == '.') {
+		return dot(c, in);
+	}
 	if (is_peculiar_identifier(c)) {
 		return peculiar(c, in);
 	}
-	if (is_digit(c) || c == '.') {
+	if (is_digit(c)) {
 		return number(c, in);
 	}
 	if (is_initial(c)) {
@@ -129,6 +133,24 @@ static enum token_type string(char c, struct inport *in)
 	return EOF;
 }
 
+static enum token_type dot(char c, struct inport *in)
+{
+	if (is_delimiter(in_peek(in))) {
+		sb_addc(sb, c);
+		return TKN_DOT;
+	}
+	if (is_digit(in_peek(in))) {
+		return number(c, in);
+	} else {
+		char p = in_peek(in);
+		sprintf(error_msg,
+			"Unexpected char following  '.' (dot): '%c' (0x%0X)", p,
+			p);
+		lexer_error(in, error_msg);
+		return EOF;
+	}
+}
+
 static enum token_type peculiar(char c, struct inport *in)
 {
 	if (is_delimiter(in_peek(in))) {
@@ -137,13 +159,14 @@ static enum token_type peculiar(char c, struct inport *in)
 	}
 	if (is_digit(in_peek(in))) {
 		return number(c, in);
+	} else {
+		char p = in_peek(in);
+		sprintf(error_msg,
+			"Unexpected char following initial '%c': '%c' (0x%0X)",
+			c, p, p);
+		lexer_error(in, error_msg);
+		return EOF;
 	}
-	char p = in_peek(in);
-	sprintf(error_msg,
-		"Unexpected char following initial '%c': '%c' (0x%0X)", c, p,
-		p);
-	lexer_error(in, error_msg);
-	return EOF;
 }
 
 static enum token_type number(char c, struct inport *in)

@@ -72,16 +72,13 @@ static obj number(struct token *tkn)
 static obj parse_list(obj, struct inport *);
 static obj parse(struct token *tkn, struct inport *port)
 {
-	obj dat;
-
 	switch (tkn->type) {
 	case TKN_IDENTIFIER:
 		return identifier(tkn);
 	case TKN_NUMBER:
 		return number(tkn);
 	case TKN_LIST_OPEN:
-		dat = parse_list(emptylst, port);
-		return is_err(dat) || is_eof(dat) ? dat : reverse(dat);
+		return parse_list(emptylst, port);
 	case TKN_LIST_CLOSE:
 		return error_parser(AREA, "unexpected: ')'");
 	case TKN_STRING:
@@ -95,11 +92,33 @@ static obj parse(struct token *tkn, struct inport *port)
 	}
 }
 
+static obj dot(obj lst, struct inport *port)
+{
+	obj dat;
+	struct token *tkn;
+
+	if ((tkn = read_token(port))->type == TKN_IDENTIFIER) {
+		obj id = identifier(tkn);
+		if (read_token(port)->type == TKN_LIST_CLOSE) {
+			if (is_null(lst) || !is_symbol(car(lst))) {
+				return error_parser(AREA,
+						    "'.' (dot) is unexpected");
+			}
+			for (dat = lst = reverse(lst); is_pairptr(cdr(dat));
+			     dat = cdr(dat))
+				;
+			set_cdr(dat, id);
+			return lst;
+		}
+	}
+	return error_parser(AREA, "expected one identifier after '.' (dot)");
+}
+
 static obj parse_list(obj lst, struct inport *port)
 {
 	obj dat;
-
 	struct token *tkn;
+
 	while ((tkn = read_token(port))->type == TKN_COMMENT)
 		;
 	switch (tkn->type) {
@@ -109,7 +128,9 @@ static obj parse_list(obj lst, struct inport *port)
 		else
 			return error_parser(AREA, "Open list at and of file");
 	case TKN_LIST_CLOSE:
-		return lst;
+		return reverse(lst);
+	case TKN_DOT:
+		return dot(lst, port);
 	default:
 		dat = parse(tkn, port);
 		if (is_err(dat) || is_eof(dat))

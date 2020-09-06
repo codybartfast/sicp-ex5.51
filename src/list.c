@@ -54,27 +54,22 @@ obj is_null_p(obj args)
 	return is_null(car(args)) ? tru_o : fls_o;
 }
 
-static int length_i(obj lst, int len)
+int length_i(obj lst, int len, bool prn_err)
 {
 	if (is_null(lst))
 		return len;
 	if (!is_pairptr(lst)) {
-		eprintf(AREA, "Length given an improper list");
+		if (prn_err)
+			eprintf(AREA, "'length' given improper list: %s",
+				errstr(lst));
 		return -1;
 	}
-	return length_i(cdr(lst), len + 1);
+	return length_i(cdr(lst), len + 1, prn_err);
 }
 
 int length_u(obj lst)
 {
-	if (is_null(lst)) {
-		return 0;
-	}
-	if (!is_pairptr(lst)) {
-		eprintf(AREA, "'length' given non-pair: %s");
-		return -1;
-	}
-	return length_i(lst, 0);
+	return length_i(lst, 0, true);
 }
 
 obj length(obj lst)

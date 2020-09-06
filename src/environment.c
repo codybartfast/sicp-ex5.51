@@ -72,13 +72,43 @@ static obj add_binding_to_frame(obj var, obj val, obj frame)
 // ln 243
 obj extend_environment(obj vars, obj vals, obj base_env)
 {
-	if (length_u(vars) == length_u(vals)) {
-		return cons(make_frame(vars, vals), base_env);
-	} else {
-		return error_arity(
-			AREA, "Too %s arguments supplied, var: %s, vals: %s",
-			length_u(vars) < length_u(vals) ? "many" : "few",
+	int nvars = length_i(vars, 0, false);
+	int nvals = length_i(vals, 0, false);
+
+	if (nvars >= 0 && nvals >= 0) {
+		return (nvars == nvals) ?
+			       cons(make_frame(vars, vals), base_env) :
+			       error_arity(
+				       AREA,
+				       "Too %s arguments supplied, var: %s, vals: %s",
+				       nvars < nvals ? "many" : "few",
+				       errstr(vars), errstr(vals));
+	} else if (nvals < 0) {
+		return error_syntax(
+			AREA,
+			"The arguments are not a proper list, var: %s, vals: %s",
 			errstr(vars), errstr(vals));
+	} else {
+		// "dotted tail"
+		obj ovars = vars, ovals = vals;
+		obj rvars, rvals;
+
+		for (rvars = emptylst, rvals = emptylst;
+		     is_pairptr(vars) && is_pairptr(vals);
+		     vars = cdr(vars), vals = cdr(vals)) {
+			rvars = cons(car(vars), rvars);
+			rvals = cons(car(vals), rvals);
+		}
+		if (is_pairptr(vars)) {
+			return error_arity(
+				AREA,
+				"Too few arguments supplied, var: %s, vals: %s",
+				errstr(ovars), errstr(ovals));
+		}
+		rvars = cons(vars, rvars); // vars should be a var
+		rvals = cons(vals, rvals); // vals should be a list
+		return cons(make_frame(reverse(rvars), reverse(rvals)),
+			    base_env);
 	}
 }
 
@@ -132,22 +162,23 @@ obj define_variable(obj var, obj val, obj env)
 static obj _initial_procedures;
 static obj initial_procedures(void)
 {
-	obj initial_primprocs = listn(
-		13, // must match number of items below
-		list2(of_identifier("true"), tru_o),
-		list2(of_identifier("false"), fls_o),
-		list2(of_identifier("+"), of_function(add)),
-		list2(of_identifier("-"), of_function(sub)),
-		list2(of_identifier("*"), of_function(mul)),
-		list2(of_identifier("/"), of_function(divd)),
-		list2(of_identifier("<"), of_function(lt)),
-		list2(of_identifier("="), of_function(eqn)),
-		list2(of_identifier(">"), of_function(gt)),
-		list2(of_identifier("and"), of_function(and)),
-		list2(of_identifier("or"), of_function(or)),
-		list2(of_identifier("not"), of_function(not )),
-		// Implementation specific, (not in book):
-		list2(of_identifier("%defined"), of_function(display_defined)));
+	obj initial_primprocs =
+		listn(13, // must match number of items below
+		      list2(of_identifier("true"), tru_o), // 1
+		      list2(of_identifier("false"), fls_o), // 2
+		      list2(of_identifier("+"), of_function(add)), // 3
+		      list2(of_identifier("-"), of_function(sub)), // 4
+		      list2(of_identifier("*"), of_function(mul)), // 5
+		      list2(of_identifier("/"), of_function(divd)), // 6
+		      list2(of_identifier("<"), of_function(lt)), // 7
+		      list2(of_identifier("="), of_function(eqn)), // 8
+		      list2(of_identifier(">"), of_function(gt)), // 9
+		      list2(of_identifier("and"), of_function(and)), // 10
+		      list2(of_identifier("or"), of_function(or)), // 11
+		      list2(of_identifier("not"), of_function(not )), // 12
+		      // Implementation specific, (not in book):
+		      list2(of_identifier("%defined"),
+			    of_function(display_defined))); // 13
 
 	return is_pairptr(_initial_procedures) ?
 		       _initial_procedures :
