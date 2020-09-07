@@ -229,6 +229,7 @@ obj (*to_function(obj dat))(obj)
 
 // KEYWORDS
 
+SYMBOL(apply)
 SYMBOL(begin)
 SYMBOL(cond)
 SYMBOL(define)
@@ -245,6 +246,7 @@ SYMBOL(procedure)
 SYMBOL(ev_appl_accum_last_arg)
 SYMBOL(ev_appl_did_operator)
 SYMBOL(ev_appl_accumulate_arg)
+SYMBOL(ev_apply_2)
 SYMBOL(ev_assignment_1)
 SYMBOL(ev_definition_1)
 SYMBOL(ev_if_decide)

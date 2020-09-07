@@ -255,6 +255,8 @@ eval_dispatch:
 		goto ev_timed;
 	if (is_let(expr))
 		goto ev_let;
+	if (is_apply(expr))
+		goto ev_apply;
 	if (is_application(expr))
 		goto ev_application;
 	goto unknown_expression_type;
@@ -452,6 +454,22 @@ ev_let:
 	expr = let_to_combination(expr);
 	goto eval_dispatch;
 
+// new
+ev_apply:
+	save(CONT);
+	save(ENV);
+	save(EXPR);
+	expr = apply_operands(expr);
+	cont = ev_apply_2;
+	goto eval_dispatch;
+
+ev_apply_2:
+	expr = restore();
+	env = restore();
+	cont = restore();
+	expr = cons(apply_operator(expr), val);
+	goto ev_application;
+
 // ln 433
 unknown_expression_type:
 	return error_eval(AREA, "Unknown expression type: %s", errstr(expr));
@@ -468,6 +486,8 @@ go_cont:
 		goto ev_appl_accumulate_arg;
 	if (eq_symbol(cont, ev_appl_did_operator))
 		goto ev_appl_did_operator;
+	if (eq_symbol(cont, ev_apply_2))
+		goto ev_apply_2;
 	if (eq_symbol(cont, ev_definition_1))
 		goto ev_definition_1;
 	if (eq_symbol(cont, ev_if_decide))

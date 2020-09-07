@@ -43,5 +43,9 @@ bool is_time(obj);
 obj timed_expr(obj);
 bool is_let(obj);
 obj let_to_combination(obj);
+bool is_apply(obj);
+obj apply_to_application(obj exp);
+obj apply_operator(obj exp);
+obj apply_operands(obj exp);
 
 #endif

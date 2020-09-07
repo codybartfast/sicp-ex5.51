@@ -367,3 +367,19 @@ obj let_to_combination(obj letx)
 	return make_proc_call(make_lambda(let_variables(letx), let_body(letx)),
 			      (let_values(letx)));
 }
+
+// apply keyword
+bool is_apply(obj exp)
+{
+	return is_tagged_list(exp, apply);
+}
+
+obj apply_operator(obj exp)
+{
+	return cadr(exp);
+}
+
+obj apply_operands(obj exp)
+{
+	return caddr(exp);
+}
