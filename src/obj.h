@@ -120,6 +120,7 @@ extern const obj ev_appl_accum_last_arg;
 extern const obj ev_appl_accumulate_arg;
 extern const obj ev_appl_did_operator;
 extern const obj ev_apply_2;
+extern const obj ev_apply_3;
 extern const obj ev_assignment_1;
 extern const obj ev_definition_1;
 extern const obj ev_if_decide;

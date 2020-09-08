@@ -458,17 +458,27 @@ ev_let:
 ev_apply:
 	save(CONT);
 	save(ENV);
-	save(EXPR);
-	expr = apply_operands(expr);
+	unev = apply_operands(expr);
+	save(UNEV);
+	expr = apply_operator(expr);
 	cont = ev_apply_2;
 	goto eval_dispatch;
 
 ev_apply_2:
-	expr = restore();
+	unev = restore();
 	env = restore();
-	cont = restore();
-	expr = cons(apply_operator(expr), val);
-	goto ev_application;
+	proc = val;
+	save(PROC);
+	save(ENV);
+	expr = unev;
+	cont = ev_apply_3;
+	goto eval_dispatch;
+
+ev_apply_3:
+	env = restore();
+	proc = restore();
+	argl = val;
+	goto apply_dispatch;
 
 // ln 433
 unknown_expression_type:
@@ -488,6 +498,8 @@ go_cont:
 		goto ev_appl_did_operator;
 	if (eq_symbol(cont, ev_apply_2))
 		goto ev_apply_2;
+	if (eq_symbol(cont, ev_apply_3))
+		goto ev_apply_3;
 	if (eq_symbol(cont, ev_definition_1))
 		goto ev_definition_1;
 	if (eq_symbol(cont, ev_if_decide))
