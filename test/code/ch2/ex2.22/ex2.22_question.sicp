@@ -1,0 +1,28 @@
+(%ex "2.22")
+
+; exercise 2.22, page 106
+
+(define (square-list1 items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things) 
+              (cons (square (car things))
+                    answer))))
+  (iter items nil))
+
+
+(define (square-list2 items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons answer
+                    (square (car things))))))
+  (iter items nil))
+
+(newline)
+(let ((items (list 0 1 2 3 4 5 6 7 8)))
+  (display "Items: ")(display items)(newline)
+  (display "  Louis square-list v1: ")(display (square-list1 items))(newline)
+  (display "  Louis square-list v2: ")(display (square-list2 items))(newline))

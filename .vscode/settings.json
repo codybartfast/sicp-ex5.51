@@ -2,10 +2,20 @@
     "editor.tabSize": 8,
     "editor.insertSpaces": false,
     "files.associations": {
+        "*.sicp": "scheme",
         "type_traits": "c",
         "cmath": "c",
         "system_error": "c",
-        "*.sicp": "scheme",
+        "array": "cpp",
+        "*.tcc": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "string_view": "cpp",
+        "memory": "cpp",
+        "random": "cpp",
+        "initializer_list": "cpp"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "LineCount.includes": [

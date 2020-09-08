@@ -1,0 +1,27 @@
+(%ex "2.20")
+
+; exercise 2.20, page 104
+
+(define lst1 (list 1 2 3 4 5 6 7))
+(define lst2 (list 2 3 4 5 6 7))
+
+(define (filter predicate list)
+  (define (filter-itr list filtered)
+    (if (null? list)  filtered
+        (filter-itr (cdr list)
+                    (if (predicate (car list))
+                        (cons (car list) filtered)
+                        filtered))))
+  (reverse (filter-itr list nil)))
+
+(define (same-parity first . rest)
+  (let ((first-mod (remainder first 2)))
+    (cons first (filter
+                 (lambda (r) (= first-mod (remainder r 2)))
+                 rest))))
+
+(display "same parity of 1, ..., 7: ")
+(display (same-parity 1 2 3 4 5 6 7))
+(newline)
+(display "same parity of 2, ..., 7: ")
+(display (same-parity 2 3 4 5 6 7))
