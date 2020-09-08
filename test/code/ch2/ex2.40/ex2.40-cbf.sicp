@@ -1,0 +1,58 @@
+(%ex "2.40")
+
+; exercise 2.40, page 124
+
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence)
+          (accumulate op initial (cdr sequence)))))
+
+(define (enumerate-range start end-ex)
+  (if (< start end-ex)
+      (cons start (enumerate-range (+ start 1) end-ex))
+      nil))
+
+(define (filter predicate sequence)
+  (cond ((null? sequence) nil)
+        ((predicate (car sequence))
+         (cons (car sequence)
+               (filter predicate (cdr sequence))))
+        (else (filter predicate (cdr sequence)))))
+
+(define (flatmap proc seq)
+  (accumulate append nil (map proc seq)))
+
+(define (unique-pairs start end)
+  (flatmap
+   (lambda (second)
+     (map (lambda (first)
+            (list first second))
+          (enumerate-range start second)))
+   (enumerate-range start (+ end 1))))
+
+(define (prime-sum-pairs end)
+  (filter
+   (lambda (pair)
+     (prime? (+ (car pair) (car (cdr pair)))))
+   (unique-pairs 1 end)))
+
+(let ((start 1)
+      (end 10))
+     (let ((pairs (unique-pairs start end))
+           (prime-pairs (prime-sum-pairs end)))
+          (display "Start: ")(display start)(newline)
+          (display "End:   ")(display end)(newline)
+          (newline)
+          (display "Unique Pairs:    ")(newline)
+          (display pairs)(newline)
+          (newline)
+          (display "Prime Sum Pairs: ")(newline)
+          (ignore
+            (map (lambda (pair)
+                   (let ((first (car pair)) (second (car (cdr pair))))
+                     (display "  ")
+                     (display first) (display " + ")
+                     (display second) (display " = ")
+                     (display (+ first second)) (newline)))
+                 prime-pairs))))

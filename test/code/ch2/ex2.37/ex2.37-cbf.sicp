@@ -1,0 +1,106 @@
+(%ex "2.37")
+
+; exercise 2.37, page 120
+
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence)
+          (accumulate op initial (cdr sequence)))))
+
+(define (accumulate-n op init seqs)
+  (if (null? (car seqs))
+      nil
+      (cons (accumulate op init (map car seqs))
+            (accumulate-n op init (map cdr seqs)))))
+
+(define (map-n proc . lists)
+  (map (lambda (heads) (apply proc heads))
+       (accumulate-n (lambda (heads acc)
+                  (cons heads acc))
+                nil
+                lists)))
+; Dot Product
+; ===========
+(define (dot-product v w)
+  (accumulate + 0 (map-n * v w)))
+
+(let ((v (list 1 2 3))
+      (w (list 4 -5 6)))
+  (newline)
+  (display "Dot Product:")(newline)
+  (display "============")(newline)
+  (display "v: ") (display v)(newline)
+  (display "w: ") (display w)(newline)
+  (display "dot-product v w:")(newline)
+  (display "  expect: ")(display 12)(newline)
+  (display "  actual: ")(display (dot-product v w))(newline))
+
+; Matrix * Vector
+; ===============
+(define (matrix-*-vector m v)
+  (map-n (lambda (col)
+           (dot-product col v))
+         m))
+
+(let (
+      (x (list -2 1 0))
+      (A (list
+          (list 1 2 3)
+          (list 4 5 6)
+          (list 7 8 9)
+          (list 10 11 12))))
+  (newline)
+  (display "Matrix * Vector:")(newline)
+  (display "================")(newline)
+  (display "A: ")(display A)(newline)
+  (display "x: ")(display x)(newline)
+  (display "matrix-*-vector A x")(newline)
+  (display "  expected: (0 -3 -6 -9)")(newline)
+  (display "  actual:   ")(display (matrix-*-vector A x))(newline))
+
+; Transpose
+; =========
+
+(define (transpose mat)
+  (accumulate-n cons nil mat))
+
+(let (
+      (A (list
+          (list 1 2 3)
+          (list 4 5 6))))
+  (newline)
+  (display "Transpose")(newline)
+  (display "=========")(newline)
+  (display "A: ")(display A)(newline)
+  (display "transpose A:")(newline)
+  (display "  expected: ")(display (list (list 1 4) (list 2 5) (list 3 6)))(newline)
+  (display "  actual:   ")(display (transpose A))(newline))
+
+; Matrix * Matrix
+; ===============
+
+(define (matrix-*-matrix m n)
+  (let ((cols (transpose n)))
+    (map (lambda (col)
+       (map (lambda (row)
+          (dot-product row col))
+        cols))
+     m)))
+
+(let (
+      (B (list
+          (list 1 2 3)
+          (list 4 5 6)))
+      (C (list
+          (list 1 2)
+          (list 3 4)
+          (list 5 6))))
+  (newline)
+  (display "Matrix * Matrix")(newline)
+  (display "===============")(newline)
+  (display "B: ")(display B)(newline)
+  (display "C: ")(display C)(newline)
+  (display "matrix-*-matrix B C:")(newline)
+  (display "  expected: ")(display (list (list 22 28) (list 49 64)))(newline)
+  (display "  actual:   ")(display (matrix-*-matrix B C))(newline))

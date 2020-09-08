@@ -1,0 +1,91 @@
+(%ex "2.42")
+
+; exercise 2.42, page 124
+
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence)
+          (accumulate op initial (cdr sequence)))))
+
+(define (fold-left op initial sequence)
+  (define (iter result rest)
+    (if (null? rest)
+        result
+        (iter (op result (car rest))
+              (cdr rest))))
+  (iter initial sequence))
+
+(define (reverse-l sequence)
+  (fold-left (lambda (x y)
+               (cons y x))
+             nil sequence))
+
+(define (enumerate-range start end-ex)
+  (if (< start end-ex)
+      (cons start (enumerate-range (+ start 1) end-ex))
+      nil))
+
+(define (filter predicate sequence)
+  (cond ((null? sequence) nil)
+        ((predicate (car sequence))
+         (cons (car sequence)
+               (filter predicate (cdr sequence))))
+        (else (filter predicate (cdr sequence)))))
+
+(define (flatmap proc seq)
+  (accumulate append nil (map proc seq)))
+
+(define empty-board nil)
+
+(define (adjoin-position new-row col rest-of-queens)
+  (cons (list col new-row) rest-of-queens))
+
+(define (enumerate-interval start end)
+  (enumerate-range start (+ end 1)))
+
+(define (safe? k positions)
+  (define (col p) (car p))
+  (define (row p) (car (cdr p)))
+
+  (define (in-check? existing)
+    (or
+     (= (row new) (row existing))
+     (= (row new) (+ (row existing) (- k (col existing))))
+     (= (row new) (- (row existing) (- k (col existing))))))
+
+  (define new (car positions))
+
+  (accumulate
+   (lambda (existing still-safe)
+     (and
+      still-safe
+      (not (in-check? existing))))
+   true
+   (cdr positions)))
+
+(define (queens board-size)
+  (define (queen-cols k)
+    (if (= k 0)
+        (list empty-board)
+        (filter
+         (lambda (positions) (safe? k positions))
+         (flatmap
+          (lambda (rest-of-queens)
+            (map (lambda (new-row)
+                   (adjoin-position new-row k rest-of-queens))
+                 (enumerate-interval 1 board-size)))
+          (queen-cols (- k 1))))))
+  (map reverse-l (queen-cols board-size)))
+
+(let ((board-size 8)
+      (expected-solution-count 92))
+  (let ((solutions (queens board-size)))
+    (display "board size: ")
+      (display board-size)(newline)
+    (display "expected solution count: ")
+      (display expected-solution-count) (newline)
+    (display "actual solution count:   ")
+      (display (length solutions)) (newline)
+    (display "last solution: ")
+      (display (list-ref solutions 91)) (newline)))
