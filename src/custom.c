@@ -194,6 +194,25 @@ static obj add_extras(int ex, obj env)
 		define_variable(of_identifier("cddddr"), of_function(cddddr_p),
 				env);
 	}
+	if (ex >= 221) {
+		evalstr("(define (map proc . arglists)"
+			"  (define (smap proc items)"
+			"    (define (iter items mapped)"
+			"      (if (null? items)"
+			"          mapped"
+			"          (iter (cdr items)"
+			"                (cons (proc (car items))"
+			"                      mapped))))"
+			"    (reverse (iter items nil)))"
+			"  (define (iter arglists mapped)"
+			"    (if (null? (car arglists))"
+			"        mapped"
+			"        (iter (smap cdr arglists)"
+			"              (cons (apply proc (smap car arglists))"
+			"                    mapped))))"
+			"  (reverse (iter arglists nil)))",
+			env);
+	}
 	return unspecified;
 }
 
@@ -260,6 +279,9 @@ static obj display_definedp(struct outport *out)
 	}
 	newline(emptylst);
 	displayp(out, of_string("Custom Special Forms:"));
+	newline(emptylst);
+	displayp(out, lpad);
+	displayp(out, of_string("apply"));
 	newline(emptylst);
 	displayp(out, lpad);
 	displayp(out, of_string("time"));
