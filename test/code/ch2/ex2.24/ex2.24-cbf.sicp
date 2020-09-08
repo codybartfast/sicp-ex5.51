@@ -1,0 +1,5 @@
+(%ex "2.24")
+
+; exercise 2.24, page 110
+
+(list 1 (list 2 (list 3 4)))

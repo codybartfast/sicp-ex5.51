@@ -1,0 +1,24 @@
+(%ex "2.27")
+
+; exercise 2.27, page 110
+
+(define (reverse lst)
+  (define (iter lst reversed)
+    (if (null? lst) reversed
+        (iter (cdr lst) (cons (car lst) reversed))))
+  (iter lst nil))
+
+(define (deep-reverse lst)
+  (define (iter lst reversed)
+    (if (null? lst) reversed
+        (let ((head (car lst)))
+          (let ((rev-head (if (pair? head)
+                              (iter head nil)
+                              head)))
+            (iter (cdr lst) (cons rev-head reversed))))))
+  (iter lst nil))
+
+(let ((x (list (list 1 2) (list 3 4))))
+  (display "x:              ")(display x)(newline)
+  (display "reverse x:      ")(display (reverse x))(newline)
+  (display "deep-reverse x: ")(display (deep-reverse x)))

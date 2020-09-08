@@ -1,0 +1,29 @@
+(%ex "2.25")
+
+; exercise 2.25, page 110
+
+(let ((a (list 1 3 (list 5 7) 9))
+      (b (list (list 7)))
+      (c (list 1 (list 2 (list 3 (list 4 (list 5 (list 6 7))))))))
+  (display a)
+    (display ":")
+    (newline)
+  (display "    cdr->cdr->car->cdr->car: ")
+    (display (car (cdr (car (cdr (cdr a))))))
+    (newline)
+    (newline)
+  (display b)
+    (display ":")
+    (newline)
+  (display "    car->car: ")
+    (display (car (car b)))
+    (newline)
+    (newline)
+  (display c)
+    (display ":")
+    (newline)
+  (display "    cdr->car->cdr->car->cdr->car->cdr->car->cdr->car->cdr->car: ")
+    (display
+      (car 
+        (cdr (car (cdr (car (cdr (car (cdr (car (cdr (car (cdr c))))))))))))))
+    (newline)

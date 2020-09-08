@@ -1,0 +1,9 @@
+(%ex "2.26")
+
+; exercise 2.26, page 110
+
+(let ((x (list 1 2 3))
+      (y (list 4 5 6)))
+  (display "  (append x y): ")(display (append x y))(newline)
+  (display "  (cons x y)  : ")(display (cons x y))(newline)
+  (display "  (list x y)  : ")(display (list x y))(newline))

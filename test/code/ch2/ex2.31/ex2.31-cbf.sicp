@@ -1,0 +1,18 @@
+(%ex "2.31")
+
+; exercise 2.31, page 113
+
+(define (tree-map func tree)
+  (cond ((null? tree) nil)
+        ((pair? tree)
+         (cons (tree-map func (car tree))
+               (tree-map func (cdr tree))))
+        (else (func tree))))
+
+(let ((tree (list 1
+                  (list 2 (list 3 4) 5)
+                  (list 6 7))))
+  (display "tree-map:")(newline)
+  (display "  Tree:     ")(display tree)(newline)
+  (display "  Expected: (1 (4 (9 16) 25) (36 49))")(newline)
+  (display "  Got:      ")(display (tree-map square tree)))

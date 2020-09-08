@@ -1,0 +1,15 @@
+(%ex "2.28")
+
+; exercise 2.28, page 111
+
+(define (fringe tree)
+  (if (pair? tree)
+      (append (fringe (car tree)) (fringe (cdr tree)))
+      (if (null? tree)
+           tree
+           (list tree))))
+
+(let ((x (list (list 1 2) (list 3 4))))
+   (display "x:            ")(display x)(newline)
+   (display "fringe x:     ")(display (fringe x))(newline)
+   (display "fringe (x x): ")(display (fringe (list x x))))

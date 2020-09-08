@@ -1,0 +1,133 @@
+(%ex "2.29")
+
+; exercise 2.29, page 111
+
+(define (make-mobile left right)
+  (list left right))
+
+(define (make-branch length structure)
+  (list length structure))
+
+(define one (make-mobile (make-branch 1 1) (make-branch 1 1)))
+(define two (make-mobile (make-branch 1 2) (make-branch 2 1)))
+(define three (make-mobile (make-branch 3 one) (make-branch 2 two)))
+(define oops (make-mobile (make-branch 3 one)
+                          (make-branch
+                           2
+                           (make-mobile (make-branch 2 2) (make-branch 2 1)))))
+
+(define (left-branch mobile)
+  (car mobile))
+
+(define (right-branch mobile)
+  (car (cdr mobile)))
+
+(define (branch-length branch)
+  (car branch))
+
+(define (branch-structure branch)
+  (car (cdr branch)))
+
+;#########################################################################
+(newline)(newline)
+(display "Part b.")(newline)
+(display "=======")(newline)
+
+(define (total-weight mobile)
+  (let((ls (branch-structure (left-branch mobile)))
+       (rs (branch-structure (right-branch mobile))))
+    (+ (if (pair? ls) (total-weight ls) ls)
+       (if (pair? rs) (total-weight rs) rs))))
+
+(newline)
+(display "weights:")(newline)
+(display "  one:   ")(display (total-weight one))(newline)
+(display "  two:   ")(display (total-weight two))(newline)
+(display "  three: ")(display (total-weight three))(newline)
+(display "  oops:  ")(display (total-weight oops))(newline)
+
+;#########################################################################
+(newline)(newline)
+(display "Part c.")(newline)
+(display "=======")(newline)
+
+(define (branch-torque branch)
+  (* (branch-length branch)
+     (let ((structure (branch-structure branch)))
+       (if (pair? structure)
+           (total-weight structure)
+           structure))))
+
+(define (balanced? structure)
+  (if (not (pair? structure))
+      true
+      (and (= (branch-torque (left-branch structure))
+              (branch-torque (right-branch structure)))
+           (and (balanced? (branch-structure (left-branch structure)))
+                (balanced? (branch-structure (right-branch structure)))))))
+
+(newline)
+(display "balanced?: ")(newline)
+(display "  one:   ")(display (balanced? one))(newline)
+(display "  two:   ")(display (balanced? two))(newline)
+(display "  three: ")(display (balanced? three))(newline)
+(display "  oops:  ")(display (balanced? oops))(newline)
+
+;#########################################################################
+(newline)(newline)
+(display "Part d.")(newline)
+(display "=======")(newline)
+
+(define (Make-Mobile left right)
+  (cons left right))
+
+(define (Make-Branch length structure)
+  (cons length structure))
+
+(define One (Make-Mobile (Make-Branch 1 1) (Make-Branch 1 1)))
+(define Two (Make-Mobile (Make-Branch 1 2) (Make-Branch 2 1)))
+(define Three (Make-Mobile (Make-Branch 3 One) (Make-Branch 2 Two)))
+(define Oops (Make-Mobile (Make-Branch 3 One)
+                          (Make-Branch
+                           2
+                           (Make-Mobile (Make-Branch 2 2) (Make-Branch 2 1)))))
+
+(define (Left-Branch mobile)
+  (car mobile))
+
+(define (Right-Branch mobile)
+  (cdr mobile))
+
+(define (Branch-Length branch)
+  (car branch))
+
+(define (Branch-Structure branch)
+  (cdr branch))
+
+(define (Total-Weight mobile)
+  (let((ls (Branch-Structure (Left-Branch mobile)))
+       (rs (Branch-Structure (Right-Branch mobile))))
+    (+ (if (pair? ls) (total-weight ls) ls)
+       (if (pair? rs) (total-weight rs) rs))))
+
+(define (Branch-Torque branch)
+  (* (branch-length branch)
+     (let ((structure (Branch-Structure branch)))
+       (if (pair? structure)
+           (Total-Weight structure)
+           structure))))
+
+(define (Balanced? structure)
+  (if (not (pair? structure))
+      true
+      (and (= (Branch-Torque (Left-Branch structure))
+              (Branch-Torque (Right-Branch structure)))
+           (and (Balanced? (Branch-Structure (Left-Branch structure)))
+                (Balanced? (Branch-Structure (Right-Branch structure)))))))
+
+(newline)
+(display "Balanced?:")(newline)
+(display "  One:   ")(display (Balanced? One))(newline)
+(display "  Two:   ")(display (Balanced? Two))(newline)
+(display "  Three: ")(display (Balanced? Three))(newline)
+(display "  Oops:  ")(display (Balanced? Oops))(newline)
