@@ -94,12 +94,12 @@ obj extend_environment(obj vars, obj vals, obj base_env)
 		obj rvars, rvals;
 
 		for (rvars = emptylst, rvals = emptylst;
-		     is_pairptr(vars) && is_pairptr(vals);
+		     is_pair(vars) && is_pair(vals);
 		     vars = cdr(vars), vals = cdr(vals)) {
 			rvars = cons(car(vars), rvars);
 			rvals = cons(car(vals), rvals);
 		}
-		if (is_pairptr(vars)) {
+		if (is_pair(vars)) {
 			return error_arity(
 				AREA,
 				"Too few arguments supplied, var: %s, vals: %s",
@@ -180,7 +180,7 @@ static obj initial_procedures(void)
 		      list2(of_identifier("%defined"),
 			    of_function(display_defined))); // 13
 
-	return is_pairptr(_initial_procedures) ?
+	return is_pair(_initial_procedures) ?
 		       _initial_procedures :
 		       (_initial_procedures = reverse(initial_primprocs));
 }
@@ -210,7 +210,7 @@ static obj setup_environment(void)
 static obj _the_global_environment;
 obj the_global_environment(void)
 {
-	if (!is_pairptr(_the_global_environment))
+	if (!is_pair(_the_global_environment))
 		_the_global_environment = setup_environment();
 	return _the_global_environment;
 }

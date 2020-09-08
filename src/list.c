@@ -51,14 +51,21 @@ obj list(obj args)
 
 obj is_null_p(obj args)
 {
+	chkarity("null?", 1, args);
 	return is_null(car(args)) ? tru_o : fls_o;
+}
+
+obj is_pair_p(obj args)
+{
+	chkarity("pair?", 1, args);
+	return is_pair(car(args)) ? tru_o : fls_o;
 }
 
 int length_i(obj lst, int len, bool prn_err)
 {
 	if (is_null(lst))
 		return len;
-	if (!is_pairptr(lst)) {
+	if (!is_pair(lst)) {
 		if (prn_err)
 			eprintf(AREA, "'length' given improper list: %s",
 				errstr(lst));
@@ -91,7 +98,7 @@ static obj map_u_i(obj (*func)(obj), obj lst, obj prj)
 {
 	if (is_null(lst))
 		return prj;
-	if (!is_pairptr(lst)) {
+	if (!is_pair(lst)) {
 		return error_argument_type(AREA, "map_u given non-list");
 	}
 	return map_u_i(func, cdr(lst), cons(func(car(lst)), prj));
@@ -106,7 +113,7 @@ static obj reverse_i(obj lst, obj rev)
 {
 	if (is_null(lst))
 		return rev;
-	if (!is_pairptr(lst)) {
+	if (!is_pair(lst)) {
 		return error_argument_type(AREA, "reverse given non-list");
 	}
 	return reverse_i(cdr(lst), cons(car(lst), rev));

@@ -102,7 +102,7 @@ static obj displaystr(obj dat)
 			of_string("<procedure>"), procedure_parameters(dat),
 			procedure_body(dat), of_string("<procedure-env>")));
 	}
-	if (is_pairptr(dat)) {
+	if (is_pair(dat)) {
 		return displaypair(dat);
 	}
 	switch (type(dat)) {
@@ -140,7 +140,7 @@ static obj displaypair(obj pair)
 		return error_memory(AREA, "StrBldr");
 	sb_addc(sb, '(');
 
-	for (; is_pairptr(pair); pair = cdr(pair)) {
+	for (; is_pair(pair); pair = cdr(pair)) {
 		if (donefst) {
 			sb_addc(sb, ' ');
 		} else {

@@ -11,6 +11,7 @@ obj list4(obj, obj, obj, obj);
 obj listn(int argc, ...);
 obj list(obj);
 obj is_null_p(obj);
+obj is_pair_p(obj);
 obj length(obj);
 int length_i(obj, int, bool);
 int length_u(obj);

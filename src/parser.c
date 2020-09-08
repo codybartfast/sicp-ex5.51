@@ -104,7 +104,7 @@ static obj dot(obj lst, struct inport *port)
 				return error_parser(AREA,
 						    "'.' (dot) is unexpected");
 			}
-			for (dat = lst = reverse(lst); is_pairptr(cdr(dat));
+			for (dat = lst = reverse(lst); is_pair(cdr(dat));
 			     dat = cdr(dat))
 				;
 			set_cdr(dat, id);

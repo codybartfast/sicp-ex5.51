@@ -64,7 +64,7 @@ static void update_obj(obj *objptr)
 	obj old;
 	obj new;
 
-	if (!is_pairptr(*objptr)) {
+	if (!is_pair(*objptr)) {
 		// not a pair pointer - nothing to do.
 		return;
 	}
