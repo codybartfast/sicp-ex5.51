@@ -11,10 +11,10 @@ struct bitmap {
 	int width;
 	int height;
 	int max;
-	int data[];
+	int data[42436];
 };
 
-extern struct bitmap rogers;
-extern struct bitmap sussman;
+extern const struct bitmap rogers;
+extern const struct bitmap sussman;
 
 #endif

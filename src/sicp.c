@@ -13,21 +13,28 @@ static struct inport *version(void);
 static struct inport *expr(int argc, char *argv[]);
 static struct inport *usage(void);
 
+#include "bitmap.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
 int main(int argc, char *argv[])
 {
-	// int c;
-	// int i = 14;
+	//stbi_uc buff[42436];
+	struct bitmap bm = sussman;
+	int width;
+	int height;
+	int channels;
 
-	// while ((c = getchar()) != EOF) {
-	// 	printf("%d", c);
-	// 	if (i-- == 0) {
-	// 		i = 179;
-	// 		printf("\n");
-	// 	} else {
-	// 		printf(" ");
-	// 	}
-	// }
-	// return 0;
+	unsigned char *img = stbi_load("images/gjsussman-p5.pgm", &width,
+				       &height, &channels, 0);
+	printf("Loaded image with a width of %dpx, a height of %dpx and %d channels\n",
+	       width, height, channels);
+	stbi_write_png("pict.png", width, height, channels, img,
+		       width * channels);
+	return 0;
+
 	obj exp;
 	struct inport *port = parseargs(argc, argv);
 	if (port == NULL)

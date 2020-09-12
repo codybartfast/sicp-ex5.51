@@ -10,6 +10,7 @@
             "args": [
                 "-lm", // load maths module
                 //
+                "src/bitmap.c",
                 "src/character.c",
                 "src/convert.c",
                 "src/custom.c",
@@ -28,6 +29,9 @@
                 "src/sicp.c",
                 "src/storage.c",
                 "src/strbldr.c",
+
+                "src/stb_image.h",
+                "src/stb_image_write.h",
                 //
                 "-O3", // Optimization Level. Tail Call Optimization seem to need >= 2
                 "-std=c17", // 'ISO C 2017' standard

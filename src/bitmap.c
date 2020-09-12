@@ -1,6 +1,6 @@
 #include "bitmap.h"
 
-struct bitmap rogers = {
+const struct bitmap rogers = {
 	.format = PGM_P5,
 	.width = 180,
 	.height = 180,
@@ -2707,7 +2707,7 @@ struct bitmap rogers = {
 		  77,  71,  67,	 69,  66,  75,	63,  75,  76,  76,  59,	 75 }
 };
 
-struct bitmap sussman = {
+const struct bitmap sussman = {
 	.format = PGM_P5,
 	.width = 206,
 	.height = 206,
