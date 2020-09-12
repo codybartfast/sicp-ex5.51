@@ -14,10 +14,18 @@ static struct inport *expr(int argc, char *argv[]);
 static struct inport *usage(void);
 
 #include "bitmap.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdouble-promotion"
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wmissing-prototypes"
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
+
+#pragma GCC diagnostic pop
 
 int main(int argc, char *argv[])
 {
@@ -38,19 +46,19 @@ int main(int argc, char *argv[])
 
 	printf("%d\n", gjslen);
 
-	stbi_uc *buff = (stbi_uc *)gjsussman;
 	int width;
 	int height;
 	int channels;
 
-	// unsigned char *img = stbi_load("images/gjsussman-p5.pgm", &width,
-	// 			       &height, &channels, 0);
-	unsigned char *img = stbi_load_from_memory(gjsussman, gjslen, &width,
-						   &height, &channels, 0);
+	unsigned char *raw = bmp2arr(&rogers);
+
+	unsigned char *img = stbi_load_from_memory(raw, gjslen, &width, &height,
+						   &channels, 0);
 	printf("Loaded image with a width of %dpx, a height of %dpx and %d channels\n",
 	       width, height, channels);
 	stbi_write_png("pict.png", width, height, channels, img,
 		       width * channels);
+
 	return 0;
 
 	obj exp;

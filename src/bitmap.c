@@ -1,5 +1,59 @@
 #include "bitmap.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "error.h"
+
+#define AREA "BITMAP"
+
+unsigned char *bmp2arr(const struct bitmap *restrict bmp)
+{
+	char width[10];
+	char height[10];
+	char max[10];
+	int datalen;
+	unsigned char *array, *arrp;
+	int i, arrlen;
+	char c, *s;
+
+	if (bmp->format != PGM_P5) {
+		eprintf(AREA, "Unexpected bitmap format: %d", bmp->format);
+		exit(1);
+	}
+
+	sprintf(width, "%d", bmp->width);
+	sprintf(height, "%d", bmp->height);
+	sprintf(max, "%d", bmp->max);
+	arrlen = 6 + strlen(width) + strlen(height) + strlen(max) +
+		 (datalen = (sizeof(bmp->data) / sizeof(unsigned char)));
+	arrp = array = (unsigned char *)malloc(arrlen * sizeof(unsigned char));
+
+	*arrp++ = 'P';
+	*arrp++ = '5';
+	*arrp++ = '\n';
+
+	s = width;
+	while ((c = *s++))
+		*arrp++ = c;
+	*arrp++ = ' ';
+	s = height;
+	while ((c = *s++))
+		*arrp++ = c;
+	*arrp++ = '\n';
+
+	s = max;
+	while ((c = *s++))
+		*arrp++ = c;
+	*arrp++ = '\n';
+
+	for(i = 0; i < datalen; i++){
+		arrp[i] = bmp->data[i];
+	}
+
+	return array;
+}
+
 const struct bitmap rogers = {
 	.format = PGM_P5,
 	.width = 180,
@@ -8571,7 +8625,6 @@ const unsigned char wbrogers[] = {
 };
 const int wbrlen = sizeof(wbrogers) / sizeof(unsigned char);
 
-
 const unsigned char gjsussman[] = {
 	80,  53,  10,  50,  48,	 54,  32,  50,	48,  54,  10,  50,  53,	 53,
 	10,  95,  80,  78,  105, 141, 159, 156, 146, 143, 142, 141, 140, 137,
@@ -11607,5 +11660,4 @@ const unsigned char gjsussman[] = {
 	45,  10,  11,  11,  35,	 68,  79,  51,	15,  5,	  13,  11,  0,	 7,
 	8,   17,  58
 };
-
 const int gjslen = sizeof(gjsussman) / sizeof(unsigned char);

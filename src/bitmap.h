@@ -9,8 +9,10 @@ struct bitmap {
 	int width;
 	int height;
 	int max;
-	int data[42436];
+	unsigned char data[42436];
 };
+
+unsigned char *bmp2arr(const struct bitmap *restrict bmp);
 
 extern const struct bitmap rogers;
 extern const struct bitmap sussman;
