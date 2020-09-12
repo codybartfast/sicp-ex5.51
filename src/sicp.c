@@ -15,6 +15,19 @@ static struct inport *usage(void);
 
 int main(int argc, char *argv[])
 {
+	// int c;
+	// int i = 14;
+
+	// while ((c = getchar()) != EOF) {
+	// 	printf("%d", c);
+	// 	if (i-- == 0) {
+	// 		i = 179;
+	// 		printf("\n");
+	// 	} else {
+	// 		printf(" ");
+	// 	}
+	// }
+	// return 0;
 	obj exp;
 	struct inport *port = parseargs(argc, argv);
 	if (port == NULL)
@@ -102,6 +115,9 @@ static struct inport *usage(void)
 	       "  -v, --version             display version information\n"
 	       "  -h, --help                display this usage information\n"
 	       "\n"
-	       "If there are no arguments, will read and evaluate standard in.\n");
+	       "If there are no arguments, will read and evaluate standard in.\n"
+	       "\n"
+	       "Contains code and images licensed under Creative Commons (CC \n"
+	       "BY-SA 3.0 & 4.0) by MIT, Hal Abelson and Gerald Jay Sussman.\n");
 	return NULL;
 }

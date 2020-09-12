@@ -1,0 +1,5 @@
+https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book-Z-H-15.html#%_fig_2.11
+view-source:https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/ch2-Z-G-30.gif
+https://mitpress.mit.edu/sites/default/files/sicp/index.html
+
+CC BY-SA 4.0
