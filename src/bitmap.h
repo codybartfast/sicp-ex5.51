@@ -2,24 +2,19 @@
 #define BITMAP_H
 #include "sicpstd.h"
 
-enum bmfmt { PGM_P5 };
+enum bmpfmt { PGM_P5 };
 
 struct bitmap {
-	enum bmfmt format;
+	enum bmpfmt format;
 	int width;
 	int height;
 	int max;
-	unsigned char data[42436];
+	const unsigned char *data;
 };
 
-unsigned char *bmp2arr(const struct bitmap *restrict bmp);
+int writebmp(const struct bitmap *restrict bmp);
 
-extern const struct bitmap rogers;
-extern const struct bitmap sussman;
-
-extern const unsigned char wbrogers[];
-extern const int wbrlen;
-extern const unsigned char gjsussman[];
-extern const int gjslen;
+extern const struct bitmap rogersbmp;
+extern const struct bitmap sussmanbmp;
 
 #endif
