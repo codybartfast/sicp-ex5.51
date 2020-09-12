@@ -21,14 +21,32 @@ static struct inport *usage(void);
 
 int main(int argc, char *argv[])
 {
-	//stbi_uc buff[42436];
-	struct bitmap bm = sussman;
+	// int c;
+	// int i = 14;
+
+	// while ((c = getchar()) != EOF) {
+	// 	printf("%d", c);
+	// 	if (i-- == 0) {
+	// 		i = 179;
+	// 		printf(" ");
+	// 		// printf("\n");
+	// 	} else {
+	// 		printf(" ");
+	// 	}
+	// }
+	// return 0;
+
+	printf("%d\n", gjslen);
+
+	stbi_uc *buff = (stbi_uc *)gjsussman;
 	int width;
 	int height;
 	int channels;
 
-	unsigned char *img = stbi_load("images/gjsussman-p5.pgm", &width,
-				       &height, &channels, 0);
+	// unsigned char *img = stbi_load("images/gjsussman-p5.pgm", &width,
+	// 			       &height, &channels, 0);
+	unsigned char *img = stbi_load_from_memory(gjsussman, gjslen, &width,
+						   &height, &channels, 0);
 	printf("Loaded image with a width of %dpx, a height of %dpx and %d channels\n",
 	       width, height, channels);
 	stbi_write_png("pict.png", width, height, channels, img,
