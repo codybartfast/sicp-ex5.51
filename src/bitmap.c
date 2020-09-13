@@ -20,6 +20,14 @@
 
 #define AREA "BITMAP"
 
+#define OBJ_4(TYPE, STYPE, VTYPE, VALUE)                                       \
+	{                                                                      \
+		TYPE, STYPE,                                                   \
+		{                                                              \
+			.VTYPE = VALUE                                         \
+		}                                                              \
+	}
+
 static unsigned char *bmp2arr(const struct bitmap *restrict bmp, int *arrlen)
 {
 	char width[32];
@@ -2399,7 +2407,7 @@ const unsigned char rogersdata[] = {
 	76,  76,  59,  75
 };
 
-const struct bitmap rogersbmp = { .format = PGM_P5,
+const struct bitmap rogers = { .format = PGM_P5,
 				  .width = 180,
 				  .height = 180,
 				  .max = 255,
@@ -5440,8 +5448,11 @@ const unsigned char sussmandata[] = {
 	17,  58
 };
 
-const struct bitmap sussmanbmp = { .format = PGM_P5,
+const struct bitmap sussman = { .format = PGM_P5,
 				   .width = 206,
 				   .height = 206,
 				   .max = 255,
 				   .data = sussmandata };
+
+const obj rogersbmp = OBJ_4(TYPE_BITMAP, SUBTYPE_NOT_SET, bmp, &rogers);
+const obj sussmanbmp = OBJ_4(TYPE_BITMAP, SUBTYPE_NOT_SET, bmp, &sussman);

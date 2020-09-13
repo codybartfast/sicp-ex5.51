@@ -6,6 +6,7 @@
 #include "eval.h"
 #include "output.h"
 #include "parser.h"
+#include "pict.h"
 #include "version.h"
 
 static struct inport *parseargs(int argc, char *argv[]);
@@ -17,9 +18,6 @@ static struct inport *usage(void);
 
 int main(int argc, char *argv[])
 {
-	writebmp(&rogersbmp);
-	return 0;
-
 	obj exp;
 	struct inport *port = parseargs(argc, argv);
 	if (port == NULL)
@@ -36,6 +34,7 @@ int main(int argc, char *argv[])
 		newline(emptylst);
 	}
 	newline(emptylst);
+	//write_if_canvas(emptylst);
 
 	parser_freetemp();
 	in_close(port);

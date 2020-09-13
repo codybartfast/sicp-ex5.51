@@ -2,6 +2,8 @@
 #define BITMAP_H
 #include "sicpstd.h"
 
+#include "obj.h"
+
 enum bmpfmt { PGM_P5 };
 
 struct bitmap {
@@ -14,7 +16,7 @@ struct bitmap {
 
 int writebmp(const struct bitmap *restrict bmp);
 
-extern const struct bitmap rogersbmp;
-extern const struct bitmap sussmanbmp;
+extern const obj rogersbmp;
+extern const obj sussmanbmp;
 
 #endif

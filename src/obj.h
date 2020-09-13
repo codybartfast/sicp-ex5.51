@@ -19,7 +19,8 @@ enum type {
 	TYPE_UNSPECIFIED, // 9
 	TYPE_VOID, // 10
 	TYPE_BROKEN_HEART, // 11
-	TYPE_ERROR // 12
+	TYPE_BITMAP, // 12
+	TYPE_ERROR // 13
 };
 
 enum { SUBTYPE_NOT_SET = 0 };
@@ -36,6 +37,7 @@ typedef struct obj {
 		const char *string;
 		struct pair *reference;
 		struct obj (*primproc)(struct obj);
+		const struct bitmap *bmp;
 	} val;
 } obj;
 

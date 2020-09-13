@@ -2,11 +2,13 @@
 
 #include <ctype.h>
 #include <stdlib.h>
+#include "bitmap.h"
 #include "environment.h"
 #include "error.h"
 #include "eval.h"
 #include "list.h"
 #include "parser.h"
+#include "pict.h"
 #include "primproc.h"
 #include "storage.h"
 
@@ -15,6 +17,117 @@
 static obj evalstr(char *e, obj env)
 {
 	return eval(readp(openin_string(e)), env);
+}
+
+static void add_accessors(obj env)
+{
+	define_variable(of_identifier("caar"), of_function(caar_p), env);
+	define_variable(of_identifier("cadr"), of_function(cadr_p), env);
+	define_variable(of_identifier("cdar"), of_function(cdar_p), env);
+	define_variable(of_identifier("cddr"), of_function(cddr_p), env);
+	define_variable(of_identifier("caaar"), of_function(caaar_p), env);
+	define_variable(of_identifier("caadr"), of_function(caadr_p), env);
+	define_variable(of_identifier("cadar"), of_function(cadar_p), env);
+	define_variable(of_identifier("caddr"), of_function(caddr_p), env);
+	define_variable(of_identifier("cdaar"), of_function(cdaar_p), env);
+	define_variable(of_identifier("cdadr"), of_function(cdadr_p), env);
+	define_variable(of_identifier("cddar"), of_function(cddar_p), env);
+	define_variable(of_identifier("cdddr"), of_function(cdddr_p), env);
+	define_variable(of_identifier("caaaar"), of_function(caaaar_p), env);
+	define_variable(of_identifier("caaadr"), of_function(caaadr_p), env);
+	define_variable(of_identifier("caadar"), of_function(caadar_p), env);
+	define_variable(of_identifier("caaddr"), of_function(caaddr_p), env);
+	define_variable(of_identifier("cadaar"), of_function(cadaar_p), env);
+	define_variable(of_identifier("cadadr"), of_function(cadadr_p), env);
+	define_variable(of_identifier("caddar"), of_function(caddar_p), env);
+	define_variable(of_identifier("cadddr"), of_function(cadddr_p), env);
+	define_variable(of_identifier("cdaaar"), of_function(cdaaar_p), env);
+	define_variable(of_identifier("cdaadr"), of_function(cdaadr_p), env);
+	define_variable(of_identifier("cdadar"), of_function(cdadar_p), env);
+	define_variable(of_identifier("cdaddr"), of_function(cdaddr_p), env);
+	define_variable(of_identifier("cddaar"), of_function(cddaar_p), env);
+	define_variable(of_identifier("cddadr"), of_function(cddadr_p), env);
+	define_variable(of_identifier("cdddar"), of_function(cdddar_p), env);
+	define_variable(of_identifier("cddddr"), of_function(cddddr_p), env);
+}
+
+static void add_pict(obj env)
+{
+	define_variable(of_identifier("paintp"), of_function(paintp), env);
+	define_variable(of_identifier("write-canvas"),
+			of_function(write_canvas), env);
+	define_variable(of_identifier("rogersbmp"), rogersbmp, env);
+	define_variable(of_identifier("sussmanbmp"), sussmanbmp, env);
+	evalstr("(define (paint bmp frame)"
+		"  (paintp bmp"
+		"          (origin-frame frame)"
+		"          (edge1-frame frame)"
+		"          (edge2-frame frame)))",
+		env);
+	evalstr("(define (rogers frame)"
+		"  (paint rogersbmp frame))",
+		env);
+	evalstr("(define (sussman frame)"
+		"  (paint sussmanbmp frame))",
+		env);
+	evalstr("(define (painter frame)"
+		"  (paint sussmanbmp frame))",
+		env);
+
+	evalstr("(define (make-vect xcor ycor)"
+		"  (cons xcor ycor))",
+		env);
+
+	evalstr("(define (xcor-vect vect)"
+		"  (car vect))",
+		env);
+
+	evalstr("(define (ycor-vect vect)"
+		"  (cdr vect))",
+		env);
+
+	evalstr("(define (add-vect vect1 vect2)"
+		"  (cons"
+		"   (+ (xcor-vect vect1) (xcor-vect vect2))"
+		"   (+ (ycor-vect vect1) (ycor-vect vect2))))",
+		env);
+
+	evalstr("(define (sub-vect vect1 vect2)"
+		"  (cons"
+		"   (- (xcor-vect vect1) (xcor-vect vect2))"
+		"   (- (ycor-vect vect1) (ycor-vect vect2))))",
+		env);
+
+	evalstr("(define (scale-vect s vect)"
+		"  (cons"
+		"   (* s (xcor-vect vect))"
+		"   (* s (ycor-vect vect))))",
+		env);
+
+	evalstr("(define (make-frame origin edge1 edge2)"
+		"  (cons origin (cons edge1 edge2)))",
+		env);
+
+	evalstr("(define (make-frame origin edge1 edge2)"
+		"  (cons origin (cons edge1 edge2)))",
+		env);
+
+	evalstr("(define (origin-frame frame)"
+		"  (car frame))",
+		env);
+
+	evalstr("(define (edge1-frame frame)"
+		"  (cadr frame))",
+		env);
+
+	evalstr("(define (edge2-frame frame)"
+		"  (cddr frame))",
+		env);
+
+	evalstr("(define full-frame (make-frame (make-vect 0 0)"
+		"                               (make-vect 0 720)"
+		"                               (make-vect 720 0)))",
+		env);
 }
 
 static obj add_extras(int ex, obj env)
@@ -137,62 +250,7 @@ static obj add_extras(int ex, obj env)
 				of_function(reverse_p), env);
 		define_variable(of_identifier("append"), of_function(append_p),
 				env);
-		define_variable(of_identifier("caar"), of_function(caar_p),
-				env);
-		define_variable(of_identifier("cadr"), of_function(cadr_p),
-				env);
-		define_variable(of_identifier("cdar"), of_function(cdar_p),
-				env);
-		define_variable(of_identifier("cddr"), of_function(cddr_p),
-				env);
-		define_variable(of_identifier("caaar"), of_function(caaar_p),
-				env);
-		define_variable(of_identifier("caadr"), of_function(caadr_p),
-				env);
-		define_variable(of_identifier("cadar"), of_function(cadar_p),
-				env);
-		define_variable(of_identifier("caddr"), of_function(caddr_p),
-				env);
-		define_variable(of_identifier("cdaar"), of_function(cdaar_p),
-				env);
-		define_variable(of_identifier("cdadr"), of_function(cdadr_p),
-				env);
-		define_variable(of_identifier("cddar"), of_function(cddar_p),
-				env);
-		define_variable(of_identifier("cdddr"), of_function(cdddr_p),
-				env);
-		define_variable(of_identifier("caaaar"), of_function(caaaar_p),
-				env);
-		define_variable(of_identifier("caaadr"), of_function(caaadr_p),
-				env);
-		define_variable(of_identifier("caadar"), of_function(caadar_p),
-				env);
-		define_variable(of_identifier("caaddr"), of_function(caaddr_p),
-				env);
-		define_variable(of_identifier("cadaar"), of_function(cadaar_p),
-				env);
-		define_variable(of_identifier("cadadr"), of_function(cadadr_p),
-				env);
-		define_variable(of_identifier("caddar"), of_function(caddar_p),
-				env);
-		define_variable(of_identifier("cadddr"), of_function(cadddr_p),
-				env);
-		define_variable(of_identifier("cdaaar"), of_function(cdaaar_p),
-				env);
-		define_variable(of_identifier("cdaadr"), of_function(cdaadr_p),
-				env);
-		define_variable(of_identifier("cdadar"), of_function(cdadar_p),
-				env);
-		define_variable(of_identifier("cdaddr"), of_function(cdaddr_p),
-				env);
-		define_variable(of_identifier("cddaar"), of_function(cddaar_p),
-				env);
-		define_variable(of_identifier("cddadr"), of_function(cddadr_p),
-				env);
-		define_variable(of_identifier("cdddar"), of_function(cdddar_p),
-				env);
-		define_variable(of_identifier("cddddr"), of_function(cddddr_p),
-				env);
+		add_accessors(env);
 	}
 	if (ex >= 221) {
 		evalstr("(define (map proc . arglists)"
@@ -216,6 +274,9 @@ static obj add_extras(int ex, obj env)
 	if (ex >= 224) {
 		define_variable(of_identifier("pair?"), of_function(is_pair_p),
 				env);
+	}
+	if (ex >= 244) {
+		add_pict(env);
 	}
 	return unspecified;
 }

@@ -25,6 +25,7 @@
                 "src/outport.c",
                 "src/output.c",
                 "src/parser.c",
+                "src/pict.c",
                 "src/primproc.c",
                 "src/sicp.c",
                 "src/storage.c",
@@ -33,7 +34,7 @@
                 "src/stb_image.h",
                 "src/stb_image_write.h",
                 //
-                "-O3", // Optimization Level. Tail Call Optimization seem to need >= 2
+                //"-O3", // Optimization Level. Tail Call Optimization seem to need >= 2
                 "-std=c17", // 'ISO C 2017' standard
                 "-o",
                 "${workspaceFolder}/bin/sicp", // output e.g., "${fileDirname}/sicp",
