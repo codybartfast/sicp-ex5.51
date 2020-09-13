@@ -110,8 +110,8 @@ static void add_pict(obj env)
 		env);
 
 	evalstr("(define full-frame (make-frame (make-vect 0 0)"
-		"                               (make-vect 0 720)"
-		"                               (make-vect 720 0)))",
+		"                               (make-vect 0 1)"
+		"                               (make-vect 1 0)))",
 		env);
 	evalstr("(define (paint bmp framelst)"
 		"  (define frame (if (pair? framelst)"

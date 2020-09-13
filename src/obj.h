@@ -37,7 +37,7 @@ typedef struct obj {
 		const char *string;
 		struct pair *reference;
 		struct obj (*primproc)(struct obj);
-		const struct bitmap *bmp;
+		const struct bitmap *bitmap;
 	} val;
 } obj;
 
@@ -95,6 +95,12 @@ obj car(obj);
 obj set_car(obj, obj);
 obj cdr(obj);
 obj set_cdr(obj, obj);
+
+// BITMAP
+
+bool is_bitmap(obj);
+const struct bitmap *to_bitmap(const obj);
+
 
 // PRIMITIVE PROCEDURES
 

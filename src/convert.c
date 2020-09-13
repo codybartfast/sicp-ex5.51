@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "bitmap.h"
 #include "error.h"
 
 #define AREA "CONVERT"
@@ -43,7 +44,8 @@ obj cnv_number_string(obj num)
 		sprintf(buff, "%lld", (long long)to_integer(num));
 		break;
 	case NUMBER_FLOATING:
-		sprintf(buff, "%" LG_PRECISION "Lg", (long double)to_floating(num));
+		sprintf(buff, "%" LG_PRECISION "Lg",
+			(long double)to_floating(num));
 		break;
 	default:
 		return error_internal(AREA,
@@ -51,4 +53,16 @@ obj cnv_number_string(obj num)
 				      subtype(num));
 	}
 	return cpystrobj(buff, "number conversion");
+}
+
+obj cnv_bitmap_string(obj dat)
+{
+	const struct bitmap *bmp;
+
+	if (!is_bitmap(dat))
+		return error_argument_type(
+			AREA, "bitmap->string got non-bitmap: %s", errstr(dat));
+	bmp = to_bitmap(dat);
+	sprintf(buff, "<bitmap %dx%d>", bmp->width, bmp->height);
+	return cpystrobj(buff, "bitmap conversion");
 }

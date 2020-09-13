@@ -120,6 +120,8 @@ static obj displaystr(obj dat)
 		return of_string("<primitive procedure>");
 	case TYPE_VOID:
 		return of_string("");
+	case TYPE_BITMAP:
+		return cnv_bitmap_string(dat);
 	case TYPE_ERROR:
 		sprintf(msg, "Error-Object, subtype: %d", subtype(dat));
 		return of_string(msg);

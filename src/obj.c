@@ -209,6 +209,18 @@ obj set_cdr(obj pair, obj val)
 	}
 }
 
+// BITMAP
+
+bool is_bitmap(obj dat)
+{
+	return type(dat) == TYPE_BITMAP;
+}
+
+const struct bitmap *to_bitmap(const obj dat)
+{
+	return dat.val.bitmap;
+}
+
 // PRIMITIVE PROCEDURES
 
 bool is_primitive_procedure(obj dat)

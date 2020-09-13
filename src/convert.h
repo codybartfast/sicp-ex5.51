@@ -6,5 +6,6 @@
 
 obj cnv_boolean_string(obj);
 obj cnv_number_string(obj);
+obj cnv_bitmap_string(obj);
 
 #endif

@@ -19,6 +19,7 @@
 #pragma GCC diagnostic pop
 
 #define AREA "BITMAP"
+#define CNVLEN 720
 
 #define OBJ_4(TYPE, STYPE, VTYPE, VALUE)                                       \
 	{                                                                      \
@@ -89,7 +90,15 @@ int writebmp(const struct bitmap *restrict bmp)
 	return 0;
 }
 
-const unsigned char rogersdata[] = {
+unsigned char canvasdata[CNVLEN * CNVLEN];
+
+const struct bitmap canvas = { .format = PGM_P5,
+			       .width = CNVLEN,
+			       .height = CNVLEN,
+			       .max = 255,
+			       .data = canvasdata };
+
+unsigned char rogersdata[] = {
 	171, 175, 156, 163, 153, 144, 128, 127, 123, 120, 122, 125, 112, 120,
 	123, 129, 129, 124, 108, 103, 103, 94,	107, 109, 95,  101, 97,	 93,
 	87,  97,  95,  100, 97,	 93,  98,  95,	89,  89,  100, 84,  85,	 93,
@@ -2408,12 +2417,12 @@ const unsigned char rogersdata[] = {
 };
 
 const struct bitmap rogers = { .format = PGM_P5,
-				  .width = 180,
-				  .height = 180,
-				  .max = 255,
-				  .data = rogersdata };
+			       .width = 180,
+			       .height = 180,
+			       .max = 255,
+			       .data = rogersdata };
 
-const unsigned char sussmandata[] = {
+unsigned char sussmandata[] = {
 	95,  80,  78,  105, 141, 159, 156, 146, 143, 142, 141, 140, 137, 133,
 	127, 122, 110, 109, 108, 107, 107, 108, 109, 110, 112, 111, 111, 112,
 	115, 117, 118, 118, 121, 123, 123, 122, 120, 117, 116, 118, 132, 87,
@@ -5449,10 +5458,10 @@ const unsigned char sussmandata[] = {
 };
 
 const struct bitmap sussman = { .format = PGM_P5,
-				   .width = 206,
-				   .height = 206,
-				   .max = 255,
-				   .data = sussmandata };
+				.width = 206,
+				.height = 206,
+				.max = 255,
+				.data = sussmandata };
 
-const obj rogersbmp = OBJ_4(TYPE_BITMAP, SUBTYPE_NOT_SET, bmp, &rogers);
-const obj sussmanbmp = OBJ_4(TYPE_BITMAP, SUBTYPE_NOT_SET, bmp, &sussman);
+const obj rogersbmp = OBJ_4(TYPE_BITMAP, SUBTYPE_NOT_SET, bitmap, &rogers);
+const obj sussmanbmp = OBJ_4(TYPE_BITMAP, SUBTYPE_NOT_SET, bitmap, &sussman);
