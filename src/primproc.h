@@ -5,6 +5,7 @@
 #include "obj.h"
 
 obj chkarity(char *fname, int expct, obj args);
+// obj chkarityrng(char *fname, obj args, int min, int max, int *act);
 
 obj add(const obj);
 obj sub(const obj);

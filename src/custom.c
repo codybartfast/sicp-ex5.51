@@ -58,21 +58,6 @@ static void add_pict(obj env)
 			of_function(write_canvas), env);
 	define_variable(of_identifier("rogersbmp"), rogersbmp, env);
 	define_variable(of_identifier("sussmanbmp"), sussmanbmp, env);
-	evalstr("(define (paint bmp frame)"
-		"  (paintp bmp"
-		"          (origin-frame frame)"
-		"          (edge1-frame frame)"
-		"          (edge2-frame frame)))",
-		env);
-	evalstr("(define (rogers frame)"
-		"  (paint rogersbmp frame))",
-		env);
-	evalstr("(define (sussman frame)"
-		"  (paint sussmanbmp frame))",
-		env);
-	evalstr("(define (painter frame)"
-		"  (paint sussmanbmp frame))",
-		env);
 
 	evalstr("(define (make-vect xcor ycor)"
 		"  (cons xcor ycor))",
@@ -127,6 +112,24 @@ static void add_pict(obj env)
 	evalstr("(define full-frame (make-frame (make-vect 0 0)"
 		"                               (make-vect 0 720)"
 		"                               (make-vect 720 0)))",
+		env);
+	evalstr("(define (paint bmp framelst)"
+		"  (define frame (if (pair? framelst)"
+		"                    (car framelst)"
+		"                    full-frame))"
+		"  (paintp bmp"
+		"          (origin-frame frame)"
+		"          (edge1-frame frame)"
+		"          (edge2-frame frame)))",
+		env);
+	evalstr("(define (rogers . framelst)"
+		"  (paint rogersbmp framelst))",
+		env);
+	evalstr("(define (sussman . framelst)"
+		"  (paint sussmanbmp framelst))",
+		env);
+	evalstr("(define (painter . framelst)"
+		"  (paint sussmanbmp framelst))",
 		env);
 }
 

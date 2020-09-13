@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 		newline(emptylst);
 	}
 	newline(emptylst);
-	//write_if_canvas(emptylst);
+	write_canvas_if_painted(emptylst);
 
 	parser_freetemp();
 	in_close(port);

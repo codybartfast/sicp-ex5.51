@@ -52,6 +52,22 @@ obj chkarity(char *fname, int expct, obj args)
 	return args;
 }
 
+// obj chkarityrng(char *fname, obj args, int min, int max, int *act)
+// {
+// 	obj len = length(args);
+// 	if (is_err(len))
+// 		return error_argument_type(
+// 			AREA, "'%s' given an improper list of arguments: %s",
+// 			errstr(args));
+// 	*act = to_integer(len);
+// 	if (*act < min || max < *act)
+// 		return error_arity(
+// 			AREA,
+// 			"'%s' expects between %d and %d args but was given %d: %s",
+// 			fname, min, max, act, errstr(args));
+// 	return args;
+// }
+
 static obj allnum(char *fname, obj args)
 {
 	obj lst;

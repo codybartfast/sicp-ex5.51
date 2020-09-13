@@ -6,6 +6,6 @@
 
 obj paintp(obj);
 obj write_canvas(obj);
-obj write_if_canvas(obj);
+obj write_canvas_if_painted(obj);
 
 #endif
