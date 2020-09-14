@@ -159,6 +159,20 @@ static enum token_type peculiar(char c, struct inport *in)
 	}
 	if (is_digit(in_peek(in))) {
 		return number(c, in);
+	}
+	if (in_peek(in) == '.') {
+		sb_addc(sb, c);
+		sb_addc(sb, in_readc(in));
+		if (is_digit(c = in_peek(in))) {
+			return number(in_readc(in), in);
+		} else {
+			char p = in_peek(in);
+			sprintf(error_msg,
+				"Unexpected char following initial '%s': '%c' (0x%0X)",
+				sb_string(sb), p, p);
+			lexer_error(in, error_msg);
+			return EOF;
+		}
 	} else {
 		char p = in_peek(in);
 		sprintf(error_msg,
