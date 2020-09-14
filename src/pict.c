@@ -36,8 +36,8 @@ static void paint(const struct bitmap *bmp, Floating ox, Floating oy,
 	int bwd = bmp->width;
 	int bht = bmp->height;
 
-	int e1steps = fabs(e1x * cwd) + fabs(e1y * cwd);
-	int e2steps = fabs(e2x * cht) + fabs(e2y * cht);
+	int e1steps = (int)(fabs(e1x * cwd) + fabs(e1y * cwd));
+	int e2steps = (int)(fabs(e2x * cht) + fabs(e2y * cht));
 	Floating e1xinc =
 		e1steps ? ((Floating)(cwd * e1x)) / (Floating)e1steps : 0;
 	Floating e1yinc =
@@ -49,17 +49,17 @@ static void paint(const struct bitmap *bmp, Floating ox, Floating oy,
 	Floating bxinc = e1steps ? ((Floating)bwd) / (Floating)e1steps : 0;
 	Floating byinc = e2steps ? ((Floating)bht) / (Floating)e2steps : 0;
 
-	int offx = ox * cwd;
-	int offy = oy * cht;
+	int offx = (int)(ox * cwd);
+	int offy = (int)(oy * cht);
 	int i1, i2;
 
 	for (i2 = 0; i2 < e2steps; i2++) {
 		for (i1 = 0; i1 < e1steps; i1++) {
-			int bx = bxinc * i1;
-			int by = bht - (byinc * i2);
+			int bx = (int)(bxinc * i1);
+			int by = (int)(bht - (byinc * i2));
 			unsigned char val = bmp->data[bx + (by * bwd)];
-			int cx = offx + (e1xinc * i1) + (e2xinc * i2);
-			int cy = cht - (offy + (e1yinc * i1) + (e2yinc * i2));
+			int cx = (int)(offx + (e1xinc * i1) + (e2xinc * i2));
+			int cy = (int)(cht - (offy + (e1yinc * i1) + (e2yinc * i2)));
 			canvas.data[cx + (cy * cwd)] = val;
 		}
 	}

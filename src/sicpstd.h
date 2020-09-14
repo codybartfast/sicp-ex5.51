@@ -6,6 +6,7 @@
 #endif
 
 #ifdef _WIN32
+#pragma warning(disable : 4267)
 #pragma warning(disable : 4996)
 #endif
 

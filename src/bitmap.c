@@ -5,18 +5,22 @@
 #include <string.h>
 #include "error.h"
 
+#ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdouble-promotion"
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #pragma GCC diagnostic ignored "-Wmissing-prototypes"
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#endif
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#ifdef __GNUC__
 #pragma GCC diagnostic pop
+#endif
 
 #define AREA "BITMAP"
 
@@ -28,7 +32,7 @@
 		}                                                              \
 	}
 
-static unsigned char *bmp2arr(const struct bitmap *restrict bmp, int *arrlen)
+static unsigned char *bmp2arr(const struct bitmap *bmp, int *arrlen)
 {
 	char width[32];
 	char height[32];
@@ -74,7 +78,7 @@ static unsigned char *bmp2arr(const struct bitmap *restrict bmp, int *arrlen)
 	return array;
 }
 
-int writebmp(const struct bitmap *restrict bmp)
+int writebmp(struct bitmap *bmp)
 {
 	int rawlen;
 	int width;
@@ -91,7 +95,7 @@ int writebmp(const struct bitmap *restrict bmp)
 
 unsigned char canvasdata[CANVAS_WIDTH * CANVAS_HEIGHT];
 
-const struct bitmap canvas = { .format = PGM_P5,
+struct bitmap canvas = { .format = PGM_P5,
 			       .width = CANVAS_WIDTH,
 			       .height = CANVAS_HEIGHT,
 			       .max = 255,
