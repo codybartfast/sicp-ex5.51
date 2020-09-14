@@ -22,9 +22,21 @@ static void clear_canvas(void)
 	}
 }
 
+static int breakline(Floating xprop, Floating yprop, Floating *xinc,
+		     Floating *yinc)
+{
+	int steps =
+		(int)(fabs(xprop * CANVAS_WIDTH) + fabs(yprop * CANVAS_HEIGHT));
+	*xinc = steps ? ((Floating)(CANVAS_WIDTH * xprop)) / (Floating)steps :
+			0;
+	*yinc = steps ? ((Floating)(CANVAS_HEIGHT * yprop)) / (Floating)steps :
+			0;
+	return steps;
+}
+
 #include <stdio.h>
-static void paint(const struct bitmap *bmp, Floating ox, Floating oy,
-		  Floating e1x, Floating e1y, Floating e2x, Floating e2y)
+static void paint_u(const struct bitmap *bmp, Floating ox, Floating oy,
+		    Floating e1x, Floating e1y, Floating e2x, Floating e2y)
 {
 	printf("Painting ... <bitmap %dx%d> (%lg . %lg) (%lg . %lg) (%lg .%lg) to <bitmap %dx%d>\n",
 	       bmp->width, bmp->height, ox, oy, e1x, e1y, e2x, e2y,
@@ -38,21 +50,18 @@ static void paint(const struct bitmap *bmp, Floating ox, Floating oy,
 	int bwd = bmp->width;
 	int bht = bmp->height;
 
-	int e1steps = (int)(fabs(e1x * cwd) + fabs(e1y * cwd));
-	int e2steps = (int)(fabs(e2x * cht) + fabs(e2y * cht));
-	Floating e1xinc =
-		e1steps ? ((Floating)(cwd * e1x)) / (Floating)e1steps : 0;
-	Floating e1yinc =
-		e1steps ? ((Floating)(cht * e1y)) / (Floating)e1steps : 0;
-	Floating e2xinc =
-		e2steps ? ((Floating)(cwd * e2x)) / (Floating)e2steps : 0;
-	Floating e2yinc =
-		e2steps ? ((Floating)(cht * e2y)) / (Floating)e2steps : 0;
+	Floating e1xinc;
+	Floating e1yinc;
+	int e1steps = breakline(e1x, e1y, &e1xinc, &e1yinc);
+	Floating e2xinc;
+	Floating e2yinc;
+	int e2steps = breakline(e2x, e2y, &e2xinc, &e2yinc);
+
 	Floating bxinc = e1steps ? ((Floating)bwd) / (Floating)e1steps : 0;
 	Floating byinc = e2steps ? ((Floating)bht) / (Floating)e2steps : 0;
 
-	int offx = (int)(ox * cwd);
-	int offy = (int)(oy * cht);
+	int offx = (int)(ox * (cwd - 0));
+	int offy = (int)(oy * (cht - 0 ));
 	int i1, i2;
 
 	for (i2 = 0; i2 < e2steps; i2++) {
@@ -102,7 +111,7 @@ static obj toflt(obj n, Floating *f)
 }
 
 static bool painted = false;
-obj paintp(obj args)
+obj paint(obj args)
 {
 	obj rslt;
 	Floating ox, oy, e1x, e1y, e2x, e2y;
@@ -111,14 +120,15 @@ obj paintp(obj args)
 		clear_canvas();
 	}
 	painted = true;
-	if (is_err(args = chkarity("paintp", 4, args)))
+	if (is_err(args = chkarity("%paint", 2, args)))
 		return args;
-	if (is_err(rslt = toflt(caadr(args), &ox)) ||
-	    is_err(rslt = toflt(cdadr(args), &oy)) ||
-	    is_err(rslt = toflt(caaddr(args), &e1x)) ||
-	    is_err(rslt = toflt(cdaddr(args), &e1y)) ||
-	    is_err(rslt = toflt(car(cadddr(args)), &e2x)) ||
-	    is_err(rslt = toflt(cdr(cadddr(args)), &e2y))) {
+	obj frame = cadr(args);
+	if (is_err(rslt = toflt(caar(frame), &ox)) ||
+	    is_err(rslt = toflt(cdar(frame), &oy)) ||
+	    is_err(rslt = toflt(caadr(frame), &e1x)) ||
+	    is_err(rslt = toflt(cdadr(frame), &e1y)) ||
+	    is_err(rslt = toflt(caddr(frame), &e2x)) ||
+	    is_err(rslt = toflt(cdddr(frame), &e2y))) {
 		return rslt;
 	}
 	if (!(inunit(ox) && inunit(ox + e1x) && inunit(ox + e2x) &&
@@ -129,7 +139,38 @@ obj paintp(obj args)
 					    "Frame not inside unit square");
 	}
 
-	paint(to_bitmap(car(args)), ox, oy, e1x, e1y, e2x, e2y);
+	paint_u(to_bitmap(car(args)), ox, oy, e1x, e1y, e2x, e2y);
+	return _void;
+}
+
+obj draw_line(obj args)
+{
+	obj rslt;
+	Floating x1, y1, x2, y2;
+
+	if (!painted) {
+		clear_canvas();
+	}
+	painted = true;
+	if (is_err(args = chkarity("draw-line", 2, args)))
+		return args;
+	if (is_err(rslt = toflt(caar(args), &x1)) ||
+	    is_err(rslt = toflt(cdar(args), &y1)) ||
+	    is_err(rslt = toflt(caadr(args), &x2)) ||
+	    is_err(rslt = toflt(cdadr(args), &y2))) {
+		return rslt;
+	}
+	int i;
+	Floating xinc;
+	Floating yinc;
+	int steps = breakline(x2 - x1, y2 - y1, &xinc, &yinc);
+	for (i = 0; i < steps; i++) {
+		int x = (int)(x1 * (CANVAS_WIDTH - 1)) + (i * xinc);
+		int y = CANVAS_HEIGHT - 1 -
+			(int)((y1 * (CANVAS_HEIGHT - 1)) + (i * yinc));
+		printf("drawing %d, %d, i:%d, inc:%lg\n", x, y, i, xinc);
+		canvas.data[x + (y * CANVAS_WIDTH)] = 0;
+	}
 	return _void;
 }
 

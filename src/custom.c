@@ -54,11 +54,13 @@ static void add_accessors(obj env)
 static void add_pict(obj env)
 {
 	evalstr("(define %pict-path \"pict.png\")", env);
-	define_variable(of_identifier("paintp"), of_function(paintp), env);
+	define_variable(of_identifier("%paint"), of_function(paint), env);
 	define_variable(of_identifier("write-canvas"),
 			of_function(write_canvas), env);
 	define_variable(of_identifier("rogersbmp"), rogersbmp, env);
 	define_variable(of_identifier("sussmanbmp"), sussmanbmp, env);
+	define_variable(of_identifier("draw-line"), of_function(draw_line),
+			env);
 
 	evalstr("(define (make-vect xcor ycor)"
 		"  (cons xcor ycor))",
@@ -114,23 +116,25 @@ static void add_pict(obj env)
 		"                               (make-vect 1 0)"
 		"                               (make-vect 0 1)))",
 		env);
-	evalstr("(define (paint bmp framelst)"
-		"  (define frame (if (pair? framelst)"
-		"                    (car framelst)"
-		"                    full-frame))"
-		"  (paintp bmp"
-		"          (origin-frame frame)"
-		"          (edge1-frame frame)"
-		"          (edge2-frame frame)))",
+	evalstr("(define frame full-frame)", env);
+	
+	// evalstr("(define (paint bmp framelst)"
+	// 	"  (define frame (if (pair? framelst)"
+	// 	"                    (car framelst)"
+	// 	"                    full-frame))"
+	// 	"  (paintp bmp"
+	// 	"          (origin-frame frame)"
+	// 	"          (edge1-frame frame)"
+	// 	"          (edge2-frame frame)))",
+	// 	env);
+	evalstr("(define (rogers frame)"
+		"  (%paint rogersbmp frame))",
 		env);
-	evalstr("(define (rogers . framelst)"
-		"  (paint rogersbmp framelst))",
+	evalstr("(define (sussman frame)"
+		"  (%paint sussmanbmp frame))",
 		env);
-	evalstr("(define (sussman . framelst)"
-		"  (paint sussmanbmp framelst))",
-		env);
-	evalstr("(define (painter . framelst)"
-		"  (paint sussmanbmp framelst))",
+	evalstr("(define (painter frame)"
+		"  (%paint sussmanbmp frame))",
 		env);
 	//
 	evalstr("(define (beside painter1 painter2)"
@@ -219,7 +223,13 @@ static void add_pict(obj env)
 		env);
 
 	evalstr("(define wave"
-		"  (segments->painter (list (make-segment (make-vect 0.1 0.5)     (make-vect 0.2 0.7))"
+		"  (segments->painter (list"
+		"                           (make-segment (make-vect 0 0)     (make-vect 1 0))"
+		"                           (make-segment (make-vect 1 0)     (make-vect 1 1))"
+		"                           (make-segment (make-vect 1 1)     (make-vect 0 1))"
+		"                           (make-segment (make-vect 0 1)     (make-vect 0 0))"
+
+		"                           (make-segment (make-vect 0.1 0.5)     (make-vect 0.2 0.7))"
 		"                           (make-segment (make-vect 0.2 0.7)     (make-vect 0.8 0.7))"
 		"                           (make-segment (make-vect 0.8 0.7)     (make-vect 0.9 0.6))"
 		"                           (make-segment (make-vect 0.9 0.6)     (make-vect 0.9 0.4))"
@@ -232,14 +242,15 @@ static void add_pict(obj env)
 		"                           (make-segment (make-vect 0.9 0.52)    (make-vect 1 0.54))"
 		"                           (make-segment (make-vect 0.15 0.6)    (make-vect 0.11 0.6))"
 		"                           (make-segment (make-vect 0.11 0.6)    (make-vect 0.115 0.65))"
-		"                           (make-segment (make-vect 0.115 0.65)  (make-vect 0.165 0.65))"
+		"                           (make-segment (make-vect 0.115 0.65)  (make-vect 0.175 0.65))"
 		"                           (make-segment (make-vect 0.13 0.5)    (make-vect 0.225 0.675))"
 		"                           (make-segment (make-vect 0.225 0.675) (make-vect 0.775 0.675))"
 		"                           (make-segment (make-vect 0.775 0.675) (make-vect 0.863 0.592))"
 		"                           (make-segment (make-vect 0.863 0.592) (make-vect 0.863 0.418))"
 		"                           (make-segment (make-vect 0.863 0.418) (make-vect 0.775 0.325))"
 		"                           (make-segment (make-vect 0.775 0.325) (make-vect 0.225 0.325))"
-		"                           (make-segment (make-vect 0.225 0.325) (make-vect 0.13  0.5)))))",
+		"                           (make-segment (make-vect 0.225 0.325) (make-vect 0.13  0.5))"
+		")))",
 		env);
 }
 

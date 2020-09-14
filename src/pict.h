@@ -4,7 +4,8 @@
 
 #include "obj.h"
 
-obj paintp(obj);
+obj paint(obj);
+obj draw_line(obj args);
 obj write_canvas(obj);
 obj write_canvas_if_painted(obj);
 
