@@ -19,7 +19,6 @@
 #pragma GCC diagnostic pop
 
 #define AREA "BITMAP"
-#define CNVLEN 720
 
 #define OBJ_4(TYPE, STYPE, VTYPE, VALUE)                                       \
 	{                                                                      \
@@ -90,11 +89,11 @@ int writebmp(const struct bitmap *restrict bmp)
 	return 0;
 }
 
-unsigned char canvasdata[CNVLEN * CNVLEN];
+unsigned char canvasdata[CANVAS_WIDTH * CANVAS_HEIGHT];
 
 const struct bitmap canvas = { .format = PGM_P5,
-			       .width = CNVLEN,
-			       .height = CNVLEN,
+			       .width = CANVAS_WIDTH,
+			       .height = CANVAS_HEIGHT,
 			       .max = 255,
 			       .data = canvasdata };
 

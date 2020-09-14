@@ -109,9 +109,9 @@ static void add_pict(obj env)
 		"  (cddr frame))",
 		env);
 
-	evalstr("(define full-frame (make-frame (make-vect 0 0)"
-		"                               (make-vect 0 1)"
-		"                               (make-vect 1 0)))",
+	evalstr("(define full-frame (make-frame (make-vect .5 0)"
+		"                               (make-vect .5 .5)"
+		"                               (make-vect -0.5 .5)))",
 		env);
 	evalstr("(define (paint bmp framelst)"
 		"  (define frame (if (pair? framelst)"

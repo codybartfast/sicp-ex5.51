@@ -4,6 +4,9 @@
 
 #include "obj.h"
 
+#define CANVAS_WIDTH 720
+#define CANVAS_HEIGHT CANVAS_WIDTH
+
 enum bmpfmt { PGM_P5 };
 
 struct bitmap {
