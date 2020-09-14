@@ -56,10 +56,19 @@ static void paint(const struct bitmap *bmp, Floating ox, Floating oy,
 	for (i2 = 0; i2 < e2steps; i2++) {
 		for (i1 = 0; i1 < e1steps; i1++) {
 			int bx = (int)(bxinc * i1);
-			int by = (int)(bht - (byinc * i2));
+			int by = (int)(bht - 1 - (byinc * i2));
+			if (bx >= bmp->width)
+				printf("Too Fat! - %d\n", bx);
+			if (bx < 0)
+				printf("Too Skinny! - %d\n", bx);
+			if (by >= bmp->height)
+				printf("Too Tall! - %d\n", by);
+			if (by < 0)
+				printf("Too Short! - %d\n", by);
 			unsigned char val = bmp->data[bx + (by * bwd)];
 			int cx = (int)(offx + (e1xinc * i1) + (e2xinc * i2));
-			int cy = (int)(cht - (offy + (e1yinc * i1) + (e2yinc * i2)));
+			int cy = (int)(cht - 1 -
+				       (offy + (e1yinc * i1) + (e2yinc * i2)));
 			canvas.data[cx + (cy * cwd)] = val;
 		}
 	}
