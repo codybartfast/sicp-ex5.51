@@ -15,8 +15,9 @@ static void paint(const struct bitmap *bmp, Floating ox, Floating oy,
 	printf("Painting ... <bitmap %dx%d> (%lg . %lg) (%lg . %lg) (%lg .%lg) to <bitmap %dx%d>\n",
 	       bmp->width, bmp->height, ox, oy, e1x, e1y, e2x, e2y,
 	       canvas.width, canvas.height);
-	printf("%lg, %lg, %lg, %lg, %lg, %lg, %lg, %lg", ox, ox + e1x, ox + e2x,
-	       ox + e1x + e2x, oy, oy + e1y, oy + e2y, oy + e1y + e2y);
+	printf("%lg, %lg, %lg, %lg, %lg, %lg, %lg, %lg\n", ox, ox + e1x,
+	       ox + e2x, ox + e1x + e2x, oy, oy + e1y, oy + e2y,
+	       oy + e1y + e2y);
 
 	int cwd = CANVAS_WIDTH;
 	int cht = CANVAS_HEIGHT;
@@ -36,15 +37,17 @@ static void paint(const struct bitmap *bmp, Floating ox, Floating oy,
 	Floating bxinc = e1steps ? ((Floating)bwd) / (Floating)e1steps : 0;
 	Floating byinc = e2steps ? ((Floating)bht) / (Floating)e2steps : 0;
 
+	int offx = ox * cwd;
+	int offy = oy * cht;
 	int i1, i2;
+
 	for (i2 = 0; i2 < e2steps; i2++) {
 		for (i1 = 0; i1 < e1steps; i1++) {
 			int bx = bxinc * i1;
-			int by = byinc * i2;
+			int by = bht - (byinc * i2);
 			unsigned char val = bmp->data[bx + (by * bwd)];
-			int cx = ox + (e1xinc * i1) + (e2xinc * i2);
-			int cy = oy + (e1yinc * i1) + (e2yinc * i2);
-			// printf("%d.%d\n", cx, cy);
+			int cx = offx + (e1xinc * i1) + (e2xinc * i2);
+			int cy = cht - (offy + (e1yinc * i1) + (e2yinc * i2));
 			canvas.data[cx + (cy * cwd)] = val;
 		}
 	}
@@ -99,7 +102,7 @@ obj paintp(obj args)
 		return error_argument_value(AREA,
 					    "Frame not inside unit square");
 	}
-	// flip frame
+
 	paint(to_bitmap(car(args)), ox, oy, e1x, e1y, e2x, e2y);
 	return _void;
 }
