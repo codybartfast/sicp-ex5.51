@@ -1,5 +1,6 @@
 #include "pict.h"
 
+#include <math.h>
 #include <stdlib.h>
 #include "bitmap.h"
 #include "error.h"
@@ -7,6 +8,17 @@
 #include "primproc.h"
 
 #define AREA "PICT"
+
+static void clear_canvas(void)
+{
+	int x, y;
+
+	for (y = 0; y < CANVAS_HEIGHT; y++) {
+		for (x = 0; x < CANVAS_WIDTH; x++) {
+			canvas.data[x + (y * CANVAS_WIDTH)] = 255;
+		}
+	}
+}
 
 #include <stdio.h>
 static void paint(const struct bitmap *bmp, Floating ox, Floating oy,
@@ -24,8 +36,8 @@ static void paint(const struct bitmap *bmp, Floating ox, Floating oy,
 	int bwd = bmp->width;
 	int bht = bmp->height;
 
-	int e1steps = abs(e1x * cwd) + abs(e1y * cwd);
-	int e2steps = abs(e2x * cht) + abs(e2y * cht);
+	int e1steps = fabs(e1x * cwd) + fabs(e1y * cwd);
+	int e2steps = fabs(e2x * cht) + fabs(e2y * cht);
 	Floating e1xinc =
 		e1steps ? ((Floating)(cwd * e1x)) / (Floating)e1steps : 0;
 	Floating e1yinc =
@@ -84,6 +96,9 @@ obj paintp(obj args)
 	obj rslt;
 	Floating ox, oy, e1x, e1y, e2x, e2y;
 
+	if (!painted) {
+		clear_canvas();
+	}
 	painted = true;
 	if (is_err(args = chkarity("paintp", 4, args)))
 		return args;

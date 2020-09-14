@@ -6,6 +6,7 @@ project (sicp-scheme)
 set(C_FLAGS "-lm -O3 -std=c17 -pedantic -pedantic-errors -Wall -Wextra -Wdouble-promotion -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition")
 
 set (SRC_CORE
+	src/bitmap.c
 	src/character.c
 	src/convert.c
 	src/custom.c
@@ -20,10 +21,13 @@ set (SRC_CORE
 	src/outport.c
 	src/output.c
 	src/parser.c
+	src/pict.c
 	src/primproc.c
-#	src/sicpstd.h
 	src/storage.c
 	src/strbldr.c
+
+	src/stb_image.h
+	src/stb_image_write.h
 	)
 
 set(BIN_DIR ${CMAKE_SOURCE_DIR}/bin)
