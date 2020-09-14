@@ -17,7 +17,7 @@ struct bitmap {
 	unsigned char *data;
 };
 
-int writebmp(struct bitmap *bmp);
+int writebmp(struct bitmap *bmp, const char* path);
 
 extern struct bitmap canvas;
 extern const obj rogersbmp;

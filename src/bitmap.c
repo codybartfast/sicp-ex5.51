@@ -78,7 +78,7 @@ static unsigned char *bmp2arr(const struct bitmap *bmp, int *arrlen)
 	return array;
 }
 
-int writebmp(struct bitmap *bmp)
+int writebmp(struct bitmap *bmp, const char *path)
 {
 	int rawlen;
 	int width;
@@ -88,7 +88,7 @@ int writebmp(struct bitmap *bmp)
 	unsigned char *raw = bmp2arr(bmp, &rawlen);
 	unsigned char *img = stbi_load_from_memory(raw, rawlen, &width, &height,
 						   &channels, 0);
-	stbi_write_png("pict.png", width, height, channels, img,
+	stbi_write_png(path, width, height, channels, img,
 		       width * channels);
 	return 0;
 }

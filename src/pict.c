@@ -3,8 +3,10 @@
 #include <math.h>
 #include <stdlib.h>
 #include "bitmap.h"
+#include "environment.h"
 #include "error.h"
 #include "list.h"
+#include "output.h"
 #include "primproc.h"
 
 #define AREA "PICT"
@@ -134,8 +136,13 @@ obj paintp(obj args)
 obj write_canvas(obj args)
 {
 	(void)args;
-	printf("Displaying canvas ...\n");
-	writebmp(&canvas);
+	const char *path = to_string(
+		lookup_variable_value(of_identifier("%pict-path"), tge()));
+	displaydat(of_string("Writing picture to '"));
+	displaydat(of_string(path));
+	displaydat(of_string("'."));
+	newline(emptylst);
+	writebmp(&canvas, path);
 	return _void;
 }
 

@@ -53,6 +53,7 @@ static void add_accessors(obj env)
 
 static void add_pict(obj env)
 {
+	evalstr("(define %pict-path \"pict.png\")", env);
 	define_variable(of_identifier("paintp"), of_function(paintp), env);
 	define_variable(of_identifier("write-canvas"),
 			of_function(write_canvas), env);
