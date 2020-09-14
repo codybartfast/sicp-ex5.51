@@ -15,55 +15,62 @@ static void paint(const struct bitmap *bmp, Floating ox, Floating oy,
 	printf("Painting ... <bitmap %dx%d> (%lg . %lg) (%lg . %lg) (%lg .%lg) to <bitmap %dx%d>\n",
 	       bmp->width, bmp->height, ox, oy, e1x, e1y, e2x, e2y,
 	       canvas.width, canvas.height);
+	printf("%lg, %lg, %lg, %lg, %lg, %lg, %lg, %lg", ox, ox + e1x, ox + e2x,
+	       ox + e1x + e2x, oy, oy + e1y, oy + e2y, oy + e1y + e2y);
 	return;
 }
 
-static obj toflt(obj n)
+static bool inunit(Floating f)
+{
+	const Floating zero = 0;
+	const Floating one = 1;
+	return zero <= f && f <= one;
+}
+
+static obj toflt(obj n, Floating *f)
 {
 	if (!is_number(n)) {
 		return error_argument_type(AREA, "vect contains non-number");
 	}
 	switch (subtype(n)) {
 	case NUMBER_FLOATING:
-		return n;
+		*f = to_floating(n);
+		break;
 	case NUMBER_INTEGER:
-		return of_floating((Floating)to_integer(n));
+		*f = (Floating)to_integer(n);
+		break;
 	default:
-		return error_internal(
-			AREA, "BUG! No cnv_to_fltnum case for: %d", subtype(n));
+		return error_internal(AREA, "BUG! No toflt case for: %d",
+				      subtype(n));
 	}
+	return ok;
 }
 
 static bool painted = false;
 obj paintp(obj args)
 {
-	obj o;
-	const struct bitmap *bmp;
+	obj rslt;
 	Floating ox, oy, e1x, e1y, e2x, e2y;
 
 	painted = true;
 	if (is_err(args = chkarity("paintp", 4, args)))
 		return args;
-	bmp = to_bitmap(car(args));
-	if (is_err(o = toflt(caadr(args))))
-		return o;
-	ox = to_floating(o);
-	if (is_err(o = toflt(cdadr(args))))
-		return o;
-	oy = to_floating(o);
-	if (is_err(o = toflt(caaddr(args))))
-		return o;
-	e1x = to_floating(o);
-	if (is_err(o = toflt(cdaddr(args))))
-		return o;
-	e1y = to_floating(o);
-	if (is_err(o = toflt(car(cadddr(args)))))
-		return o;
-	e2x = to_floating(o);
-	if (is_err(o = toflt(cdr(cadddr(args)))))
-		return o;
-	e2y = to_floating(o);
-	paint(bmp, ox, oy, e1x, e1y, e2x, e2y);
+	if (is_err(rslt = toflt(caadr(args), &ox)) ||
+	    is_err(rslt = toflt(cdadr(args), &oy)) ||
+	    is_err(rslt = toflt(caaddr(args), &e1x)) ||
+	    is_err(rslt = toflt(cdaddr(args), &e1y)) ||
+	    is_err(rslt = toflt(car(cadddr(args)), &e2x)) ||
+	    is_err(rslt = toflt(cdr(cadddr(args)), &e2y))) {
+		return rslt;
+	}
+	if (!(inunit(ox) && inunit(ox + e1x) && inunit(ox + e2x) &&
+	      inunit(ox + e1x + e2x) && //
+	      inunit(oy) && inunit(oy + e1y) && inunit(oy + e2y) &&
+	      inunit(oy + e1y + e2y))) {
+		return error_argument_value(AREA,
+					    "Frame not inside unit square");
+	}
+	paint(to_bitmap(car(args)), ox, oy, e1x, e1y, e2x, e2y);
 	return _void;
 }
 
