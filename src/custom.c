@@ -57,6 +57,8 @@ static void add_pict(obj env)
 	define_variable(of_identifier("%paint"), of_function(paint), env);
 	define_variable(of_identifier("write-frame"), of_function(write_canvas),
 			env);
+	define_variable(of_identifier("hamiltonbmp"), hamiltonbmp, env);
+	define_variable(of_identifier("patternbmp"), patternbmp, env);
 	define_variable(of_identifier("rogersbmp"), rogersbmp, env);
 	define_variable(of_identifier("sussmanbmp"), sussmanbmp, env);
 	define_variable(of_identifier("draw-line"), of_function(draw_line),
@@ -127,15 +129,30 @@ static void add_pict(obj env)
 	// 	"          (edge1-frame frame)"
 	// 	"          (edge2-frame frame)))",
 	// 	env);
+	evalstr("(define (hamilton  frame)"
+		"  (%paint hamiltonbmp frame))",
+		env);
+	evalstr("(define (pattern frame)"
+		"  (%paint patternbmp frame))",
+		env);
 	evalstr("(define (rogers frame)"
 		"  (%paint rogersbmp frame))",
 		env);
 	evalstr("(define (sussman frame)"
 		"  (%paint sussmanbmp frame))",
 		env);
-	evalstr("(define (painter frame)"
-		"  (%paint sussmanbmp frame))",
+	evalstr("(define painterbmp"
+		"  (let ((n (random 4)))"
+		"    (cond"
+		"      ((= n 0) hamiltonbmp)"
+		"      ((= n 1) patternbmp)"
+		"      ((= n 2) sussmanbmp)"
+		"      (else rogersbmp))))",
 		env);
+	evalstr("(define (painter frame)"
+		"  (%paint painterbmp frame))",
+		env);
+	;
 	//
 	evalstr("(define (beside painter1 painter2)"
 		"  (let ((split-point (make-vect 0.5 0)))"

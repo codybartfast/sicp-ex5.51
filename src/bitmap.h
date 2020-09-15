@@ -20,6 +20,8 @@ struct bitmap {
 int writebmp(struct bitmap *bmp, const char *path);
 
 extern struct bitmap canvas;
+extern const obj hamiltonbmp;
+extern const obj patternbmp;
 extern const obj rogersbmp;
 extern const obj sussmanbmp;
 

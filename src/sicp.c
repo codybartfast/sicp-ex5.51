@@ -18,6 +18,23 @@ static struct inport *usage(void);
 
 int main(int argc, char *argv[])
 {
+	// int c;
+	// int i = 14;
+
+	// bool prnchar = true;
+	// while ((c = getchar()) != EOF) {
+	// 	if (prnchar) {
+	// 		printf("%c", c);
+	// 	} else {
+	// 		printf("%d", c);
+	// 		printf(" ");
+	// 	}
+	// 	if (i-- == 0) {
+	// 		prnchar = false;
+	// 	}
+	// }
+	// return 0;
+
 	obj exp;
 	struct inport *port = parseargs(argc, argv);
 	if (port == NULL)
