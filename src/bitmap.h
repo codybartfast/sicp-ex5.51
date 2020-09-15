@@ -4,7 +4,7 @@
 
 #include "obj.h"
 
-#define CANVAS_WIDTH 720
+#define CANVAS_WIDTH 1024
 #define CANVAS_HEIGHT CANVAS_WIDTH
 
 enum bmpfmt { PGM_P5 };
@@ -17,7 +17,7 @@ struct bitmap {
 	unsigned char *data;
 };
 
-int writebmp(struct bitmap *bmp, const char* path);
+int writebmp(struct bitmap *bmp, const char *path);
 
 extern struct bitmap canvas;
 extern const obj rogersbmp;

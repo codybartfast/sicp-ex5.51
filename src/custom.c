@@ -53,10 +53,10 @@ static void add_accessors(obj env)
 
 static void add_pict(obj env)
 {
-	evalstr("(define %pict-path \"pict.png\")", env);
+	evalstr("(define %pict-path \"pict\")", env);
 	define_variable(of_identifier("%paint"), of_function(paint), env);
-	define_variable(of_identifier("write-canvas"),
-			of_function(write_canvas), env);
+	define_variable(of_identifier("write-frame"), of_function(write_canvas),
+			env);
 	define_variable(of_identifier("rogersbmp"), rogersbmp, env);
 	define_variable(of_identifier("sussmanbmp"), sussmanbmp, env);
 	define_variable(of_identifier("draw-line"), of_function(draw_line),
@@ -138,17 +138,17 @@ static void add_pict(obj env)
 		env);
 	//
 	evalstr("(define (beside painter1 painter2)"
-		"  (let ((split-point (make-vect 0.5 0.0)))"
+		"  (let ((split-point (make-vect 0.5 0)))"
 		"    (let ((paint-left"
 		"           (transform-painter painter1"
-		"                              (make-vect 0.0 0.0)"
+		"                              (make-vect 0 0)"
 		"                              split-point"
-		"                              (make-vect 0.0 1.0)))"
+		"                              (make-vect 0 1)))"
 		"          (paint-right"
 		"           (transform-painter painter2"
 		"                              split-point"
-		"                              (make-vect 1.0 0.0)"
-		"                              (make-vect 0.5 1.0))))"
+		"                              (make-vect 1 0)"
+		"                              (make-vect 0.5 1))))"
 		"      (lambda (frame)"
 		"        (paint-left frame)"
 		"        (paint-right frame)))))",
@@ -176,28 +176,49 @@ static void add_pict(obj env)
 
 	evalstr("(define (flip-vert painter)"
 		"  (transform-painter painter"
-		"                     (make-vect 0.0 1.0)"
-		"                     (make-vect 1.0 1.0)"
-		"                     (make-vect 0.0 0.0)))",
+		"                     (make-vect 0 1)"
+		"                     (make-vect 1 1)"
+		"                     (make-vect 0 0)))",
+		env);
+
+	evalstr("(define (flip-horiz painter)"
+		"  (transform-painter painter"
+		"                     (make-vect 1 0)"
+		"                     (make-vect 0 0)"
+		"                     (make-vect 1 1)))",
 		env);
 
 	evalstr("(define (below painter1 painter2)"
-		"  (let ((split-point (make-vect 0.0 0.5)))"
+		"  (let ((split-point (make-vect 0 0.5)))"
 		"    (let ((paint-bottom"
 		"           (transform-painter"
 		"            painter1"
-		"            (make-vect 0.0 0.0)"
-		"            (make-vect 1.0 0.0)"
+		"            (make-vect 0 0)"
+		"            (make-vect 1 0)"
 		"            split-point))"
 		"          (paint-top"
 		"           (transform-painter "
 		"            painter2"
 		"            split-point"
-		"            (make-vect 1.0 0.5)"
-		"            (make-vect 0.0 1.0))))"
+		"            (make-vect 1 0.5)"
+		"            (make-vect 0 1))))"
 		"      (lambda (frame)"
 		"        (paint-bottom frame)"
 		"        (paint-top frame)))))",
+		env);
+
+	evalstr("(define (right-split painter n)"
+		"  (if (= n 0)"
+		"      painter"
+		"      (let ((smaller (right-split painter (- n 1))))"
+		"        (beside painter (below smaller smaller)))))",
+		env);
+
+	evalstr("(define (up-split painter n)"
+		"  (if (= n 0)"
+		"      painter"
+		"      (let ((smaller (up-split painter (- n 1))))"
+		"        (below painter (beside smaller smaller)))))",
 		env);
 
 	evalstr("(define (make-segment start end)"
@@ -222,14 +243,24 @@ static void add_pict(obj env)
 		"     segment-list)))",
 		env);
 
+	evalstr("(define boarder"
+		"  (segments->painter"
+		"   (list"
+		"    (make-segment (make-vect 0 0) (make-vect 0 1))"
+		"    (make-segment (make-vect 0 1) (make-vect 1 1))"
+		"    (make-segment (make-vect 1 1) (make-vect 1 0))"
+		"    (make-segment (make-vect 1 0) (make-vect 0 0))"
+		"    )))",
+		env);
+
 	evalstr("(define wave"
 		"  (segments->painter"
 		"   (list"
 		"    (make-segment (make-vect 0 0.839) (make-vect 0.155 0.601))"
 		"    (make-segment (make-vect 0.155 0.601) (make-vect 0.301 0.653))"
 		"    (make-segment (make-vect 0.301 0.653) (make-vect 0.404 0.653))"
-		"    (make-segment (make-vect 0.404 0.653) (make-vect 0.352 0.85))"
-		"    (make-segment (make-vect 0.352 0.85) (make-vect 0.399 1))"
+		"    (make-segment (make-vect 0.404 0.653) (make-vect 0.351 0.85))"
+		"    (make-segment (make-vect 0.351 0.85) (make-vect 0.393 1))"
 		""
 		"    (make-segment (make-vect 0.597 1) (make-vect 0.653 0.85))"
 		"    (make-segment (make-vect 0.653 0.85) (make-vect 0.597 0.653))"
@@ -240,7 +271,7 @@ static void add_pict(obj env)
 		"    (make-segment (make-vect 0.601 0.456) (make-vect 0.751 0))"
 		""
 		"    (make-segment (make-vect 0.597 0) (make-vect 0.477 0.301))"
-		"    (make-segment (make-vect 0.477 0.301) (make-vect 0.399 0))"
+		"    (make-segment (make-vect 0.477 0.301) (make-vect 0.394 0))"
 		""
 		"    (make-segment (make-vect 0.252 0) (make-vect 0.352 0.508))"
 		"    (make-segment (make-vect 0.352 0.508) (make-vect 0.301 0.596))"

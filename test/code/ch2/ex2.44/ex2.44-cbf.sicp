@@ -2,10 +2,10 @@
 
 ; exercise 2.44, page 132
 
-(define (right-split painter n)
+(define (up-split painter n)
   (if (= n 0)
       painter
-      (let ((smaller (right-split painter (- n 1))))
-        (beside painter (below smaller smaller)))))
+      (let ((smaller (up-split painter (- n 1))))
+        (below painter (beside smaller smaller)))))
 
-((right-split rogers 4) frame)
+((up-split rogers 4) frame)

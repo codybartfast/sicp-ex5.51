@@ -1,10 +1,11 @@
 ## Addtions to github version
 pict.png
+*.out
+/build
+/out
+/pict
 /test/code/*
 !/test/code/*/
-/out
-/build
-*.out
 
 
 ## Ignore Visual Studio temporary files, build results, and

@@ -8,6 +8,7 @@
 #include "list.h"
 #include "output.h"
 #include "primproc.h"
+#include "strbldr.h"
 
 #define AREA "PICT"
 
@@ -60,8 +61,8 @@ static void paint_u(const struct bitmap *bmp, Floating ox, Floating oy,
 	Floating bxinc = e1steps ? ((Floating)bwd) / (Floating)e1steps : 0;
 	Floating byinc = e2steps ? ((Floating)bht) / (Floating)e2steps : 0;
 
-	int offx = (int)(ox * (cwd - 0));
-	int offy = (int)(oy * (cht - 0 ));
+	int offx = (int)(ox * (cwd - 1));
+	int offy = (int)(oy * (cht - 1));
 	int i1, i2;
 
 	for (i2 = 0; i2 < e2steps; i2++) {
@@ -177,8 +178,15 @@ obj draw_line(obj args)
 obj write_canvas(obj args)
 {
 	(void)args;
-	const char *path = to_string(
-		lookup_variable_value(of_identifier("%pict-path"), tge()));
+	struct strbldr *sb = new_strbldr();
+	if (sb == NULL)
+		return error_memory(AREA, "making strbldr");
+	sb_adds(sb, to_string(lookup_variable_value(of_identifier("%pict-path"),
+						    tge())));
+	sb_adds(sb, ".png");
+	if (sb->errored)
+		return error_memory(AREA, "using strbldr");
+	char *path = sb_string(sb);
 	displaydat(of_string("Writing picture to '"));
 	displaydat(of_string(path));
 	displaydat(of_string("'."));
