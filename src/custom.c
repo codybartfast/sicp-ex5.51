@@ -120,15 +120,6 @@ static void add_pict(obj env)
 		env);
 	evalstr("(define frame full-frame)", env);
 
-	// evalstr("(define (paint bmp framelst)"
-	// 	"  (define frame (if (pair? framelst)"
-	// 	"                    (car framelst)"
-	// 	"                    full-frame))"
-	// 	"  (paintp bmp"
-	// 	"          (origin-frame frame)"
-	// 	"          (edge1-frame frame)"
-	// 	"          (edge2-frame frame)))",
-	// 	env);
 	evalstr("(define (hamilton  frame)"
 		"  (%paint hamiltonbmp frame))",
 		env);
@@ -152,7 +143,6 @@ static void add_pict(obj env)
 	evalstr("(define (painter frame)"
 		"  (%paint painterbmp frame))",
 		env);
-	;
 	//
 	evalstr("(define (beside painter1 painter2)"
 		"  (let ((split-point (make-vect 0.5 0)))"

@@ -3,7 +3,6 @@ pict.png
 *.out
 /build
 /out
-/pict
 /test/code/*
 !/test/code/*/
 
