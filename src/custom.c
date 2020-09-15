@@ -117,7 +117,7 @@ static void add_pict(obj env)
 		"                               (make-vect 0 1)))",
 		env);
 	evalstr("(define frame full-frame)", env);
-	
+
 	// evalstr("(define (paint bmp framelst)"
 	// 	"  (define frame (if (pair? framelst)"
 	// 	"                    (car framelst)"
@@ -223,34 +223,30 @@ static void add_pict(obj env)
 		env);
 
 	evalstr("(define wave"
-		"  (segments->painter (list"
-		"                           (make-segment (make-vect 0 0)     (make-vect 1 0))"
-		"                           (make-segment (make-vect 1 0)     (make-vect 1 1))"
-		"                           (make-segment (make-vect 1 1)     (make-vect 0 1))"
-		"                           (make-segment (make-vect 0 1)     (make-vect 0 0))"
-
-		"                           (make-segment (make-vect 0.1 0.5)     (make-vect 0.2 0.7))"
-		"                           (make-segment (make-vect 0.2 0.7)     (make-vect 0.8 0.7))"
-		"                           (make-segment (make-vect 0.8 0.7)     (make-vect 0.9 0.6))"
-		"                           (make-segment (make-vect 0.9 0.6)     (make-vect 0.9 0.4))"
-		"                           (make-segment (make-vect 0.9 0.4)     (make-vect 0.8 0.3))"
-		"                           (make-segment (make-vect 0.8 0.3)     (make-vect 0.2 0.3))"
-		"                           (make-segment (make-vect 0.2 0.3)     (make-vect 0.1 0.5))"
-		"                           (make-segment (make-vect 0.9 0.60)    (make-vect 1 0.60))"
-		"                           (make-segment (make-vect 0.9 0.58)    (make-vect 1 0.58))"
-		"                           (make-segment (make-vect 0.9 0.54)    (make-vect 1 0.56))"
-		"                           (make-segment (make-vect 0.9 0.52)    (make-vect 1 0.54))"
-		"                           (make-segment (make-vect 0.15 0.6)    (make-vect 0.11 0.6))"
-		"                           (make-segment (make-vect 0.11 0.6)    (make-vect 0.115 0.65))"
-		"                           (make-segment (make-vect 0.115 0.65)  (make-vect 0.175 0.65))"
-		"                           (make-segment (make-vect 0.13 0.5)    (make-vect 0.225 0.675))"
-		"                           (make-segment (make-vect 0.225 0.675) (make-vect 0.775 0.675))"
-		"                           (make-segment (make-vect 0.775 0.675) (make-vect 0.863 0.592))"
-		"                           (make-segment (make-vect 0.863 0.592) (make-vect 0.863 0.418))"
-		"                           (make-segment (make-vect 0.863 0.418) (make-vect 0.775 0.325))"
-		"                           (make-segment (make-vect 0.775 0.325) (make-vect 0.225 0.325))"
-		"                           (make-segment (make-vect 0.225 0.325) (make-vect 0.13  0.5))"
-		")))",
+		"  (segments->painter"
+		"   (list"
+		"    (make-segment (make-vect 0 0.839) (make-vect 0.155 0.601))"
+		"    (make-segment (make-vect 0.155 0.601) (make-vect 0.301 0.653))"
+		"    (make-segment (make-vect 0.301 0.653) (make-vect 0.404 0.653))"
+		"    (make-segment (make-vect 0.404 0.653) (make-vect 0.352 0.85))"
+		"    (make-segment (make-vect 0.352 0.85) (make-vect 0.399 1))"
+		""
+		"    (make-segment (make-vect 0.597 1) (make-vect 0.653 0.85))"
+		"    (make-segment (make-vect 0.653 0.85) (make-vect 0.597 0.653))"
+		"    (make-segment (make-vect 0.597 0.653) (make-vect 0.751 0.653))"
+		"    (make-segment (make-vect 0.751 0.653) (make-vect 1 0.352))"
+		""
+		"    (make-segment (make-vect 1 0.155) (make-vect 0.601 0.456))"
+		"    (make-segment (make-vect 0.601 0.456) (make-vect 0.751 0))"
+		""
+		"    (make-segment (make-vect 0.597 0) (make-vect 0.477 0.301))"
+		"    (make-segment (make-vect 0.477 0.301) (make-vect 0.399 0))"
+		""
+		"    (make-segment (make-vect 0.252 0) (make-vect 0.352 0.508))"
+		"    (make-segment (make-vect 0.352 0.508) (make-vect 0.301 0.596))"
+		"    (make-segment (make-vect 0.301 0.596) (make-vect 0.155 0.399))"
+		"    (make-segment (make-vect 0.155 0.399) (make-vect 0 0.642))"
+		"    )))",
 		env);
 }
 
