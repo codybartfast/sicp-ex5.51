@@ -9,4 +9,4 @@
       (let ((smaller (up-split painter (- n 1))))
         (below painter (beside smaller smaller)))))
 
-((up-split rogers 4) frame)
+((up-split painter 4) frame)

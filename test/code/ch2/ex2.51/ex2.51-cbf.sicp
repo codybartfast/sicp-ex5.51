@@ -1,0 +1,48 @@
+(%ex "2.51")
+
+; exercise 2.51, page 140
+
+(define (rotate90 painter)
+  (transform-painter
+   painter
+   (make-vect 0 1)
+   (make-vect 0 0)
+   (make-vect 1 1)))
+   
+(define (rotate270 painter)
+  (transform-painter
+   painter
+   (make-vect 1 0)
+   (make-vect 1 1)
+   (make-vect 0 0)))
+
+(define (below-like-beside painter1 painter2)
+  (let ((split-point (make-vect 0.0 0.5)))
+    (let ((paint-bottom
+           (lambda (painter)
+             (transform-painter
+  	          painter
+              (make-vect 0.0 0.0)
+              (make-vect 1.0 0.0)
+              split-point)))
+          (paint-top
+           (lambda (painter)
+             (transform-painter
+  	          painter
+              split-point
+              (make-vect 1.0 0.5)
+              (make-vect 0.0 1.0)))))
+      (lambda (frame)
+        ((paint-bottom painter1) frame)
+        ((paint-top    painter2) frame)))))
+
+((below-like-beside painter painter) frame)
+(define %pict-path "pict/2.51-below1")
+(write-frame)
+
+(define (below-using-beside painter1 painter2)
+  (rotate90
+   (beside (rotate270 painter1) (rotate270 painter2))))
+
+((below-using-beside painter painter) frame)
+(define %pict-path "pict/2.51-below2")

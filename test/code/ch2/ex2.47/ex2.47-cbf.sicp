@@ -1,0 +1,45 @@
+(%ex "2.47")
+
+; exercise 2.47, page 136
+
+(define (make-frame-l origin edge1 edge2)
+  (list origin edge1 edge2))
+
+(define (origin-frame-l frame)
+  (car frame))
+
+(define (edge1-frame-l frame)
+  (car (cdr frame)))
+
+(define (edge2-frame-l frame)
+  (car (cdr (cdr frame))))
+
+(define frame-l
+  (make-frame-l
+   (make-vect 0 .5)
+   (make-vect .5 -.5)
+   (make-vect .5 .5)))
+
+;; frame-l can't be demonstrated because the paint primitive expects frames
+;; defined using cons...
+
+(define (make-frame-c origin edge1 edge2)
+  (cons origin (cons edge1 edge2)))
+
+(define (origin-frame-c frame)
+  (car frame))
+
+(define (edge1-frame-c frame)
+  (car (cdr frame)))
+
+(define (edge2-frame-c frame)
+  (cdr (cdr frame)))
+
+(define frame-c
+  (make-frame-c
+   (make-vect 0 .5)
+   (make-vect .5 -.5)
+   (make-vect .5 .5)))
+
+(define %pict-path "pict/2.47-frame2")
+(painter frame-c)

@@ -1,0 +1,77 @@
+(%ex "2.49")
+
+; exercise 2.49, page 137
+
+(define (make-segment start end)
+  (cons start end))
+
+(define (start-segment segment)
+  (car segment))
+
+(define (end-segment segment)
+  (cdr segment))
+
+;; Part a.
+
+(define outline
+  (let ((left   (make-segment (make-vect 0 0) (make-vect 0 1)))
+        (top    (make-segment (make-vect 0 1) (make-vect 1.0 1.0)))
+        (right  (make-segment (make-vect 1 1) (make-vect 1 0)))
+        (bottom (make-segment (make-vect 1 0) (make-vect 0 0))))
+    (segments->painter (list left top right bottom))))
+
+(outline frame)
+(define %pict-path "pict/2.49-boarder")
+(write-frame)
+
+;; Part b.
+
+(define x
+  (let ((bl-tr (make-segment (make-vect 0 0) (make-vect 1 1)))
+        (tl-br (make-segment (make-vect 0 1) (make-vect 1  0))))
+    (segments->painter (list bl-tr tl-br))))
+
+(x frame)
+(define %pict-path "pict/2.49-x")
+(write-frame)
+
+;; Part c.
+
+(define diamond
+  (let ((tl (make-segment (make-vect 0 .5) (make-vect .5 1)))
+        (tr (make-segment (make-vect .5 1) (make-vect 1 .5)))
+        (br (make-segment (make-vect 1 .5) (make-vect .5 0)))
+        (bl (make-segment (make-vect .5 0) (make-vect 0 .5))))
+    (segments->painter (list tl tr br bl))))
+
+(diamond frame)
+(define %pict-path "pict/2.49-diamond")
+(write-frame)
+
+;; Part d.
+
+(define george
+  (segments->painter
+   (list
+    (make-segment (make-vect 0 0.839) (make-vect 0.155 0.601))
+    (make-segment (make-vect 0.155 0.601) (make-vect 0.301 0.653))
+    (make-segment (make-vect 0.301 0.653) (make-vect 0.404 0.653))
+    (make-segment (make-vect 0.404 0.653) (make-vect 0.351 0.85))
+    (make-segment (make-vect 0.351 0.85) (make-vect 0.393 1))
+    (make-segment (make-vect 0.597 1) (make-vect 0.653 0.85))
+    (make-segment (make-vect 0.653 0.85) (make-vect 0.597 0.653))
+    (make-segment (make-vect 0.597 0.653) (make-vect 0.751 0.653))
+    (make-segment (make-vect 0.751 0.653) (make-vect 1 0.352))
+    (make-segment (make-vect 1 0.155) (make-vect 0.601 0.456))
+    (make-segment (make-vect 0.601 0.456) (make-vect 0.751 0))
+
+    (make-segment (make-vect 0.597 0) (make-vect 0.477 0.301))
+    (make-segment (make-vect 0.477 0.301) (make-vect 0.394 0))
+
+    (make-segment (make-vect 0.252 0) (make-vect 0.352 0.508))
+    (make-segment (make-vect 0.352 0.508) (make-vect 0.301 0.596))
+    (make-segment (make-vect 0.301 0.596) (make-vect 0.155 0.399))
+    (make-segment (make-vect 0.155 0.399) (make-vect 0 0.642)))))
+
+(george frame)
+(define %pict-path "pict/2.49-george")

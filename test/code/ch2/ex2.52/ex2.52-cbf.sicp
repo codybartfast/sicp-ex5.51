@@ -1,0 +1,74 @@
+(%ex "2.52")
+
+; exercise 2.52, page 141
+
+;; Part a.
+
+(define (ms x1 y1 x2 y2)
+  (make-segment (make-vect x1 y1) (make-vect x2 y2)))
+
+(define mono-segments
+  (list (ms 0.1 0.5   0.2 0.7)
+        (ms 0.2 0.7   0.8 0.7)
+        (ms 0.8 0.7   0.9 0.6)
+        (ms 0.9 0.6   0.9 0.4)
+        (ms 0.9 0.4   0.8 0.3)
+        (ms 0.8 0.3   0.2 0.3)
+        (ms 0.2 0.3   0.1 0.5)
+
+        (ms 0.9 0.60  1 0.60)
+        (ms 0.9 0.58  1 0.58)
+        (ms 0.9 0.54  1 0.56)
+        (ms 0.9 0.52  1 0.54)
+
+        (ms 0.15 0.6   0.11 0.6)
+        (ms 0.11 0.6   0.115 0.65)
+        (ms 0.115 0.65  0.175 0.65)
+
+        (ms 0.13 0.5      0.225 0.675)
+        (ms 0.225 0.675   0.775 0.675)
+        (ms 0.775 0.675   0.863 0.592)
+        (ms 0.863 0.592   0.863 0.418)
+        (ms 0.863 0.418   0.775 0.325)
+        (ms 0.775 0.325   0.225 0.325)
+        (ms 0.225 0.325   0.13  0.5)))
+
+(define mono
+  (segments->painter mono-segments))
+
+(define specs
+  (beside mono (flip-horiz mono)))
+
+(wave frame)
+(specs (make-frame (make-vect .34 .76)
+                   (make-vect .3 0)
+                   (make-vect 0 .3)))
+
+(define %pict-path "pict/2.52.a-segments")
+(write-frame)
+
+;; Part b.
+
+(define (corner-split painter n)
+  (if (= n 0)
+      painter
+      (let ((up (up-split painter (- n 1)))
+            (right (right-split painter (- n 1))))
+        (let ((bottom-right (below right right))
+              (corner (corner-split painter (- n 1))))
+          (beside (below (flip-horiz painter) painter)
+                  (below bottom-right corner))))))
+
+((corner-split painter 4) frame)
+(define %pict-path "pict/2.52.b-corner")
+(write-frame)
+
+;; Part c.
+
+(define (square-limit painter n)
+  (let ((quater (corner-split painter n)))
+    (let ((half (beside (flip-horiz quater) quater)))
+      (below (flip-vert half) half))))
+
+((square-limit painter 4) frame)
+(define %pict-path "pict/2.52.c-limit")

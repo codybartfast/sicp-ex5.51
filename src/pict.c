@@ -111,16 +111,15 @@ static obj toflt(obj n, Floating *f)
 	return ok;
 }
 
-static bool painted = false;
+static bool unwritenpaint = false;
 obj paint(obj args)
 {
 	obj rslt;
 	Floating ox, oy, e1x, e1y, e2x, e2y;
 
-	if (!painted) {
+	if (!unwritenpaint) {
 		clear_canvas();
 	}
-	painted = true;
 	if (is_err(args = chkarity("%paint", 2, args)))
 		return args;
 	obj frame = cadr(args);
@@ -139,8 +138,8 @@ obj paint(obj args)
 		return error_argument_value(AREA,
 					    "Frame not inside unit square");
 	}
-
 	paint_u(to_bitmap(car(args)), ox, oy, e1x, e1y, e2x, e2y);
+	unwritenpaint = true;
 	return _void;
 }
 
@@ -149,10 +148,10 @@ obj draw_line(obj args)
 	obj rslt;
 	Floating x1, y1, x2, y2;
 
-	if (!painted) {
+	if (!unwritenpaint) {
 		clear_canvas();
 	}
-	painted = true;
+	unwritenpaint = true;
 	if (is_err(args = chkarity("draw-line", 2, args)))
 		return args;
 	if (is_err(rslt = toflt(caar(args), &x1)) ||
@@ -192,12 +191,13 @@ obj write_canvas(obj args)
 	displaydat(of_string("'."));
 	newline(emptylst);
 	writebmp(&canvas, path);
+	unwritenpaint = false;
 	return _void;
 }
 
 obj write_canvas_if_painted(obj args)
 {
-	if (painted) {
+	if (unwritenpaint) {
 		write_canvas(args);
 	}
 	return _void;

@@ -1,0 +1,30 @@
+(%ex "2.46")
+
+; exercise 2.46, page 136
+(define %pict-path "pict/2.46-vect")
+
+(define (make-vect xcor ycor)
+  (cons xcor ycor))
+
+(define (xcor-vect vect)
+  (car vect))
+
+(define (ycor-vect vect)
+  (cdr vect))
+
+(define (add-vect vect1 vect2)
+  (cons
+   (+ (xcor-vect vect1) (xcor-vect vect2))
+   (+ (ycor-vect vect1) (ycor-vect vect2))))
+
+(define (sub-vect vect1 vect2)
+  (cons
+   (- (xcor-vect vect1) (xcor-vect vect2))
+   (- (ycor-vect vect1) (ycor-vect vect2))))
+
+(define (scale-vect s vect)
+  (cons
+   (* s (xcor-vect vect))
+   (* s (ycor-vect vect))))
+
+(wave frame)
