@@ -39,12 +39,12 @@ static int breakline(Floating xprop, Floating yprop, Floating *xinc,
 static void paint_u(const struct bitmap *bmp, Floating ox, Floating oy,
 		    Floating e1x, Floating e1y, Floating e2x, Floating e2y)
 {
-	printf("Painting ... <bitmap %dx%d> (%lg . %lg) (%lg . %lg) (%lg .%lg) to <bitmap %dx%d>\n",
-	       bmp->width, bmp->height, ox, oy, e1x, e1y, e2x, e2y,
-	       canvas.width, canvas.height);
-	printf("%lg, %lg, %lg, %lg, %lg, %lg, %lg, %lg\n", ox, ox + e1x,
-	       ox + e2x, ox + e1x + e2x, oy, oy + e1y, oy + e2y,
-	       oy + e1y + e2y);
+	// printf("Painting ... <bitmap %dx%d> (%lg . %lg) (%lg . %lg) (%lg .%lg) to <bitmap %dx%d>\n",
+	//        bmp->width, bmp->height, ox, oy, e1x, e1y, e2x, e2y,
+	//        canvas.width, canvas.height);
+	// printf("%lg, %lg, %lg, %lg, %lg, %lg, %lg, %lg\n", ox, ox + e1x,
+	//        ox + e2x, ox + e1x + e2x, oy, oy + e1y, oy + e2y,
+	//        oy + e1y + e2y);
 
 	int cwd = CANVAS_WIDTH;
 	int cht = CANVAS_HEIGHT;
@@ -61,26 +61,26 @@ static void paint_u(const struct bitmap *bmp, Floating ox, Floating oy,
 	Floating bxinc = e1steps ? ((Floating)bwd) / (Floating)e1steps : 0;
 	Floating byinc = e2steps ? ((Floating)bht) / (Floating)e2steps : 0;
 
-	int offx = (int)(ox * (cwd - 1));
-	int offy = (int)(oy * (cht - 1));
+	int offx = (int)(ox * (cwd - 0));
+	int offy = (int)(oy * (cht - 0));
 	int i1, i2;
 
 	for (i2 = 0; i2 < e2steps; i2++) {
 		for (i1 = 0; i1 < e1steps; i1++) {
 			int bx = (int)(bxinc * i1);
 			int by = (int)(bht - 1 - (byinc * i2));
-			if (bx >= bmp->width)
-				printf("Too Fat! - %d\n", bx);
-			if (bx < 0)
-				printf("Too Skinny! - %d\n", bx);
-			if (by >= bmp->height)
-				printf("Too Tall! - %d\n", by);
-			if (by < 0)
-				printf("Too Short! - %d\n", by);
 			unsigned char val = bmp->data[bx + (by * bwd)];
 			int cx = (int)(offx + (e1xinc * i1) + (e2xinc * i2));
 			int cy = (int)(cht - 1 -
 				       (offy + (e1yinc * i1) + (e2yinc * i2)));
+			if (cx >= canvas.width)
+				printf("Too Fat! - %d\n", cx);
+			if (cx < 0)
+				printf("Too Skinny! - %d\n", cx);
+			if (cy >= canvas.height)
+				printf("Too Tall! - %d\n", cy);
+			if (cy < 0)
+				printf("Too Short! - %d\n", cy);
 			canvas.data[cx + (cy * cwd)] = val;
 		}
 	}
@@ -168,7 +168,7 @@ obj draw_line(obj args)
 		int x = (int)(x1 * (CANVAS_WIDTH - 1)) + (i * xinc);
 		int y = CANVAS_HEIGHT - 1 -
 			(int)((y1 * (CANVAS_HEIGHT - 1)) + (i * yinc));
-		printf("drawing %d, %d, i:%d, inc:%lg\n", x, y, i, xinc);
+		// printf("drawing %d, %d, i:%d, inc:%lg\n", x, y, i, xinc);
 		canvas.data[x + (y * CANVAS_WIDTH)] = 0;
 	}
 	return _void;

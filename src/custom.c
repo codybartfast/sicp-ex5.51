@@ -132,17 +132,10 @@ static void add_pict(obj env)
 	evalstr("(define (sussman frame)"
 		"  (%paint sussmanbmp frame))",
 		env);
-	evalstr("(define painterbmp"
-		"  (let ((n (random 4)))"
-		"    (cond"
-		"      ((= n 0) hamiltonbmp)"
-		"      ((= n 1) patternbmp)"
-		"      ((= n 2) sussmanbmp)"
-		"      (else rogersbmp))))",
-		env);
-	evalstr("(define (painter frame)"
-		"  (%paint painterbmp frame))",
-		env);
+
+	// evalstr("(define painter frame)"
+	// 	"  (%paint painterbmp frame))",
+	// 	env);
 	//
 	evalstr("(define (beside painter1 painter2)"
 		"  (let ((split-point (make-vect 0.5 0)))"
@@ -250,15 +243,15 @@ static void add_pict(obj env)
 		"     segment-list)))",
 		env);
 
-	evalstr("(define boarder"
-		"  (segments->painter"
-		"   (list"
-		"    (make-segment (make-vect 0 0) (make-vect 0 1))"
-		"    (make-segment (make-vect 0 1) (make-vect 1 1))"
-		"    (make-segment (make-vect 1 1) (make-vect 1 0))"
-		"    (make-segment (make-vect 1 0) (make-vect 0 0))"
-		"    )))",
-		env);
+	// evalstr("(define boarder"
+	// 	"  (segments->painter"
+	// 	"   (list"
+	// 	"    (make-segment (make-vect 0 0) (make-vect 0 1))"
+	// 	"    (make-segment (make-vect 0 1) (make-vect 1 1))"
+	// 	"    (make-segment (make-vect 1 1) (make-vect 1 0))"
+	// 	"    (make-segment (make-vect 1 0) (make-vect 0 0))"
+	// 	"    )))",
+	// 	env);
 
 	evalstr("(define wave"
 		"  (segments->painter"
@@ -285,6 +278,16 @@ static void add_pict(obj env)
 		"    (make-segment (make-vect 0.301 0.596) (make-vect 0.155 0.399))"
 		"    (make-segment (make-vect 0.155 0.399) (make-vect 0 0.642))"
 		"    )))",
+		env);
+
+	evalstr("(define painter"
+		"  (let ((n (random 5)))"
+		"    (cond"
+		"      ((= n 0) hamilton)"
+		"      ((= n 1) pattern)"
+		"      ((= n 2) sussman)"
+		"      ((= n 3) wave)"
+		"      (else rogers))))",
 		env);
 }
 

@@ -34,7 +34,7 @@
                 "src/storage.c",
                 "src/strbldr.c",
                 //
-                "-O3", // Optimization Level. Tail Call Optimization seem to need >= 2
+                // "-O3", // Optimization Level. Tail Call Optimization seem to need >= 2
                 "-std=c17", // 'ISO C 2017' standard
                 "-o",
                 "${workspaceFolder}/bin/sicp", // output e.g., "${fileDirname}/sicp",
