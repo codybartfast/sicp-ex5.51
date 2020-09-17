@@ -40,7 +40,7 @@
   (beside mono (flip-horiz mono)))
 
 (wave frame)
-(specs (make-frame (make-vect .34 .76)
+(specs (make-frame (make-vect .347 .76)
                    (make-vect .3 0)
                    (make-vect 0 .3)))
 

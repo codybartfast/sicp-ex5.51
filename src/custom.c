@@ -114,11 +114,10 @@ static void add_pict(obj env)
 		"  (cddr frame))",
 		env);
 
-	evalstr("(define full-frame (make-frame (make-vect 0 0)"
+	evalstr("(define frame (make-frame (make-vect 0 0)"
 		"                               (make-vect 1 0)"
 		"                               (make-vect 0 1)))",
 		env);
-	evalstr("(define frame full-frame)", env);
 
 	evalstr("(define (hamilton  frame)"
 		"  (%paint hamiltonbmp frame))",
@@ -133,10 +132,40 @@ static void add_pict(obj env)
 		"  (%paint sussmanbmp frame))",
 		env);
 
-	// evalstr("(define painter frame)"
-	// 	"  (%paint painterbmp frame))",
-	// 	env);
-	//
+	evalstr("(define (frame-coord-map frame)"
+		"  (lambda (v)"
+		"    (add-vect"
+		"     (origin-frame frame)"
+		"     (add-vect (scale-vect (xcor-vect v)"
+		"                           (edge1-frame frame))"
+		"               (scale-vect (ycor-vect v)"
+		"                           (edge2-frame frame))))))",
+		env);
+
+	evalstr("(define (transform-painter painter origin corner1 corner2)"
+		"  (lambda (frame)"
+		"    (let ((m (frame-coord-map frame)))"
+		"      (let ((new-origin (m origin)))"
+		"        (painter"
+		"         (make-frame new-origin"
+		"                     (sub-vect (m corner1) new-origin)"
+		"                     (sub-vect (m corner2) new-origin)))))))",
+		env);
+
+	evalstr("(define (flip-vert painter)"
+		"  (transform-painter painter"
+		"                     (make-vect 0 1)"
+		"                     (make-vect 1 1)"
+		"                     (make-vect 0 0)))",
+		env);
+
+	evalstr("(define (flip-horiz painter)"
+		"  (transform-painter painter"
+		"                     (make-vect 1 0)"
+		"                     (make-vect 0 0)"
+		"                     (make-vect 1 1)))",
+		env);
+
 	evalstr("(define (beside painter1 painter2)"
 		"  (let ((split-point (make-vect 0.5 0)))"
 		"    (let ((paint-left"
@@ -152,40 +181,6 @@ static void add_pict(obj env)
 		"      (lambda (frame)"
 		"        (paint-left frame)"
 		"        (paint-right frame)))))",
-		env);
-
-	evalstr("(define (transform-painter painter origin corner1 corner2)"
-		"  (lambda (frame)"
-		"    (let ((m (frame-coord-map frame)))"
-		"      (let ((new-origin (m origin)))"
-		"        (painter"
-		"         (make-frame new-origin"
-		"                     (sub-vect (m corner1) new-origin)"
-		"                     (sub-vect (m corner2) new-origin)))))))",
-		env);
-
-	evalstr("(define (frame-coord-map frame)"
-		"  (lambda (v)"
-		"    (add-vect"
-		"     (origin-frame frame)"
-		"     (add-vect (scale-vect (xcor-vect v)"
-		"                           (edge1-frame frame))"
-		"               (scale-vect (ycor-vect v)"
-		"                           (edge2-frame frame))))))",
-		env);
-
-	evalstr("(define (flip-vert painter)"
-		"  (transform-painter painter"
-		"                     (make-vect 0 1)"
-		"                     (make-vect 1 1)"
-		"                     (make-vect 0 0)))",
-		env);
-
-	evalstr("(define (flip-horiz painter)"
-		"  (transform-painter painter"
-		"                     (make-vect 1 0)"
-		"                     (make-vect 0 0)"
-		"                     (make-vect 1 1)))",
 		env);
 
 	evalstr("(define (below painter1 painter2)"
@@ -242,16 +237,6 @@ static void add_pict(obj env)
 		"        ((frame-coord-map frame) (end-segment segment))))"
 		"     segment-list)))",
 		env);
-
-	// evalstr("(define boarder"
-	// 	"  (segments->painter"
-	// 	"   (list"
-	// 	"    (make-segment (make-vect 0 0) (make-vect 0 1))"
-	// 	"    (make-segment (make-vect 0 1) (make-vect 1 1))"
-	// 	"    (make-segment (make-vect 1 1) (make-vect 1 0))"
-	// 	"    (make-segment (make-vect 1 0) (make-vect 0 0))"
-	// 	"    )))",
-	// 	env);
 
 	evalstr("(define wave"
 		"  (segments->painter"

@@ -101,6 +101,7 @@ void sb_free(struct strbldr **sbref)
 struct strbldr *new_strbldr(void)
 {
 	struct strbldr *sb = malloc(sizeof(struct strbldr));
+
 	if (sb == NULL) {
 		eprintf(AREA, "No memory for strbldr");
 		return NULL;

@@ -10,7 +10,9 @@
 #pragma GCC diagnostic ignored "-Wdouble-promotion"
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #pragma GCC diagnostic ignored "-Wmissing-prototypes"
+#ifndef __llvm__
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#endif
 #endif
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -110,28 +112,27 @@ const struct bitmap hamilton = { .format = PGM_P5,
 				 .height = 512,
 				 .max = 255,
 				 .data = hamiltondata };
+const obj hamiltonbmp = OBJ_4(TYPE_BITMAP, SUBTYPE_NOT_SET, bitmap, &hamilton);
 
 const struct bitmap pattern = { .format = PGM_P5,
 				.width = 256,
 				.height = 256,
 				.max = 255,
 				.data = patterndata };
+const obj patternbmp = OBJ_4(TYPE_BITMAP, SUBTYPE_NOT_SET, bitmap, &pattern);
 
 const struct bitmap rogers = { .format = PGM_P5,
 			       .width = 180,
 			       .height = 180,
 			       .max = 255,
 			       .data = rogersdata };
+const obj rogersbmp = OBJ_4(TYPE_BITMAP, SUBTYPE_NOT_SET, bitmap, &rogers);
 
 const struct bitmap sussman = { .format = PGM_P5,
 				.width = 206,
 				.height = 206,
 				.max = 255,
 				.data = sussmandata };
-
-const obj hamiltonbmp = OBJ_4(TYPE_BITMAP, SUBTYPE_NOT_SET, bitmap, &hamilton);
-const obj patternbmp = OBJ_4(TYPE_BITMAP, SUBTYPE_NOT_SET, bitmap, &pattern);
-const obj rogersbmp = OBJ_4(TYPE_BITMAP, SUBTYPE_NOT_SET, bitmap, &rogers);
 const obj sussmanbmp = OBJ_4(TYPE_BITMAP, SUBTYPE_NOT_SET, bitmap, &sussman);
 
 unsigned char hamiltondata[] = {
