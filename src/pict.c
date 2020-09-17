@@ -162,9 +162,9 @@ obj draw_line(obj args)
 	Floating yinc;
 	int steps = breakline(x2 - x1, y2 - y1, &xinc, &yinc);
 	for (i = 0; i < steps; i++) {
-		int x = (int)(x1 * (CANVAS_WIDTH - 1)) + (i * xinc);
+		int x = (int)(x1 * ((Floating)(CANVAS_WIDTH - 1)) + (i * xinc));
 		int y = CANVAS_HEIGHT - 1 -
-			(int)((y1 * (CANVAS_HEIGHT - 1)) + (i * yinc));
+			(int)(y1 * ((Floating)(CANVAS_HEIGHT - 1)) + (i * yinc));
 		canvas.data[x + (y * CANVAS_WIDTH)] = 0;
 	}
 	return _void;

@@ -12,7 +12,6 @@ call :doDir
 goto :eof
 
 :doDir
-rem Do whatever you want here over the files of this subdir, for example:
 	for %%f in (*.sicp) do call :runit %%f
 	for /D %%d in (*) do (
 	    cd %%d
@@ -23,7 +22,6 @@ exit /b
 
 :runit
 	set file=%~f1
-	::set file=%1
 	echo running: %file%
 	%bin_dir%sicp  %file%
 	echo.
