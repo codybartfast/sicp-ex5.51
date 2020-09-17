@@ -54,14 +54,15 @@ static void add_accessors(obj env)
 static void add_pict(obj env)
 {
 	evalstr("(define %pict-path \"pict\")", env);
-	define_variable(of_identifier("%paint"), of_function(paint), env);
-	define_variable(of_identifier("write-frame"), of_function(write_canvas),
-			env);
-	define_variable(of_identifier("hamiltonbmp"), hamiltonbmp, env);
-	define_variable(of_identifier("patternbmp"), patternbmp, env);
-	define_variable(of_identifier("rogersbmp"), rogersbmp, env);
-	define_variable(of_identifier("sussmanbmp"), sussmanbmp, env);
+	define_variable(of_identifier("__%%paint"), of_function(paint), env);
+
+	define_variable(of_identifier("__%%hamiltonbmp"), hamiltonbmp, env);
+	define_variable(of_identifier("__%%patternbmp"), patternbmp, env);
+	define_variable(of_identifier("__%%rogersbmp"), rogersbmp, env);
+	define_variable(of_identifier("__%%sussmanbmp"), sussmanbmp, env);
 	define_variable(of_identifier("draw-line"), of_function(draw_line),
+			env);
+	define_variable(of_identifier("write-frame"), of_function(write_canvas),
 			env);
 
 	evalstr("(define (make-vect xcor ycor)"
@@ -120,16 +121,16 @@ static void add_pict(obj env)
 		env);
 
 	evalstr("(define (hamilton  frame)"
-		"  (%paint hamiltonbmp frame))",
+		"  (__%%paint __%%hamiltonbmp frame))",
 		env);
 	evalstr("(define (pattern frame)"
-		"  (%paint patternbmp frame))",
+		"  (__%%paint __%%patternbmp frame))",
 		env);
 	evalstr("(define (rogers frame)"
-		"  (%paint rogersbmp frame))",
+		"  (__%%paint __%%rogersbmp frame))",
 		env);
 	evalstr("(define (sussman frame)"
-		"  (%paint sussmanbmp frame))",
+		"  (__%%paint __%%sussmanbmp frame))",
 		env);
 
 	evalstr("(define (frame-coord-map frame)"
