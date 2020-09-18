@@ -23,11 +23,10 @@ obj read(void)
 static obj check_eof(void)
 {
 	return lexer_errored ?
-		       error_parser("LEXER", "%s (ln:%ld, col:%ld, offset %ld)",
+		       error_parser("LEXER", "%s (ln:%ld, col:%ld)",
 				    lexer_error_message,
 				    lexer_error_location.line + 1,
-				    lexer_error_location.column,
-				    lexer_error_location.offset) :
+				    lexer_error_location.column) :
 		       eof;
 }
 

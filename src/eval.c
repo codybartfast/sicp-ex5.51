@@ -25,7 +25,6 @@ static obj unev; // 7
 static obj val; // 8
 // Plus... the_global_environment // 9
 const int rootlen = 9;
-
 static obj rootlst;
 
 // ln 182
@@ -192,6 +191,16 @@ obj setroot(obj rlst)
 	return unspecified;
 }
 
+static obj proc_name;
+static void set_proc_name(void)
+{
+	proc_name = is_symbol(expr) ?
+			    expr :
+			    (is_pair(expr) && eq_symbol(car(expr), lambda)) ?
+			    lambda :
+			    of_string("<unknown>");
+}
+
 static bool initdone = false;
 static obj init(void)
 {
@@ -285,6 +294,7 @@ ev_application:
 	unev = operands(expr);
 	save(UNEV);
 	expr = operator(expr);
+	set_proc_name();
 	cont = ev_appl_did_operator;
 	goto eval_dispatch;
 
@@ -358,7 +368,7 @@ ev_begin:
 compound_apply:
 	unev = procedure_parameters(proc);
 	env = procedure_environment(proc);
-	env = extend_environment(unev, argl, env);
+	env = extend_environment(unev, argl, env, proc_name);
 	if (is_err(env))
 		return env;
 	unev = procedure_body(proc);

@@ -70,7 +70,7 @@ static obj add_binding_to_frame(obj var, obj val, obj frame)
 }
 
 // ln 243
-obj extend_environment(obj vars, obj vals, obj base_env)
+obj extend_environment(obj vars, obj vals, obj base_env, obj proc_name)
 {
 	int nvars = length_i(vars, 0, false);
 	int nvals = length_i(vals, 0, false);
@@ -80,14 +80,15 @@ obj extend_environment(obj vars, obj vals, obj base_env)
 			       cons(make_frame(vars, vals), base_env) :
 			       error_arity(
 				       AREA,
-				       "Too %s arguments supplied, var: %s, vals: %s",
+				       "Too %s arguments to '%s', var: %s, vals: %s",
 				       nvars < nvals ? "many" : "few",
-				       errstr(vars), errstr(vals));
+				       errstr(proc_name), errstr(vars),
+				       errstr(vals));
 	} else if (nvals < 0) {
 		return error_syntax(
 			AREA,
-			"The arguments are not a proper list, var: %s, vals: %s",
-			errstr(vars), errstr(vals));
+			"Arguments to '%s' are not a proper list, var: %s, vals: %s",
+			errstr(proc_name), errstr(vars), errstr(vals));
 	} else {
 		// "dotted tail"
 		obj ovars = vars, ovals = vals;
@@ -102,8 +103,9 @@ obj extend_environment(obj vars, obj vals, obj base_env)
 		if (is_pair(vars)) {
 			return error_arity(
 				AREA,
-				"Too few arguments supplied, var: %s, vals: %s",
-				errstr(ovars), errstr(ovals));
+				"Too few arguments to '%s', var: %s, vals: %s",
+				errstr(proc_name), errstr(ovars),
+				errstr(ovals));
 		}
 		rvars = cons(vars, rvars); // vars should be a var
 		rvals = cons(vals, rvals); // vals should be a list
@@ -202,7 +204,8 @@ static obj setup_environment(void)
 {
 	obj initial_env = extend_environment(initial_procedure_names(),
 					     initial_procedure_objects(),
-					     the_empty_environment());
+					     the_empty_environment(),
+					     of_string("initial_env"));
 	return initial_env;
 }
 
