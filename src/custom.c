@@ -480,24 +480,37 @@ static obj defined(void)
 	return caar(the_global_environment());
 }
 
+static void display_id(struct outport *out, obj id)
+{
+	obj lpad = of_string("  ");
+
+	newlinep(out);
+	displayp(out, lpad);
+	displayp(out, id);
+}
+
 static obj display_definedp(struct outport *out)
 {
 	obj names;
-	obj lpad = of_string("  ");
+
+	newlinep(out);
+	displayp(out, of_string("Special Forms:"));
+	display_id(out, of_string("apply"));
+	display_id(out, of_string("begin"));
+	display_id(out, of_string("cond"));
+	display_id(out, of_string("define"));
+	display_id(out, of_string("if"));
+	display_id(out, of_string("lambda"));
+	display_id(out, of_string("let"));
+	display_id(out, of_string("time"));
+
+	newlinep(out);
+	newlinep(out);
 	displayp(out, of_string("Defined Variables:"));
 	for (names = reverse(defined()); is_pair(names); names = cdr(names)) {
-		newline(emptylst);
-		displayp(out, lpad);
-		displayp(out, car(names));
+		display_id(out, car(names));
 	}
-	newline(emptylst);
-	displayp(out, of_string("Custom Special Forms:"));
-	newline(emptylst);
-	displayp(out, lpad);
-	displayp(out, of_string("apply"));
-	newline(emptylst);
-	displayp(out, lpad);
-	displayp(out, of_string("time"));
+	newlinep(out);
 	return _void;
 }
 
