@@ -187,17 +187,15 @@ static void add_pict(obj env)
 	evalstr("(define (below painter1 painter2)"
 		"  (let ((split-point (make-vect 0 0.5)))"
 		"    (let ((paint-bottom"
-		"           (transform-painter"
-		"            painter1"
-		"            (make-vect 0 0)"
-		"            (make-vect 1 0)"
-		"            split-point))"
+		"           (transform-painter painter1"
+		"                              (make-vect 0 0)"
+		"                              (make-vect 1 0)"
+		"                              split-point))"
 		"          (paint-top"
-		"           (transform-painter "
-		"            painter2"
-		"            split-point"
-		"            (make-vect 1 0.5)"
-		"            (make-vect 0 1))))"
+		"           (transform-painter painter2"
+		"                              split-point"
+		"                              (make-vect 1 0.5)"
+		"                              (make-vect 0 1))))"
 		"      (lambda (frame)"
 		"        (paint-bottom frame)"
 		"        (paint-top frame)))))",
@@ -262,8 +260,7 @@ static void add_pict(obj env)
 		"    (make-segment (make-vect 0.252 0) (make-vect 0.352 0.508))"
 		"    (make-segment (make-vect 0.352 0.508) (make-vect 0.301 0.596))"
 		"    (make-segment (make-vect 0.301 0.596) (make-vect 0.155 0.399))"
-		"    (make-segment (make-vect 0.155 0.399) (make-vect 0 0.642))"
-		"    )))",
+		"    (make-segment (make-vect 0.155 0.399) (make-vect 0 0.642)))))",
 		env);
 
 	evalstr("(define painter"
