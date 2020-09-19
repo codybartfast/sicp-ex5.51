@@ -82,6 +82,10 @@ static enum token_type scan(struct inport *in)
 	if (c == '.') {
 		return dot(c, in);
 	}
+	if (c == '\'') {
+		sb_addc(sb, '\'');
+		return TKN_QUOTE;
+	}
 	if (is_peculiar_identifier(c)) {
 		return peculiar(c, in);
 	}

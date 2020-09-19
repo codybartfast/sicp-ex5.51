@@ -22,12 +22,11 @@ obj read(void)
 
 static obj check_eof(void)
 {
-	return lexer_errored ?
-		       error_parser("LEXER", "%s (ln:%ld, col:%ld)",
-				    lexer_error_message,
-				    lexer_error_location.line + 1,
-				    lexer_error_location.column) :
-		       eof;
+	return lexer_errored ? error_parser("LEXER", "%s (ln:%ld, col:%ld)",
+					    lexer_error_message,
+					    lexer_error_location.line + 1,
+					    lexer_error_location.column) :
+			       eof;
 }
 
 static char *token_string(struct token *tkn)
@@ -48,14 +47,6 @@ static obj identifier(struct token *tkn)
 	return of_identifier(id);
 }
 
-static obj string(struct token *tkn)
-{
-	char *str = token_string(tkn);
-	if (str == NULL)
-		return error_memory(AREA, "String");
-	return of_string(str);
-}
-
 #define MAX_DIGITS 18
 static obj number(struct token *tkn)
 {
@@ -65,6 +56,34 @@ static obj number(struct token *tkn)
 		return of_integer(atoll(tkn->value));
 	} else {
 		return of_floating(strtold(tkn->value, NULL));
+	}
+}
+
+static obj string(struct token *tkn)
+{
+	char *str = token_string(tkn);
+	if (str == NULL)
+		return error_memory(AREA, "String");
+	return of_string(str);
+}
+
+static obj quote_(struct inport *port)
+{
+	obj dat = readp(port);
+	if (is_err(dat))
+		return dat;
+	switch (type(dat)) {
+	case TYPE_BOOL:
+	case TYPE_EMPTY_LIST:
+	case TYPE_NUMBER:
+	case TYPE_PAIRPTR:
+	case TYPE_STRING:
+	case TYPE_SYMBOL:
+		return list2(quote, dat);
+	default:
+		return error_parser(
+			AREA, "Expected a datum after quote ', but got \"%s\"",
+			errstr(dat));
 	}
 }
 
@@ -82,6 +101,8 @@ static obj parse(struct token *tkn, struct inport *port)
 		return error_parser(AREA, "unexpected: ')'");
 	case TKN_STRING:
 		return string(tkn);
+	case TKN_QUOTE:
+		return quote_(port);
 	case TKN_EOF:
 		return check_eof();
 	default:

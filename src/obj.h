@@ -118,6 +118,7 @@ extern const obj else_s;
 extern const obj if_s;
 extern const obj let;
 extern const obj lambda;
+extern const obj quote;
 extern const obj time_s;
 
 // EVAL TAGS
