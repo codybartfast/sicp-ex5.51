@@ -250,6 +250,8 @@ eval_dispatch:
 		goto ev_self_eval;
 	if (is_variable(expr))
 		goto ev_variable;
+	if (is_quoted(expr))
+		goto ev_quoted;
 	if (is_definition(expr))
 		goto ev_definition;
 	if (is_if(expr))
@@ -278,6 +280,9 @@ ev_self_eval:
 	goto go_cont;
 ev_variable:
 	val = lookup_variable_value(expr, env);
+	goto go_cont;
+ev_quoted:
+	val = text_of_quotation(expr);
 	goto go_cont;
 ev_lambda:
 	unev = lambda_parameters(expr);
@@ -514,6 +519,8 @@ go_cont:
 		goto ev_definition_1;
 	if (eq_symbol(cont, ev_if_decide))
 		goto ev_if_decide;
+	if (eq_symbol(cont, ev_quoted))
+		goto ev_quoted;
 	if (eq_symbol(cont, ev_sequence_continue))
 		goto ev_sequence_continue;
 	if (eq_symbol(cont, ev_timed_done))

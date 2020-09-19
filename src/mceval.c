@@ -10,6 +10,7 @@
 
 #define AREA "MC-EVAL"
 
+static bool is_tagged_list(obj, obj);
 static obj make_lambda(obj, obj);
 static obj make_if(obj predicate, obj consequent, obj alternative);
 static obj sequence_to_exp(obj seq);
@@ -30,6 +31,18 @@ bool is_self_evaluating(obj exp)
 bool is_variable(obj exp)
 {
 	return is_symbol(exp);
+}
+
+// ln 117
+bool is_quoted(obj exp)
+{
+	return is_tagged_list(exp, quote);
+}
+
+// ln 120
+obj text_of_quotation(obj exp)
+{
+	return cadr(exp);
 }
 
 // ln 122

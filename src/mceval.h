@@ -7,6 +7,8 @@
 
 bool is_self_evaluating(obj exp);
 bool is_variable(obj exp);
+bool is_quoted(obj exp);
+obj text_of_quotation(obj exp);
 obj assignment_variable(obj exp);
 obj assignment_value(obj exp);
 bool is_definition(obj exp);
