@@ -81,7 +81,7 @@ static void update_obj(obj *objptr)
 	// have not yet copied the data to the new blocks.
 
 	// Get a free address in the new blocks for the pair data.
-	new = of_pair(nextfree());
+	new = of_pairptr(nextfree());
 	// Copy car from pair in old blocks to the car of pair in new blocks
 	set_car(new, car(old));
 	// And the cdr

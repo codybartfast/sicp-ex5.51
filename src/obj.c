@@ -133,9 +133,14 @@ bool is_null(obj dat)
 	return type(dat) == TYPE_EMPTY_LIST;
 }
 
-obj of_pair(struct pair *ptr)
+obj of_pairptr(struct pair *ptr)
 {
 	return (obj)OBJ_4(TYPE_PAIRPTR, SUBTYPE_NOT_SET, reference, ptr);
+}
+
+struct pair *to_pairptr(obj dat)
+{
+	return dat.val.reference;
 }
 
 const obj emptylst = OBJ_2(TYPE_EMPTY_LIST, SUBTYPE_NOT_SET);
@@ -147,7 +152,7 @@ obj cons(obj car, obj cdr)
 		return error_memory(AREA, "Reached Memory Limit: cons");
 	}
 	*ptr = (struct pair){ car, cdr };
-	return of_pair(ptr);
+	return of_pairptr(ptr);
 }
 
 obj consgc(obj *car, obj *cdr)
@@ -157,7 +162,7 @@ obj consgc(obj *car, obj *cdr)
 		return error_memory(AREA, "Reached Memory Limit: consgc");
 	}
 	*ptr = (struct pair){ *car, *cdr };
-	return of_pair(ptr);
+	return of_pairptr(ptr);
 }
 
 obj car(obj pair)

@@ -16,13 +16,6 @@ static obj the_empty_environment(void);
 static obj lvv_env_loop(obj var, obj env);
 static obj setup_environment(void);
 
-// until we have a proper eq? - also in mceval.c
-bool eq_symbol(obj a, obj b)
-{
-	return is_symbol(a) && is_symbol(b) &&
-	       strcmp(to_string(a), to_string(b)) == 0;
-}
-
 //ln 231
 static obj enclosing_environment(obj env)
 {
@@ -119,7 +112,7 @@ static obj lvv_scan(obj var, obj env, obj vars, obj vals)
 {
 	if (is_null(vars)) {
 		return lvv_env_loop(var, enclosing_environment(env));
-	} else if (eq_symbol(var, car(vars))) {
+	} else if (is_eq(var, car(vars))) {
 		return car(vals);
 	} else {
 		return lvv_scan(var, env, cdr(vars), cdr(vals));
@@ -148,7 +141,7 @@ static obj dv_scan(obj vars, obj vals, obj var, obj val, obj frame)
 {
 	if (is_null(vars))
 		return add_binding_to_frame(var, val, frame);
-	if (eq_symbol(var, car(vars)))
+	if (is_eq(var, car(vars)))
 		return set_car(vals, val);
 	return dv_scan(cdr(vars), cdr(vals), var, val, frame);
 }

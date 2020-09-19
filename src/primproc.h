@@ -44,4 +44,7 @@ obj consp(const obj);
 obj carp(const obj);
 obj cdrp(const obj);
 
+bool is_eq(const obj, const obj);
+obj is_eq_p(const obj);
+
 #endif

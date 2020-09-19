@@ -427,6 +427,10 @@ static obj add_extras(int ex, obj env)
 	if (ex >= 244) {
 		add_pict(env);
 	}
+	if (ex >= 253) {
+		define_variable(of_identifier("eq?"), of_function(is_eq_p),
+				env);
+	}
 	return unspecified;
 }
 
@@ -463,7 +467,7 @@ obj do_head(obj env, struct inport *in)
 {
 	disable_gc = true;
 	obj exp = readp(in);
-	if (is_pair(exp) && eq_symbol(car(exp), _ex)) {
+	if (is_pair(exp) && is_eq(car(exp), _ex)) {
 		obj r = conf_ex(env, cdr(exp));
 		if (is_err(r))
 			return r;
@@ -502,6 +506,7 @@ static obj display_definedp(struct outport *out)
 	display_id(out, of_string("if"));
 	display_id(out, of_string("lambda"));
 	display_id(out, of_string("let"));
+	display_id(out, of_string("quote"));
 	display_id(out, of_string("time"));
 
 	newlinep(out);

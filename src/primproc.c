@@ -11,8 +11,9 @@
 #include <tgmath.h>
 #include <time.h>
 #include "error.h"
-#include "output.h"
 #include "list.h"
+#include "output.h"
+#include "string.h"
 
 #define AREA "PRIMPROC"
 
@@ -618,4 +619,34 @@ obj cdrp(const obj args)
 	if (is_err(chk = chkarity("cdr", 1, args)))
 		return chk;
 	return cdar(args);
+}
+
+// EQUALITY
+
+bool is_eq(obj a, obj b)
+{
+	if (type(a) != type(b)) {
+		return false;
+	}
+	switch (type(a)) {
+	case TYPE_SYMBOL:
+		return strcmp(to_string(a), to_string(b)) == 0;
+	case TYPE_PAIRPTR:
+		return to_pairptr(a) == to_pairptr(b);
+	case TYPE_EMPTY_LIST:
+		return true;
+	case TYPE_NUMBER:
+		return is_true(applycmp(EQ, a, b));
+	default:
+		return false;
+	}
+}
+
+obj is_eq_p(const obj args)
+{
+	obj chk;
+
+	if (is_err(chk = chkarity("eq?", 2, args)))
+		return chk;
+	return is_eq(car(args), cadr(args)) ? tru_o : fls_o;
 }

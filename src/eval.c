@@ -196,7 +196,7 @@ static void set_proc_name(void)
 {
 	proc_name = is_symbol(expr) ?
 			    expr :
-			    (is_pair(expr) && eq_symbol(car(expr), lambda)) ?
+			    (is_pair(expr) && is_eq(car(expr), lambda)) ?
 			    lambda :
 			    of_string("<unknown>");
 }
@@ -503,27 +503,27 @@ unknown_procedure_type:
 	return error_eval(AREA, "Unknown procedure type: %s", errstr(proc));
 
 go_cont:
-	if (eq_symbol(cont, ev_return_caller))
+	if (is_eq(cont, ev_return_caller))
 		return val;
-	if (eq_symbol(cont, ev_appl_accum_last_arg))
+	if (is_eq(cont, ev_appl_accum_last_arg))
 		goto ev_appl_accum_last_arg;
-	if (eq_symbol(cont, ev_appl_accumulate_arg))
+	if (is_eq(cont, ev_appl_accumulate_arg))
 		goto ev_appl_accumulate_arg;
-	if (eq_symbol(cont, ev_appl_did_operator))
+	if (is_eq(cont, ev_appl_did_operator))
 		goto ev_appl_did_operator;
-	if (eq_symbol(cont, ev_apply_2))
+	if (is_eq(cont, ev_apply_2))
 		goto ev_apply_2;
-	if (eq_symbol(cont, ev_apply_3))
+	if (is_eq(cont, ev_apply_3))
 		goto ev_apply_3;
-	if (eq_symbol(cont, ev_definition_1))
+	if (is_eq(cont, ev_definition_1))
 		goto ev_definition_1;
-	if (eq_symbol(cont, ev_if_decide))
+	if (is_eq(cont, ev_if_decide))
 		goto ev_if_decide;
-	if (eq_symbol(cont, ev_quoted))
+	if (is_eq(cont, ev_quoted))
 		goto ev_quoted;
-	if (eq_symbol(cont, ev_sequence_continue))
+	if (is_eq(cont, ev_sequence_continue))
 		goto ev_sequence_continue;
-	if (eq_symbol(cont, ev_timed_done))
+	if (is_eq(cont, ev_timed_done))
 		goto ev_timed_done;
 	return error_internal(AREA, "BUG! Goto... where?: %s", to_string(cont));
 }

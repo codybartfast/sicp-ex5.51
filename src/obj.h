@@ -86,7 +86,8 @@ const char *to_string(const obj dat);
 
 bool is_pair(obj);
 bool is_null(obj dat);
-obj of_pair(struct pair *);
+obj of_pairptr(struct pair *);
+struct pair *to_pairptr(obj);
 
 extern const obj emptylst;
 obj cons(obj, obj);
@@ -100,7 +101,6 @@ obj set_cdr(obj, obj);
 
 bool is_bitmap(obj);
 const struct bitmap *to_bitmap(const obj);
-
 
 // PRIMITIVE PROCEDURES
 

@@ -7,6 +7,7 @@
 #include <string.h>
 #include "error.h"
 #include "list.h"
+#include "primproc.h"
 
 #define AREA "MC-EVAL"
 
@@ -48,7 +49,7 @@ obj text_of_quotation(obj exp)
 // ln 122
 static bool is_tagged_list(obj exp, obj tag)
 {
-	return is_pair(exp) ? eq_symbol(car(exp), tag) : false;
+	return is_pair(exp) ? is_eq(car(exp), tag) : false;
 }
 
 // ln 129
@@ -240,7 +241,7 @@ static obj cond_clauses(obj exp)
 // ln 186
 static bool is_cond_else_clause(obj clause)
 {
-	return eq_symbol(cond_predicate(clause), else_s);
+	return is_eq(cond_predicate(clause), else_s);
 }
 
 // ln 188
