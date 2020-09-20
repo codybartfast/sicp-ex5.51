@@ -1,0 +1,72 @@
+(%ex "2.57")
+
+; exercise 2.57, page 151
+
+(define (variable? exp) (symbol? exp))
+
+(define (sum? x)
+  (and (pair? x) (eq? (car x) '+)))
+
+(define (make-product-simple m1 m2) (list '* m1 m2))
+(define (multiplier p) (cadr p))
+
+(define (make-product m1 m2)
+  (cond ((or (=number? m1 0) (=number? m2 0)) 0)
+        ((=number? m1 1) m2)
+        ((=number? m2 1) m1)
+        ((and (number? m1) (number? m2)) (* m1 m2))
+        (else (make-product-simple m1 m2))))
+
+(define (multiplicand p) (caddr p))
+(define (make-sum-simple a1 a2) (list '+ a1 a2))
+(define (addend s) (cadr s))
+(define (augend s) (caddr s))
+
+(define (same-variable? v1 v2)
+  (and (variable? v1) (variable? v2) (eq? v1 v2)))
+
+(define (=number? exp num)
+  (and (number? exp) (= exp num)))
+
+(define (product? x)
+  (and (pair? x) (eq? (car x) '*)))
+
+(define (make-sum a1 a2)
+  (cond ((=number? a1 0) a2)
+        ((=number? a2 0) a1)
+        ((and (number? a1) (number? a2)) (+ a1 a2))
+        (else (make-sum-simple a1 a2))))
+
+(define (multi-product? exp)
+  (pair? (cdddr exp)))
+
+(define (nest-products exp)
+  ; (* a b c) -> (* a (* b c))
+  (make-product
+   (multiplier exp)
+    (make-product
+    (car (cddr exp))
+    (cadr (cddr exp)))))
+
+(define (deriv-57 exp var)
+  (cond ((number? exp) 0)
+        ((variable? exp)
+         (if (same-variable? exp var) 1 0))
+        ((sum? exp)
+         (make-sum (deriv-57 (addend exp) var)
+                   (deriv-57 (augend exp) var)))
+        ((multi-product? exp)
+         (deriv-57 (nest-products exp) var))
+        ((product? exp)
+         (make-sum
+          (make-product (multiplier exp)
+                        (deriv-57 (multiplicand exp) var))
+          (make-product (deriv-57 (multiplier exp) var)
+                        (multiplicand exp))))
+        ((exponent? exp)
+         (make-product (exponent exp) (make-exponent (base exp) (make-sum (exponent exp) '-1))))
+        (else
+         (error "unknown expression type -- DERIV" exp))))
+
+(deriv-57 '(* x y (+ x 3)) 'x)
+(deriv-57 '(* x x x) 'x)
