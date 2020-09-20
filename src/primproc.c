@@ -650,3 +650,21 @@ obj is_eq_p(const obj args)
 		return chk;
 	return is_eq(car(args), cadr(args)) ? tru_o : fls_o;
 }
+
+static bool is_equal(obj a, obj b)
+{
+	if (is_eq(a, b))
+		return true;
+	if (is_pair(a) && is_pair(b) && is_equal(car(a), car(b)))
+		return is_equal(cdr(a), cdr(b));
+	return false;
+}
+
+obj is_equal_p(const obj args)
+{
+	obj chk;
+
+	if (is_err(chk = chkarity("eq?", 2, args)))
+		return chk;
+	return is_equal(car(args), cadr(args)) ? tru_o : fls_o;
+}

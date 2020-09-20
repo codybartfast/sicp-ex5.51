@@ -436,6 +436,10 @@ static obj add_extras(int ex, obj env)
 			"        (else (memq item (cdr x)))))",
 			env);
 	}
+	if (ex >= 254) {
+		define_variable(of_identifier("equal?"),
+				of_function(is_equal_p), env);
+	}
 	return unspecified;
 }
 
