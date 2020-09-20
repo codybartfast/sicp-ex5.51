@@ -440,6 +440,12 @@ static obj add_extras(int ex, obj env)
 		define_variable(of_identifier("equal?"),
 				of_function(is_equal_p), env);
 	}
+	if (ex >= 256) {
+		define_variable(of_identifier("number?"),
+				of_function(is_number_p), env);
+		define_variable(of_identifier("symbol?"),
+				of_function(is_symbol_p), env);
+	}
 	return unspecified;
 }
 

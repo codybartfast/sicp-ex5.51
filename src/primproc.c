@@ -650,3 +650,21 @@ obj is_equal_p(const obj args)
 		return chk;
 	return is_equal(car(args), cadr(args)) ? tru_o : fls_o;
 }
+
+obj is_number_p(obj args)
+{
+	obj chk;
+
+	if (is_err(chk = chkarity("number?", 1, args)))
+		return chk;
+	return is_number(car(args)) ? tru_o : fls_o;
+}
+
+obj is_symbol_p(obj args)
+{
+	obj chk;
+
+	if (is_err(chk = chkarity("symbol?", 1, args)))
+		return chk;
+	return is_symbol(car(args)) ? tru_o : fls_o;
+}
