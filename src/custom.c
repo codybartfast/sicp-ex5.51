@@ -430,6 +430,11 @@ static obj add_extras(int ex, obj env)
 	if (ex >= 253) {
 		define_variable(of_identifier("eq?"), of_function(is_eq_p),
 				env);
+		evalstr("(define (memq item x)"
+			"  (cond ((null? x) false)"
+			"        ((eq? item (car x)) x)"
+			"        (else (memq item (cdr x)))))",
+			env);
 	}
 	return unspecified;
 }
