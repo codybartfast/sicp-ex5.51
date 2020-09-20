@@ -1,0 +1,7 @@
+(%ex "2.54")
+
+; exercise 2.54, page 145
+
+(equal? '(this is a list) '(this is a list))
+
+(equal? '(this is a list) '(this (is a) list))

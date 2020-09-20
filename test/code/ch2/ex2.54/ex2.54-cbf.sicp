@@ -1,0 +1,19 @@
+(%ex "2.54")
+
+; exercise 2.54, page 145
+
+(define (equal? a b)
+  (if (eq? a b)
+      true
+      (if (and (pair? a) (pair? b) (equal? (car a) (car b)))
+          (equal? (cdr a) (cdr b)))))
+
+(equal? '(this is a list) '(this is a list))
+(equal? '() '())
+(equal? 0 0)
+(equal? '(a) '(a))
+(equal? '(this is a list) '(this (is a) list))
+(equal? '() 0)
+(equal? 0 '())
+(equal? '() '(a))
+(equal? '(a) '())
