@@ -36,8 +36,6 @@ obj eqn(const obj);
 obj gte(const obj);
 obj gt(const obj);
 
-obj and (const obj);
-obj or (const obj);
 obj not(const obj);
 
 obj consp(const obj);

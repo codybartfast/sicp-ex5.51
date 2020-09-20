@@ -41,10 +41,12 @@ obj procedure_body(obj);
 obj procedure_environment(obj p);
 obj apply_primitive_procedure(obj proc, obj args);
 
-bool is_time(obj);
-obj timed_expr(obj);
 bool is_let(obj);
 obj let_to_combination(obj);
+bool is_and(obj);
+bool is_or(obj);
+bool is_time(obj);
+obj timed_expr(obj);
 bool is_apply(obj);
 obj apply_to_application(obj exp);
 obj apply_operator(obj exp);

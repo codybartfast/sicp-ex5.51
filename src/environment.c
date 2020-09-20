@@ -158,7 +158,7 @@ static obj _initial_procedures;
 static obj initial_procedures(void)
 {
 	obj initial_primprocs =
-		listn(13, // must match number of items below
+		listn(11, // must match number of items below
 		      list2(of_identifier("true"), tru_o), // 1
 		      list2(of_identifier("false"), fls_o), // 2
 		      list2(of_identifier("+"), of_function(add)), // 3
@@ -168,12 +168,10 @@ static obj initial_procedures(void)
 		      list2(of_identifier("<"), of_function(lt)), // 7
 		      list2(of_identifier("="), of_function(eqn)), // 8
 		      list2(of_identifier(">"), of_function(gt)), // 9
-		      list2(of_identifier("and"), of_function(and)), // 10
-		      list2(of_identifier("or"), of_function(or)), // 11
-		      list2(of_identifier("not"), of_function(not )), // 12
+		      list2(of_identifier("not"), of_function(not )), // 10
 		      // Implementation specific, (not in book):
 		      list2(of_identifier("%defined"),
-			    of_function(display_defined))); // 13
+			    of_function(display_defined))); // 11
 
 	return is_pair(_initial_procedures) ?
 		       _initial_procedures :

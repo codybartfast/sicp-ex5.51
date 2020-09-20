@@ -262,10 +262,14 @@ eval_dispatch:
 		goto ev_begin;
 	if (is_cond(expr))
 		goto ev_cond;
-	if (is_time(expr))
-		goto ev_timed;
 	if (is_let(expr))
 		goto ev_let;
+	if (is_and(expr))
+		goto ev_and;
+	if (is_or(expr))
+		goto ev_or;
+	if (is_time(expr))
+		goto ev_timed;
 	if (is_apply(expr))
 		goto ev_apply;
 	if (is_application(expr))
@@ -447,6 +451,68 @@ ev_cond:
 	expr = cond_to_if(expr);
 	goto eval_dispatch;
 
+// new - let
+ev_let:
+	expr = let_to_combination(expr);
+	goto eval_dispatch;
+
+// new - and
+ev_and:
+	save(CONT);
+	unev = operands(expr);
+
+ev_and_loop:
+	if(!no_operands(unev))
+		goto ev_and_operand;
+	val = tru_o;
+	cont = restore();
+	goto go_cont;
+
+ev_and_operand:
+	expr = first_operand(unev);
+	unev = rest_operands(unev);
+	save(ENV);
+	save(UNEV);
+	cont = ev_and_test;
+	goto eval_dispatch;
+
+ev_and_test:
+	unev = restore();
+	env = restore();
+	if(is_true(val))
+		goto ev_and_loop;
+	cont = restore();
+	goto go_cont;
+
+// new - or
+ev_or:
+	save(CONT);
+	unev = operands(expr);
+
+ev_or_loop:
+	if(!no_operands(unev))
+		goto ev_or_operand;
+	val = fls_o;
+	cont = restore();
+	goto go_cont;
+
+ev_or_operand:
+	expr = first_operand(unev);
+	unev = rest_operands(unev);
+	save(ENV);
+	save(UNEV);
+	cont = ev_or_test;
+	goto eval_dispatch;
+
+ev_or_test:
+	unev = restore();
+	env = restore();
+	if(is_false(val))
+		goto ev_or_loop;
+	val = tru_o;
+	cont = restore();
+	goto go_cont;
+
 // new
 ev_timed:
 	save(UNEV);
@@ -463,11 +529,6 @@ ev_timed_done:
 	timed_eval(unev);
 	unev = restore();
 	goto go_cont;
-
-// new
-ev_let:
-	expr = let_to_combination(expr);
-	goto eval_dispatch;
 
 // new
 ev_apply:
@@ -505,6 +566,14 @@ unknown_procedure_type:
 go_cont:
 	if (is_eq(cont, ev_return_caller))
 		return val;
+	if (is_eq(cont, ev_and))
+		goto ev_and;
+	if (is_eq(cont, ev_and_loop))
+		goto ev_and_loop;
+	if (is_eq(cont, ev_and_operand))
+		goto ev_and_operand;
+	if (is_eq(cont, ev_and_test))
+		goto ev_and_test;
 	if (is_eq(cont, ev_appl_accum_last_arg))
 		goto ev_appl_accum_last_arg;
 	if (is_eq(cont, ev_appl_accumulate_arg))
@@ -519,6 +588,14 @@ go_cont:
 		goto ev_definition_1;
 	if (is_eq(cont, ev_if_decide))
 		goto ev_if_decide;
+	if (is_eq(cont, ev_or))
+		goto ev_or;
+	if (is_eq(cont, ev_or_loop))
+		goto ev_or_loop;
+	if (is_eq(cont, ev_or_operand))
+		goto ev_or_operand;
+	if (is_eq(cont, ev_or_test))
+		goto ev_or_test;
 	if (is_eq(cont, ev_quoted))
 		goto ev_quoted;
 	if (is_eq(cont, ev_sequence_continue))

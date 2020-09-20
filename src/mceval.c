@@ -324,16 +324,6 @@ obj apply_primitive_procedure(obj proc, obj args)
 	return (to_function(proc))(args);
 }
 
-// new - time expression's evaluation
-bool is_time(obj exp)
-{
-	return is_tagged_list(exp, time_s);
-}
-
-obj timed_expr(obj exp)
-{
-	return cadr(exp);
-}
 
 // new - let->combination
 bool is_let(obj exp)
@@ -380,6 +370,30 @@ obj let_to_combination(obj letx)
 {
 	return make_proc_call(make_lambda(let_variables(letx), let_body(letx)),
 			      (let_values(letx)));
+}
+
+// new - and
+bool is_and(obj exp){
+	return is_tagged_list(exp, and_s);
+
+}
+
+// new - or
+bool is_or(obj exp){
+	return is_tagged_list(exp, or_s);
+
+}
+
+
+// new - time expression's evaluation
+bool is_time(obj exp)
+{
+	return is_tagged_list(exp, time_s);
+}
+
+obj timed_expr(obj exp)
+{
+	return cadr(exp);
 }
 
 // apply keyword

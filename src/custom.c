@@ -508,6 +508,7 @@ static obj display_definedp(struct outport *out)
 
 	newlinep(out);
 	displayp(out, of_string("Special Forms:"));
+	display_id(out, of_string("and"));
 	display_id(out, of_string("apply"));
 	display_id(out, of_string("begin"));
 	display_id(out, of_string("cond"));
@@ -515,6 +516,7 @@ static obj display_definedp(struct outport *out)
 	display_id(out, of_string("if"));
 	display_id(out, of_string("lambda"));
 	display_id(out, of_string("let"));
+	display_id(out, of_string("or"));
 	display_id(out, of_string("quote"));
 	display_id(out, of_string("time"));
 

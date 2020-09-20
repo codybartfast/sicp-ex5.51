@@ -246,6 +246,7 @@ obj (*to_function(obj dat))(obj)
 
 // KEYWORDS
 
+const obj and_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "and");
 SYMBOL(apply)
 SYMBOL(begin)
 SYMBOL(cond)
@@ -254,6 +255,7 @@ const obj else_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "else");
 const obj if_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "if");
 SYMBOL(let)
 SYMBOL(lambda)
+const obj or_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "or");
 SYMBOL(quote)
 const obj time_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "time");
 
@@ -261,6 +263,10 @@ const obj time_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "time");
 SYMBOL(procedure)
 
 // ECEVAL LABELS
+SYMBOL(ev_and)
+SYMBOL(ev_and_loop)
+SYMBOL(ev_and_operand)
+SYMBOL(ev_and_test)
 SYMBOL(ev_appl_accum_last_arg)
 SYMBOL(ev_appl_did_operator)
 SYMBOL(ev_appl_accumulate_arg)
@@ -269,6 +275,10 @@ SYMBOL(ev_apply_3)
 SYMBOL(ev_assignment_1)
 SYMBOL(ev_definition_1)
 SYMBOL(ev_if_decide)
+SYMBOL(ev_or)
+SYMBOL(ev_or_loop)
+SYMBOL(ev_or_operand)
+SYMBOL(ev_or_test)
 SYMBOL(ev_quoted)
 SYMBOL(ev_sequence_continue)
 SYMBOL(ev_timed_done)

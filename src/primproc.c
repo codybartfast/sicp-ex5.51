@@ -571,24 +571,6 @@ obj gt(const obj args)
 	return chkfold("> (greater than)", GT, args);
 }
 
-obj and (const obj args)
-{
-	if (is_null(args))
-		return tru_o;
-	if (!is_pair(args))
-		return err_improper("and", args);
-	return is_false(car(args)) ? fls_o : and(cdr(args));
-}
-
-obj or (const obj args)
-{
-	if (is_null(args))
-		return fls_o;
-	if (!is_pair(args))
-		return err_improper("or", args);
-	return is_true(car(args)) ? tru_o : or (cdr(args));
-}
-
 obj not(const obj args)
 {
 	obj chk;
