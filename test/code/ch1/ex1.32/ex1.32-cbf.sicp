@@ -2,10 +2,6 @@
 
 ; exercise 1.32, page 61
 
-(define (quotient a b)
-	(/ (- a (remainder a b))
-	   b))
-
 (define (pi-term i)
   (/
    (* 2 (quotient (+ i 3) 2))

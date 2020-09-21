@@ -2,10 +2,6 @@
 
 ; exercise 1.31, page 60
 
-(define (quotient a b)
-	(/ (- a (remainder a b))
-	   b))
-
 (define (prod-iter term a next b)
   (define (iter a result)
     (if (> a b)

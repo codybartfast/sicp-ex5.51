@@ -304,6 +304,10 @@ static obj add_extras(int ex, obj env)
 	if (ex >= 115) {
 		define_variable(of_identifier("remainder"), of_function(rem),
 				env);
+		evalstr("(define (quotient a b)"
+		       "  (/ (- a (remainder a b))"
+		       "     b))",
+		       env);
 	}
 	if (ex >= 116) {
 		evalstr("(define (even? n) (= (remainder n 2) 0))", env);
