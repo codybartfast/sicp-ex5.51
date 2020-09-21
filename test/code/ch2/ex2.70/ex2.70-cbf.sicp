@@ -1,0 +1,103 @@
+(%ex "2.70")
+
+; exercise 2.70, page 168
+
+(define (make-leaf symbol weight)
+  (list 'leaf symbol weight))
+(define (leaf? object)
+  (eq? (car object) 'leaf))
+(define (symbol-leaf x) (cadr x))
+(define (weight-leaf x) (caddr x))
+
+(define (make-code-tree left right)
+  (list left
+        right
+        (append (symbols left) (symbols right))
+        (+ (weight left) (weight right))))
+
+(define (left-branch tree) (car tree))
+
+(define (right-branch tree) (cadr tree))
+
+(define (symbols tree)
+  (if (leaf? tree)
+      (list (symbol-leaf tree))
+      (caddr tree)))
+(define (weight tree)
+  (if (leaf? tree)
+      (weight-leaf tree)
+      (cadddr tree)))
+
+(define (encode message tree)
+  (if (null? message)
+      '()
+      (append (encode-symbol (car message) tree)
+              (encode (cdr message) tree))))
+
+(define (contains tree symbol)
+  (define (list-contains list)
+    (cond ((null? list) false)
+          ((equal? symbol (car list)) true)
+          (else (list-contains (cdr list)))))
+  (if (leaf? tree)
+      (equal? symbol (symbol-leaf tree))
+      (list-contains (caddr tree))))
+
+(define (encode-symbol symbol tree)
+  (define (encode-symbol-1 tree bits)
+    (if (leaf? tree)
+        (reverse bits)
+        (cond  ((contains (left-branch tree) symbol)
+                (encode-symbol-1 (left-branch tree) (cons '0 bits)))
+               ((contains (right-branch tree) symbol)
+                (encode-symbol-1 (right-branch tree) (cons '1 bits)))
+               (else
+                (error "bad symbol -- ENCODE SYMBOL" symbol)))))
+  (encode-symbol-1 tree '()))
+
+(define (adjoin-set x set)
+  (cond ((null? set) (list x))
+        ((< (weight x) (weight (car set))) (cons x set))
+        (else (cons (car set)
+                    (adjoin-set x (cdr set))))))
+
+(define (make-leaf-set pairs)
+  (if (null? pairs)
+      '()
+      (let ((pair (car pairs)))
+        (adjoin-set (make-leaf (car pair)    ; symbol
+                               (cadr pair))  ; frequency
+                    (make-leaf-set (cdr pairs))))))
+
+(define (successive-merge node-set)
+  (cond ((null? node-set) '())
+        ((= 1 (length node-set)) (car node-set))
+        (else
+         (let ((fst (car node-set))
+               (snd (cadr node-set)))
+          (let ((new-tree (make-code-tree fst snd)))
+            (successive-merge (adjoin-set new-tree (cddr node-set))))))))
+
+(define (generate-huffman-tree pairs)
+  (successive-merge (make-leaf-set pairs)))
+
+(define song-pairs
+  (list (list 'A 2)
+        (list 'NA 16)
+        (list 'BOOM 1)
+        (list 'SHA 3)
+        (list 'GET  2)
+        (list 'YIP 9)
+        (list 'JOB  2)
+        (list 'WAH 1) ))
+
+(define song-tree (generate-huffman-tree song-pairs))
+
+(define song '(GET A JOB
+                    SHA NA NA NA NA NA NA NA NA
+                    GET A JOB
+                    SHA NA NA NA NA NA NA NA NA
+                    WAH YIP YIP YIP YIP YIP YIP YIP YIP YIP
+                    SHA BOOM))
+  
+(encode song song-tree)
