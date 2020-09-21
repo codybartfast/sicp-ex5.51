@@ -1,0 +1,84 @@
+(%ex "2.65")
+
+; exercise 2.65, page 160
+
+(define (element-of-set? x set)
+  (if (null? set)
+      false
+      (if (equal? x (car set))
+          true
+          (element-of-set? x (cdr set)))))
+
+(define (intersection-set set1 set2)
+  (if (or (null? set1) (null? set2))
+      '()
+      (if (element-of-set? (car set2) set1)
+          (cons (car set2) (intersection-set set1 (cdr set2)))
+          (intersection-set set1 (cdr set2)))))
+
+(define (union-set-ordered set1 set2)
+  (cond ((null? set1) set2)
+        ((null? set2) set1)
+        ((< (car set1) (car set2))
+         (cons (car set1) (union-set-ordered (cdr set1) set2)))
+        ((= (car set1) (car set2))
+         (cons (car set1) (union-set-ordered (cdr set1) (cdr set2))))
+        ((> (car set1) (car set2))
+         (cons (car set2) (union-set-ordered set1 (cdr set2))))))
+
+(define (entry tree) (car tree))
+(define (left-branch tree) (cadr tree))
+(define (right-branch tree) (caddr tree))
+(define (make-tree entry left right)
+  (list entry left right))
+
+(define (tree->list tree)
+  (define (copy-to-list tree result-list)
+    (if (null? tree)
+        result-list
+        (copy-to-list (left-branch tree)
+                      (cons (entry tree)
+                            (copy-to-list (right-branch tree)
+                                          result-list)))))
+  (copy-to-list tree '()))
+
+(define (list->tree elements)
+  (car (partial-tree elements (length elements))))
+
+(define (partial-tree elts n)
+  (if (= n 0)
+      (cons '() elts)
+      (let ((left-size (quotient (- n 1) 2)))
+        (let ((left-result (partial-tree elts left-size)))
+          (let ((left-tree (car left-result))
+                (non-left-elts (cdr left-result))
+                (right-size (- n (+ left-size 1))))
+            (let ((this-entry (car non-left-elts))
+                  (right-result (partial-tree (cdr non-left-elts)
+                                              right-size)))
+              (let ((right-tree (car right-result))
+                    (remaining-elts (cdr right-result)))
+                (cons (make-tree this-entry left-tree right-tree)
+                      remaining-elts))))))))
+
+(define (union-set-tree set1 set2)
+  (list->tree (union-set-ordered
+               (tree->list set1)
+               (tree->list set2))))
+
+(define (t list) (list->tree list))
+
+(newline)(display "union-set-tree:")(newline)
+(union-set-tree (t '(1 2 3)) (t '(4 5 6)))
+(union-set-tree (t '(1 2 3)) (t '(1 2 3)))
+(union-set-tree (t '(1 2 3)) (t '(2 3 4)))
+
+(define (intersection-set-tree set1 set2)
+  (list->tree (intersection-set
+               (tree->list set1)
+               (tree->list set2))))
+
+(newline)(display "intersection-set-tree:")(newline)
+(intersection-set-tree (t '(1 2 3)) (t '(4 5 6)))
+(intersection-set-tree (t '(1 2 3)) (t '(1 2 3)))
+(intersection-set-tree (t '(1 2 3)) (t '(2 3 4)))

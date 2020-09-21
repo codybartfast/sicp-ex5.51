@@ -1,0 +1,16 @@
+(%ex "2.61")
+
+; exercise 2.61, page 155
+
+(define (adjoin-set-ordered x set)
+  (cond ((null? set) (list x))
+        ((< x (car set)) (cons x set))
+        ((= x (car set)) set)
+        (else (cons (car set) (adjoin-set-ordered x (cdr set))))))
+
+(display "adjoin-set-ordered:")(newline)
+(adjoin-set-ordered 5 '())
+(adjoin-set-ordered 5 '(6 7))
+(adjoin-set-ordered 5 '(3 4))
+(adjoin-set-ordered 5 '(4 6))
+(adjoin-set-ordered 5 '(4 5 6))

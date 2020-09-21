@@ -1,0 +1,29 @@
+(%ex "2.66")
+
+; exercise 2.66, page 161
+
+(define (entry tree) (car tree))
+(define (left-branch tree) (cadr tree))
+(define (right-branch tree) (caddr tree))
+
+(define (lookup key get-key tree)
+  (if (null? tree)
+      false
+      (let ((record (entry tree)))
+        (let ((record-key (get-key record)))
+          (cond ((= key record-key) record)
+                ((> key record-key) (lookup key get-key (left-branch tree)))
+                ((< key record-key) (lookup key get-key (right-branch tree))))))))
+
+(let ((pete '(1 "Peter Puds" 23 "Manchester"))
+      (jane '(2 "Jane Jigs" 45 "Brimingham"))
+      (anne '(3 "Anne Ack" 19 "Coventry"))
+      (mick '(4 "Mick Muck" 16 "Hastings"))
+      (fu   '(5 "Fu Manchu" 189 "Windsor")))
+  (define db (list pete
+                   (list mick
+                         '() (list anne '() '()))
+                   (list fu
+                         (list jane '()) '())))  
+  (define (get-key record) (car record))
+  (lookup 3 get-key db))
