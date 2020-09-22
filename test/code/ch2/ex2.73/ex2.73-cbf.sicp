@@ -1,0 +1,53 @@
+(%ex "2.73")
+
+; exercise 2.73, page 184
+
+(define (deriv exp var)
+   (cond ((number? exp) 0)
+         ((variable? exp) (if (same-variable? exp var) 1 0))
+         (else ((get 'deriv (operator exp)) (operands exp)
+                                            var))))
+(define (operator exp) (car exp))
+(define (operands exp) (cdr exp))
+
+;; Part a & c
+
+(define (variable? exp) (symbol? exp))
+(define (same-variable? v1 v2)
+  (and (variable? v1) (variable? v2) (eq? v1 v2)))
+
+(define (install-deriv-package)
+  (define (make-sum a1 a2) (list '+ a1 a2))
+  (define (addend s) (car s))
+  (define (augend s) (cadr s))
+  (define (deriv-sum operands var)
+    (make-sum (deriv (addend operands) var)
+              (deriv (augend operands) var)))
+  (define (make-product m1 m2) (list '* m1 m2))
+  (define (multiplier p) (car p))
+  (define (multiplicand p) (cadr p))
+  (define (deriv-mul operands var)
+    (make-sum
+      (make-product (multiplier operands)
+                    (deriv (multiplicand operands) var))
+      (make-product (deriv (multiplier operands) var)
+                    (multiplicand operands))))
+  (define (make-exponent base exponent) (list '** base exponent))
+  (define (base ops) (car ops))
+  (define (exponent ops) (cadr ops))
+  (define (deriv-exp operands var)
+    (make-product
+          (make-product (exponent operands)
+	                (make-exponent (base operands)
+			               (make-sum (exponent operands) '-1)))
+          (deriv (base operands) var)))
+  (put 'deriv '+ deriv-sum)
+  (put 'deriv '* deriv-mul)
+  (put 'deriv '** deriv-exp))
+
+(install-deriv-package)
+
+(deriv '(+ x 3) 'x)
+(deriv '(* x y) 'x)
+(deriv '(* (* x y) (+ x 3)) 'x)
+(deriv '(** x 3) 'x)
