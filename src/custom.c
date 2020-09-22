@@ -275,9 +275,61 @@ static void add_pict(obj env)
 		env);
 }
 
+static void add_optable(obj env)
+{
+	define_variable(of_identifier("__%%setd"), of_function(set_cdr_p), env);
+	evalstr("(define (lookup key table)"
+		"  (let ((record (assoc key (cdr table))))"
+		"    (if record"
+		"        (cdr record)"
+		"        false)))",
+		env);
+	evalstr("(define (assoc key records)"
+		"  (cond ((null? records) false)"
+		"        ((equal? key (caar records)) (car records))"
+		"        (else (assoc key (cdr records)))))",
+		env);
+	evalstr("(define (make-table)"
+		"  (let ((local-table (list '*table*)))"
+		"    (define (lookup key-1 key-2)"
+		"      (let ((subtable (assoc key-1 (cdr local-table))))"
+		"        (if subtable"
+		"            (let ((record (assoc key-2 (cdr subtable))))"
+		"              (if record"
+		"                  (cdr record)"
+		"                  false))"
+		"            false)))"
+		"    (define (insert! key-1 key-2 value)"
+		"      (let ((subtable (assoc key-1 (cdr local-table))))"
+		"        (if subtable"
+		"            (let ((record (assoc key-2 (cdr subtable))))"
+		"              (if record"
+		"                  (__%%setd record value)"
+		"                  (__%%setd subtable"
+		"                            (cons (cons key-2 value)"
+		"                                  (cdr subtable)))))"
+		"            (__%%setd local-table"
+		"                      (cons (list key-1"
+		"                                  (cons key-2 value))"
+		"                            (cdr local-table)))))"
+		"      'ok)"
+		"    (define (dispatch m)"
+		"      (cond ((eq? m 'lookup-proc) lookup)"
+		"            ((eq? m 'insert-proc!) insert!)"
+		"            (else (error \"Unknown operation-- TABLE\" m))))"
+		"    dispatch))",
+		env);
+	evalstr("(define operation-table (make-table))", env);
+	evalstr("(define get (operation-table 'lookup-proc))", env);
+	evalstr("(define put (operation-table 'insert-proc!))", env);
+}
+
 static obj add_extras(int ex, obj env)
 {
 	define_variable(of_identifier("%ex"), of_function(pcnt_ex), env);
+	define_variable(of_identifier("load"), of_function(loadq), env);
+	define_variable(of_identifier("loadv"), of_function(loadv), env);
+
 	if (ex > 101) {
 		//define_variable(of_identifier("abs"), of_function(absl), env);
 		evalstr("(define (abs x) (if (< x 0) (- x) x))", env);
@@ -363,9 +415,10 @@ static obj add_extras(int ex, obj env)
 		define_variable(of_identifier("floor"), of_function(flr), env);
 	}
 	if (ex >= 201) {
-		define_variable(of_identifier("cons"), of_function(consp), env);
-		define_variable(of_identifier("car"), of_function(carp), env);
-		define_variable(of_identifier("cdr"), of_function(cdrp), env);
+		define_variable(of_identifier("cons"), of_function(cons_p),
+				env);
+		define_variable(of_identifier("car"), of_function(car_p), env);
+		define_variable(of_identifier("cdr"), of_function(cdr_p), env);
 	}
 	if (ex >= 203) {
 		define_variable(of_identifier("sqrt"), of_function(sqroot),
@@ -453,9 +506,8 @@ static obj add_extras(int ex, obj env)
 				of_function(is_symbol_p), env);
 	}
 	if (ex >= 273) {
-		define_variable(of_identifier("load"), of_function(loadq), env);
-		define_variable(of_identifier("loadv"), of_function(loadv),
-				env);
+		add_optable(env);
+		evalstr("(define pi 3.14159265358979323846)", env);
 	}
 	return unspecified;
 }

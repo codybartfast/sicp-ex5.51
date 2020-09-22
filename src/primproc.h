@@ -38,9 +38,11 @@ obj gt(const obj);
 
 obj not(const obj);
 
-obj consp(const obj);
-obj carp(const obj);
-obj cdrp(const obj);
+obj cons_p(const obj);
+obj car_p(const obj);
+obj set_car_p(const obj);
+obj cdr_p(const obj);
+obj set_cdr_p(const obj);
 
 bool is_eq(const obj, const obj);
 obj is_eq_p(const obj);

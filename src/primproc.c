@@ -579,7 +579,7 @@ obj not(const obj args)
 	return is_false(car(args)) ? tru_o : fls_o;
 }
 
-obj consp(const obj args)
+obj cons_p(const obj args)
 {
 	obj chk;
 	if (is_err(chk = chkarity("cons", 2, args)))
@@ -587,7 +587,7 @@ obj consp(const obj args)
 	return cons(car(args), cadr(args));
 }
 
-obj carp(const obj args)
+obj car_p(const obj args)
 {
 	obj chk;
 	if (is_err(chk = chkarity("car", 1, args)))
@@ -595,12 +595,28 @@ obj carp(const obj args)
 	return caar(args);
 }
 
-obj cdrp(const obj args)
+obj set_car_p(const obj args)
+{
+	obj chk;
+	if (is_err(chk = chkarity("set-car!", 2, args)))
+		return chk;
+	return set_car(car(args), cadr(args));
+}
+
+obj cdr_p(const obj args)
 {
 	obj chk;
 	if (is_err(chk = chkarity("cdr", 1, args)))
 		return chk;
 	return cdar(args);
+}
+
+obj set_cdr_p(const obj args)
+{
+	obj chk;
+	if (is_err(chk = chkarity("set-cdr!", 2, args)))
+		return chk;
+	return set_cdr(car(args), cadr(args));
 }
 
 // EQUALITY
@@ -669,7 +685,8 @@ obj is_symbol_p(obj args)
 	return is_symbol(car(args)) ? tru_o : fls_o;
 }
 
-obj pcnt_ex(obj args){
+obj pcnt_ex(obj args)
+{
 	(void)args;
 	displaydat(of_string("Ignoring (%ex ...) - not first expresion."));
 	newline(emptylst);
