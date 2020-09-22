@@ -4,8 +4,10 @@
 #include "custom.h"
 #include "environment.h"
 #include "eval.h"
+#include "load.h"
 #include "output.h"
 #include "parser.h"
+#include "primproc.h"
 #include "pict.h"
 #include "version.h"
 
@@ -18,43 +20,22 @@ static struct inport *usage(void);
 
 int main(int argc, char *argv[])
 {
-	// int c;
-	// int i = 14;
-
-	// bool prnchar = true;
-	// while ((c = getchar()) != EOF) {
-	// 	if (prnchar) {
-	// 		printf("%c", c);
-	// 	} else {
-	// 		printf("%d", c);
-	// 		printf(" ");
-	// 	}
-	// 	if (i-- == 0) {
-	// 		prnchar = false;
-	// 	}
-	// }
-	// return 0;
-
 	obj exp;
-	struct inport *port = parseargs(argc, argv);
-	if (port == NULL)
+	struct inport *in = parseargs(argc, argv);
+	if (in == NULL)
+		return 0;
+	struct outport *out = openout_ptr(stdout);
+	if (out == NULL)
 		return 0;
 
-	exp = do_head(tge(), port);
-	for (; !is_err(exp) && !is_eof(exp); exp = readp(port)) {
-		obj dat = eval(exp, tge());
-		if (is_err(dat))
-			break;
-		if (is_void(dat))
-			continue;
-		write(dat);
-		newline(emptylst);
-	}
-	newline(emptylst);
+	exp = do_head(tge(), in);
+	load_u(in, openout_ptr(stdout), &exp, true);
+	newlinep(out);
 	write_canvas_if_painted(emptylst);
 
 	parser_freetemp();
-	in_close(port);
+	out_close(out);
+	in_close(in);
 	return 0;
 }
 

@@ -50,4 +50,6 @@ obj is_equal_p(const obj);
 obj is_number_p(obj);
 obj is_symbol_p(obj);
 
+obj pcnt_ex(obj);
+
 #endif

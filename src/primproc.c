@@ -668,3 +668,10 @@ obj is_symbol_p(obj args)
 		return chk;
 	return is_symbol(car(args)) ? tru_o : fls_o;
 }
+
+obj pcnt_ex(obj args){
+	(void)args;
+	displaydat(of_string("Ignoring (%ex ...) - not first expresion."));
+	newline(emptylst);
+	return _void;
+}

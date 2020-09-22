@@ -14,6 +14,7 @@ obj error_argument_value(const char *area, const char *message, ...);
 obj error_arity(const char *area, const char *message, ...);
 obj error_eval(const char *area, const char *message, ...);
 obj error_internal(const char *area, const char *message, ...);
+obj error_io(const char *area, const char *message, ...);
 obj error_parser(const char *area, const char *message, ...);
 obj error_syntax(const char *area, const char *message, ...);
 obj error_unbound_variable(const char *area, const char *message, ...);

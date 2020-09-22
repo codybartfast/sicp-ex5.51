@@ -7,6 +7,7 @@
 #include "error.h"
 #include "eval.h"
 #include "list.h"
+#include "load.h"
 #include "parser.h"
 #include "pict.h"
 #include "primproc.h"
@@ -276,6 +277,7 @@ static void add_pict(obj env)
 
 static obj add_extras(int ex, obj env)
 {
+	define_variable(of_identifier("%ex"), of_function(pcnt_ex), env);
 	if (ex > 101) {
 		//define_variable(of_identifier("abs"), of_function(absl), env);
 		evalstr("(define (abs x) (if (< x 0) (- x) x))", env);
@@ -305,9 +307,9 @@ static obj add_extras(int ex, obj env)
 		define_variable(of_identifier("remainder"), of_function(rem),
 				env);
 		evalstr("(define (quotient a b)"
-		       "  (/ (- a (remainder a b))"
-		       "     b))",
-		       env);
+			"  (/ (- a (remainder a b))"
+			"     b))",
+			env);
 	}
 	if (ex >= 116) {
 		evalstr("(define (even? n) (= (remainder n 2) 0))", env);
@@ -449,6 +451,11 @@ static obj add_extras(int ex, obj env)
 				of_function(is_number_p), env);
 		define_variable(of_identifier("symbol?"),
 				of_function(is_symbol_p), env);
+	}
+	if (ex >= 273) {
+		define_variable(of_identifier("load"), of_function(loadq), env);
+		define_variable(of_identifier("loadv"), of_function(loadv),
+				env);
 	}
 	return unspecified;
 }

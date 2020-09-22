@@ -9,13 +9,14 @@
 
 enum errsbtyp {
 	ERROR_MEMORY = 1,
-	ERROR_ARGUMENT_TYPE, //2
-	ERROR_ARGUMENT_VALUE, //3
-	ERROR_EVAL, //4
-	ERROR_INTERNAL, //5
-	ERROR_PARSER, //6
-	ERROR_UNBOUND_VARIABLE, //7
-	ERROR_USER //8
+	ERROR_ARGUMENT_TYPE, // 2
+	ERROR_ARGUMENT_VALUE, // 3
+	ERROR_EVAL, // 4
+	ERROR_INTERNAL, // 5
+	ERROR_IO, // 6
+	ERROR_PARSER, // 7
+	ERROR_UNBOUND_VARIABLE, // 8
+	ERROR_USER // 9
 };
 
 const char *errstr(obj dat)
@@ -91,7 +92,15 @@ obj error_internal(const char *area, const char *message, ...)
 {
 	va_list args;
 	va_start(args, message);
-	return print_make_err(ERROR_INTERNAL, "Programmer Error", area, message,
+	return print_make_err(ERROR_INTERNAL, "Internal (sicp-scheme) Error", area, message,
+			      args);
+}
+
+obj error_io(const char *area, const char *message, ...)
+{
+	va_list args;
+	va_start(args, message);
+	return print_make_err(ERROR_INTERNAL, "IO Error", area, message,
 			      args);
 }
 
