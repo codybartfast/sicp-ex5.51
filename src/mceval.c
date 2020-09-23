@@ -52,6 +52,12 @@ static bool is_tagged_list(obj exp, obj tag)
 	return is_pair(exp) ? is_eq(car(exp), tag) : false;
 }
 
+// ln 127
+bool is_assignment(obj exp)
+{
+	return is_tagged_list(exp, set);
+}
+
 // ln 129
 obj assignment_variable(obj exp)
 {
@@ -324,7 +330,6 @@ obj apply_primitive_procedure(obj proc, obj args)
 	return (to_function(proc))(args);
 }
 
-
 // new - let->combination
 bool is_let(obj exp)
 {
@@ -373,17 +378,16 @@ obj let_to_combination(obj letx)
 }
 
 // new - and
-bool is_and(obj exp){
+bool is_and(obj exp)
+{
 	return is_tagged_list(exp, and_s);
-
 }
 
 // new - or
-bool is_or(obj exp){
+bool is_or(obj exp)
+{
 	return is_tagged_list(exp, or_s);
-
 }
-
 
 // new - time expression's evaluation
 bool is_time(obj exp)

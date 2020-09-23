@@ -589,6 +589,7 @@ static obj display_definedp(struct outport *out)
 	display_id(out, of_string("let"));
 	display_id(out, of_string("or"));
 	display_id(out, of_string("quote"));
+	display_id(out, of_string("set!"));
 	display_id(out, of_string("time"));
 
 	newlinep(out);

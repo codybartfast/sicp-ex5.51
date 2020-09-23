@@ -121,6 +121,7 @@ extern const obj let;
 extern const obj lambda;
 extern const obj or_s;
 extern const obj quote;
+extern const obj set;
 extern const obj time_s;
 
 // EVAL TAGS

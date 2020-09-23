@@ -14,6 +14,7 @@
 
 static obj the_empty_environment(void);
 static obj lvv_env_loop(obj var, obj env);
+static obj svv_env_loop(obj var, obj val, obj env);
 static obj setup_environment(void);
 
 //ln 231
@@ -122,7 +123,7 @@ static obj lvv_scan(obj var, obj env, obj vars, obj vals)
 // ln 250
 static obj lvv_env_loop(obj var, obj env)
 {
-	if (is_null(env)) { // should be eq - but don't have it yet.
+	if (is_eq(env, the_empty_environment())) {
 		return error_unbound_variable(AREA, "%s", to_string(var));
 	}
 	obj frame = first_frame(env);
@@ -132,8 +133,36 @@ static obj lvv_env_loop(obj var, obj env)
 // ln 250
 obj lookup_variable_value(obj var, obj env)
 {
-	obj val = lvv_env_loop(var, env);
-	return val;
+	return lvv_env_loop(var, env);
+}
+
+// ln 265
+static obj svv_scan(obj var, obj val, obj env, obj vars, obj vals)
+{
+	if (is_null(vars)) {
+		return svv_env_loop(var, val, enclosing_environment(env));
+	} else if (is_eq(var, car(vars))) {
+		return set_car(vals, val);
+	} else {
+		return svv_scan(var, val, env, cdr(vars), cdr(vals));
+	}
+}
+
+// ln 265
+static obj svv_env_loop(obj var, obj val, obj env)
+{
+	if (is_eq(env, the_empty_environment())) {
+		return error_unbound_variable(AREA, "%s", to_string(var));
+	}
+	obj frame = first_frame(env);
+	return svv_scan(var, val, env, frame_variables(frame),
+			frame_values(frame));
+}
+
+// ln 265
+obj set_variable_value(obj var, obj val, obj env)
+{
+	return svv_env_loop(var, val, env);
 }
 
 // ln 280

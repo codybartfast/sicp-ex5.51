@@ -252,6 +252,8 @@ eval_dispatch:
 		goto ev_variable;
 	if (is_quoted(expr))
 		goto ev_quoted;
+	if (is_assignment(expr))
+		goto ev_assignment;
 	if (is_definition(expr))
 		goto ev_definition;
 	if (is_if(expr))
@@ -430,6 +432,24 @@ ev_if_consequent:
 	expr = if_consequent(expr);
 	goto eval_dispatch;
 
+// ln 399
+ev_assignment:
+	unev = assignment_variable(expr);
+	save(UNEV); // save variable for later
+	expr = assignment_value(expr);
+	save(ENV);
+	save(CONT);
+	cont = ev_assignment_1;
+	goto eval_dispatch; // evaluate the assignment value
+
+ev_assignment_1:
+	cont = restore();
+	env = restore();
+	unev = restore();
+	set_variable_value(unev, val, env);
+	val = ok;
+	goto go_cont;
+
 // ln 416
 ev_definition:
 	unev = definition_variable(expr);
@@ -462,7 +482,7 @@ ev_and:
 	unev = operands(expr);
 
 ev_and_loop:
-	if(!no_operands(unev))
+	if (!no_operands(unev))
 		goto ev_and_operand;
 	val = tru_o;
 	cont = restore();
@@ -479,7 +499,7 @@ ev_and_operand:
 ev_and_test:
 	unev = restore();
 	env = restore();
-	if(is_true(val))
+	if (is_true(val))
 		goto ev_and_loop;
 	cont = restore();
 	goto go_cont;
@@ -490,7 +510,7 @@ ev_or:
 	unev = operands(expr);
 
 ev_or_loop:
-	if(!no_operands(unev))
+	if (!no_operands(unev))
 		goto ev_or_operand;
 	val = fls_o;
 	cont = restore();
@@ -507,7 +527,7 @@ ev_or_operand:
 ev_or_test:
 	unev = restore();
 	env = restore();
-	if(is_false(val))
+	if (is_false(val))
 		goto ev_or_loop;
 	val = tru_o;
 	cont = restore();
@@ -584,6 +604,8 @@ go_cont:
 		goto ev_apply_2;
 	if (is_eq(cont, ev_apply_3))
 		goto ev_apply_3;
+	if (is_eq(cont, ev_assignment_1))
+		goto ev_assignment_1;
 	if (is_eq(cont, ev_definition_1))
 		goto ev_definition_1;
 	if (is_eq(cont, ev_if_decide))

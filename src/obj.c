@@ -255,6 +255,7 @@ SYMBOL(let)
 SYMBOL(lambda)
 const obj or_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "or");
 SYMBOL(quote)
+const obj set = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "set!");
 const obj time_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "time");
 
 // TAGS
