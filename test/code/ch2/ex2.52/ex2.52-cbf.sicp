@@ -44,7 +44,7 @@
                    (make-vect .3 0)
                    (make-vect 0 .3)))
 
-(define %pict-path "pict/2.52.a-segments")
+(define pict-path "pict/2.52.a-segments")
 (write-frame)
 
 ;; Part b.
@@ -60,7 +60,7 @@
                   (below bottom-right corner))))))
 
 ((corner-split painter 4) frame)
-(define %pict-path "pict/2.52.b-corner")
+(define pict-path "pict/2.52.b-corner")
 (write-frame)
 
 ;; Part c.
@@ -71,4 +71,4 @@
       (below (flip-vert half) half))))
 
 ((square-limit painter 4) frame)
-(define %pict-path "pict/2.52.c-limit")
+(define pict-path "pict/2.52.c-limit")

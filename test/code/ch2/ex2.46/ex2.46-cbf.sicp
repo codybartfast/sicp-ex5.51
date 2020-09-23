@@ -1,7 +1,7 @@
 (%ex "2.46")
 
 ; exercise 2.46, page 136
-(define %pict-path "pict/2.46-vect")
+(define pict-path "pict/2.46-vect")
 
 (define (make-vect xcor ycor)
   (cons xcor ycor))

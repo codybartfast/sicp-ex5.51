@@ -41,5 +41,5 @@
    (make-vect .5 -.5)
    (make-vect .5 .5)))
 
-(define %pict-path "pict/2.47-frame2")
+(define pict-path "pict/2.47-frame2")
 (painter frame-c)

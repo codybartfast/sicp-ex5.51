@@ -176,7 +176,7 @@ obj write_canvas(obj args)
 	struct strbldr *sb = new_strbldr();
 	if (sb == NULL)
 		return error_memory(AREA, "making strbldr");
-	sb_adds(sb, to_string(lookup_variable_value(of_identifier("%pict-path"),
+	sb_adds(sb, to_string(lookup_variable_value(of_identifier("pict-path"),
 						    tge())));
 	sb_adds(sb, ".png");
 	if (sb->errored)

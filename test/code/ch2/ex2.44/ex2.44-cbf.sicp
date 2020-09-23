@@ -1,7 +1,7 @@
 (%ex "2.44")
 
 ; exercise 2.44, page 132
-(define %pict-path "pict/2.44-up-split")
+(define pict-path "pict/2.44-up-split")
 
 (define (up-split painter n)
   (if (= n 0)

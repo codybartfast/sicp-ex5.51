@@ -44,4 +44,4 @@
   (segments->painter segments))
 
 (painter frame)
-(define %pict-path "pict/2.48-segments")
+(define pict-path "pict/2.48-segments")

@@ -27,5 +27,5 @@
   (below (beside (rotate180 painter) (rotate270 painter))
          (beside (flip-horiz painter) painter)))
 
-(define %pict-path "pict/2.50-fliprot")
+(define pict-path "pict/2.50-fliprot")
 (pict frame)

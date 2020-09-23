@@ -37,7 +37,7 @@
         ((paint-top    painter2) frame)))))
 
 ((below-like-beside painter painter) frame)
-(define %pict-path "pict/2.51-below1")
+(define pict-path "pict/2.51-below1")
 (write-frame)
 
 (define (below-using-beside painter1 painter2)
@@ -45,4 +45,4 @@
    (beside (rotate270 painter1) (rotate270 painter2))))
 
 ((below-using-beside painter painter) frame)
-(define %pict-path "pict/2.51-below2")
+(define pict-path "pict/2.51-below2")

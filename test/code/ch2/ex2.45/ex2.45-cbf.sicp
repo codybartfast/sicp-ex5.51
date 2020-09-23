@@ -1,7 +1,7 @@
 (%ex "2.45")
 
 ; exercise 2.45, page 134
-(define %pict-path "pict/2.45-split")
+(define pict-path "pict/2.45-split")
 
 (define (split outer inner)
   (define (splitter painter n)

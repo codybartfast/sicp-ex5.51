@@ -21,7 +21,7 @@
     (segments->painter (list left top right bottom))))
 
 (outline frame)
-(define %pict-path "pict/2.49-boarder")
+(define pict-path "pict/2.49-boarder")
 (write-frame)
 
 ;; Part b.
@@ -32,7 +32,7 @@
     (segments->painter (list bl-tr tl-br))))
 
 (x frame)
-(define %pict-path "pict/2.49-x")
+(define pict-path "pict/2.49-x")
 (write-frame)
 
 ;; Part c.
@@ -45,7 +45,7 @@
     (segments->painter (list tl tr br bl))))
 
 (diamond frame)
-(define %pict-path "pict/2.49-diamond")
+(define pict-path "pict/2.49-diamond")
 (write-frame)
 
 ;; Part d.
@@ -74,4 +74,4 @@
     (make-segment (make-vect 0.155 0.399) (make-vect 0 0.642)))))
 
 (george frame)
-(define %pict-path "pict/2.49-george")
+(define pict-path "pict/2.49-george")

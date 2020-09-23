@@ -6,7 +6,7 @@
 (define wave4 (below wave2 wave2))
 
 (wave4 frame)
-(define %pict-path "pict/wave4-1")
+(define pict-path "pict/wave4-1")
 (write-frame)
 
 ; section 2.2.4, page 130
@@ -18,7 +18,7 @@
 (define wave4 (flipped-pairs wave))
 
 (wave4 frame)
-(define %pict-path "pict/wave4-2")
+(define pict-path "pict/wave4-2")
 (write-frame)
 
 ; section 2.2.4, page 131
@@ -47,5 +47,5 @@
     (let ((half (beside (flip-horiz quarter) quarter)))
       (below (flip-vert half) half))))
 
-(define %pict-path "pict/square-limit")
+(define pict-path "pict/square-limit")
 ((square-limit rogers 4) frame)
