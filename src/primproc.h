@@ -22,6 +22,7 @@ obj inc(const obj);
 obj dec(const obj);
 obj sine(const obj);
 obj cosine(const obj);
+obj arctan(const obj);
 obj flr(const obj);
 obj sqroot(const obj);
 

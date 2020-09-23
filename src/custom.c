@@ -507,6 +507,8 @@ static obj add_extras(int ex, obj env)
 	}
 	if (ex >= 273) {
 		add_optable(env);
+		define_variable(of_identifier("atan"), of_function(arctan),
+				env);
 		evalstr("(define pi 3.14159265358979323846)", env);
 	}
 	return unspecified;

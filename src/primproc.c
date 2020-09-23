@@ -380,6 +380,18 @@ obj cosine(const obj args)
 	return applyun("cos", COS, args);
 }
 
+obj arctan(const obj args)
+{
+	obj err;
+
+	if (is_err(err = chkarity("atan", 2, args)))
+		return err;
+	if (is_err(err = allnum("atan", args)))
+		return err;
+	return of_floating(atan2(to_floating(cnv_to_fltnum(car(args))),
+				 to_floating(cnv_to_fltnum(cadr(args)))));
+}
+
 obj flr(const obj args)
 {
 	return applyun("floor", FLR, args);
