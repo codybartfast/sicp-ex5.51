@@ -1,0 +1,14 @@
+(%ex "2.77")
+
+; exercise 2.77, page 192
+
+(load "ex2.77__text")
+
+(install-rectangular-package)
+(install-polar-package)
+(install-scheme-number-package)
+(install-rational-package)
+(install-complex-package)
+
+(newline)
+(magnitude (make-complex-from-real-imag 3 4))

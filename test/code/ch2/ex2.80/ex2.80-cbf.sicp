@@ -1,0 +1,42 @@
+(%ex "2.80")
+
+; exercise 2.80, page 193
+
+(load "../ex2.77/ex2.77__text")
+
+(install-rectangular-package)
+(install-polar-package)
+(install-scheme-number-package)
+(install-rational-package)
+(install-complex-package)
+
+(define (install-zero-predicate-package)
+  (define (numer x) (car x))
+  (put '=zero? '(scheme-number)
+       (lambda (x) (= 0 x)))
+  (put '=zero? '(rational)
+       (lambda (x)
+         (= 0 (numer x))))
+  (put '=zero? '(complex)
+       (lambda (x)
+         (= 0 (magnitude x)))))
+
+(define (=zero? x) (apply-generic '=zero? x))
+
+(install-zero-predicate-package)
+
+(newline)
+(define sn (make-scheme-number 0))
+(define sn1 (make-scheme-number 0.1))
+(define rn (make-rational 0 3))
+(define rn1 (make-rational 1 4))
+(define cm (make-complex-from-real-imag 0 0))
+(define cm1 (make-complex-from-mag-ang 1 0))
+
+(newline)
+(=zero? sn)
+(=zero? sn1)
+(=zero? rn)
+(=zero? rn1)
+(=zero? cm)
+(=zero? cm1)

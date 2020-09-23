@@ -1,0 +1,49 @@
+(%ex "2.79")
+
+; exercise 2.79, page 193
+
+(load "../ex2.77/ex2.77__text")
+
+(install-rectangular-package)
+(install-polar-package)
+(install-scheme-number-package)
+(install-rational-package)
+(install-complex-package)
+
+(define (install-equality-predicate-package)
+  (define (numer x) (car x))
+  (define (denom x) (cdr x))
+  (put 'equ? '(scheme-number scheme-number)
+       (lambda (x y) (= x y)))
+  (put 'equ? '(rational rational)
+       (lambda (x y)
+         (=
+          (* (numer x) (denom y))
+          (* (denom x) (numer y)))))
+  (put 'equ? '(complex complex)
+       (lambda (x y)
+         (and
+          (= (real-part x) (real-part y))
+          (= (imag-part x) (imag-part y))))))
+(define (equ? x y) (apply-generic 'equ? x y))
+
+(install-equality-predicate-package)
+
+(newline)
+(define sn (make-scheme-number 5))
+(define sn1 (make-scheme-number 5.0))
+(define sn2 (make-scheme-number 6))
+(define rn (make-rational 15 3))
+(define rn1 (make-rational 20 4))
+(define rn2 (make-rational 18 3))
+(define cm (make-complex-from-real-imag 5 0))
+(define cm1 (make-complex-from-mag-ang 5 0))
+(define cm2 (make-complex-from-real-imag 6 0))
+
+(newline)
+(equ? sn sn1)
+(equ? sn sn2)
+(equ? rn rn1)
+(equ? rn rn2)
+(equ? cm cm1)
+(equ? cm cm2)

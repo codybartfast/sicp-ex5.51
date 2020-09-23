@@ -200,13 +200,13 @@
   ((get 'make-from-mag-ang 'polar) r a))
 
 
-; use it
+; ; use it
 
-(install-rectangular-package)
-(install-polar-package)
-(define pythag (make-from-real-imag 4 3))
-(define forty5  (make-from-mag-ang 1 (/ pi 4)))
-(angle pythag)
-(real-part pythag)
-(angle forty5)
-(real-part forty5)
+; (install-rectangular-package)
+; (install-polar-package)
+; (define pythag (make-from-real-imag 4 3))
+; (define forty5  (make-from-mag-ang 1 (/ pi 4)))
+; (angle pythag)
+; (real-part pythag)
+; (angle forty5)
+; (real-part forty5)
