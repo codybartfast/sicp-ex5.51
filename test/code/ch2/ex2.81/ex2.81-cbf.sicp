@@ -1,0 +1,81 @@
+(%ex "2.81")
+(load "arith2.81")
+
+; exercise 2.81, page 200
+
+(define (scheme-number->complex n)
+  (make-complex-from-real-imag (contents n) 0))
+
+(define (put-coercion t1 t2 coerce)
+  (put '__%%coerce (list t1 t2) coerce))
+(define (get-coercion t1 t2)
+  (get '__%%coerce (list t1 t2)))
+
+(put-coercion 'scheme-number 'complex scheme-number->complex)
+
+(define (apply-generic op . args)
+  (let ((type-tags (map type-tag args)))
+    (let ((proc (get op type-tags)))
+      (if proc
+          (apply proc (map contents args))
+          (if (= (length args) 2)
+              (let ((type1 (car type-tags))
+                    (type2 (cadr type-tags))
+                    (a1 (car args))
+                    (a2 (cadr args)))
+                (if (equal? type1 type2)
+                    (error "No method for type"
+                           (list op (car type-tags)))
+                    (let ((t1->t2 (get-coercion type1 type2))
+                          (t2->t1 (get-coercion type2 type1)))
+                      (cond (t1->t2 (apply-generic op (t1->t2 a1) a2))
+                            (t2->t1 (apply-generic op a1 (t2->t1 a2)))
+                            (else
+                             (error "No coersion for these types"
+                                    (list op type-tags)))))))
+              (error "No method for these types" (list op type-tags)))))))
+
+(define pythag (make-from-real-imag 4 3))
+(define forty5  (make-from-mag-ang 1 (/ pi 4)))
+
+(newline)
+(angle pythag)
+(real-part pythag)
+(angle forty5)
+(real-part forty5)
+(magnitude (make-complex-from-real-imag 3 4))
+
+(define sn (make-scheme-number 5))
+(define sn1 (make-scheme-number 5.0))
+(define sn2 (make-scheme-number 6))
+(define rn (make-rational 15 3))
+(define rn1 (make-rational 20 4))
+(define rn2 (make-rational 18 3))
+(define cm (make-complex-from-real-imag 5 0))
+(define cm1 (make-complex-from-mag-ang 5 0))
+(define cm2 (make-complex-from-real-imag 6 0))
+
+(newline)
+(equ? sn sn1)
+(equ? sn sn2)
+(equ? rn rn1)
+(equ? rn rn2)
+(equ? cm cm1)
+(equ? cm cm2)
+
+(define sn (make-scheme-number 0))
+(define sn1 (make-scheme-number 0.1))
+(define rn (make-rational 0 3))
+(define rn1 (make-rational 1 4))
+(define cm (make-complex-from-real-imag 0 0))
+(define cm1 (make-complex-from-mag-ang 1 0))
+
+(newline)
+(=zero? sn)
+(=zero? sn1)
+(=zero? rn)
+(=zero? rn1)
+(=zero? cm)
+(=zero? cm1)
+
+(add (make-scheme-number 2) (make-complex-from-real-imag 3 0))
