@@ -365,6 +365,12 @@ static obj add_extras(int ex, obj env)
 			"  (/ (- a (remainder a b))"
 			"     b))",
 			env);
+		evalstr("(define (modulo a b)"
+			"  (let ((r (remainder a b)))"
+			"    (if (eq? (< b 0) (< r 0))"
+			"      r"
+			"      (+ b r))))",
+			env);
 	}
 	if (ex >= 116) {
 		evalstr("(define (even? n) (= (remainder n 2) 0))", env);
@@ -428,9 +434,10 @@ static obj add_extras(int ex, obj env)
 				env);
 	}
 	if (ex >= 205) {
+		// define_variable(of_identifier("expt"), of_function(expt), env);
 		evalstr("(define (expt b n)"
 			"  (define (expt-iter b c p)"
-			"    (if (= c 0) p (expt-iter b (- c 1) (* b p))))"
+			"    (if (<= c 0) p (expt-iter b (- c 1) (* b p))))"
 			"  (expt-iter b n 1))",
 			env);
 	}
@@ -513,6 +520,12 @@ static obj add_extras(int ex, obj env)
 		define_variable(of_identifier("atan"), of_function(arctan),
 				env);
 		evalstr("(define pi 3.14159265358979323846)", env);
+	}
+	if (ex >= 313) {
+		define_variable(of_identifier("set-car!"),
+				of_function(set_car_p), env);
+		define_variable(of_identifier("set-cdr!"),
+				of_function(set_cdr_p), env);
 	}
 	return unspecified;
 }

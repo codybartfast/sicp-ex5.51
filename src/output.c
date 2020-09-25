@@ -118,8 +118,12 @@ static obj displaystr(obj dat)
 		return of_string("()");
 	case TYPE_PRIMITIVE_PROCEDURE:
 		return of_string("<primitive procedure>");
+	case TYPE_UNSPECIFIED:
+		return of_string("<unspecified>");
 	case TYPE_VOID:
 		return of_string("");
+	case TYPE_BROKEN_HEART:
+		return of_string("<Broken Heart!>");
 	case TYPE_BITMAP:
 		return cnv_bitmap_string(dat);
 	case TYPE_ERROR:

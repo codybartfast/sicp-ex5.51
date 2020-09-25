@@ -310,6 +310,21 @@ obj rem(const obj args)
 	return of_integer(to_integer(a) % to_integer(b));
 }
 
+// obj expt(const obj args)
+// {
+// 	obj err;
+
+// 	if (is_err(err = chkarity("expt", 2, args)))
+// 		return err;
+// 	if (is_err(err = allnum("expt", args)))
+// 		return err;
+// 	long double b = (long double)to_floating(cnv_to_fltnum(car(args)));
+// 	long double e = (long double)to_floating(cnv_to_fltnum(cadr(args)));
+// 	Floating r = powl(b, e);
+// 	return (((Integer)r) == r) ? of_integer((Integer)r) : of_floating(r);
+// }
+
+
 static obj applyun(char *fname, enum un op, obj args)
 {
 	obj err, n;
@@ -647,6 +662,8 @@ bool is_eq(obj a, obj b)
 		return true;
 	case TYPE_NUMBER:
 		return is_true(applycmp(EQ, a, b));
+	case TYPE_BOOL:
+		return subtype(a) == subtype(b);
 	default:
 		return false;
 	}

@@ -14,6 +14,7 @@ obj divd(const obj);
 obj minimum(const obj);
 obj maximum(const obj);
 obj rem(const obj);
+// obj expt(const obj);
 
 obj absl(const obj);
 obj expn(const obj);
