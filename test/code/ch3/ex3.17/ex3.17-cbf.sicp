@@ -1,0 +1,86 @@
+(%ex "3.17")
+
+; exercise 3.17, page 259
+
+(define (original-count-pairs x)
+  (if (not (pair? x))
+      0
+      (+ (original-count-pairs (car x))
+         (original-count-pairs (cdr x))
+         1)))
+
+;helper
+(define (contains? list item)
+  (if (null? list)
+      false
+      (if (eq? item (car list))
+          true
+          (contains? (cdr list) item))))
+
+;helper
+(define (get-have-seen)
+  (define seen-items '())
+  (lambda (item)
+    (if (contains? seen-items item)
+        true
+        (begin
+          (set! seen-items (cons item seen-items))
+          false))))
+
+; our new count-pairs
+(define (count-pairs item)
+  (define have-seen? (get-have-seen))
+  (define (iter item)
+    (if (or (not (pair? item))
+            (have-seen? item))
+        0
+        (+ 1 (iter (car item)) (iter (cdr item)))))
+  (iter item))
+
+; test data
+(define simple
+  (cons 'a
+        (cons 'a
+              (cons 'a '()))))
+
+;test data
+(define four
+  (let ((last (cons 'a '())))
+    (cons 'a
+          (cons last
+                last))))
+;test data
+(define seven
+  (let ((last (cons 'a '())))
+    (let ((middle (cons last last)))
+      (cons middle middle))))
+
+;test data
+(define infinite
+  (let ((last (cons 'a '())))
+    (let ((first (cons 'a
+                       (cons 'a
+                             last))))
+      (set-cdr! last first)
+      first)))
+
+(display "Using 'original' count-pairs from previous question:")
+(display "
+simple list:  ") (display (original-count-pairs simple))
+(display "
+'four' list:  ") (display (original-count-pairs four))
+(display "
+'seven' list: ") (display (original-count-pairs seven))
+(display "
+looped list:  ") (display "<does not finish>")
+
+(display "
+ Using new count-pairs:")
+(display "
+simple list:  ") (display (count-pairs simple))
+(display "
+'four' list:  ") (display (count-pairs four))
+(display "
+'seven' list: ") (display (count-pairs seven))
+(display "
+looped list:  ") (display (count-pairs infinite))

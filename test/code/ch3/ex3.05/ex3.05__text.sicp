@@ -1,0 +1,67 @@
+(%ex "3.05")
+
+; section 3.05, page 225
+;; https://en.wikipedia.org/wiki/Lehmer_random_number_generator
+
+(define random-init (inc (runtime)))
+
+(define rand-update
+  (lambda (x)
+    (let ((a 16807)
+          (m 2147483647))
+      (modulo
+       (* x a)
+       m))))
+
+(define x1 random-init)
+(define x2 (rand-update x1))
+(define x3 (rand-update x2))
+x1
+x2
+x3
+
+; section 3.1.2, page 226
+
+(define rand
+  (let ((x 1))
+    (lambda ()
+      (set! x (rand-update x))
+      x)))
+
+; section 3.1.2, page 226
+
+(define (estimate-pi trials)
+  (sqrt (/ 6 (monte-carlo trials cesaro-test))))
+(define (cesaro-test)
+   (= (gcd (rand) (rand)) 1))
+(define (monte-carlo trials experiment)
+  (define (iter trials-remaining trials-passed)
+    (cond ((= trials-remaining 0)
+           (/ trials-passed trials))
+          ((experiment)
+           (iter (- trials-remaining 1) (+ trials-passed 1)))
+          (else
+           (iter (- trials-remaining 1) trials-passed))))
+  (iter trials 0))
+
+(estimate-pi 100)
+
+(define (estimate-pi trials)
+  (sqrt (/ 6 (random-gcd-test trials random-init))))
+(define (random-gcd-test trials initial-x)
+  (define (iter trials-remaining trials-passed x)
+    (let ((x1 (rand-update x)))
+      (let ((x2 (rand-update x1)))
+        (cond ((= trials-remaining 0)
+               (/ trials-passed trials))
+              ((= (gcd x1 x2) 1)
+               (iter (- trials-remaining 1)
+                     (+ trials-passed 1)
+                     x2))
+              (else
+               (iter (- trials-remaining 1)
+                     trials-passed
+                     x2))))))
+  (iter trials 0 initial-x))
+
+(estimate-pi 100)

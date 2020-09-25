@@ -1,0 +1,134 @@
+(%ex "3.19")
+ 
+; exercise 3.19, page 260
+
+; helpers for constructing the subject list
+(define (last-pair x)
+  (if (null? (cdr x))
+      x
+      (last-pair (cdr x))))
+
+(define (make-list list length)
+  (if (= 0 length)
+      list
+      (make-list (cons 'content list) (- length 1))))
+
+(define (make-cycle x)
+  (set-cdr! (last-pair x) x)
+  x)
+
+; Construct subject lists:
+(define straight (make-list '() 1000))
+
+(define looped (make-cycle (make-list '() 1000)))
+
+(define straight->looped (make-list '() 1000))
+(ignore (set-cdr! (last-pair straight->looped) looped))
+
+
+; Cycle check:
+(define step-count 0)
+
+(define (contains-cycle list)
+  (set! step-count 0)
+  (define (iter item remembered-item count initial-count)
+    (set! step-count (+ 1 step-count))
+    (if (not (pair? item))
+        false
+        (or
+         (eq? remembered-item item)
+         (if (= count 0)
+             (iter (cdr item) item (* 2 initial-count) (* 2 initial-count))
+             (iter (cdr item) remembered-item (- count 1) initial-count)))))
+  (iter list '() 0 8))
+
+(display "
+Straight: ") (display (contains-cycle straight))
+(display "
+Looped: ") (display (contains-cycle looped))
+(display "
+Straight then Looped: ") (display (contains-cycle straight->looped))
+(display "
+Cycles are correctly detected but space required is equal to the size of 
+the subject.
+")
+
+;; Extra
+
+(define (last-pair x)
+  (if (null? (cdr x))
+      x
+      (last-pair (cdr x))))
+
+(define (make-list list length label)
+  (if (= 0 length)
+      list
+      (make-list (cons (cons label (- length 1)) list) (- length 1) label)))
+
+(define (make-cycle x)
+  (set-cdr! (last-pair x) x)
+  x)
+
+; Construct subject lists:
+
+(define looped (make-cycle (make-list '() 1000 "looped-")))
+
+(define straight->looped (make-list '() 1000 "straight-"))
+(ignore (set-cdr! (last-pair straight->looped) looped))
+
+
+; Cycle check:
+
+(define (get-repeated-item list)
+  (define (iter item remembered-item count initial-count)
+    (if (not (pair? item))
+        nil
+        (if (eq? remembered-item item)
+            item
+            (if (= count 0)
+                (iter (cdr item) item (* 2 initial-count) (* 2 initial-count))
+                (iter (cdr item) remembered-item (- count 1) initial-count)))))           
+  (iter list '() 0 8))
+
+(define (get-loop-size item)
+  (define (iter item2 size)
+    (if (eq? item item2)
+        size
+        (iter (cdr item2) (+ size 1))))
+  (iter (cdr item) 1))
+
+; could use list-tail instead
+(define (get-nth item n)
+  (if (eq? n 0)
+      item 
+      (get-nth (cdr item) (- n 1))))
+
+  
+(define (first-repeated-given-size item size)
+  (define (iter this that)
+    (if (eq? this that)
+        this
+        (iter (cdr this) (cdr that))))
+  (iter item (get-nth item size)))
+
+(define (first-repeated list)
+  (let ((size (get-loop-size (get-repeated-item list))))
+    (first-repeated-given-size list size)))
+
+; Test against subjects:
+
+(display "
+Looped...
+  size:") (display (get-loop-size (get-repeated-item looped)))
+(display "
+  first:") (display (car looped))
+(display "
+  first-repeated:") (display (car (first-repeated looped)))
+  
+(display "
+Straight-then-Looped...
+  size:") (display (get-loop-size (get-repeated-item straight->looped)))
+(display "
+  first:") (display (car straight->looped))
+(display "
+  first-repeated:") (display (car (first-repeated straight->looped)))

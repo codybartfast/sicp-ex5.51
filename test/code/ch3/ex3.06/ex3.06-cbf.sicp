@@ -1,0 +1,60 @@
+(%ex "3.06")
+
+; exercise 3.06, page 228
+
+(define rand-init (runtime))
+(define rand-mod 2147483647)
+
+(define rand-update
+  (lambda (x)
+    (let ((a 16807)
+          (m rand-mod))
+      (modulo
+       (* x a)
+       m))))
+
+(define (make-rand)
+  (let ((x 1))
+    (lambda (message) ; lambda returned and assigned to my-rand
+      (cond
+        ((eq? message 'generate)
+         (set! x (rand-update x))
+         x)
+        ((eq? message 'reset)
+         (lambda (new-x) (set! x new-x)))
+        (else ((error "Unknown Message - " message)))))))
+
+(define my-rand (make-rand))
+
+(display "Expect default output with default seed, one:
+    (16807, 282475249, 1622650073)
+")
+(my-rand 'generate)
+(my-rand 'generate)
+(my-rand 'generate)
+
+(display "
+Expect new sequence with new seed 351181:
+    (1607331773, 1228313198, 499620175)
+")
+((my-rand 'reset) 351181)
+(my-rand 'generate)
+(my-rand 'generate)
+(my-rand 'generate)
+
+(display "
+Expect sequence to continue with different values:
+    (455221455, 1570243571, 657159814)
+")
+(my-rand 'generate)
+(my-rand 'generate)
+(my-rand 'generate)
+
+(display "
+Expect repeat of (second) sequence after resetting to 351181:
+     (1607331773, 1228313198, 499620175)
+")
+((my-rand 'reset) 351181)
+(my-rand 'generate)
+(my-rand 'generate)
+(my-rand 'generate)

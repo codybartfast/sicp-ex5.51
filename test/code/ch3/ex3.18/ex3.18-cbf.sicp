@@ -1,0 +1,71 @@
+(%ex "3.18")
+
+; exercise 3.18, page 260
+
+(define (last-pair x)
+  (if (null? (cdr x))
+      x
+      (last-pair (cdr x))))
+
+(define (make-list list length)
+  (if (= 0 length)
+      list
+      (make-list (cons 'content list) (- length 1))))
+
+(define (make-cycle x)
+  (set-cdr! (last-pair x) x)
+  x)
+
+
+; Construct subjects:
+(define straight (make-list '() 100))
+
+(define looped (make-cycle (make-list '() 100)))
+
+(define straight->looped (make-list '() 100))
+(set-cdr! (last-pair straight->looped) looped)
+
+; helpers for checking if we've seen a pair before
+(define (contains? list item)
+  (if (null? list)
+      false
+      (if (eq? item (car list))
+          true
+          (contains? (cdr list) item))))
+
+(define (get-have-seen)
+  (define seen-items '())
+  (lambda (item)
+    (if (contains? seen-items item)
+        (begin
+          (display "length of tracked items: ")
+          (display (length seen-items))
+          (newline)
+          true)
+        (begin
+          (set! seen-items (cons item seen-items))
+          false))))
+
+
+; Cycle check:
+(define (contains-cycle list)
+  (define have-seen? (get-have-seen))
+  (define (iter item)
+    (if (not (pair? item))
+        false
+        (or
+         (have-seen? item)
+         (iter (cdr item)))))
+  (iter list))
+
+
+; Test against subjects:
+
+(display "Straight: ") (display (contains-cycle straight))
+(display "
+Looped: ") (display (contains-cycle looped))
+(display "
+Straight then Looped: ") (display (contains-cycle straight->looped))
+(display "
+Cycles are correctly detected but space required is equal to the size of
+the subject.")

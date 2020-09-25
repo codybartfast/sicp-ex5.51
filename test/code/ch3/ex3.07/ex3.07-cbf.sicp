@@ -1,0 +1,61 @@
+(%ex "3.07")
+
+; exercise 3.07, page 236
+
+(define (make-account initial-password balance)
+  (define (withdraw amount)
+    (if (>= balance amount)
+        (begin (set! balance (- balance amount))
+               balance)
+        "Insufficient funds"))
+  (define (deposit amount)
+    (set! balance (+ balance amount))
+    balance)
+  (define (dispatch given-password m)
+    (if (eq? initial-password given-password)
+        (cond ((eq? m 'withdraw) withdraw)
+              ((eq? m 'deposit) deposit)
+              (else (error "Unknown request -- MAKE-ACCOUNT"
+                           m)))
+        (lambda (_) "Incorrect Password")))
+  dispatch)
+
+(define (make-joint base-account base-password initial-password)
+  (define (dispatch given-password m)
+    (if (eq? initial-password given-password)
+        (base-account base-password m)
+        (lambda (_) "Incorrect Password")))
+  dispatch)
+
+(display "Create Peter's account with 200
+")
+(define peter-acc (make-account 'open-seseme 200))
+(display "
+And withdraw 10
+")
+((peter-acc 'open-seseme 'withdraw) 10)
+
+(display "
+Create Paul's account as joint account
+")
+(define paul-acc (make-joint peter-acc 'open-seseme 'rosebud))
+(display "
+And withdraw 3
+")
+((paul-acc 'rosebud 'withdraw) 3)
+
+(display "
+Use wrong password on Paul's account
+")
+((paul-acc 'open-seseme 'withdraw) 3)
+
+
+(display "
+Use wrong password on Peter's account
+")
+((peter-acc 'rosebud 'withdraw) 3)
+
+(display "
+And withdraw 10 from Peter (and demonstrate shared state).
+")
+((peter-acc 'open-seseme 'withdraw) 10)

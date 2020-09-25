@@ -1,0 +1,25 @@
+(%ex "3.02")
+
+; exercise 3.02, page 224
+
+(define (make-monitored f)
+  (let ((count 0))
+    (lambda (a)
+      (cond
+       ((eq? a 'how-many-calls?) count)
+       ((eq? a 'reset-count) (set! count 0))
+       (else (set! count (+ count 1))
+             (f a))))))
+
+(define s (make-monitored sqrt))
+(s 80)
+(s 60)
+(s 40)
+(s 'how-many-calls?)
+(s 20)
+(s 10)
+(s 2)
+(s 'how-many-calls?)
+(s 'how-many-calls?)
+(s 'reset-count)
+(s 'how-many-calls?)
