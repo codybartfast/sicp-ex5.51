@@ -37,7 +37,7 @@
 	    (begin (display "    Carmichael: ")  
 	           (display n)
 	           (newline))
-            (ignore))
+            (void))
          (iter (+ n 1)) )))
   (iter 2))
 

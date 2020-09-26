@@ -48,7 +48,7 @@
           (display pairs)(newline)
           (newline)
           (display "Prime Sum Pairs: ")(newline)
-          (ignore
+          (void
             (map (lambda (pair)
                    (let ((first (car pair)) (second (car (cdr pair))))
                      (display "  ")

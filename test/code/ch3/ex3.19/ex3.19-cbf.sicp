@@ -23,7 +23,7 @@
 (define looped (make-cycle (make-list '() 1000)))
 
 (define straight->looped (make-list '() 1000))
-(ignore (set-cdr! (last-pair straight->looped) looped))
+(void (set-cdr! (last-pair straight->looped) looped))
 
 
 ; Cycle check:
@@ -74,7 +74,7 @@ the subject.
 (define looped (make-cycle (make-list '() 1000 "looped-")))
 
 (define straight->looped (make-list '() 1000 "straight-"))
-(ignore (set-cdr! (last-pair straight->looped) looped))
+(void (set-cdr! (last-pair straight->looped) looped))
 
 
 ; Cycle check:

@@ -167,7 +167,7 @@ static obj displaypair(obj pair)
 	return of_string(s);
 }
 
-obj ignore(obj args)
+obj void_p(obj args)
 {
 	(void)args;
 	return _void;

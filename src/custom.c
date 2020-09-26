@@ -397,7 +397,7 @@ static obj add_extras(int ex, obj env)
 	if (ex >= 122) {
 		define_variable(of_identifier("display"), of_function(display),
 				env);
-		define_variable(of_identifier("ignore"), of_function(ignore),
+		define_variable(of_identifier("void"), of_function(void_p),
 				env);
 		define_variable(of_identifier("newline"), of_function(newline),
 				env);
