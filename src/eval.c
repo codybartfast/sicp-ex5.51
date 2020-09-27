@@ -232,6 +232,7 @@ static obj init(void)
 
 obj eval(obj expression, obj _environment)
 {
+	// printf("EVAL: %s\n", errstr(expression));
 	if (!initdone) {
 		init();
 	}
@@ -540,6 +541,7 @@ ev_or_test:
 // new - delay / cons-stream
 ev_delay:
 	expr = delay_to_lambda(expr);
+	// expr = cadr(expr);
 	goto eval_dispatch;
 
 ev_cons_stream:

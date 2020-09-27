@@ -5,36 +5,28 @@
 #include <string.h>
 #include "bitmap.h"
 #include "error.h"
+#include "outport.h"
 
 #define AREA "CONVERT"
 
 #define BUFFSIZE 2048
 char buff[BUFFSIZE];
 
-static obj cpystrobj(char *s, char *msg)
-{
-	char *dup = (char *)malloc((strlen(buff) + 1) * sizeof(char));
-	if (dup == NULL)
-		return error_memory(AREA, msg);
-	strcpy(dup, s);
-	return of_string(dup);
-}
-
-obj cnv_boolean_string(obj bl)
+obj cnv_boolean_string(struct outport *op, obj bl)
 {
 	if (!is_boolean(bl))
 		return error_argument_type(
 			AREA, "boolean->string got non-boolean: %s",
 			errstr(bl));
 	if (is_false(bl)) {
-		sprintf(buff, "#f");
+		out_writes(op, "#f");
 	} else {
-		sprintf(buff, "#t");
+		out_writes(op, "#t");
 	}
-	return cpystrobj(buff, "boolean conversion");
+	return _void;
 }
 
-obj cnv_number_string(obj num)
+obj cnv_number_string(struct outport *op, obj num)
 {
 	if (!is_number(num))
 		return error_argument_type(
@@ -52,10 +44,11 @@ obj cnv_number_string(obj num)
 				      "BUG: no case of number subtype %d.",
 				      subtype(num));
 	}
-	return cpystrobj(buff, "number conversion");
+	out_writes(op, buff);
+	return _void;
 }
 
-obj cnv_bitmap_string(obj dat)
+obj cnv_bitmap_string(struct outport *op, obj dat)
 {
 	const struct bitmap *bmp;
 
@@ -64,5 +57,6 @@ obj cnv_bitmap_string(obj dat)
 			AREA, "bitmap->string got non-bitmap: %s", errstr(dat));
 	bmp = to_bitmap(dat);
 	sprintf(buff, "<bitmap %dx%d>", bmp->width, bmp->height);
-	return cpystrobj(buff, "bitmap conversion");
+	out_writes(op, buff);
+	return _void;
 }

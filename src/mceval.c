@@ -425,7 +425,9 @@ bool is_delay(obj exp)
 
 obj delay_to_lambda(obj exp)
 {
-	return make_lambda(emptylst, cdr(exp));
+	obj r = make_lambda(emptylst, cdr(exp));
+	// eprintf(AREA, "%s -> %s", errstr(exp), errstr(r));
+	return r;
 }
 
 bool is_cons_stream(obj exp)

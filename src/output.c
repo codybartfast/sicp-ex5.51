@@ -9,8 +9,7 @@
 
 #define AREA "OUTPUT"
 
-static obj displaystr(obj);
-static obj displaypair(obj);
+static obj displaypair(struct outport *, obj, bool);
 
 struct outport *defaullt_out = NULL;
 
@@ -52,119 +51,108 @@ obj write(obj dat)
 	return writep(default_out(), dat);
 }
 
-obj writep(struct outport *op, obj dat)
-{
-	obj str = writestr(dat);
-	if (is_err(str))
-		return str;
-	out_writes(op, to_string(str));
-	return _void;
-}
-
 obj writestr(obj dat)
 {
-	struct strbldr *sb;
+	struct outport *op = openout_string();
+	if (op == NULL)
+		return error_memory(AREA, "writestr");
+	writep(op, dat);
+	return of_string(sb_string(op->sb));
+}
 
+obj writep(struct outport *op, obj dat)
+{
 	switch (type(dat)) {
 	case TYPE_STRING:
-		sb = new_strbldr();
-		if (sb == NULL)
-			return error_memory(AREA, "writestr");
-		sb_addc(sb, '"');
-		sb_adds(sb, to_string(dat));
-		sb_addc(sb, '"');
-		return of_string(sb_string(sb));
+		out_writec(op, '"');
+		out_writes(op, to_string(dat));
+		out_writec(op, '"');
+		return _void;
 	default:
-		return displaystr(dat);
+		return displayp(op, dat);
 	}
 }
 
 obj displayp(struct outport *op, obj dat)
 {
-	obj str;
-	if (is_compound_procedure(dat)) {
-		str = displaypair(list4(procedure, procedure_parameters(dat),
-					procedure_body(dat),
-					of_string("<procedure-env>")));
-	} else {
-		str = displaystr(dat);
-	}
-	if (is_err(str))
-		return str;
-	out_writes(op, to_string(str));
-	return _void;
-}
-
-static obj displaystr(obj dat)
-{
-	if (is_compound_procedure(dat)) {
-		return displaypair(list4(
-			of_string("<procedure>"), procedure_parameters(dat),
-			procedure_body(dat), of_string("<procedure-env>")));
-	}
 	if (is_pair(dat)) {
-		return displaypair(dat);
+		return displaypair(op, dat, true);
 	}
 	switch (type(dat)) {
 	case TYPE_SYMBOL:
-		return dat;
+		out_writes(op, dat.val.string);
+		return _void;
 	case TYPE_BOOL:
-		return cnv_boolean_string(dat);
+		return cnv_boolean_string(op, dat);
 	case TYPE_NUMBER:
-		return cnv_number_string(dat);
+		return cnv_number_string(op, dat);
 	case TYPE_STRING:
-		return dat;
+		out_writes(op, dat.val.string);
+		return _void;
 	case TYPE_EMPTY_LIST:
-		return of_string("()");
+		out_writes(op, "()");
+		return _void;
 	case TYPE_PRIMITIVE_PROCEDURE:
-		return of_string("<primitive procedure>");
+		out_writes(op, "<primitive procedure>");
+		return _void;
 	case TYPE_UNSPECIFIED:
-		return of_string("<unspecified>");
+		out_writes(op, "<unspecified>");
+		return _void;
 	case TYPE_VOID:
-		return of_string("");
+		return _void;
 	case TYPE_BROKEN_HEART:
-		return of_string("<Broken Heart!>");
+		out_writes(op, "<Broken Heart!>");
+		return _void;
 	case TYPE_BITMAP:
-		return cnv_bitmap_string(dat);
+		return cnv_bitmap_string(op, dat);
 	case TYPE_ERROR:
 		sprintf(msg, "Error-Object, subtype: %d", subtype(dat));
-		return of_string(msg);
+		out_writes(op, msg);
+		return _void;
 	default:
-		return error_internal(AREA,
-				      "BUG! No displaystr case for type: %d",
-				      type(dat));
+		return error_internal(
+			AREA, "BUG! No displaysb case for type: %d", type(dat));
 	}
 }
 
-static obj displaypair(obj pair)
+static obj displaypair(struct outport *op, obj pair, bool first)
 {
-	char *s;
-	struct strbldr *sb;
-	bool donefst = false;
-
-	if ((sb = new_strbldr()) == NULL)
-		return error_memory(AREA, "StrBldr");
-	sb_addc(sb, '(');
-
-	for (; is_pair(pair); pair = cdr(pair)) {
-		if (donefst) {
-			sb_addc(sb, ' ');
-		} else {
-			donefst = true;
+	if (is_compound_procedure(pair)) {
+		if (length_u(pair) != 4) {
+			return error_argument_type(
+				AREA, "Expected procedure length of 4, got %d",
+				length_u(pair));
 		}
-		sb_adds(sb, to_string(displaystr(car(pair))));
-	};
-	if (!is_null(pair)) {
-		sb_adds(sb, " . ");
-		sb_adds(sb, to_string(displaystr(pair)));
+		return displaypair(op,
+				   list4(of_string("<procedure>"),
+					 procedure_parameters(pair),
+					 procedure_body(pair),
+					 of_string("<procedure-env>")),
+				   first);
 	}
-	sb_addc(sb, ')');
-	s = sb_copy(sb);
-	if (s == NULL || sb->errored) {
-		return error_memory(AREA, "Copy");
+
+	if (is_null(pair)) {
+		out_writes(op, ")");
+		return _void;
 	}
-	sb_free(&sb);
-	return of_string(s);
+
+	if (first)
+		out_writec(op, '(');
+
+	displayp(op, car(pair));
+
+	obj nxt = cdr(pair);
+	if (is_pair(nxt)) {
+		out_writec(op, ' ');
+		displaypair(op, nxt, false);
+	} else if (!is_null(nxt)) {
+		out_writes(op, " . ");
+		displayp(op, nxt);
+	}
+	if (first) {
+		out_writec(op, ')');
+	}
+	return _void;
 }
 
 obj void_p(obj args)
