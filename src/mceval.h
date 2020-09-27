@@ -53,4 +53,9 @@ obj apply_to_application(obj exp);
 obj apply_operator(obj exp);
 obj apply_operands(obj exp);
 
+bool is_delay(obj exp);
+obj delay_to_lambda(obj exp);
+bool is_cons_stream(obj exp);
+obj cons_stream_to_cons(obj exp);
+
 #endif

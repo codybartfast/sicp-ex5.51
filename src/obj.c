@@ -248,7 +248,12 @@ const obj and_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "and");
 SYMBOL(apply)
 SYMBOL(begin)
 SYMBOL(cond)
+const obj cons_s =
+	OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "cons");
+const obj cons_stream =
+	OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "cons-stream");
 SYMBOL(define)
+SYMBOL(delay)
 const obj else_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "else");
 const obj if_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "if");
 SYMBOL(let)

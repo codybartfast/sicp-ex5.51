@@ -270,6 +270,10 @@ eval_dispatch:
 		goto ev_and;
 	if (is_or(expr))
 		goto ev_or;
+	if (is_delay(expr))
+		goto ev_delay;
+	if (is_cons_stream(expr))
+		goto ev_cons_stream;
 	if (is_time(expr))
 		goto ev_timed;
 	if (is_apply(expr))
@@ -532,6 +536,15 @@ ev_or_test:
 	val = tru_o;
 	cont = restore();
 	goto go_cont;
+
+// new - delay / cons-stream
+ev_delay:
+	expr = delay_to_lambda(expr);
+	goto eval_dispatch;
+
+ev_cons_stream:
+	expr = cons_stream_to_cons(expr);
+	goto eval_dispatch;
 
 // new
 ev_timed:

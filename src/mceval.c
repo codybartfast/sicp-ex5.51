@@ -415,3 +415,26 @@ obj apply_operands(obj exp)
 {
 	return caddr(exp);
 }
+
+// new - delay
+
+bool is_delay(obj exp)
+{
+	return is_tagged_list(exp, delay);
+}
+
+obj delay_to_lambda(obj exp)
+{
+	return make_lambda(emptylst, cdr(exp));
+}
+
+bool is_cons_stream(obj exp)
+{
+	return is_tagged_list(exp, cons_stream);
+}
+
+obj cons_stream_to_cons(obj exp)
+{
+	return list3(cons_s, cadr(exp),
+		     delay_to_lambda(list2(delay, caddr(exp))));
+}
