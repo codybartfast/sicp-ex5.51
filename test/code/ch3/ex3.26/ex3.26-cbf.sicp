@@ -1,0 +1,184 @@
+(%ex "3.26")
+
+; exercise 3.26, page 272
+
+
+(define entry car)
+(define left-branch cadr)
+(define right-branch caddr)
+(define make-tree  list)
+(define (new-tree) '())
+
+(define (lookup-tree key get-key tree)
+  (if (null? tree)
+      false
+      (let ((record (entry tree)))
+        (let ((record-key (get-key record)))
+          (cond ((= key record-key) record)
+                ((< key record-key)
+                 (lookup-tree key get-key (left-branch tree)))
+                ((> key record-key)
+                 (lookup-tree key get-key (right-branch tree))))))))
+
+(define (adjoin-tree get-key record tree)
+  (define new-key (get-key record))
+  (cond ((null? tree) (make-tree record '() '()))
+        ((= new-key (get-key (entry tree))) tree)
+        ((< new-key (get-key (entry tree)))
+         (make-tree
+          (entry tree)
+          (adjoin-tree get-key record (left-branch tree))
+          (right-branch tree)))
+        ((> new-key (get-key (entry tree)))
+         (make-tree
+          (entry tree)
+          (left-branch tree)
+          (adjoin-tree get-key record (right-branch tree))))))
+
+(define (test-tree)
+   (let* (
+          (jane (list 2 "Jane Jigs" 45 "Brimingham"))
+          (mick (list 4 "Mick Muck" 16 "Hastings"))
+          (pete (list 1 "Peter Puds" 23 "Manchester"))
+          (anne (list 3 "Anne Ack" 19 "Coventry"))
+          (fu   (list 5 "Fu Manchu" 189 "Windsor"))
+
+         (get-key (lambda (record) (car record)))
+
+         (make-test-tree (lambda (items)
+                  (define (iter items set)
+                    (if (null? items) set
+                        (iter
+                         (cdr items)
+                         (adjoin-tree get-key (car items) set))))
+                  (iter items (new-tree))))
+
+         (db (make-test-tree (list pete jane anne mick fu))))
+
+     (display (lookup-tree 3 get-key db))))
+;(test-tree)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; binary table
+
+(define (try-get-record-binary table key)
+  (lookup-tree key car (cdr table)))
+
+(define (get-record-binary table key)
+  (let ((entry (try-get-record-binary table key)))
+    (cond (entry entry)
+           (else
+            (let ((record (list key)))
+              (set-cdr! table
+                        (adjoin-tree car record (cdr table)))
+              record)))))
+
+(define update-record-binary set-cdr!)
+
+(define (make-table-binary)
+  (make-table-generic try-get-record-binary
+                      get-record-binary
+                      update-record-binary))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; 'assoc' table
+
+(define (try-get-record-assoc table key)
+  (assoc key (cdr table)))
+
+(define (get-record-assoc table key)
+  (let ((entry (try-get-record-assoc table key)))
+    (cond (entry entry)
+           (else
+            (let ((record (list key)))
+              (set-cdr! table
+                        (cons record
+                              (cdr table)))
+              record)))))
+
+(define update-record-assoc set-cdr!)
+
+
+(define (make-table-assoc)
+  (make-table-generic try-get-record-assoc
+                      get-record-assoc
+                      update-record-assoc))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; genric multi-dimensional table
+
+(define (make-table-generic try-get-record get-record update-record)
+  (let
+      ((local-table (list '*table*)))
+    (define (lookup table keys)
+      (if (null? keys)
+          (error "Was given NULL keys"))
+      (let ((entry (try-get-record table (car keys)))
+            (next-keys (cdr keys)))
+        (if  entry
+             ; if next-keys is empty then at a 'leaf'
+             ;   otherwise we have a subtable
+             (if (null? next-keys)
+                 (cdr entry)
+                 (lookup entry next-keys))
+             false)))
+    (define (insert! table keys value)
+     (if (null? keys)
+          (error "Was given NULL keys"))
+      (let ((entry (get-record table (car keys)))
+            (key (car keys))
+            (next-keys (cdr keys)))
+        (if (null? next-keys)
+            ; at 'leaf' - entry is a record
+            (update-record entry value)
+            ;handle a subltable
+            (insert! entry next-keys value)))
+      'ok)
+
+    (define (dispatch m)
+      (cond ((eq? m 'lookup)
+             (lambda (keys) (lookup local-table keys)))
+            ((eq? m 'insert!)
+             (lambda (keys value) (insert! local-table keys value)))
+            (else (error "Unknown operation -- TABLE" m))))
+    dispatch))
+
+
+(define (test-table make-table)
+  (define table (make-table))
+
+  (display "Adding 'apple and 'ant under single key.") (newline)
+  (define key1a '(1))
+  (define key1b '(100))
+  (void ((table 'insert!) key1a 'apple))
+  (void ((table 'insert!) key1b 'ant))
+
+  (display "Adding 'banana and 'bull under double keys.") (newline)
+  (define key2a '(200 2))
+  (define key2b '(202 22))
+  (void ((table 'insert!) key2a 'banana))
+  (void ((table 'insert!) key2b 'bull))
+
+  (display "Adding 'cherry and 'cat under tripple  keys.") (newline)
+  (define key3a '(3000 2 1))
+  (define key3b '(3000 22 1))
+  (void ((table 'insert!) key3a 'cherry))
+  (void ((table 'insert!) key3b 'cat))
+
+  (display "
+  Retrieving values:") (newline)
+  (display "   ") (display ((table 'lookup) key1a)) (newline)
+  (display "   ") (display ((table 'lookup) key1b)) (newline)
+  (display "   ") (display ((table 'lookup) key2a)) (newline)
+  (display "   ") (display ((table 'lookup) key2b)) (newline)
+  (display "   ") (display ((table 'lookup) key3a)) (newline)
+  (display "   ") (display ((table 'lookup) key3b)) (newline))
+
+(display "
+ASSOC table")(newline)
+(display "-----------")(newline)
+(test-table make-table-assoc)
+(display "
+BINARY table")(newline)
+(display    "------------")(newline)
+(test-table make-table-binary)

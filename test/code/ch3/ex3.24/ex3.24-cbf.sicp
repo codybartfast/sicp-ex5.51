@@ -1,0 +1,172 @@
+(%ex "3.24")
+
+; exercise 3.24, page 272
+
+(define (make-booktable)
+  (let ((local-table (list '*table*)))
+    (define (lookup key-1 key-2)
+      (let ((subtable (assoc key-1 (cdr local-table))))
+        (if subtable
+            (let ((record (assoc key-2 (cdr subtable))))
+              (if record
+                  (cdr record)
+                  false))
+            false)))
+    (define (insert! key-1 key-2 value)
+      (let ((subtable (assoc key-1 (cdr local-table))))
+        (if subtable
+            (let ((record (assoc key-2 (cdr subtable))))
+              (if record
+                  (set-cdr! record value)
+                  (set-cdr! subtable
+                            (cons (cons key-2 value)
+                                  (cdr subtable)))))
+            (set-cdr! local-table
+                      (cons (list key-1
+                                  (cons key-2 value))
+                            (cdr local-table)))))
+      'ok)
+    (define (dispatch m)
+      (cond ((eq? m 'lookup) lookup)
+            ((eq? m 'insert!) insert!)
+            (else (error "Unknown operation -- TABLE" m))))
+    dispatch))
+
+;;=========================================================
+;; New make-table that takes 'same?' parameter.
+
+(define (make-table same?)
+  (define (assoc key records)
+    (cond ((null? records) false)
+          ((same? key (caar records)) (car records))
+          (else (assoc key (cdr records)))))
+  (let ((local-table (list '*table*)))
+    (define (lookup key-1 key-2)
+      (let ((subtable (assoc key-1 (cdr local-table))))
+        (if subtable
+            (let ((record (assoc key-2 (cdr subtable))))
+              (if record
+                  (cdr record)
+                  false))
+            false)))
+    (define (insert! key-1 key-2 value)
+      (let ((subtable (assoc key-1 (cdr local-table))))
+        (if subtable
+            (let ((record (assoc key-2 (cdr subtable))))
+              (if record
+                  (set-cdr! record value)
+                  (set-cdr! subtable
+                            (cons (cons key-2 value)
+                                  (cdr subtable)))))
+            (set-cdr! local-table
+                      (cons (list key-1
+                                  (cons key-2 value))
+                            (cdr local-table)))))
+      'ok)
+    (define (dispatch m)
+      (cond ((eq? m 'lookup) lookup)
+            ((eq? m 'insert!) insert!)
+            (else (error "Unknown operation -- TABLE" m))))
+    dispatch))
+
+;;=========================================================
+;; Data and Helpers
+
+(define exact-locations
+  (list
+   (list 'baintree 51.878447 0.551177)
+   (list 'cambridge 52.204968 0.182342)
+   (list 'huntingdon 52.33081 -0.223216)))
+
+(define rough-locations
+  (list
+   (list 'baintree 51.880447 0.551777)
+   (list 'cambridge 52.2049685 0.18234)
+   (list 'huntingdon 52.330981 -0.22316)))
+
+(define (populate table)
+  (define (add location)
+    ((table 'insert!) (cadr location) (caddr location) (car location)))
+  (map add exact-locations))
+
+(define (lookup-names table locations)
+  (define (lookup location)
+    ((table 'lookup) (cadr location) (caddr location)))
+  (define (desc-lookup location)
+    (let ((result (lookup location)))
+        (cond (result
+                (display "  Found location: ") (display result))
+	      (else
+                (display "  Nothing found for: (")
+                (display (cadr location))
+		(display ", ")
+		(display (caddr location))
+		(display ")")))
+	(newline)))
+  (void (map desc-lookup locations)))
+
+
+;;=========================================================
+;; Book implementation of table
+
+(define booktable (make-booktable))
+(void (populate booktable))
+
+
+(display "
+Book implementaion - looking up EXACT coordinates:
+")
+(lookup-names booktable exact-locations)
+
+(display "
+Book implementaion - looking up APPROXIMATE coordinates:
+")
+(lookup-names booktable rough-locations)
+
+(display "
+===========================================================")
+
+;;=========================================================
+;; New implementation of table - using eqaual?
+
+(define table-eq (make-table equal?))
+(void (populate table-eq))
+
+
+(display "
+Using 'equal?' - looking up EXACT coordinates:
+")
+(lookup-names table-eq exact-locations)
+
+(display "
+Using 'equals?' - looking up APPROXIMATE coordinates:
+")
+(lookup-names table-eq rough-locations)
+
+(display "
+===========================================================
+")
+
+;;=========================================================
+;; New implementaio of table - using close?
+
+(define (close? a b)
+  (< (abs (- a b)) 0.01))
+
+(define table (make-table close?))
+(void (populate table))
+
+
+(display "
+Using 'close?' - looking up EXACT coordinates:
+")
+(lookup-names table exact-locations)
+
+(display "
+Using 'close?' - looking up APPROXIMATE coordinates:
+")
+(lookup-names table rough-locations)
+
+(display "
+===========================================================
+")
