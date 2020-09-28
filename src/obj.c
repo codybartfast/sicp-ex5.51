@@ -256,6 +256,7 @@ SYMBOL(delay)
 const obj else_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "else");
 const obj if_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "if");
 SYMBOL(let)
+const obj memo_proc = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "memo-proc");
 SYMBOL(lambda)
 const obj or_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "or");
 SYMBOL(quote)

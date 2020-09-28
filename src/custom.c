@@ -374,6 +374,15 @@ static obj add_extras(int ex, obj env)
 			env);
 	define_variable(of_identifier("load"), of_function(loadq), env);
 	define_variable(of_identifier("loadv"), of_function(loadv), env);
+	evalstr("(define (memo-proc proc)"
+		"  (let ((already-run? false) (result false))"
+		"    (lambda ()"
+		"      (if (not already-run?)"
+		"          (begin (set! result (proc))"
+		"                 (set! already-run? true)"
+		"                 result)"
+		"          result))))",
+		env);
 
 	if (ex > 101) {
 		//define_variable(of_identifier("abs"), of_function(absl), env);
@@ -658,6 +667,7 @@ static obj display_definedp(struct outport *out)
 	display_id(out, of_string("apply"));
 	display_id(out, of_string("begin"));
 	display_id(out, of_string("cond"));
+	display_id(out, of_string("cons-stream"));
 	display_id(out, of_string("define"));
 	display_id(out, of_string("if"));
 	display_id(out, of_string("lambda"));

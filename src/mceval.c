@@ -437,5 +437,6 @@ bool is_cons_stream(obj exp)
 obj cons_stream_to_cons(obj exp)
 {
 	return list3(cons_s, cadr(exp),
-		     delay_to_lambda(list2(delay, caddr(exp))));
+		     list2(memo_proc,
+			   delay_to_lambda(list2(delay, caddr(exp)))));
 }

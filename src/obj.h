@@ -122,6 +122,7 @@ extern const obj else_s;
 extern const obj if_s;
 extern const obj let;
 extern const obj lambda;
+extern const obj memo_proc;
 extern const obj or_s;
 extern const obj quote;
 extern const obj set;
