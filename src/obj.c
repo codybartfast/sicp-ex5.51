@@ -168,7 +168,7 @@ obj consgc(obj *car, obj *cdr)
 obj car(obj pair)
 {
 	if (!is_pair(pair)) {
-		error_argument_type(AREA, "car expects a pair, bu got: %s",
+		error_argument_type(AREA, "car expects a pair, but got: %s",
 				    errstr(pair));
 		exit(1);
 	} else {
@@ -179,7 +179,7 @@ obj car(obj pair)
 obj set_car(obj pair, obj val)
 {
 	if (!is_pair(pair)) {
-		error_argument_type(AREA, "set_car expects a pair, bu got: %s",
+		error_argument_type(AREA, "set_car expects a pair, but got: %s",
 				    errstr(pair));
 		exit(1);
 
@@ -192,7 +192,7 @@ obj set_car(obj pair, obj val)
 obj cdr(obj pair)
 {
 	if (!is_pair(pair)) {
-		error_argument_type(AREA, "cdr expects a pair, bu got: %s",
+		error_argument_type(AREA, "cdr expects a pair, but got: %s",
 				    errstr(pair));
 		exit(1);
 	} else {
@@ -203,7 +203,7 @@ obj cdr(obj pair)
 obj set_cdr(obj pair, obj val)
 {
 	if (!is_pair(pair)) {
-		error_argument_type(AREA, "set_cdr expects a pair, bu got: %s",
+		error_argument_type(AREA, "set_cdr expects a pair, but got: %s",
 				    errstr(pair));
 		exit(1);
 	} else {

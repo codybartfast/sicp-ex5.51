@@ -324,6 +324,48 @@ static void add_optable(obj env)
 	evalstr("(define put (operation-table 'insert-proc!))", env);
 }
 
+static void add_stream(obj env)
+{
+	evalstr("(define the-empty-stream '())", env);
+	evalstr("(define stream-null? null?)", env);
+	evalstr("(define (stream-car stream) (car stream))", env);
+	evalstr("(define (stream-cdr stream) (force (cdr stream)))", env);
+	evalstr("(define (stream-ref s n)"
+		"  (if (= n 0)"
+		"      (stream-car s)"
+		"      (stream-ref (stream-cdr s) (- n 1))))",
+		env);
+	evalstr("(define (stream-map proc . argstreams)"
+		"  (if (stream-null? (car argstreams))"
+		"      the-empty-stream"
+		"      (cons-stream"
+		"       (apply proc (map stream-car argstreams))"
+		"       (apply stream-map"
+		"              (cons proc (map stream-cdr argstreams))))))",
+		env);
+	evalstr("(define (stream-for-each proc s)"
+		"  (if (stream-null? s)"
+		"      'done"
+		"      (begin (proc (stream-car s))"
+		"             (stream-for-each proc (stream-cdr s)))))",
+		env);
+	evalstr("(define (display-stream s)"
+		"  (stream-for-each display-line s))",
+		env);
+	evalstr("(define (display-line x)"
+		"  (newline)"
+		"  (display x))",
+		env);
+	evalstr("(define (stream-filter pred stream)"
+		"  (cond ((stream-null? stream) the-empty-stream)"
+		"        ((pred (stream-car stream))"
+		"         (cons-stream (stream-car stream)"
+		"                      (stream-filter pred"
+		"                                     (stream-cdr stream))))"
+		"        (else (stream-filter pred (stream-cdr stream)))))",
+		env);
+}
+
 static obj add_extras(int ex, obj env)
 {
 	define_variable(of_identifier("%ex"), of_function(pcnt_ex), env);
@@ -542,44 +584,7 @@ static obj add_extras(int ex, obj env)
 	}
 	if (ex >= 350) {
 		evalstr("(define (force delayed-obj) (delayed-obj))", env);
-		evalstr("(define stream-null? null?)", env);
-		evalstr("(define (stream-car stream) (car stream))", env);
-		evalstr("(define (stream-cdr stream) (force (cdr stream)))",
-			env);
-		evalstr("(define (stream-ref s n)"
-			"  (if (= n 0)"
-			"      (stream-car s)"
-			"      (stream-ref (stream-cdr s) (- n 1))))",
-			env);
-		evalstr("(define (stream-map proc . argstreams)"
-			"  (if (stream-null? (car argstreams))"
-			"      the-empty-stream"
-			"      (cons-stream"
-			"       (apply proc (map stream-car argstreams))"
-			"       (apply stream-map"
-			"              (cons proc (map stream-cdr argstreams))))))",
-			env);
-		evalstr("(define (stream-for-each proc s)"
-			"  (if (stream-null? s)"
-			"      'done"
-			"      (begin (proc (stream-car s))"
-			"             (stream-for-each proc (stream-cdr s)))))",
-			env);
-		evalstr("(define (display-stream s)"
-			"  (stream-for-each display-line s))",
-			env);
-		evalstr("(define (display-line x)"
-			"  (newline)"
-			"  (display x))",
-			env);
-		evalstr("(define (stream-filter pred stream)"
-			"  (cond ((stream-null? stream) the-empty-stream)"
-			"        ((pred (stream-car stream))"
-			"         (cons-stream (stream-car stream)"
-			"                      (stream-filter pred"
-			"                                     (stream-cdr stream))))"
-			"        (else (stream-filter pred (stream-cdr stream)))))",
-			env);
+		add_stream(env);
 	}
 	return unspecified;
 }
