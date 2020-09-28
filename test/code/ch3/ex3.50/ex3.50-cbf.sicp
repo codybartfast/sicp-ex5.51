@@ -1,0 +1,31 @@
+(%ex "3.50")
+
+; exercise 3.50, p324
+
+(define (stream-map proc . argstreams)
+  (if (stream-null? (car argstreams))
+      the-empty-stream
+      (cons-stream
+       (apply proc (map stream-car argstreams))
+       (apply stream-map
+              (cons proc (map stream-cdr argstreams))))))
+
+(define heights
+  (cons-stream 1
+    (cons-stream 5
+      (cons-stream 9
+        (cons-stream 13
+          (cons-stream 17
+      		  '()))))))
+
+(define widths
+  (cons-stream 3
+    (cons-stream 7
+      (cons-stream 11
+        (cons-stream 15
+          (cons-stream 19
+            '()))))))
+
+(define areas (stream-map * heights widths))
+
+(void (display-stream areas))

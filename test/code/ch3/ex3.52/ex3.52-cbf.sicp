@@ -1,0 +1,35 @@
+(%ex "3.52")
+
+; exercise 3.52, p325
+
+; (define (memo-proc proc) proc)
+
+(define (stream-enumerate-interval low high)
+  (if (> low high)
+      the-empty-stream
+      (cons-stream
+       low
+       (stream-enumerate-interval (+ low 1) high))))
+
+(define sum 0)
+(define (accum x)
+  (set! sum (+ x sum))
+  sum)
+(display-line "sum after define accum: ") (display sum) (newline)
+
+(define seq (stream-map accum (stream-enumerate-interval 1 20)))
+(display-line "sum after define seq: ") (display sum) (newline)
+
+(define y (stream-filter even? seq))
+(display-line "sum after define y: ") (display sum) (newline)
+
+(define z
+  (stream-filter (lambda (x) (= (remainder x 5) 0))
+                 seq))
+(display-line "sum after define z: ") (display sum) (newline)
+
+(stream-ref y 7)
+(display-line "sum after stream-ref: ") (display sum) (newline)
+
+(display-stream z)
+(display-line "sum after display-stream: ") (display sum) (newline)

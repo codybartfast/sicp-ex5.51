@@ -1,0 +1,32 @@
+(%ex "3.51")
+
+; exercise 3.51, p325
+
+(define (stream-enumerate-interval low high)
+  (if (> low high)
+      the-empty-stream
+      (cons-stream
+       low
+       (stream-enumerate-interval (+ low 1) high))))
+
+(define (show x)
+  (display-line x)
+  x)
+
+(display-line "Using normal, memoized, streams:")
+(void (define x (stream-map show (stream-enumerate-interval 0 10))))
+
+(void (stream-ref x 5))
+(newline)
+(void (stream-ref x 7))
+(newline)
+
+(define (memo-proc proc) proc)
+
+(display-line "With memoization disabled:")
+(void (define x (stream-map show (stream-enumerate-interval 0 10))))
+
+(void (stream-ref x 5))
+(newline)
+(void (stream-ref x 7))
+(newline)
