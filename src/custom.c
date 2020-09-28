@@ -364,16 +364,23 @@ static void add_stream(obj env)
 		"                                     (stream-cdr stream))))"
 		"        (else (stream-filter pred (stream-cdr stream)))))",
 		env);
+	evalstr("(define (add-streams s1 s2)"
+		"  (stream-map + s1 s2))",
+		env);
+	evalstr("(define (scale-stream stream factor)"
+		"  (stream-map (lambda (x) (* x factor)) stream))",
+		env);
 }
 
 static obj add_extras(int ex, obj env)
 {
-	define_variable(of_identifier("%ex"), of_function(pcnt_ex), env);
 	// Implementation specific, (not in book):
+	define_variable(of_identifier("%ex"), of_function(pcnt_ex), env);
 	define_variable(of_identifier("defined"), of_function(display_defined),
 			env);
 	define_variable(of_identifier("load"), of_function(loadq), env);
 	define_variable(of_identifier("loadv"), of_function(loadv), env);
+
 	evalstr("(define (memo-proc proc)"
 		"  (let ((already-run? false) (result false))"
 		"    (lambda ()"
