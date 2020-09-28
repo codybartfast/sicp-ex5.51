@@ -52,13 +52,13 @@ obj list(obj args)
 obj is_null_p(obj args)
 {
 	chkarity("null?", 1, args);
-	return is_null(car(args)) ? tru_o : fls_o;
+	return is_null(car(args)) ? true_o : false_o;
 }
 
 obj is_pair_p(obj args)
 {
 	chkarity("pair?", 1, args);
-	return is_pair(car(args)) ? tru_o : fls_o;
+	return is_pair(car(args)) ? true_o : false_o;
 }
 
 int length_i(obj lst, int len, bool prn_err)

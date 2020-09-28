@@ -324,7 +324,6 @@ obj rem(const obj args)
 // 	return (((Integer)r) == r) ? of_integer((Integer)r) : of_floating(r);
 // }
 
-
 static obj applyun(char *fname, enum un op, obj args)
 {
 	obj err, n;
@@ -508,15 +507,15 @@ static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)
 		const Integer a = to_integer(arg1), b = to_integer(arg2);
 		switch (cmp) {
 		case LT:
-			return a < b ? tru_o : fls_o;
+			return a < b ? true_o : false_o;
 		case LTE:
-			return a <= b ? tru_o : fls_o;
+			return a <= b ? true_o : false_o;
 		case EQ:
-			return a == b ? tru_o : fls_o;
+			return a == b ? true_o : false_o;
 		case GTE:
-			return a >= b ? tru_o : fls_o;
+			return a >= b ? true_o : false_o;
 		case GT:
-			return a > b ? tru_o : fls_o;
+			return a > b ? true_o : false_o;
 		}
 	} else {
 		Floating a, b;
@@ -532,15 +531,15 @@ static obj applycmp(const enum cmp cmp, const obj arg1, const obj arg2)
 
 		switch (cmp) {
 		case LT:
-			return a < b ? tru_o : fls_o;
+			return a < b ? true_o : false_o;
 		case LTE:
-			return a <= b ? tru_o : fls_o;
+			return a <= b ? true_o : false_o;
 		case EQ:
-			return a == b ? tru_o : fls_o;
+			return a == b ? true_o : false_o;
 		case GTE:
-			return a >= b ? tru_o : fls_o;
+			return a >= b ? true_o : false_o;
 		case GT:
-			return a > b ? tru_o : fls_o;
+			return a > b ? true_o : false_o;
 		}
 	}
 	return error_internal(AREA, "BUG! no comparison case for %d", cmp);
@@ -550,7 +549,7 @@ static obj fold(const char *fname, const enum cmp cmp, const obj prv,
 		const obj args)
 {
 	if (is_null(args))
-		return tru_o;
+		return true_o;
 	if (!is_pair(args))
 		return err_improper(fname, args);
 	else {
@@ -560,7 +559,7 @@ static obj fold(const char *fname, const enum cmp cmp, const obj prv,
 		if (is_true(applycmp(cmp, prv, num))) {
 			return fold(fname, cmp, num, cdr(args));
 		} else {
-			return fls_o;
+			return false_o;
 		}
 	}
 }
@@ -603,7 +602,7 @@ obj not(const obj args)
 	obj chk;
 	if (is_err(chk = chkarity("not", 1, args)))
 		return chk;
-	return is_false(car(args)) ? tru_o : fls_o;
+	return is_false(car(args)) ? true_o : false_o;
 }
 
 obj cons_p(const obj args)
@@ -675,7 +674,7 @@ obj is_eq_p(const obj args)
 
 	if (is_err(chk = chkarity("eq?", 2, args)))
 		return chk;
-	return is_eq(car(args), cadr(args)) ? tru_o : fls_o;
+	return is_eq(car(args), cadr(args)) ? true_o : false_o;
 }
 
 static bool is_equal(obj a, obj b)
@@ -693,7 +692,7 @@ obj is_equal_p(const obj args)
 
 	if (is_err(chk = chkarity("eq?", 2, args)))
 		return chk;
-	return is_equal(car(args), cadr(args)) ? tru_o : fls_o;
+	return is_equal(car(args), cadr(args)) ? true_o : false_o;
 }
 
 obj is_number_p(obj args)
@@ -702,7 +701,7 @@ obj is_number_p(obj args)
 
 	if (is_err(chk = chkarity("number?", 1, args)))
 		return chk;
-	return is_number(car(args)) ? tru_o : fls_o;
+	return is_number(car(args)) ? true_o : false_o;
 }
 
 obj is_symbol_p(obj args)
@@ -711,7 +710,7 @@ obj is_symbol_p(obj args)
 
 	if (is_err(chk = chkarity("symbol?", 1, args)))
 		return chk;
-	return is_symbol(car(args)) ? tru_o : fls_o;
+	return is_symbol(car(args)) ? true_o : false_o;
 }
 
 obj pcnt_ex(obj args)
@@ -719,5 +718,5 @@ obj pcnt_ex(obj args)
 	(void)args;
 	displaydat(of_string("Ignoring (%ex ...) - not first expresion."));
 	newline(emptylst);
-	return _void;
+	return void_o;
 }

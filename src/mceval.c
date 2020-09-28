@@ -139,7 +139,7 @@ obj if_alternate(obj exp)
 	if (!is_null(cdddr(exp))) {
 		return cadddr(exp);
 	} else {
-		return fls;
+		return false_s;
 	}
 }
 
@@ -272,7 +272,7 @@ obj cond_to_if(obj exp)
 static obj expand_clauses(obj clauses)
 {
 	if (is_null(clauses))
-		return fls; // no else clause
+		return false_s; // no else clause
 	obj first = car(clauses);
 	obj rest = cdr(clauses);
 	if (is_cond_else_clause(first)) {
@@ -426,7 +426,6 @@ bool is_delay(obj exp)
 obj delay_to_lambda(obj exp)
 {
 	obj r = make_lambda(emptylst, cdr(exp));
-	// eprintf(AREA, "%s -> %s", errstr(exp), errstr(r));
 	return r;
 }
 

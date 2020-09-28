@@ -137,7 +137,7 @@ obj paint(obj args)
 	}
 	paint_u(to_bitmap(car(args)), ox, oy, e1x, e1y, e2x, e2y);
 	unwritenpaint = true;
-	return _void;
+	return void_o;
 }
 
 obj draw_line(obj args)
@@ -164,10 +164,11 @@ obj draw_line(obj args)
 	for (i = 0; i < steps; i++) {
 		int x = (int)(x1 * ((Floating)(CANVAS_WIDTH - 1)) + (i * xinc));
 		int y = CANVAS_HEIGHT - 1 -
-			(int)(y1 * ((Floating)(CANVAS_HEIGHT - 1)) + (i * yinc));
+			(int)(y1 * ((Floating)(CANVAS_HEIGHT - 1)) +
+			      (i * yinc));
 		canvas.data[x + (y * CANVAS_WIDTH)] = 0;
 	}
-	return _void;
+	return void_o;
 }
 
 obj write_canvas(obj args)
@@ -188,7 +189,7 @@ obj write_canvas(obj args)
 	newline(emptylst);
 	writebmp(&canvas, path);
 	unwritenpaint = false;
-	return _void;
+	return void_o;
 }
 
 obj write_canvas_if_painted(obj args)
@@ -196,5 +197,5 @@ obj write_canvas_if_painted(obj args)
 	if (unwritenpaint) {
 		write_canvas(args);
 	}
-	return _void;
+	return void_o;
 }

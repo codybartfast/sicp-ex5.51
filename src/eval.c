@@ -232,7 +232,6 @@ static obj init(void)
 
 obj eval(obj expression, obj _environment)
 {
-	// printf("EVAL: %s\n", errstr(expression));
 	if (!initdone) {
 		init();
 	}
@@ -489,7 +488,7 @@ ev_and:
 ev_and_loop:
 	if (!no_operands(unev))
 		goto ev_and_operand;
-	val = tru_o;
+	val = true_o;
 	cont = restore();
 	goto go_cont;
 
@@ -517,7 +516,7 @@ ev_or:
 ev_or_loop:
 	if (!no_operands(unev))
 		goto ev_or_operand;
-	val = fls_o;
+	val = false_o;
 	cont = restore();
 	goto go_cont;
 
@@ -534,14 +533,13 @@ ev_or_test:
 	env = restore();
 	if (is_false(val))
 		goto ev_or_loop;
-	val = tru_o;
+	val = true_o;
 	cont = restore();
 	goto go_cont;
 
 // new - delay / cons-stream
 ev_delay:
 	expr = delay_to_lambda(expr);
-	// expr = cadr(expr);
 	goto eval_dispatch;
 
 ev_cons_stream:

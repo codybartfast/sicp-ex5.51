@@ -23,7 +23,7 @@ obj cnv_boolean_string(struct outport *op, obj bl)
 	} else {
 		out_writes(op, "#t");
 	}
-	return _void;
+	return void_o;
 }
 
 obj cnv_number_string(struct outport *op, obj num)
@@ -45,7 +45,7 @@ obj cnv_number_string(struct outport *op, obj num)
 				      subtype(num));
 	}
 	out_writes(op, buff);
-	return _void;
+	return void_o;
 }
 
 obj cnv_bitmap_string(struct outport *op, obj dat)
@@ -58,5 +58,5 @@ obj cnv_bitmap_string(struct outport *op, obj dat)
 	bmp = to_bitmap(dat);
 	sprintf(buff, "<bitmap %dx%d>", bmp->width, bmp->height);
 	out_writes(op, buff);
-	return _void;
+	return void_o;
 }

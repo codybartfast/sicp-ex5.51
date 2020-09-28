@@ -65,10 +65,10 @@ bool is_false(obj dat)
 	return type(dat) == TYPE_BOOL && subtype(dat) == BOOL_FALSE;
 }
 
-const obj tru_o = OBJ_2(TYPE_BOOL, BOOL_TRUE);
-const obj fls_o = OBJ_2(TYPE_BOOL, BOOL_FALSE);
-const obj tru = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "true");
-const obj fls = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "false");
+const obj true_o = OBJ_2(TYPE_BOOL, BOOL_TRUE);
+const obj false_o = OBJ_2(TYPE_BOOL, BOOL_FALSE);
+const obj true_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "true");
+const obj false_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "false");
 
 // NUMBER
 
@@ -248,8 +248,7 @@ const obj and_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "and");
 SYMBOL(apply)
 SYMBOL(begin)
 SYMBOL(cond)
-const obj cons_s =
-	OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "cons");
+const obj cons_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "cons");
 const obj cons_stream =
 	OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "cons-stream");
 SYMBOL(define)
@@ -296,7 +295,7 @@ bool is_eof(obj dat)
 }
 const obj eof = OBJ_2(TYPE_EOF, SUBTYPE_NOT_SET);
 
-const obj _ex = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "%ex");
+const obj pex = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "%ex");
 
 SYMBOL(ok)
 
@@ -306,7 +305,7 @@ bool is_void(obj dat)
 {
 	return type(dat) == TYPE_VOID;
 }
-const obj _void = OBJ_2(TYPE_VOID, SUBTYPE_NOT_SET);
+const obj void_o = OBJ_2(TYPE_VOID, SUBTYPE_NOT_SET);
 
 bool is_broken_heart(obj dat)
 {

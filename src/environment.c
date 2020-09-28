@@ -188,8 +188,8 @@ static obj initial_procedures(void)
 {
 	obj initial_primprocs =
 		listn(10, // must match number of items below
-		      list2(of_identifier("true"), tru_o), // 1
-		      list2(of_identifier("false"), fls_o), // 2
+		      list2(of_identifier("true"), true_o), // 1
+		      list2(of_identifier("false"), false_o), // 2
 		      list2(of_identifier("+"), of_function(add)), // 3
 		      list2(of_identifier("-"), of_function(sub)), // 4
 		      list2(of_identifier("*"), of_function(mul)), // 5

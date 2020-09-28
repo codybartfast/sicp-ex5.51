@@ -617,7 +617,7 @@ obj do_head(obj env, struct inport *in)
 {
 	disable_gc = true;
 	obj exp = readp(in);
-	if (is_pair(exp) && is_eq(car(exp), _ex)) {
+	if (is_pair(exp) && is_eq(car(exp), pex)) {
 		obj r = conf_ex(env, cdr(exp));
 		if (is_err(r))
 			return r;
@@ -669,7 +669,7 @@ static obj display_definedp(struct outport *out)
 		display_id(out, car(names));
 	}
 	newlinep(out);
-	return _void;
+	return void_o;
 }
 
 obj display_defined(obj _)

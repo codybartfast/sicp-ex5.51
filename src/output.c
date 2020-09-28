@@ -67,7 +67,7 @@ obj writep(struct outport *op, obj dat)
 		out_writec(op, '"');
 		out_writes(op, to_string(dat));
 		out_writec(op, '"');
-		return _void;
+		return void_o;
 	default:
 		return displayp(op, dat);
 	}
@@ -81,34 +81,34 @@ obj displayp(struct outport *op, obj dat)
 	switch (type(dat)) {
 	case TYPE_SYMBOL:
 		out_writes(op, dat.val.string);
-		return _void;
+		return void_o;
 	case TYPE_BOOL:
 		return cnv_boolean_string(op, dat);
 	case TYPE_NUMBER:
 		return cnv_number_string(op, dat);
 	case TYPE_STRING:
 		out_writes(op, dat.val.string);
-		return _void;
+		return void_o;
 	case TYPE_EMPTY_LIST:
 		out_writes(op, "()");
-		return _void;
+		return void_o;
 	case TYPE_PRIMITIVE_PROCEDURE:
 		out_writes(op, "<primitive procedure>");
-		return _void;
+		return void_o;
 	case TYPE_UNSPECIFIED:
 		out_writes(op, "<unspecified>");
-		return _void;
+		return void_o;
 	case TYPE_VOID:
-		return _void;
+		return void_o;
 	case TYPE_BROKEN_HEART:
 		out_writes(op, "<Broken Heart!>");
-		return _void;
+		return void_o;
 	case TYPE_BITMAP:
 		return cnv_bitmap_string(op, dat);
 	case TYPE_ERROR:
 		sprintf(msg, "Error-Object, subtype: %d", subtype(dat));
 		out_writes(op, msg);
-		return _void;
+		return void_o;
 	default:
 		return error_internal(
 			AREA, "BUG! No displaysb case for type: %d", type(dat));
@@ -133,7 +133,7 @@ static obj displaypair(struct outport *op, obj pair, bool first)
 
 	if (is_null(pair)) {
 		out_writes(op, ")");
-		return _void;
+		return void_o;
 	}
 
 	if (first)
@@ -152,11 +152,11 @@ static obj displaypair(struct outport *op, obj pair, bool first)
 	if (first) {
 		out_writec(op, ')');
 	}
-	return _void;
+	return void_o;
 }
 
 obj void_p(obj args)
 {
 	(void)args;
-	return _void;
+	return void_o;
 }

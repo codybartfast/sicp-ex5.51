@@ -92,16 +92,15 @@ obj error_internal(const char *area, const char *message, ...)
 {
 	va_list args;
 	va_start(args, message);
-	return print_make_err(ERROR_INTERNAL, "Internal (sicp-scheme) Error", area, message,
-			      args);
+	return print_make_err(ERROR_INTERNAL, "Internal (sicp-scheme) Error",
+			      area, message, args);
 }
 
 obj error_io(const char *area, const char *message, ...)
 {
 	va_list args;
 	va_start(args, message);
-	return print_make_err(ERROR_INTERNAL, "IO Error", area, message,
-			      args);
+	return print_make_err(ERROR_INTERNAL, "IO Error", area, message, args);
 }
 
 obj error_parser(const char *area, const char *message, ...)

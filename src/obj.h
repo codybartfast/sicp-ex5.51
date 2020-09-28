@@ -58,10 +58,10 @@ obj of_identifier(const char *id);
 bool is_boolean(obj);
 bool is_true(obj);
 bool is_false(obj);
-extern const obj tru_o;
-extern const obj fls_o;
-extern const obj tru;
-extern const obj fls;
+extern const obj true_o;
+extern const obj false_o;
+extern const obj true_s;
+extern const obj false_s;
 
 // NUMBER
 
@@ -156,11 +156,11 @@ extern const obj ev_return_caller;
 
 bool is_eof(obj dat);
 extern const obj eof;
-extern const obj _ex;
+extern const obj pex;
 extern const obj ok;
 extern const obj unspecified;
 bool is_void(obj dat);
-extern const obj _void;
+extern const obj void_o;
 bool is_broken_heart(obj dat);
 extern const obj broken_heart;
 

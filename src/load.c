@@ -32,7 +32,7 @@ obj load_u(struct inport *in, struct outport *out, obj *unev, bool verbose)
 		}
 	}
 	name = prevname;
-	return _void;
+	return void_o;
 }
 
 static struct strbldr *addbase(struct strbldr *sb, char *path)
