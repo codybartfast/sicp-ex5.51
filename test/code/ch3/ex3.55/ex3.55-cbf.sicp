@@ -1,0 +1,24 @@
+(%ex "3.55")
+
+; exercise 3.55, p331
+
+(define (integers-starting-from n)
+  (cons-stream n (integers-starting-from (+ n 1))))
+
+(define (partial-sums S)
+  (cons-stream
+   (stream-car S)
+   (add-streams
+            (stream-cdr S)
+            (partial-sums S))))
+
+(define (take S n)
+  (if (= n 0)
+      the-empty-stream
+      (cons-stream (stream-car S)
+                   (take (stream-cdr S) (- n 1)))))
+
+(define partials (partial-sums (integers-starting-from 1)))
+
+(display-stream
+  (take partials 5))

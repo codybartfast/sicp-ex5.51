@@ -1,0 +1,7 @@
+(%ex "3.53")
+
+; exercise 3.53, p330
+
+(define s (cons-stream 1 (add-streams s s)))
+
+(stream-ref s 5)
