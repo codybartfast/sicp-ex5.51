@@ -1,0 +1,33 @@
+(%ex "3.59")
+
+; exercise 3.59, p332
+
+(define (integers-starting-from n)
+  (cons-stream n (integers-starting-from (+ n 1))))
+
+(define integers (integers-starting-from 1))
+
+(define (integrate-series S)
+  (stream-map *
+              (stream-map (lambda (n) (/ 1 n)) integers)
+              S))
+
+(define (acc-stream op initial S)
+  (if (stream-null? S)
+      initial
+      (acc-stream op (op initial (stream-car S)) (stream-cdr S))))
+(display-stream (take (integrate-series integers) 10))
+(newline)
+
+(define cosine-series
+  (cons-stream 1 (integrate-series sine-series)))
+(define sine-series
+  (cons-stream
+   0
+   (stream-map
+    (lambda (n) (- n))
+    (integrate-series cosine-series))))
+
+(acc-stream + 0 (take sine-series 18))
+(newline)
+(acc-stream + 0 (take cosine-series 18))

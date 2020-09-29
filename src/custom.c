@@ -374,13 +374,13 @@ static void add_stream(obj env)
 		"  (stream-map * s1 s2))",
 		env);
 	evalstr("(define (take S n)"
-		"  (if (<= n 0)"
+		"  (if (or (stream-null? S) (<= n 0))"
 		"      the-empty-stream"
 		"      (cons-stream (stream-car S)"
 		"                   (take (stream-cdr S) (- n 1)))))",
 		env);
 	evalstr("(define (skip S n)"
-		"  (if (<= n 0)"
+		"  (if (or (stream-null? S) (<= n 0))"
 		"      S"
 		"      (skip (stream-cdr S) (- n 1))))",
 		env);

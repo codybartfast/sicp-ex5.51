@@ -2,21 +2,23 @@
 
 ; exercise 3.57, p332
 
-; (define (memo-proc proc) proc)
+(define (run)
+ (define add-count 0)
+ (define (add a b)
+   (set! add-count (inc add-count))
+   (+ a b))
 
-(define add-count 0)
-(define (add a b)
-  (set! add-count (inc add-count))
-  (+ a b))
+ (define (add-streams s1 s2)
+   (stream-map add s1 s2))
 
-(define (add-streams s1 s2)
-  (stream-map add s1 s2))
+ (define fibs
+   (cons-stream 0
+                (cons-stream 1
+                             (add-streams (stream-cdr fibs)
+                                          fibs))))
+ (stream-ref fibs 10)
+ (display "add-count: ")(display add-count)(newline))
 
-(define fibs
-  (cons-stream 0
-               (cons-stream 1
-                            (add-streams (stream-cdr fibs)
-                                         fibs))))
-
-(stream-ref fibs 10)
-(display "add-count: ")(display add-count)(newline)
+(run)
+(define (memo-proc proc) proc)
+(run)

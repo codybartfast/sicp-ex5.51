@@ -1,0 +1,66 @@
+(%ex "3.60")
+
+; exercise 3.60, p333
+
+(define (mul-series s1 s2)
+  (cons-stream (* (stream-car s1) (stream-car s2))
+               (add-streams
+                (scale-stream (stream-cdr s2) (stream-car s1))
+                (mul-series (stream-cdr s1) s2))))
+
+(define (integrate-series S)
+  (define (integrate S power)
+    (if (stream-null? S)
+        the-empty-stream
+        (cons-stream
+         (* (/ 1 (+ power 1)) (stream-car S))
+         (integrate (stream-cdr S) (+ power 1)))))
+  (integrate S 0))
+
+(define sine-series
+  (cons-stream 0 (integrate-series cosine-series)))
+
+(define cosine-series
+  (cons-stream
+   1
+   (stream-map
+    (lambda (n) (- n))
+    (integrate-series sine-series))))
+
+(define the-series
+  (add-streams
+   (mul-series sine-series sine-series)
+   (mul-series cosine-series cosine-series)))
+
+
+(define (stream-enumerate-interval low high)
+  (if (> low high)
+      the-empty-stream
+      (cons-stream
+       low
+       (stream-enumerate-interval (+ low 1) high))))
+
+(define C cosine-series)
+(define S sine-series)
+(define CS (mul-series cosine-series cosine-series))
+(define SS (mul-series sine-series sine-series))
+(define T the-series)
+
+(define (acc-stream op initial S)
+  (if (stream-null? S)
+      initial
+      (acc-stream op (op initial (stream-car S)) (stream-cdr S))))
+
+(define (sum-stream S)
+  (acc-stream + 0 S))
+
+(display-line "cosine series: ")
+(sum-stream (take C 7))
+(display-line "square of cosine series: ")
+(sum-stream (take CS 7))
+(display-line "sine series: ")
+(sum-stream (take S 7))
+(display-line "square of sine series: ")
+(sum-stream (take SS 7))
+(display-line "sum of square series: ")
+(sum-stream (take T 7))

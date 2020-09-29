@@ -1,0 +1,96 @@
+(%ex "3.62")
+
+; exercise 3.62, p334
+
+;; =========
+;; From 3.60
+;; =========
+
+(define (mul-series s1 s2)
+  (cons-stream (* (stream-car s1) (stream-car s2))
+               (add-streams
+                (scale-stream (stream-cdr s2) (stream-car s1))
+                (mul-series (stream-cdr s1) s2))))
+
+(define (integrate-series S)
+  (define (integrate S power)
+    (if (stream-null? S)
+        the-empty-stream
+        (cons-stream
+         (* (/ 1 (+ power 1)) (stream-car S))
+         (integrate (stream-cdr S) (+ power 1)))))
+  (integrate S 0))
+
+(define sine-series
+  (cons-stream 0 (integrate-series cosine-series)))
+
+(define cosine-series
+  (cons-stream
+   1
+   (stream-map
+    (lambda (n) (- n))
+    (integrate-series sine-series))))
+
+;; =========
+;; From 3.61
+;; =========
+
+(define (invert-unit-series S)
+  (if (= 1 (stream-car S))
+         (cons-stream 1
+                      (scale-stream
+                       (mul-series (stream-cdr S) (invert-unit-series S))
+                       -1))
+         (error "Constant term of series must be 1")))
+
+;; ==========
+;; And now...
+;; ==========
+
+(define (div-series N D)
+  (define D-constant (stream-car D))
+  (if (= 0 D-constant)
+      error "Denominator series cannot have constant term of zero")
+  (define unit-series
+    (scale-stream D (/ 1 D-constant)))
+  (define inverted-unit-series
+    (invert-unit-series unit-series))
+  (scale-stream
+   (mul-series N inverted-unit-series)
+   D-constant))
+
+(define tan-series (div-series sine-series cosine-series))
+
+
+;; ==========
+;; Let's Test
+;; ==========
+
+(define (powers-of x)
+  (define (powers-stream start)
+    (cons-stream
+     start
+     (powers-stream (* start x))))
+  (powers-stream 1))
+
+(define (poly coefficients x)
+  (mul-streams
+   coefficients
+   (powers-of x)))
+
+(define (stream->list S)
+  (define (iter s l)
+    (if (stream-null? s)
+	(reverse l)
+	(iter (stream-cdr s) (cons (stream-car s) l) )))
+  (iter S '()))
+
+(define (eval-power-series series terms x)
+  (apply + (stream->list (take (poly series x) terms))))
+
+(define (tan x)
+  (eval-power-series tan-series 15 x))
+
+(display-line "tan 0.1 (expect  0.1003): ")(display (tan 0.1))
+(display-line "tan 0.5 (expect  0.5463): ")(display (tan 0.5))
+(display-line "tan 1.0 (expect  1.5574): ")(display (tan 1.0))
