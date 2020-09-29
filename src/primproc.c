@@ -427,7 +427,8 @@ static Integer plat_rand(void)
 {
 #ifdef _WIN32
 	unsigned r;
-	return rand_s(&r);
+	rand_s(&r);
+	return r;
 #else
 	return rand();
 #endif
