@@ -367,6 +367,13 @@ static void add_stream(obj env)
 	evalstr("(define (add-streams s1 s2)"
 		"  (stream-map + s1 s2))",
 		env);
+	evalstr("(define (partial-sums S)"
+		"  (cons-stream"
+		"   (stream-car S)"
+		"   (add-streams"
+		"            (stream-cdr S)"
+		"            (partial-sums S))))",
+		env);
 	evalstr("(define (scale-stream stream factor)"
 		"  (stream-map (lambda (x) (* x factor)) stream))",
 		env);
@@ -384,6 +391,10 @@ static void add_stream(obj env)
 		"      S"
 		"      (skip (stream-cdr S) (- n 1))))",
 		env);
+	evalstr("(define (integers-starting-from n)"
+		"  (cons-stream n (integers-starting-from (+ n 1))))",
+		env);
+	evalstr("(define integers (integers-starting-from 1))", env);
 }
 
 static obj add_extras(int ex, obj env)

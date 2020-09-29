@@ -12,10 +12,6 @@
               (stream-map (lambda (n) (/ 1 n)) integers)
               S))
 
-(define (acc-stream op initial S)
-  (if (stream-null? S)
-      initial
-      (acc-stream op (op initial (stream-car S)) (stream-cdr S))))
 (display-stream (take (integrate-series integers) 10))
 (newline)
 
@@ -28,6 +24,6 @@
     (lambda (n) (- n))
     (integrate-series cosine-series))))
 
-(acc-stream + 0 (take sine-series 18))
+(stream-ref (partial-sums sine-series) 18)
 (newline)
-(acc-stream + 0 (take cosine-series 18))
+(stream-ref (partial-sums cosine-series) 18)

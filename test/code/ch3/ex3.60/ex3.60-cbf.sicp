@@ -46,21 +46,13 @@
 (define SS (mul-series sine-series sine-series))
 (define T the-series)
 
-(define (acc-stream op initial S)
-  (if (stream-null? S)
-      initial
-      (acc-stream op (op initial (stream-car S)) (stream-cdr S))))
-
-(define (sum-stream S)
-  (acc-stream + 0 S))
-
 (display-line "cosine series: ")
-(sum-stream (take C 7))
+(stream-ref (partial-sums C ) 7)
 (display-line "square of cosine series: ")
-(sum-stream (take CS 7))
+(stream-ref (partial-sums CS ) 7)
 (display-line "sine series: ")
-(sum-stream (take S 7))
+(stream-ref (partial-sums S ) 7)
 (display-line "square of sine series: ")
-(sum-stream (take SS 7))
+(stream-ref (partial-sums SS ) 7)
 (display-line "sum of square series: ")
-(sum-stream (take T 7))
+(stream-ref (partial-sums T ) 7)
