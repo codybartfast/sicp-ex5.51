@@ -1,0 +1,24 @@
+(%ex "3.76")
+
+; exercise 3.76, page 346
+
+(define (smooth1 stream last-value)
+  (define (avg a b) (/ (+ a b) 2))
+  (define (iter s prev)
+    (cons-stream
+     (avg (stream-car s) prev)
+     (iter (stream-cdr s) (stream-car s))))
+  (iter stream last-value))
+
+;; or better using the 3.50's stream-map:
+
+(define (smooth stream last-value)
+  (stream-map
+   (lambda (a b) (/ (+ a b) 2)) 
+   (cons-stream last-value stream)
+   stream))
+
+;; verify smooth
+
+(display-line "Check smooth:")
+(display-stream (take (smooth1 integers 0) 10))

@@ -1,0 +1,50 @@
+(%ex "3.81")
+
+; exercise 3.81, page 253
+
+;; from 3.06
+
+(define rand-init (runtime))
+(define rand-mod 2147483647)
+
+(define rand-update
+  (lambda (x)
+    (let ((a 16807)
+          (m rand-mod))
+      (modulo
+       (* x a)
+       m))))
+
+;; random stream
+
+(define (rand-stream inputs prev)
+  (if (stream-null? inputs)
+      '()
+      (let ((input (stream-car inputs))
+            (method (car (stream-car inputs))))
+        (cond
+          ((eq? method 'generate)
+           (let ((rand (rand-update prev)))
+             (cons-stream rand
+                          (rand-stream (stream-cdr inputs) rand))))
+          ((eq? method 'reset)
+           (let ((seed (cadr input)))
+             (cons-stream '()
+                          (rand-stream (stream-cdr inputs) seed))))
+          (else ((error "Unknown Method - " method)))))))
+
+;; demonstrate
+
+(define inputs
+  (cons-stream (list 'generate) (cons-stream (list 'generate)
+  (cons-stream (list 'generate) (cons-stream (list 'reset 351181)
+  (cons-stream (list 'generate) (cons-stream (list 'generate)
+  (cons-stream (list 'generate) (cons-stream (list 'generate)
+  (cons-stream (list 'generate) (cons-stream (list 'generate)
+  (cons-stream (list 'reset 351181) (cons-stream (list 'generate)
+  (cons-stream (list 'generate)
+  (cons-stream (list 'generate) '() )))))))))))))))
+
+(define rands (rand-stream inputs 1))
+
+(display-stream rands)

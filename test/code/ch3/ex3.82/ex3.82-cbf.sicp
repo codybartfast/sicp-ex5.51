@@ -1,0 +1,83 @@
+(%ex "3.82")
+
+; exercise 3.82, page 254
+
+
+(define rand-mod 2147483647)
+(define (random-init)
+  (rand-update (inc (random (dec rand-mod)))))
+
+(define rand-update
+  (lambda (x)
+    (let ((a 16807)
+          (m rand-mod))
+      (modulo
+       (* x a)
+       m))))
+
+
+;; Random streams
+;; --------------
+
+(define (random-numbers)
+  (define rand-stream
+    (cons-stream (random-init)
+                 (stream-map rand-update rand-stream)))
+  rand-stream)
+
+(define (rand-range low high)
+  (define (rand-to-ranged rand)
+    (+ low
+       (/ (* rand (- high low))
+          rand-mod)))
+  (stream-map rand-to-ranged (random-numbers)))
+
+
+;; Monte Carlo
+;; -----------
+
+(define (monte-carlos experiments)
+  (define (iter prev-total prev-passed experiments)
+    (let ((total (+ prev-total 1))
+          (passed (if ((stream-car experiments))
+                      (+ prev-passed 1)
+                      prev-passed)))
+      (cons-stream
+       (/ passed total)
+       (iter total passed (stream-cdr experiments)))))
+  (iter 0.0 0.0 experiments))
+
+
+;; Experiments
+;; -----------
+
+(define (experiments x1 x2 y1 y2)
+  (define (is-in-circle x y)
+    (> 1.0 (+ (* x x) (* y y))))
+  (define (get-experiment x y)
+    (lambda ()
+      (is-in-circle x y)))
+  (stream-map get-experiment (rand-range x1 x2) (rand-range y1 y2)))
+
+
+;; Pi Estimates
+;; ------------
+
+(define (pi-estimates x1 x2 y1 y2)
+  (let ((area-of-rectangle (* (- x2 x1) (- y2 y1))))
+    (scale-stream
+     (monte-carlos (experiments x1 x2 y1 y2))
+     area-of-rectangle)))
+
+
+;; Demonstrate
+;; -----------
+
+(define estimates (pi-estimates -1 1 -1 1))
+
+(display-line "First 20 estimates...")
+(display-stream (take estimates 10))
+(newline)
+(display-line "1,000'th estimate ...")
+(newline)
+(stream-ref estimates 1000)

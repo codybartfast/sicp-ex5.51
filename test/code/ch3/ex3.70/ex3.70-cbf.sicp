@@ -1,0 +1,70 @@
+(%ex "3.70")
+
+; exercise 3.70, p342
+
+
+(define (merge-weighted weight s1 s2)
+  (cond ((stream-null? s1) s2)
+        ((stream-null? s2) s1)
+        (else
+         (let ((s1car (stream-car s1))
+               (s2car (stream-car s2)))
+           (let ((ws1car (weight s1car))
+	         (ws2car (weight s2car)))
+             (cond ((<= ws1car ws2car)
+                    (cons-stream s1car
+                                 (merge-weighted weight (stream-cdr s1) s2)))
+                   ((> ws1car ws2car)
+                    (cons-stream s2car
+                                 (merge-weighted weight s1 (stream-cdr s2))))
+                   (else
+                    (cons-stream s1car
+                                 (merge-weighted weight (stream-cdr s1)
+                                                 (stream-cdr s2))))))))))
+(define (pairs-weighted weight s t)
+  (cons-stream
+   (list (stream-car s) (stream-car t))
+   (merge-weighted weight
+       (stream-map (lambda (x) (list (stream-car s) x))
+                   (stream-cdr t))
+       (pairs-weighted weight (stream-cdr s) (stream-cdr t)))))
+
+;; Sorted by sum
+
+(define (sum-weight pair)
+  (+ (car pair) (cadr pair)))
+
+(define by-sum (pairs-weighted sum-weight integers integers))
+
+;; 2,3,5 pairs
+
+(define (two35-weight pair)
+  (let ((i (car pair))
+        (j (cadr pair)))
+    (+ (* 2 i)
+       (* 3 j)
+       (* 5 i j))))
+
+(define (two35coprime? pair)
+  (let ((i (car pair))
+        (j (cadr pair)))
+    (< 0
+       (* (modulo i 2)
+          (modulo i 3)
+          (modulo i 5)
+          (modulo j 2)
+          (modulo j 3)
+          (modulo j 5)))))
+
+(define two35s
+  (stream-filter two35coprime?
+                 (pairs-weighted two35-weight integers integers)))
+
+;; display
+
+(display-line "Pairs sorted by sum")
+(display-stream (take by-sum 15))
+
+(newline)
+(display-line "i,j coprime with 2,3,5 ordered by 2i+3j+5ij")
+(display-stream (take two35s 15))

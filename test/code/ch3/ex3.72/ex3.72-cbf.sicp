@@ -1,0 +1,55 @@
+(%ex "3.72")
+
+; exercise 3.72, p343
+
+(define (merge-weighted weight s1 s2)
+  (cond ((stream-null? s1) s2)
+        ((stream-null? s2) s1)
+        (else
+         (let ((s1car (stream-car s1))
+               (s2car (stream-car s2)))
+           (let ((ws1car (weight s1car))
+                 (ws2car (weight s2car)))
+             (cond ((<= ws1car ws2car)
+                    (cons-stream s1car
+                                 (merge-weighted weight (stream-cdr s1) s2)))
+                   ((> ws1car ws2car)
+                    (cons-stream s2car
+                                 (merge-weighted weight s1 (stream-cdr s2))))
+                   (else
+                    (cons-stream s1car
+                                 (merge-weighted weight (stream-cdr s1)
+                                                 (stream-cdr s2))))))))))
+(define (pairs-weighted weight s t)
+  (cons-stream
+   (list (stream-car s) (stream-car t))
+   (merge-weighted weight
+       (stream-map (lambda (x) (list (stream-car s) x))
+                   (stream-cdr t))
+       (pairs-weighted weight (stream-cdr s) (stream-cdr t)))))
+
+;; Three way squares
+
+(define (sumSqr-weight pair)
+    (let ((i (car pair))
+        (j (cadr pair)))
+    (+ (* i i)
+       (* j j))))
+
+(define weighted-pairs (pairs-weighted sumSqr-weight integers integers))
+
+(define (find-consec s)
+  (define non-pair (list 0 0))
+  (define (iter s prev prev-prev)
+    (if (and (= (sumSqr-weight (stream-car s)) (sumSqr-weight prev))
+             (= (sumSqr-weight (stream-car s)) (sumSqr-weight prev-prev)))
+        (cons-stream
+         (list (sumSqr-weight prev) (stream-car s) prev prev-prev)
+         (iter (stream-cdr s) non-pair non-pair))
+        (iter (stream-cdr s) (stream-car s) prev)))
+  (iter s non-pair non-pair))
+
+(define rama-nums (find-consec weighted-pairs))
+
+(display-line "3Way Sum Square numbers:")
+(display-stream (take rama-nums 6))

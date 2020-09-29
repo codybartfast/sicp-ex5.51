@@ -1,0 +1,29 @@
+(%ex "3.65")
+
+; exercise 3.65, p338
+
+(define (ln2-summands n)
+  (cons-stream
+   (/ 1 n)
+   (stream-map - (ln2-summands (+ n 1)))))
+
+(define ln2-approximations
+  (partial-sums (ln2-summands 1.0)))
+
+(define (stream-limit S tolerance)
+  (let ((a (stream-car S))
+        (b (stream-car (stream-cdr S))))
+    (if (< (abs (- a b)) tolerance)
+        b
+        (stream-limit (stream-cdr S) tolerance))))
+
+(display-line "Expect: 1, got: ")
+  (display (stream-limit ln2-approximations .5))
+(display-line "Expect: 0.7, got: ")
+  (display (stream-limit ln2-approximations .05))
+; (display-line "Expect: 0.69, got: ")
+;   (display (stream-limit ln2-approximations .005))
+; (display-line "Expect: 0.693, got: ")
+;   (display (stream-limit ln2-approximations .0005))
+; (display-line "Expect: 0.6931, got: ")
+;   (display (stream-limit ln2-approximations .00005))

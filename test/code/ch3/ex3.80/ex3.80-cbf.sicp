@@ -1,0 +1,38 @@
+(%ex "3.80")
+
+; exercise 3.80, page 349
+
+(define (integral delayed-integrand initial-value dt)
+  (define int
+    (cons-stream initial-value
+                 (let ((integrand (force delayed-integrand)))
+                   (add-streams (scale-stream integrand dt)
+                                int))))
+  int)
+
+;; RLC
+
+(define (RLC R C L dt)
+  (define (rlc vC0 iL0)
+    (define vC (integral (delay (scale-stream iL (/ -1 C))) vC0 dt))
+    (define iL (integral (delay (add-streams 
+                          (scale-stream vC (/ 1 L))
+                          (scale-stream iL (/ (- R) L))))
+                         iL0 dt))
+    (cons vC iL))
+  rlc)
+                          
+;; verify
+
+(define rlc (RLC 1 0.2 1 0.1))
+
+(define pair (rlc 10 0))
+(define vC (car pair))
+(define iL (cdr pair))
+
+(display-line "vC:")
+(display-stream (take vC 7))
+
+(newline)
+(display-line "iL:")
+(display-stream (take iL 7))

@@ -1,0 +1,26 @@
+(%ex "3.73")
+
+; exercise 3.73, p344
+
+(define (integral integrand initial-value dt)
+  (define int
+    (cons-stream initial-value
+                 (add-streams (scale-stream integrand dt)
+                              int)))
+  int)
+
+;; RC1
+
+(define (RC R C dt)
+  (lambda (i-stream v0)
+    (add-streams
+     (scale-stream (integral i-stream (* C v0) dt) (/ 1 C))
+     (scale-stream i-stream R))))
+
+(define RC1 (RC 5 1 0.5))
+
+(define (show x) (display x) x)
+
+(define i-stream (cons-stream 1 i-stream)) ;
+
+(display-stream (take (RC1 i-stream 1) 7))
