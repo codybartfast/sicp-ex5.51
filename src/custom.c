@@ -339,8 +339,8 @@ static void add_stream(obj env)
 		"  (if (stream-null? (car argstreams))"
 		"      the-empty-stream"
 		"      (cons-stream"
-		"       (apply proc (map stream-car argstreams))"
-		"       (apply stream-map"
+		"       (uapply proc (map stream-car argstreams))"
+		"       (uapply stream-map"
 		"              (cons proc (map stream-cdr argstreams))))))",
 		env);
 	evalstr("(define (stream-for-each proc s)"
@@ -549,6 +549,7 @@ static obj add_extras(int ex, obj env)
 		add_accessors(env);
 	}
 	if (ex >= 221) {
+		evalstr("(define (apply proc args) (uapply proc args))", env);
 		evalstr("(define (map proc . arglists)"
 			"  (define (smap proc items)"
 			"    (define (iter items mapped)"
@@ -562,7 +563,7 @@ static obj add_extras(int ex, obj env)
 			"    (if (null? (car arglists))"
 			"        mapped"
 			"        (iter (smap cdr arglists)"
-			"              (cons (apply proc (smap car arglists))"
+			"              (cons (uapply proc (smap car arglists))"
 			"                    mapped))))"
 			"  (reverse (iter arglists nil)))",
 			env);
@@ -626,6 +627,11 @@ static obj add_extras(int ex, obj env)
 	if (ex >= 350) {
 		evalstr("(define (force delayed-obj) (delayed-obj))", env);
 		add_stream(env);
+	}
+	if (ex >= 401) {
+		define_variable(of_identifier("apply"), uapply, env);
+		define_variable(of_identifier("string?"),
+				of_function(is_string_p), env);
 	}
 	return unspecified;
 }
@@ -696,7 +702,7 @@ static obj display_definedp(struct outport *out)
 	newlinep(out);
 	displayp(out, of_string("Special Forms:"));
 	display_id(out, of_string("and"));
-	display_id(out, of_string("apply"));
+	display_id(out, of_string("uapply"));
 	display_id(out, of_string("begin"));
 	display_id(out, of_string("cond"));
 	display_id(out, of_string("cons-stream"));

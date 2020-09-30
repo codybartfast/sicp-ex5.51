@@ -655,6 +655,7 @@ bool is_eq(obj a, obj b)
 	}
 	switch (type(a)) {
 	case TYPE_SYMBOL:
+	case TYPE_STRING:
 		return strcmp(to_string(a), to_string(b)) == 0;
 	case TYPE_PAIRPTR:
 		return to_pairptr(a) == to_pairptr(b);
@@ -703,6 +704,15 @@ obj is_number_p(obj args)
 	if (is_err(chk = chkarity("number?", 1, args)))
 		return chk;
 	return is_number(car(args)) ? true_o : false_o;
+}
+
+obj is_string_p(obj args)
+{
+	obj chk;
+
+	if (is_err(chk = chkarity("string?", 1, args)))
+		return chk;
+	return is_string(car(args)) ? true_o : false_o;
 }
 
 obj is_symbol_p(obj args)

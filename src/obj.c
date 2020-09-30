@@ -245,7 +245,7 @@ obj (*to_function(obj dat))(obj)
 // KEYWORDS
 
 const obj and_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "and");
-SYMBOL(apply)
+SYMBOL(uapply)
 SYMBOL(begin)
 SYMBOL(cond)
 const obj cons_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "cons");
