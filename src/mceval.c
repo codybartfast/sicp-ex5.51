@@ -403,7 +403,7 @@ obj timed_expr(obj exp)
 // apply keyword
 bool is_uapply(obj exp)
 {
-	return is_tagged_list(exp, uapply);
+	return is_tagged_list(exp, __ppapply);
 }
 
 obj apply_operator(obj exp)

@@ -111,7 +111,7 @@ obj (*to_function(obj dat))(obj);
 // KEYWORDS
 
 extern const obj and_s;
-extern const obj uapply;
+extern const obj __ppapply;
 extern const obj begin;
 extern const obj cond;
 extern const obj cons_s;

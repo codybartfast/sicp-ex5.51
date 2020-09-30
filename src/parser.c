@@ -5,6 +5,7 @@
 #include "error.h"
 #include "lexer.h"
 #include "list.h"
+#include "primproc.h"
 
 #define AREA "PARSER"
 
@@ -18,6 +19,12 @@ static struct inport *dfltin(void)
 obj read(void)
 {
 	return readp(dfltin());
+}
+
+obj read_p(obj args){
+	if(is_err(args = chkarity("read", 0, args)))
+		return args;
+	return read();
 }
 
 static obj check_eof(void)

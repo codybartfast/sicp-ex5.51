@@ -20,6 +20,13 @@ static obj evalstr(char *e, obj env)
 	return eval(readp(openin_string(e)), env);
 }
 
+static obj eval_p(obj args)
+{
+	if (is_err(chkarity("repl", 2, args)))
+		return args;
+	return eval(car(args), cadr(args));
+}
+
 static void add_accessors(obj env)
 {
 	define_variable(of_identifier("caar"), of_function(caar_p), env);
@@ -339,8 +346,8 @@ static void add_stream(obj env)
 		"  (if (stream-null? (car argstreams))"
 		"      the-empty-stream"
 		"      (cons-stream"
-		"       (uapply proc (map stream-car argstreams))"
-		"       (uapply stream-map"
+		"       (__%%apply proc (map stream-car argstreams))"
+		"       (__%%apply stream-map"
 		"              (cons proc (map stream-cdr argstreams))))))",
 		env);
 	evalstr("(define (stream-for-each proc s)"
@@ -549,7 +556,10 @@ static obj add_extras(int ex, obj env)
 		add_accessors(env);
 	}
 	if (ex >= 221) {
-		evalstr("(define (apply proc args) (uapply proc args))", env);
+		evalstr("(define (apply proc args) (__%%apply proc args))",
+			env);
+		evalstr("(define (uapply proc args) (__%%apply proc args))",
+			env);
 		evalstr("(define (map proc . arglists)"
 			"  (define (smap proc items)"
 			"    (define (iter items mapped)"
@@ -563,7 +573,7 @@ static obj add_extras(int ex, obj env)
 			"    (if (null? (car arglists))"
 			"        mapped"
 			"        (iter (smap cdr arglists)"
-			"              (cons (uapply proc (smap car arglists))"
+			"              (cons (__%%apply proc (smap car arglists))"
 			"                    mapped))))"
 			"  (reverse (iter arglists nil)))",
 			env);
@@ -629,9 +639,42 @@ static obj add_extras(int ex, obj env)
 		add_stream(env);
 	}
 	if (ex >= 401) {
-		define_variable(of_identifier("apply"), uapply, env);
 		define_variable(of_identifier("string?"),
 				of_function(is_string_p), env);
+		define_variable(of_identifier("read"), of_function(read_p),
+				env);
+		define_variable(of_identifier("the-global-environment"),
+				the_global_environment(), env);
+		define_variable(of_identifier("uge"), the_global_environment(),
+				env);
+		define_variable(of_identifier("__%%eval"), of_function(eval_p),
+				env);
+		evalstr("(define eval __%%eval)", env);
+		evalstr("(define (repl)"
+			"  (define input-prompt \";;; Eval input:\")"
+			"  (define output-prompt \";;; Eval value:\")"
+			"  (define (prompt-for-input string)"
+			"    (newline) (newline) (display string) (newline))"
+			"  (define (announce-output string)"
+			"    (newline) (display string) (newline))"
+			"  (define (user-print object)"
+			"    (if (and (pair? object)"
+			"             (eq? (car object) 'procedure))"
+			"        (display (list 'compound-procedure"
+			"                       (procedure-parameters object)"
+			"                       (procedure-body object)"
+			"                       '<procedure-env>))"
+			"        (display object)))"
+			"  (prompt-for-input input-prompt)"
+			"  (let ((input (read)))"
+			"    (if (equal? input (list 'exit))"
+			"      (display \"Pulvis et umbra sumus \")"
+			"      (let ((output (__%%eval input uge)))"
+			"        (announce-output output-prompt)"
+			"        (user-print output)"
+			"	(repl)))))",
+			env);
+		evalstr("(define driver-loop repl)", env);
 	}
 	return unspecified;
 }
@@ -702,7 +745,7 @@ static obj display_definedp(struct outport *out)
 	newlinep(out);
 	displayp(out, of_string("Special Forms:"));
 	display_id(out, of_string("and"));
-	display_id(out, of_string("uapply"));
+	display_id(out, of_string("__%%apply"));
 	display_id(out, of_string("begin"));
 	display_id(out, of_string("cond"));
 	display_id(out, of_string("cons-stream"));
