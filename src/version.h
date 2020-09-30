@@ -1,1 +1,1 @@
-#define SICP_VERSION "1.1.6.0"
+#define SICP_VERSION "3.5.5.0"
