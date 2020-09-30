@@ -1,0 +1,36 @@
+
+(define pick-fruit
+  '(begin
+     (define trace '())
+     (define (get-apple)
+       (set! trace (cons "'getting apple'" trace))
+       "apple")
+     (define (get-cherry)
+       (set! trace (cons "'getting cherry'" trace))
+       "cherry")
+     (define (first-or-second first second which)
+       (cond ((equal? which 'first) (first))
+             (else (second))))
+     (cons "'getting apple'" trace)
+     (list
+      (list
+       (first-or-second get-apple get-cherry 'first)
+       (first-or-second get-apple get-cherry 'not-first))
+      trace)
+     ))
+
+(define (check-fruit result)
+  (define fruit (car result))
+  (define trace (cadr result))    
+  (display "  Got expected fruit: ")
+  (display (and 
+            (equal? "apple" (car fruit))
+            (equal? "cherry" (cadr fruit))))
+  (display " -- ")(display fruit)
+  (newline)
+  (display "  Got expected trace: ")
+  (display (equal?
+            '("'getting cherry'" "'getting apple'")
+            trace))
+  (display " -- ")(display trace)
+  (newline))

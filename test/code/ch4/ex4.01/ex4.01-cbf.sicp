@@ -1,0 +1,7 @@
+
+(load "ea-text")
+(load "pick-fruit")
+
+(display-line "Checking expression with eval from text:")(newline)
+(check-fruit
+ (mc-eval pick-fruit))
