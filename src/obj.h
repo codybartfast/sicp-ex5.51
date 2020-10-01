@@ -119,6 +119,7 @@ extern const obj cons_stream;
 extern const obj define;
 extern const obj delay;
 extern const obj else_s;
+extern const obj eqgt;
 extern const obj if_s;
 extern const obj let;
 extern const obj lambda;

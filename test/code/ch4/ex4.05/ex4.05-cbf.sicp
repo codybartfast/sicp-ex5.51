@@ -1,0 +1,18 @@
+(%ex "4.5")
+
+; exercise 4.5, page 375
+
+;; check support in sicp-scheme (not mc-eval)
+
+(cond
+  (true => display)
+  ((= 2 2) "Second"))
+(newline)
+
+(cond ((assoc 'b '((a 1) (b 2))) => cadr)
+      (else false))
+
+(cond
+    (false "FALSE")
+    (square => (lambda (f) (f 3)))
+    (else "ELSE"))

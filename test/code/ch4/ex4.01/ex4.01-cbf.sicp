@@ -1,3 +1,6 @@
+(%ex "4.01")
+
+;; check mc-eval works
 
 (load "ea-text")
 (load "pick-fruit")

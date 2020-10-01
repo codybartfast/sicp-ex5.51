@@ -254,6 +254,7 @@ const obj cons_stream =
 SYMBOL(define)
 SYMBOL(delay)
 const obj else_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "else");
+const obj eqgt = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "=>");
 const obj if_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "if");
 SYMBOL(let)
 const obj memo_proc = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "memo-proc");

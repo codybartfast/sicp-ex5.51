@@ -21,6 +21,7 @@ static bool is_cond_else_clause(obj);
 static obj cond_predicate(obj);
 static obj cond_actions(obj);
 static obj expand_clauses(obj);
+static obj make_proc_call(obj proc, obj args);
 
 // ln 110
 bool is_self_evaluating(obj exp)
@@ -262,6 +263,29 @@ static obj cond_actions(obj clause)
 	return cdr(clause);
 }
 
+// new - recipient clause
+static bool is_cond_recipient_clause(obj exp)
+{
+	return is_tagged_list(cdr(exp), eqgt);
+}
+
+static obj cond_recipient(obj exp)
+{
+	return caddr(exp);
+}
+
+static obj cond_expand_recipient_clause(obj clause, obj rest)
+{
+	obj pv = of_identifier("pred_value");
+	return make_proc_call(
+		make_lambda(list1(pv),
+			    list1(make_if(pv,
+					  make_proc_call(cond_recipient(clause),
+							 list1(pv)),
+					  expand_clauses(rest)))),
+		list1(cond_predicate(clause)));
+}
+
 // ln 190
 obj cond_to_if(obj exp)
 {
@@ -282,9 +306,13 @@ static obj expand_clauses(obj clauses)
 			return error_syntax(AREA, "ELSE clause isn't last: %s",
 					    errstr(clauses));
 	} else {
-		return make_if(cond_predicate(first),
-			       sequence_to_exp(cond_actions(first)),
-			       expand_clauses(rest));
+		if (is_cond_recipient_clause(first)) {
+			return cond_expand_recipient_clause(first, rest);
+		} else {
+			return make_if(cond_predicate(first),
+				       sequence_to_exp(cond_actions(first)),
+				       expand_clauses(rest));
+		}
 	}
 }
 
