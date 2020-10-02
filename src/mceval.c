@@ -266,7 +266,7 @@ static obj cond_actions(obj clause)
 // new - recipient clause
 static bool is_cond_recipient_clause(obj exp)
 {
-	return is_tagged_list(cdr(exp), eqgt);
+	return is_tagged_list(cdr(exp), arrow);
 }
 
 static obj cond_recipient(obj exp)

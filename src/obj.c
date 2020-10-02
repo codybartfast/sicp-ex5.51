@@ -255,7 +255,7 @@ const obj cons_stream = SYMBOL("cons-stream");
 SYMBOL_VAR(define)
 SYMBOL_VAR(delay)
 const obj else_s = SYMBOL("else");
-const obj eqgt = SYMBOL("=>");
+const obj arrow = SYMBOL("=>");
 const obj if_s = SYMBOL("if");
 const obj letstar = SYMBOL("let*");
 SYMBOL_VAR(let)
