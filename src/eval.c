@@ -266,6 +266,8 @@ eval_dispatch:
 		goto ev_cond;
 	if (is_let(expr))
 		goto ev_let;
+	if (is_letstar(expr))
+		goto ev_letstar;
 	if (is_and(expr))
 		goto ev_and;
 	if (is_or(expr))
@@ -319,6 +321,8 @@ ev_appl_did_operator:
 	env = restore();
 	argl = empty_arglist();
 	proc = val; // the operator
+	if (is_err(proc))
+		return proc;
 	if (no_operands(unev))
 		goto apply_dispatch;
 	save(PROC);
@@ -357,8 +361,6 @@ ev_appl_accum_last_arg:
 
 // ln 324
 apply_dispatch:
-	if (is_err(proc))
-		return proc;
 	if (is_primitive_procedure(proc))
 		goto primitive_apply;
 	if (is_compound_procedure(proc))
@@ -480,7 +482,12 @@ ev_let:
 	expr = let_to_combination(expr);
 	goto eval_dispatch;
 
-// new - and
+// new - letstar
+ev_letstar:
+	expr = letstar_to_nested(expr);
+	goto eval_dispatch;
+
+// new - and ;; could/should just substitue with if express :(
 ev_and:
 	save(CONT);
 	unev = operands(expr);

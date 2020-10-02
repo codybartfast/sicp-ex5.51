@@ -405,6 +405,33 @@ obj let_to_combination(obj letx)
 			      (let_values(letx)));
 }
 
+// new - let*->nested-lets
+
+bool is_letstar(obj exp)
+{
+	return is_tagged_list(exp, letstar);
+}
+
+static obj make_let(obj bindings, obj body)
+{
+	return cons(let, cons(bindings, body));
+}
+
+obj letstar_to_nested(obj exp)
+{
+	obj binds = let_bindings(exp);
+	obj body = let_body(exp);
+
+	if (is_null(binds)) {
+		return make_let(emptylst, body);
+	}
+
+	for (binds = reverse(binds); is_pair(binds); binds = cdr(binds)) {
+		body = list1(make_let(list1(car(binds)), body));
+	}
+	return car(body);
+}
+
 // new - and
 bool is_and(obj exp)
 {

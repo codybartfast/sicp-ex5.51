@@ -44,6 +44,8 @@ obj apply_primitive_procedure(obj proc, obj args);
 
 bool is_let(obj);
 obj let_to_combination(obj);
+bool is_letstar(obj);
+obj letstar_to_nested(obj);
 bool is_and(obj);
 bool is_or(obj);
 bool is_time(obj);

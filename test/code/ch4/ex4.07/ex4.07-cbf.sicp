@@ -1,0 +1,25 @@
+(%ex "4.7")
+
+; exercise 4.7, page 375
+
+;; check support in sicp-scheme (not mc-eval)
+
+(let* ()
+  (newline)
+  (display "none: ")
+  0)
+
+(let* ((a 1))
+  (newline)
+  (display "one: ")
+  (+ a))
+
+(let* ((a 1) (b a))
+  (newline)
+  (display "two: ")
+  (+ a b))
+
+(let* ((a 1) (b a) (c b))
+  (newline)
+  (display "three: ")
+  (+ a b c))
