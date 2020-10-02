@@ -21,7 +21,9 @@
 		}                                                              \
 	}
 
-#define SYMBOL(NAME)                                                           \
+#define SYMBOL(NAME) OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, NAME)
+
+#define SYMBOL_VAR(NAME)                                                       \
 	const obj NAME = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, #NAME);
 
 #define AREA "OBJ"
@@ -45,7 +47,7 @@ bool is_symbol(obj dat)
 
 obj of_identifier(const char *id)
 {
-	return (obj)OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, id);
+	return (obj)SYMBOL(id);
 }
 
 // BOOLS
@@ -67,8 +69,8 @@ bool is_false(obj dat)
 
 const obj true_o = OBJ_2(TYPE_BOOL, BOOL_TRUE);
 const obj false_o = OBJ_2(TYPE_BOOL, BOOL_FALSE);
-const obj true_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "true");
-const obj false_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "false");
+const obj true_s = SYMBOL("true");
+const obj false_s = SYMBOL("false");
 
 // NUMBER
 
@@ -244,51 +246,50 @@ obj (*to_function(obj dat))(obj)
 
 // KEYWORDS
 
-const obj __ppapply = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "__%%apply");
-const obj and_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "and");
-SYMBOL(begin)
-SYMBOL(cond)
-const obj cons_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "cons");
-const obj cons_stream =
-	OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "cons-stream");
-SYMBOL(define)
-SYMBOL(delay)
-const obj else_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "else");
-const obj eqgt = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "=>");
-const obj if_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "if");
-const obj letstar = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "let*");
-SYMBOL(let)
-const obj memo_proc = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "memo-proc");
-SYMBOL(lambda)
-const obj or_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "or");
-SYMBOL(quote)
-const obj set = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "set!");
-const obj time_s = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "time");
+const obj __ppapply = SYMBOL("__%%apply");
+const obj and_s = SYMBOL("and");
+SYMBOL_VAR(begin)
+SYMBOL_VAR(cond)
+const obj cons_s = SYMBOL("cons");
+const obj cons_stream = SYMBOL("cons-stream");
+SYMBOL_VAR(define)
+SYMBOL_VAR(delay)
+const obj else_s = SYMBOL("else");
+const obj eqgt = SYMBOL("=>");
+const obj if_s = SYMBOL("if");
+const obj letstar = SYMBOL("let*");
+SYMBOL_VAR(let)
+const obj memo_proc = SYMBOL("memo-proc");
+SYMBOL_VAR(lambda)
+const obj or_s = SYMBOL("or");
+SYMBOL_VAR(quote)
+const obj set = SYMBOL("set!");
+const obj time_s = SYMBOL("time");
 
 // TAGS
-SYMBOL(procedure)
+SYMBOL_VAR(procedure)
 
 // ECEVAL LABELS
-SYMBOL(ev_and)
-SYMBOL(ev_and_loop)
-SYMBOL(ev_and_operand)
-SYMBOL(ev_and_test)
-SYMBOL(ev_appl_accum_last_arg)
-SYMBOL(ev_appl_did_operator)
-SYMBOL(ev_appl_accumulate_arg)
-SYMBOL(ev_apply_2)
-SYMBOL(ev_apply_3)
-SYMBOL(ev_assignment_1)
-SYMBOL(ev_definition_1)
-SYMBOL(ev_if_decide)
-SYMBOL(ev_or)
-SYMBOL(ev_or_loop)
-SYMBOL(ev_or_operand)
-SYMBOL(ev_or_test)
-SYMBOL(ev_quoted)
-SYMBOL(ev_sequence_continue)
-SYMBOL(ev_timed_done)
-SYMBOL(ev_return_caller)
+SYMBOL_VAR(ev_and)
+SYMBOL_VAR(ev_and_loop)
+SYMBOL_VAR(ev_and_operand)
+SYMBOL_VAR(ev_and_test)
+SYMBOL_VAR(ev_appl_accum_last_arg)
+SYMBOL_VAR(ev_appl_did_operator)
+SYMBOL_VAR(ev_appl_accumulate_arg)
+SYMBOL_VAR(ev_apply_2)
+SYMBOL_VAR(ev_apply_3)
+SYMBOL_VAR(ev_assignment_1)
+SYMBOL_VAR(ev_definition_1)
+SYMBOL_VAR(ev_if_decide)
+SYMBOL_VAR(ev_or)
+SYMBOL_VAR(ev_or_loop)
+SYMBOL_VAR(ev_or_operand)
+SYMBOL_VAR(ev_or_test)
+SYMBOL_VAR(ev_quoted)
+SYMBOL_VAR(ev_sequence_continue)
+SYMBOL_VAR(ev_timed_done)
+SYMBOL_VAR(ev_return_caller)
 
 // MISC VALUES
 
@@ -298,9 +299,9 @@ bool is_eof(obj dat)
 }
 const obj eof = OBJ_2(TYPE_EOF, SUBTYPE_NOT_SET);
 
-const obj pex = OBJ_4(TYPE_SYMBOL, SUBTYPE_NOT_SET, string, "%ex");
+const obj pex = SYMBOL("%ex");
 
-SYMBOL(ok)
+SYMBOL_VAR(ok)
 
 const obj unspecified = OBJ_2(TYPE_UNSPECIFIED, SUBTYPE_NOT_SET);
 
