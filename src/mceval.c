@@ -359,19 +359,39 @@ obj apply_primitive_procedure(obj proc, obj args)
 }
 
 // new - let->combination
+static obj make_defintion(obj variable, obj value)
+{
+	return cons(define, cons(variable, value));
+}
+
+static obj make_proc_call(obj proc, obj args)
+{
+	return cons(proc, args);
+}
+
+static obj make_let(obj bindings, obj body)
+{
+	return cons(let, cons(bindings, body));
+}
+
 bool is_let(obj exp)
 {
 	return is_tagged_list(exp, let);
 }
 
-static obj let_bindings(obj letx)
+static bool is_named_let(obj exp)
 {
-	return cadr(letx);
+	return is_pair(exp) && is_pair(exp = cdr(exp)) && is_symbol(car(exp));
 }
 
-static obj let_body(obj letx)
+static obj let_bindings(obj exp)
 {
-	return cddr(letx);
+	return is_named_let(exp) ? caddr(exp) : cadr(exp);
+}
+
+static obj let_body(obj exp)
+{
+	return is_named_let(exp) ? cdddr(exp) : cddr(exp);
 }
 
 static obj let_var(obj binding)
@@ -394,15 +414,19 @@ static obj let_values(obj exp)
 	return map_u(let_val, let_bindings(exp));
 }
 
-static obj make_proc_call(obj proc, obj args)
+obj let_to_combination(obj exp)
 {
-	return cons(proc, args);
-}
-
-obj let_to_combination(obj letx)
-{
-	return make_proc_call(make_lambda(let_variables(letx), let_body(letx)),
-			      (let_values(letx)));
+	if (is_named_let(exp)) {
+		obj name = cadr(exp);
+		obj defn = make_defintion(cons(name, let_variables(exp)),
+					  let_body(exp));
+		obj call = make_proc_call(name, let_values(exp));
+		return make_let(emptylst, list2(defn, call));
+	} else {
+		return make_proc_call(make_lambda(let_variables(exp),
+						  let_body(exp)),
+				      (let_values(exp)));
+	}
 }
 
 // new - let*->nested-lets
@@ -410,11 +434,6 @@ obj let_to_combination(obj letx)
 bool is_letstar(obj exp)
 {
 	return is_tagged_list(exp, letstar);
-}
-
-static obj make_let(obj bindings, obj body)
-{
-	return cons(let, cons(bindings, body));
 }
 
 obj letstar_to_nested(obj exp)

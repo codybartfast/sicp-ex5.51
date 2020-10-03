@@ -1,0 +1,11 @@
+(%ex "4.8")
+
+; exercise 4.8, page 376
+
+;; check support in sicp-scheme (not mc-eval)
+
+(let this ((x 1))
+  (display "x: ")(display x)(newline)
+  (if (equal? x 16)
+      x
+      (this (* 2 x))))
