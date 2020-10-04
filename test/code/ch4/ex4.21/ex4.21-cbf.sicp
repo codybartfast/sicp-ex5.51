@@ -1,0 +1,57 @@
+(%ex "4.21")
+
+; exercise 4.21, page 392
+
+(display "
+Part A
+======
+")
+
+(void
+  (define (factorial n)
+    ((lambda (fact)
+       (fact fact n))
+     (lambda (ft k)
+       (if (= k 1)
+           1
+           (* k (ft ft (- k 1))))))))
+
+(display "
+Factorial 10, expect 3628800, got: ")
+(display (factorial 10))
+
+(void 
+ (define (fibonacci n)
+   ((lambda (fib)
+      (fib fib 1 0 n))
+    (lambda (fb a b count)
+      (if (= count 0)
+          b
+          (fb fb (+ a b) a (- count 1)))))))
+
+(display "
+
+10th Fibonacci, expect 55, got: ")
+(display (fibonacci 10))
+
+(display "
+
+Part B
+======
+")
+
+(void 
+ (define (f x)
+   ((lambda (even? odd?)
+      (even? even? odd? x))
+    (lambda (ev? od? n)
+      (if (= n 0) true (od? ev? od? (- n 1))))
+    (lambda (ev? od? n)
+      (if (= n 0) false (ev? ev? od? (- n 1)))))))
+
+(display "
+(f 5), expect #f, got: ")
+(display (f 5))
+(display "
+(f 6), expect #t, got: ")
+(display (f 6))
