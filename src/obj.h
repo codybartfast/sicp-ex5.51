@@ -20,7 +20,8 @@ enum type {
 	TYPE_VOID, // 10
 	TYPE_BROKEN_HEART, // 11
 	TYPE_BITMAP, // 12
-	TYPE_ERROR // 13
+	TYPE_UNASSIGNED, // 13
+	TYPE_ERROR // 14
 };
 
 enum { SUBTYPE_NOT_SET = 0 };
@@ -122,6 +123,7 @@ extern const obj else_s;
 extern const obj arrow;
 extern const obj if_s;
 extern const obj let;
+extern const obj letrec;
 extern const obj letstar;
 extern const obj lambda;
 extern const obj memo_proc;
@@ -164,8 +166,16 @@ extern const obj ok;
 extern const obj unspecified;
 bool is_void(obj dat);
 extern const obj void_o;
+
+// BROKEN HEART
+
 bool is_broken_heart(obj dat);
 extern const obj broken_heart;
+
+// UNASSIGNED
+
+bool is_unassigned_obj(obj dat);
+extern const obj unassigned;
 
 // ERROR
 

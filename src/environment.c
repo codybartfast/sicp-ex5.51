@@ -114,7 +114,11 @@ static obj lvv_scan(obj var, obj env, obj vars, obj vals)
 	if (is_null(vars)) {
 		return lvv_env_loop(var, enclosing_environment(env));
 	} else if (is_eq(var, car(vars))) {
-		return car(vals);
+		return is_unassigned_obj(car(vals)) ?
+			       error_unbound_variable(AREA,
+						      "%s is *unassigned*",
+						      errstr(car(vars))) :
+			       car(vals);
 	} else {
 		return lvv_scan(var, env, cdr(vars), cdr(vals));
 	}

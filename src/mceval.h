@@ -46,6 +46,8 @@ bool is_let(obj);
 obj let_to_combination(obj);
 bool is_letstar(obj);
 obj letstar_to_nested(obj);
+bool is_letrec(obj);
+obj letrec_to_combination(obj);
 bool is_and(obj);
 bool is_or(obj);
 bool is_time(obj);

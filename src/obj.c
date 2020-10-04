@@ -257,8 +257,9 @@ SYMBOL_VAR(delay)
 const obj else_s = SYMBOL("else");
 const obj arrow = SYMBOL("=>");
 const obj if_s = SYMBOL("if");
-const obj letstar = SYMBOL("let*");
 SYMBOL_VAR(let)
+SYMBOL_VAR(letrec)
+const obj letstar = SYMBOL("let*");
 const obj memo_proc = SYMBOL("memo-proc");
 SYMBOL_VAR(lambda)
 const obj or_s = SYMBOL("or");
@@ -305,17 +306,29 @@ SYMBOL_VAR(ok)
 
 const obj unspecified = OBJ_2(TYPE_UNSPECIFIED, SUBTYPE_NOT_SET);
 
+// VOID
+
 bool is_void(obj dat)
 {
 	return type(dat) == TYPE_VOID;
 }
 const obj void_o = OBJ_2(TYPE_VOID, SUBTYPE_NOT_SET);
 
+// BROKEN HEART
+
 bool is_broken_heart(obj dat)
 {
 	return type(dat) == TYPE_BROKEN_HEART;
 }
 const obj broken_heart = OBJ_2(TYPE_BROKEN_HEART, SUBTYPE_NOT_SET);
+
+// UNASSIGNED
+
+bool is_unassigned_obj(obj dat)
+{
+	return type(dat) == TYPE_UNASSIGNED;
+}
+const obj unassigned = OBJ_2(TYPE_UNASSIGNED, SUBTYPE_NOT_SET);
 
 // ERROR
 

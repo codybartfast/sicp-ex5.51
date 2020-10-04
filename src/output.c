@@ -105,13 +105,16 @@ obj displayp(struct outport *op, obj dat)
 		return void_o;
 	case TYPE_BITMAP:
 		return cnv_bitmap_string(op, dat);
+	case TYPE_UNASSIGNED:
+		out_writes(op, "<unassigned>");
+		return void_o;
 	case TYPE_ERROR:
 		sprintf(msg, "Error-Object, subtype: %d", subtype(dat));
 		out_writes(op, msg);
 		return void_o;
 	default:
 		return error_internal(
-			AREA, "BUG! No displaysb case for type: %d", type(dat));
+			AREA, "BUG! No displayp case for type: %d", type(dat));
 	}
 }
 

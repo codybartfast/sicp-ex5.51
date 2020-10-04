@@ -451,6 +451,28 @@ obj letstar_to_nested(obj exp)
 	return car(body);
 }
 
+// new - letrec
+bool is_letrec(obj exp)
+{
+	return is_tagged_list(exp, letrec);
+}
+
+obj letrec_to_combination(obj exp)
+{
+	obj bnds = let_bindings(exp);
+	obj body = let_body(exp);
+	for (bnds = reverse(bnds); is_pair(bnds); bnds = cdr(bnds)) {
+		obj bnd = car(bnds);
+		body = cons(list3(set, let_var(bnd), let_val(bnd)), body);
+	}
+	bnds = let_bindings(exp);
+	obj args;
+	for (args = emptylst; is_pair(bnds); bnds = cdr(bnds)) {
+		args = cons(list2(quote, unassigned), args);
+	}
+	return make_proc_call(make_lambda(let_variables(exp), body), args);
+}
+
 // new - and
 bool is_and(obj exp)
 {

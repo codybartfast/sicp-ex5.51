@@ -753,6 +753,8 @@ static obj display_definedp(struct outport *out)
 	display_id(out, of_string("if"));
 	display_id(out, of_string("lambda"));
 	display_id(out, of_string("let"));
+	display_id(out, of_string("letrec"));
+	display_id(out, of_string("let*"));
 	display_id(out, of_string("or"));
 	display_id(out, of_string("quote"));
 	display_id(out, of_string("set!"));

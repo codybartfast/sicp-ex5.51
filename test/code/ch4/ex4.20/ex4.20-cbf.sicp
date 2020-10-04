@@ -1,0 +1,21 @@
+(%ex "4.20")
+
+; exercise 4.20, page 391
+
+;; check support in sicp-scheme (not mc-eval)
+
+(letrec ((fact
+          (lambda (n)
+            (if (= n 1)
+                1
+                (* n (fact (- n 1)))))))
+  (fact 10))
+
+; (letrec ((a b) (b 2) (c 3))
+;   a)
+
+(letrec
+    ((a (lambda () (* b c)))
+     (b 2)
+     (c (+  b 3)))
+  (a))

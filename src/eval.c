@@ -266,6 +266,8 @@ eval_dispatch:
 		goto ev_cond;
 	if (is_let(expr))
 		goto ev_let;
+	if (is_letrec(expr))
+		goto ev_letrec;
 	if (is_letstar(expr))
 		goto ev_letstar;
 	if (is_and(expr))
@@ -292,6 +294,8 @@ ev_self_eval:
 	goto go_cont;
 ev_variable:
 	val = lookup_variable_value(expr, env);
+	if(is_err(val))
+		return val;
 	goto go_cont;
 ev_quoted:
 	val = text_of_quotation(expr);
@@ -480,6 +484,11 @@ ev_cond:
 // new - let
 ev_let:
 	expr = let_to_combination(expr);
+	goto eval_dispatch;
+
+// new - letrec
+ev_letrec:
+	expr = letrec_to_combination(expr);
 	goto eval_dispatch;
 
 // new - letstar
