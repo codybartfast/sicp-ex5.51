@@ -421,12 +421,10 @@ obj let_to_combination(obj exp)
 		obj defn = make_defintion(cons(name, let_variables(exp)),
 					  let_body(exp));
 		obj call = make_proc_call(name, let_values(exp));
-		return make_let(emptylst, list2(defn, call));
-	} else {
-		return make_proc_call(make_lambda(let_variables(exp),
-						  let_body(exp)),
-				      (let_values(exp)));
+		exp = make_let(emptylst, list2(defn, call));
 	}
+	return make_proc_call(make_lambda(let_variables(exp), let_body(exp)),
+			      (let_values(exp)));
 }
 
 // new - let*->nested-lets
@@ -436,19 +434,21 @@ bool is_letstar(obj exp)
 	return is_tagged_list(exp, letstar);
 }
 
-obj letstar_to_nested(obj exp)
+obj letstar_to_combination(obj exp)
 {
 	obj binds = let_bindings(exp);
 	obj body = let_body(exp);
 
 	if (is_null(binds)) {
-		return make_let(emptylst, body);
+		exp = make_let(emptylst, body);
+	} else {
+		for (binds = reverse(binds); is_pair(binds);
+		     binds = cdr(binds)) {
+			body = list1(make_let(list1(car(binds)), body));
+		}
+		exp = car(body);
 	}
-
-	for (binds = reverse(binds); is_pair(binds); binds = cdr(binds)) {
-		body = list1(make_let(list1(car(binds)), body));
-	}
-	return car(body);
+	return let_to_combination(exp);
 }
 
 // new - letrec

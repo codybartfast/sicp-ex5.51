@@ -484,17 +484,17 @@ ev_cond:
 // new - let
 ev_let:
 	expr = let_to_combination(expr);
-	goto eval_dispatch;
+	goto ev_application;
 
 // new - letrec
 ev_letrec:
 	expr = letrec_to_combination(expr);
-	goto eval_dispatch;
+	goto ev_application;
 
 // new - letstar
 ev_letstar:
-	expr = letstar_to_nested(expr);
-	goto eval_dispatch;
+	expr = letstar_to_combination(expr);
+	goto ev_application;
 
 // new - and
 ev_and:
@@ -509,11 +509,11 @@ ev_or:
 // new - delay / cons-stream
 ev_delay:
 	expr = delay_to_lambda(expr);
-	goto eval_dispatch;
+	goto ev_lambda;
 
 ev_cons_stream:
 	expr = cons_stream_to_cons(expr);
-	goto eval_dispatch;
+	goto ev_application;
 
 // new
 ev_timed:

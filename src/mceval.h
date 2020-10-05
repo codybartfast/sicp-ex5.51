@@ -45,7 +45,7 @@ obj apply_primitive_procedure(obj proc, obj args);
 bool is_let(obj);
 obj let_to_combination(obj);
 bool is_letstar(obj);
-obj letstar_to_nested(obj);
+obj letstar_to_combination(obj);
 bool is_letrec(obj);
 obj letrec_to_combination(obj);
 bool is_and(obj);
