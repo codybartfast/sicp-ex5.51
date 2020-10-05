@@ -10,6 +10,7 @@ set (SRC_CORE
 	src/character.c
 	src/convert.c
 	src/custom.c
+	src/eceval.c
 	src/error.c
 	src/environment.c
 	src/eval.c
