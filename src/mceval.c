@@ -479,10 +479,28 @@ bool is_and(obj exp)
 	return is_tagged_list(exp, and_s);
 }
 
+obj and_to_if(obj exp)
+{
+	obj vals = cdr(exp);
+	exp = is_null(vals) ?
+		      true_s :
+		      list4(if_s, car(vals), cons(and_s, cdr(vals)), false_s);
+	return exp;
+}
+
 // new - or
 bool is_or(obj exp)
 {
 	return is_tagged_list(exp, or_s);
+}
+
+obj or_to_if(obj exp)
+{
+	obj vals = cdr(exp);
+	exp = is_null(vals) ?
+		      false_s :
+		      list4(if_s, car(vals), true_s, cons(or_s, cdr(vals)));
+	return exp;
 }
 
 // new - time expression's evaluation

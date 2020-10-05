@@ -294,7 +294,7 @@ ev_self_eval:
 	goto go_cont;
 ev_variable:
 	val = lookup_variable_value(expr, env);
-	if(is_err(val))
+	if (is_err(val))
 		return val;
 	goto go_cont;
 ev_quoted:
@@ -496,62 +496,15 @@ ev_letstar:
 	expr = letstar_to_nested(expr);
 	goto eval_dispatch;
 
-// new - and ;; could/should just substitue with if express :(
+// new - and
 ev_and:
-	save(CONT);
-	unev = operands(expr);
-
-ev_and_loop:
-	if (!no_operands(unev))
-		goto ev_and_operand;
-	val = true_o;
-	cont = restore();
-	goto go_cont;
-
-ev_and_operand:
-	expr = first_operand(unev);
-	unev = rest_operands(unev);
-	save(ENV);
-	save(UNEV);
-	cont = ev_and_test;
+	expr = and_to_if(expr);
 	goto eval_dispatch;
-
-ev_and_test:
-	unev = restore();
-	env = restore();
-	if (is_true(val))
-		goto ev_and_loop;
-	cont = restore();
-	goto go_cont;
 
 // new - or
 ev_or:
-	save(CONT);
-	unev = operands(expr);
-
-ev_or_loop:
-	if (!no_operands(unev))
-		goto ev_or_operand;
-	val = false_o;
-	cont = restore();
-	goto go_cont;
-
-ev_or_operand:
-	expr = first_operand(unev);
-	unev = rest_operands(unev);
-	save(ENV);
-	save(UNEV);
-	cont = ev_or_test;
+	expr = or_to_if(expr);
 	goto eval_dispatch;
-
-ev_or_test:
-	unev = restore();
-	env = restore();
-	if (is_false(val))
-		goto ev_or_loop;
-	val = true_o;
-	cont = restore();
-	goto go_cont;
 
 // new - delay / cons-stream
 ev_delay:
@@ -615,14 +568,6 @@ unknown_procedure_type:
 go_cont:
 	if (is_eq(cont, ev_return_caller))
 		return val;
-	if (is_eq(cont, ev_and))
-		goto ev_and;
-	if (is_eq(cont, ev_and_loop))
-		goto ev_and_loop;
-	if (is_eq(cont, ev_and_operand))
-		goto ev_and_operand;
-	if (is_eq(cont, ev_and_test))
-		goto ev_and_test;
 	if (is_eq(cont, ev_appl_accum_last_arg))
 		goto ev_appl_accum_last_arg;
 	if (is_eq(cont, ev_appl_accumulate_arg))
@@ -639,14 +584,6 @@ go_cont:
 		goto ev_definition_1;
 	if (is_eq(cont, ev_if_decide))
 		goto ev_if_decide;
-	if (is_eq(cont, ev_or))
-		goto ev_or;
-	if (is_eq(cont, ev_or_loop))
-		goto ev_or_loop;
-	if (is_eq(cont, ev_or_operand))
-		goto ev_or_operand;
-	if (is_eq(cont, ev_or_test))
-		goto ev_or_test;
 	if (is_eq(cont, ev_quoted))
 		goto ev_quoted;
 	if (is_eq(cont, ev_sequence_continue))

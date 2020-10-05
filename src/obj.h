@@ -136,10 +136,6 @@ extern const obj time_s;
 extern const obj procedure;
 
 // ECEVAL LABELS
-extern const obj ev_and;
-extern const obj ev_and_loop;
-extern const obj ev_and_operand;
-extern const obj ev_and_test;
 extern const obj ev_appl_accum_last_arg;
 extern const obj ev_appl_accumulate_arg;
 extern const obj ev_appl_did_operator;
@@ -148,10 +144,6 @@ extern const obj ev_apply_3;
 extern const obj ev_assignment_1;
 extern const obj ev_definition_1;
 extern const obj ev_if_decide;
-extern const obj ev_or;
-extern const obj ev_or_loop;
-extern const obj ev_or_operand;
-extern const obj ev_or_test;
 extern const obj ev_quoted;
 extern const obj ev_sequence_continue;
 extern const obj ev_timed_done;
