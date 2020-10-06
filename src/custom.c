@@ -3,9 +3,9 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include "bitmap.h"
+#include "eceval.h"
 #include "environment.h"
 #include "error.h"
-#include "eval.h"
 #include "list.h"
 #include "load.h"
 #include "parser.h"
@@ -17,14 +17,14 @@
 
 static obj evalstr(char *e, obj env)
 {
-	return eval(readp(openin_string(e)), env);
+	return eceval(readp(openin_string(e)), env);
 }
 
 static obj eval_p(obj args)
 {
 	if (is_err(chkarity("repl", 2, args)))
 		return args;
-	return eval(car(args), cadr(args));
+	return eceval(car(args), cadr(args));
 }
 
 static void add_accessors(obj env)
@@ -406,6 +406,8 @@ static void add_stream(obj env)
 
 static obj add_extras(int ex, obj env)
 {
+	// return unspecified;
+
 	// Implementation specific, (not in book):
 	define_variable(of_identifier("%ex"), of_function(pcnt_ex), env);
 	define_variable(of_identifier("defined"), of_function(display_defined),

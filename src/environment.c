@@ -15,7 +15,6 @@
 static obj the_empty_environment(void);
 static obj lvv_env_loop(obj var, obj env);
 static obj svv_env_loop(obj var, obj val, obj env);
-static obj setup_environment(void);
 
 //ln 231
 static obj enclosing_environment(obj env)
@@ -221,7 +220,7 @@ static obj initial_procedure_objects(void)
 }
 
 // ln 309
-static obj setup_environment(void)
+obj setup_environment(void)
 {
 	obj initial_env = extend_environment(initial_procedure_names(),
 					     initial_procedure_objects(),

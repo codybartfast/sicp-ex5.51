@@ -246,8 +246,8 @@ obj (*to_function(obj dat))(obj)
 
 // KEYWORDS
 
-const obj __ppapply = SYMBOL("__%%apply");
 const obj and_s = SYMBOL("and");
+const obj __ppapply = SYMBOL("__%%apply");
 SYMBOL_VAR(begin)
 SYMBOL_VAR(cond)
 const obj cons_s = SYMBOL("cons");
