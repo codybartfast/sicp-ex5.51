@@ -13,6 +13,16 @@
 
 static obj analenv;
 
+static obj is_and_p(obj args)
+{
+	return is_and(car(args)) ? true_o : false_o;
+}
+
+static obj and_to_if_p(obj args)
+{
+	return and_to_if(car(args));
+}
+
 static obj is_application_p(obj args)
 {
 	return is_application(car(args)) ? true_o : false_o;
@@ -21,6 +31,16 @@ static obj is_application_p(obj args)
 static obj apply_primitive_procedure_p(obj args)
 {
 	return apply_primitive_procedure(car(args), cadr(args));
+}
+
+static obj is_cond_p(obj args)
+{
+	return is_cond(car(args)) ? true_o : false_o;
+}
+
+static obj cond_to_if_p(obj args)
+{
+	return cond_to_if(car(args));
 }
 
 static obj is_definition_p(obj args)
@@ -41,6 +61,26 @@ static obj definition_value_p(obj args)
 static obj definition_variable_p(obj args)
 {
 	return definition_variable(car(args));
+}
+
+static obj is_if_p(obj args)
+{
+	return is_if(car(args)) ? true_o : false_o;
+}
+
+static obj if_predicate_p(obj args)
+{
+	return if_predicate(car(args));
+}
+
+static obj if_consequent_p(obj args)
+{
+	return if_consequent(car(args));
+}
+
+static obj if_alternate_p(obj args)
+{
+	return if_alternate(car(args));
 }
 
 static obj lookup_variable_value_p(obj args)
@@ -73,6 +113,11 @@ static obj is_self_evaluating_p(obj args)
 	return is_self_evaluating(car(args)) ? true_o : false_o;
 }
 
+static obj is_true_p(obj args)
+{
+	return is_true(car(args)) ? true_o : false_o;
+}
+
 static obj is_variable_p(obj args)
 {
 	return is_variable(car(args)) ? true_o : false_o;
@@ -90,6 +135,9 @@ obj eval(obj exp, obj env)
 {
 	analenv = setup_environment();
 
+	define_variable(of_identifier("and?"), of_function(is_and_p), analenv);
+	define_variable(of_identifier("and->if"), of_function(and_to_if_p),
+			analenv);
 	define_variable(of_identifier("application?"),
 			of_function(is_application_p), analenv);
 	define_variable(of_identifier("apply-primitive-procedure"),
@@ -97,6 +145,10 @@ obj eval(obj exp, obj env)
 	define_variable(of_identifier("car"), of_function(car_p), analenv);
 	define_variable(of_identifier("cdr"), of_function(cdr_p), analenv);
 	define_variable(of_identifier("cons"), of_function(cons_p), analenv);
+	define_variable(of_identifier("cond?"), of_function(is_cond_p),
+			analenv);
+	define_variable(of_identifier("cond->if"), of_function(cond_to_if_p),
+			analenv);
 	define_variable(of_identifier("definition?"),
 			of_function(is_definition_p), analenv);
 	define_variable(of_identifier("define-variable!"),
@@ -105,6 +157,13 @@ obj eval(obj exp, obj env)
 			of_function(definition_value_p), analenv);
 	define_variable(of_identifier("definition-variable"),
 			of_function(definition_variable_p), analenv);
+	define_variable(of_identifier("if?"), of_function(is_if_p), analenv);
+	define_variable(of_identifier("if-predicate"),
+			of_function(if_predicate_p), analenv);
+	define_variable(of_identifier("if-consequent"),
+			of_function(if_consequent_p), analenv);
+	define_variable(of_identifier("if-alternative"),
+			of_function(if_alternate_p), analenv);
 	define_variable(of_identifier("lookup-variable-value"),
 			of_function(lookup_variable_value_p), analenv);
 	evalstr("(define (map proc . arglists)"
@@ -140,6 +199,8 @@ obj eval(obj exp, obj env)
 			analenv);
 	define_variable(of_identifier("self-evaluating?"),
 			of_function(is_self_evaluating_p), analenv);
+	define_variable(of_identifier("true?"), of_function(is_true_p),
+			analenv);
 	define_variable(of_identifier("variable?"), of_function(is_variable_p),
 			analenv);
 
@@ -150,10 +211,11 @@ obj eval(obj exp, obj env)
 		"        ((variable? exp) (analyze-variable exp))"
 		// "        ((assignment? exp) (analyze-assignment exp))"
 		"        ((definition? exp) (analyze-definition exp))"
-		// "        ((if? exp) (analyze-if exp))"
+		"        ((if? exp) (analyze-if exp))"
 		// "        ((lambda? exp) (analyze-lambda exp))"
 		// "        ((begin? exp) (analyze-sequence (begin-actions exp)))"
-		// "        ((cond? exp) (analyze (cond->if exp)))"
+		"        ((cond? exp) (analyze (cond->if exp)))"
+		"        ((and? exp) (analyze (and->if exp)))"
 		"        ((application? exp) (analyze-application exp))"
 		"        (else"
 		// "          exp)))",
@@ -171,6 +233,15 @@ obj eval(obj exp, obj env)
 		"    (lambda (env)"
 		"      (define-variable! var (vproc env) env)"
 		"      'ok)))",
+		analenv);
+	evalstr("(define (analyze-if exp)"
+		"  (let ((pproc (analyze (if-predicate exp)))"
+		"        (cproc (analyze (if-consequent exp)))"
+		"        (aproc (analyze (if-alternative exp))))"
+		"    (lambda (env)"
+		"      (if (true? (pproc env))"
+		"          (cproc env)"
+		"          (aproc env)))))",
 		analenv);
 	evalstr("(define (analyze-application exp)"
 		"  (let ((fproc (analyze (operator exp)))"
@@ -194,8 +265,9 @@ obj eval(obj exp, obj env)
 		"          proc))))",
 		analenv);
 
-	obj analyze_execute = cons(cons(of_identifier("analyze"), list1(list2(quote, exp))),
-				   list1(list2(quote, env)));
+	obj analyze_execute =
+		cons(cons(of_identifier("analyze"), list1(list2(quote, exp))),
+		     list1(list2(quote, env)));
 	// printf("analex exp: %s\n", errstr(exp));
 	return eceval(analyze_execute, analenv);
 	// return env;

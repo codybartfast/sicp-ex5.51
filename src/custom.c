@@ -406,7 +406,7 @@ static void add_stream(obj env)
 
 static obj add_extras(int ex, obj env)
 {
-	// return unspecified;
+	return unspecified;
 
 	// Implementation specific, (not in book):
 	define_variable(of_identifier("%ex"), of_function(pcnt_ex), env);
