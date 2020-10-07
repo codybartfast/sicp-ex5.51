@@ -10,8 +10,11 @@
 #include "mceval.h"
 #include "parser.h"
 #include "primproc.h"
+#include "storage.h"
 
-static obj analenv;
+// static obj anenv;
+
+// Analyzing primitives
 
 static obj is_and_p(obj args)
 {
@@ -123,49 +126,73 @@ static obj is_variable_p(obj args)
 	return is_variable(car(args)) ? true_o : false_o;
 }
 
+static void add_primprocs(obj env)
+{
+	define_variable(of_identifier("and?"), of_function(is_and_p), env);
+	define_variable(of_identifier("and->if"), of_function(and_to_if_p),
+			env);
+	define_variable(of_identifier("application?"),
+			of_function(is_application_p), env);
+	define_variable(of_identifier("apply-primitive-procedure"),
+			of_function(apply_primitive_procedure_p), env);
+	define_variable(of_identifier("car"), of_function(car_p), env);
+	define_variable(of_identifier("cdr"), of_function(cdr_p), env);
+	define_variable(of_identifier("cons"), of_function(cons_p), env);
+	define_variable(of_identifier("cond?"), of_function(is_cond_p), env);
+	define_variable(of_identifier("cond->if"), of_function(cond_to_if_p),
+			env);
+	define_variable(of_identifier("definition?"),
+			of_function(is_definition_p), env);
+	define_variable(of_identifier("define-variable!"),
+			of_function(define_variable_p), env);
+	define_variable(of_identifier("definition-value"),
+			of_function(definition_value_p), env);
+	define_variable(of_identifier("definition-variable"),
+			of_function(definition_variable_p), env);
+	define_variable(of_identifier("if?"), of_function(is_if_p), env);
+	define_variable(of_identifier("if-predicate"),
+			of_function(if_predicate_p), env);
+	define_variable(of_identifier("if-consequent"),
+			of_function(if_consequent_p), env);
+	define_variable(of_identifier("if-alternative"),
+			of_function(if_alternate_p), env);
+	define_variable(of_identifier("lookup-variable-value"),
+			of_function(lookup_variable_value_p), env);
+
+	define_variable(of_identifier("nil"), emptylst, env);
+	define_variable(of_identifier("null?"), of_function(is_null_p), env);
+	define_variable(of_identifier("ok"), ok, env);
+	define_variable(of_identifier("operator"), of_function(operator_p),
+			env);
+	define_variable(of_identifier("operands"), of_function(operands_p),
+			env);
+	define_variable(of_identifier("primitive-procedure?"),
+			of_function(is_primitive_procedure_p), env);
+	define_variable(of_identifier("quoted?"), of_function(is_quoted_p),
+			env);
+	define_variable(of_identifier("reverse"), of_function(reverse_p), env);
+	define_variable(of_identifier("self-evaluating?"),
+			of_function(is_self_evaluating_p), env);
+	define_variable(of_identifier("true?"), of_function(is_true_p), env);
+	define_variable(of_identifier("variable?"), of_function(is_variable_p),
+			env);
+}
+
 ////////////////////////////////////
 
 static obj evalstr(char *e, obj env)
 {
+	// printf("EVALSTR: %s\n", e);
 	return eceval(readp(openin_string(e)), env);
 }
 
 #include <stdio.h>
-obj eval(obj exp, obj env)
+obj eval(obj exp, obj exenv)
 {
-	analenv = setup_environment();
+	disable_gc = true;
+	obj anenv = setup_environment();
+	add_primprocs(anenv);
 
-	define_variable(of_identifier("and?"), of_function(is_and_p), analenv);
-	define_variable(of_identifier("and->if"), of_function(and_to_if_p),
-			analenv);
-	define_variable(of_identifier("application?"),
-			of_function(is_application_p), analenv);
-	define_variable(of_identifier("apply-primitive-procedure"),
-			of_function(apply_primitive_procedure_p), analenv);
-	define_variable(of_identifier("car"), of_function(car_p), analenv);
-	define_variable(of_identifier("cdr"), of_function(cdr_p), analenv);
-	define_variable(of_identifier("cons"), of_function(cons_p), analenv);
-	define_variable(of_identifier("cond?"), of_function(is_cond_p),
-			analenv);
-	define_variable(of_identifier("cond->if"), of_function(cond_to_if_p),
-			analenv);
-	define_variable(of_identifier("definition?"),
-			of_function(is_definition_p), analenv);
-	define_variable(of_identifier("define-variable!"),
-			of_function(define_variable_p), analenv);
-	define_variable(of_identifier("definition-value"),
-			of_function(definition_value_p), analenv);
-	define_variable(of_identifier("definition-variable"),
-			of_function(definition_variable_p), analenv);
-	define_variable(of_identifier("if?"), of_function(is_if_p), analenv);
-	define_variable(of_identifier("if-predicate"),
-			of_function(if_predicate_p), analenv);
-	define_variable(of_identifier("if-consequent"),
-			of_function(if_consequent_p), analenv);
-	define_variable(of_identifier("if-alternative"),
-			of_function(if_alternate_p), analenv);
-	define_variable(of_identifier("lookup-variable-value"),
-			of_function(lookup_variable_value_p), analenv);
 	evalstr("(define (map proc . arglists)"
 		"  (define (smap proc items)"
 		"    (define (iter items mapped)"
@@ -182,27 +209,7 @@ obj eval(obj exp, obj env)
 		"              (cons (__%%apply proc (smap car arglists))"
 		"                    mapped))))"
 		"  (reverse (iter arglists nil)))",
-		analenv);
-	define_variable(of_identifier("nil"), emptylst, analenv);
-	define_variable(of_identifier("null?"), of_function(is_null_p),
-			analenv);
-	define_variable(of_identifier("ok"), ok, analenv);
-	define_variable(of_identifier("operator"), of_function(operator_p),
-			analenv);
-	define_variable(of_identifier("operands"), of_function(operands_p),
-			analenv);
-	define_variable(of_identifier("primitive-procedure?"),
-			of_function(is_primitive_procedure_p), analenv);
-	define_variable(of_identifier("quoted?"), of_function(is_quoted_p),
-			analenv);
-	define_variable(of_identifier("reverse"), of_function(reverse_p),
-			analenv);
-	define_variable(of_identifier("self-evaluating?"),
-			of_function(is_self_evaluating_p), analenv);
-	define_variable(of_identifier("true?"), of_function(is_true_p),
-			analenv);
-	define_variable(of_identifier("variable?"), of_function(is_variable_p),
-			analenv);
+		anenv);
 
 	evalstr("(define (analyze exp)"
 		"  (cond ((self-evaluating? exp) "
@@ -220,20 +227,21 @@ obj eval(obj exp, obj env)
 		"        (else"
 		// "          exp)))",
 		"         (error \" Unknown expression type-- ANALYZE \" exp))))",
-		analenv);
+		anenv);
 	evalstr("(define (analyze-self-evaluating exp)"
 		"  (lambda (env) exp))",
-		analenv);
+		anenv);
 	evalstr("(define (analyze-variable exp)"
 		"  (lambda (env) (lookup-variable-value exp  env)))",
-		analenv);
+		anenv);
 	evalstr("(define (analyze-definition exp)"
 		"  (let ((var (definition-variable exp))"
 		"        (vproc (analyze (definition-value exp))))"
 		"    (lambda (env)"
 		"      (define-variable! var (vproc env) env)"
 		"      'ok)))",
-		analenv);
+		anenv);
+
 	evalstr("(define (analyze-if exp)"
 		"  (let ((pproc (analyze (if-predicate exp)))"
 		"        (cproc (analyze (if-consequent exp)))"
@@ -242,7 +250,7 @@ obj eval(obj exp, obj env)
 		"      (if (true? (pproc env))"
 		"          (cproc env)"
 		"          (aproc env)))))",
-		analenv);
+		anenv);
 	evalstr("(define (analyze-application exp)"
 		"  (let ((fproc (analyze (operator exp)))"
 		"        (aprocs (map analyze (operands exp))))"
@@ -250,7 +258,7 @@ obj eval(obj exp, obj env)
 		"      (execute-application (fproc env)"
 		"                           (map (lambda (aproc) (aproc env))"
 		"                                aprocs)))))",
-		analenv);
+		anenv);
 	evalstr("(define (execute-application proc args)"
 		"  (cond ((primitive-procedure? proc)"
 		"         (apply-primitive-procedure proc args))"
@@ -263,12 +271,13 @@ obj eval(obj exp, obj env)
 		"         (error"
 		"          \"Unknown procedure type -- EXECUTE-APPLICATION\""
 		"          proc))))",
-		analenv);
+		anenv);
 
 	obj analyze_execute =
 		cons(cons(of_identifier("analyze"), list1(list2(quote, exp))),
-		     list1(list2(quote, env)));
-	// printf("analex exp: %s\n", errstr(exp));
-	return eceval(analyze_execute, analenv);
-	// return env;
+		     list1(list2(quote, exenv)));
+	// printf("an exp: %s\n", errstr(exp));
+	// printf("ex exp: %s\n", errstr(analyze_execute));
+	disable_gc = false;
+	return eceval(analyze_execute, anenv);
 }

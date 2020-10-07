@@ -208,7 +208,7 @@ static obj init(void)
 
 	stack = emptylst;
 	// preallocate storage for gc root
-	rootlst = listn(9,
+	rootlst = listn(9, //        <------ Actual Length
 			unspecified, // 1
 			unspecified, // 2
 			unspecified, // 3
