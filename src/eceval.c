@@ -253,6 +253,9 @@ eval_dispatch:
 	if (is_err(expr))
 		return expr;
 
+	// printf("eval: ");
+	// printf("%s\n", errstr(expr));
+
 	if (is_self_evaluating(expr))
 		goto ev_self_eval;
 	if (is_variable(expr))

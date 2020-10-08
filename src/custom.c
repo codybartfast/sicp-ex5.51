@@ -3,9 +3,9 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include "bitmap.h"
-#include "eceval.h"
 #include "environment.h"
 #include "error.h"
+#include "eval.h"
 #include "list.h"
 #include "load.h"
 #include "parser.h"
@@ -15,7 +15,6 @@
 
 #define AREA "CUSTOM"
 
-static obj eval_p(obj args);
 static void add_accessors(obj env);
 static void add_pict(obj env);
 static void add_optable(obj env);
@@ -23,12 +22,18 @@ static void add_stream(obj env);
 
 static obj evalstr(char *e, obj env)
 {
-	return eceval(readp(openin_string(e)), env);
+	return eval(readp(openin_string(e)), env);
+}
+
+static obj eval_p(obj args)
+{
+	if (is_err(chkarity("repl", 2, args)))
+		return args;
+	return eval(car(args), cadr(args));
 }
 
 static obj add_extras(int ex, obj env)
 {
-	// return unspecified;
 
 	// Implementation specific, (not in book):
 	define_variable(of_identifier("%ex"), of_function(pcnt_ex), env);
@@ -137,6 +142,7 @@ static obj add_extras(int ex, obj env)
 		// not in the book but most answers use it.
 		define_variable(of_identifier("floor"), of_function(flr), env);
 	}
+return unspecified;	
 	if (ex >= 201) {
 		define_variable(of_identifier("cons"), of_function(cons_p),
 				env);
@@ -301,13 +307,6 @@ static obj add_extras(int ex, obj env)
 		evalstr("(define driver-loop repl)", env);
 	}
 	return unspecified;
-}
-
-static obj eval_p(obj args)
-{
-	if (is_err(chkarity("repl", 2, args)))
-		return args;
-	return eceval(car(args), cadr(args));
 }
 
 static void add_accessors(obj env)

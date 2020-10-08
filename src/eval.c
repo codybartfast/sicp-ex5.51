@@ -36,6 +36,16 @@ static obj apply_primitive_procedure_p(obj args)
 	return apply_primitive_procedure(car(args), cadr(args));
 }
 
+static obj is_begin_p(obj args)
+{
+	return is_begin(car(args)) ? true_o : false_o;
+}
+
+static obj begin_actions_p(obj args)
+{
+	return begin_actions(car(args));
+}
+
 static obj is_compound_procedure_p(obj args)
 {
 	return is_compound_procedure(car(args)) ? true_o : false_o;
@@ -77,6 +87,11 @@ static obj extend_environment_p(obj args)
 				  cadddr(args));
 }
 
+static obj first_exp_p(obj args)
+{
+	return first_exp(car(args));
+}
+
 static obj is_if_p(obj args)
 {
 	return is_if(car(args)) ? true_o : false_o;
@@ -110,6 +125,21 @@ static obj lambda_parameters_p(obj args)
 static obj lambda_body_p(obj args)
 {
 	return lambda_body(car(args));
+}
+
+static obj is_last_exp_p(obj args)
+{
+	return is_last_exp(car(args)) ? true_o : false_o;
+}
+
+static obj is_let_p(obj args)
+{
+	return is_let(car(args)) ? true_o : false_o;
+}
+
+static obj let_to_combination_p(obj args)
+{
+	return let_to_combination(car(args));
 }
 
 static obj lookup_variable_value_p(obj args)
@@ -167,9 +197,19 @@ static obj is_quoted_p(obj args)
 	return is_quoted(car(args)) ? true_o : false_o;
 }
 
+static obj rest_exps_p(obj args)
+{
+	return rest_exps(car(args));
+}
+
 static obj is_self_evaluating_p(obj args)
 {
 	return is_self_evaluating(car(args)) ? true_o : false_o;
+}
+
+static obj is_time_p(obj args)
+{
+	return is_time(car(args)) ? true_o : false_o;
 }
 
 static obj is_true_p(obj args)
@@ -193,6 +233,9 @@ static void add_primprocs(obj env)
 			of_function(apply_primitive_procedure_p), env);
 	define_variable(of_identifier("car"), of_function(car_p), env);
 	define_variable(of_identifier("cdr"), of_function(cdr_p), env);
+	define_variable(of_identifier("begin?"), of_function(is_begin_p), env);
+	define_variable(of_identifier("begin-actions"),
+			of_function(begin_actions_p), env);
 	define_variable(of_identifier("compound-procedure?"),
 			of_function(is_compound_procedure_p), env);
 	define_variable(of_identifier("cons"), of_function(cons_p), env);
@@ -207,6 +250,8 @@ static void add_primprocs(obj env)
 			of_function(definition_value_p), env);
 	define_variable(of_identifier("definition-variable"),
 			of_function(definition_variable_p), env);
+	define_variable(of_identifier("first-exp"), of_function(first_exp_p),
+			env);
 	define_variable(of_identifier("extend-environment"),
 			of_function(extend_environment_p), env);
 	define_variable(of_identifier("if?"), of_function(is_if_p), env);
@@ -222,6 +267,11 @@ static void add_primprocs(obj env)
 			of_function(lambda_parameters_p), env);
 	define_variable(of_identifier("lambda-body"),
 			of_function(lambda_body_p), env);
+	define_variable(of_identifier("last-exp?"), of_function(is_last_exp_p),
+			env);
+	define_variable(of_identifier("let?"), of_function(is_let_p), env);
+	define_variable(of_identifier("let->combination"),
+			of_function(let_to_combination_p), env);
 	define_variable(of_identifier("lookup-variable-value"),
 			of_function(lookup_variable_value_p), env);
 
@@ -246,9 +296,12 @@ static void add_primprocs(obj env)
 			of_function(procedure_parameters_p), env);
 	define_variable(of_identifier("quoted?"), of_function(is_quoted_p),
 			env);
+	define_variable(of_identifier("rest-exps"), of_function(rest_exps_p),
+			env);
 	define_variable(of_identifier("reverse"), of_function(reverse_p), env);
 	define_variable(of_identifier("self-evaluating?"),
 			of_function(is_self_evaluating_p), env);
+	define_variable(of_identifier("time?"), of_function(is_time_p), env);
 	define_variable(of_identifier("true?"), of_function(is_true_p), env);
 	define_variable(of_identifier("variable?"), of_function(is_variable_p),
 			env);
@@ -270,23 +323,23 @@ static void init(obj execution_environment)
 
 	add_primprocs(anenv);
 
-	// evalstr("(define (map proc . arglists)"
-	// 	"  (define (smap proc items)"
-	// 	"    (define (iter items mapped)"
-	// 	"      (if (null? items)"
-	// 	"          mapped"
-	// 	"          (iter (cdr items)"
-	// 	"                (cons (proc (car items))"
-	// 	"                      mapped))))"
-	// 	"    (reverse (iter items nil)))"
-	// 	"  (define (iter arglists mapped)"
-	// 	"    (if (null? (car arglists))"
-	// 	"        mapped"
-	// 	"        (iter (smap cdr arglists)"
-	// 	"              (cons (__%%apply proc (smap car arglists))"
-	// 	"                    mapped))))"
-	// 	"  (reverse (iter arglists nil)))",
-	// 	anenv);
+	evalstr("(define (map proc . arglists)"
+		"  (define (smap proc items)"
+		"    (define (iter items mapped)"
+		"      (if (null? items)"
+		"          mapped"
+		"          (iter (cdr items)"
+		"                (cons (proc (car items))"
+		"                      mapped))))"
+		"    (reverse (iter items nil)))"
+		"  (define (iter arglists mapped)"
+		"    (if (null? (car arglists))"
+		"        mapped"
+		"        (iter (smap cdr arglists)"
+		"              (cons (__%%apply proc (smap car arglists))"
+		"                    mapped))))"
+		"  (reverse (iter arglists nil)))",
+		anenv);
 
 	evalstr("(define (analyze exp)"
 		"  (cond ((self-evaluating? exp) "
@@ -297,13 +350,14 @@ static void init(obj execution_environment)
 		"        ((definition? exp) (analyze-definition exp))"
 		"        ((if? exp) (analyze-if exp))"
 		"        ((lambda? exp) (analyze-lambda exp))"
-		// "        ((begin? exp) (analyze-sequence (begin-actions exp)))"
+		"        ((begin? exp) (analyze-sequence (begin-actions exp)))"
 		"        ((cond? exp) (analyze (cond->if exp)))"
+		"        ((let? exp) (analyze (let->combination exp)))"
 		"        ((and? exp) (analyze (and->if exp)))"
 		"        ((or? exp) (analyze (or->if exp)))"
+		"        ((time? exp) (analyze-time exp))"
 		"        ((application? exp) (analyze-application exp))"
 		"        (else"
-		// "          exp)))",
 		"         (error \" Unknown expression type-- ANALYZE \" exp))))",
 		anenv);
 	evalstr("(define (analyze-self-evaluating exp)"
@@ -368,6 +422,11 @@ static void init(obj execution_environment)
 		"         (error"
 		"          \"Unknown procedure type -- EXECUTE-APPLICATION\""
 		"          proc))))",
+		anenv);
+	evalstr("(define (analyze-time exp)"
+		"  (let ((proc (analyze (if-predicate exp))))"
+		"    (lambda (env)"
+		"      (time (proc env)))))",
 		anenv);
 }
 
