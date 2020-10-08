@@ -15,9 +15,292 @@
 
 #define AREA "CUSTOM"
 
+static obj eval_p(obj args);
+static void add_accessors(obj env);
+static void add_pict(obj env);
+static void add_optable(obj env);
+static void add_stream(obj env);
+
 static obj evalstr(char *e, obj env)
 {
 	return eceval(readp(openin_string(e)), env);
+}
+
+static obj add_extras(int ex, obj env)
+{
+	// return unspecified;
+
+	// Implementation specific, (not in book):
+	define_variable(of_identifier("%ex"), of_function(pcnt_ex), env);
+	define_variable(of_identifier("defined"), of_function(display_defined),
+			env);
+	define_variable(of_identifier("load"), of_function(loadq), env);
+	define_variable(of_identifier("loadv"), of_function(loadv), env);
+
+	evalstr("(define (memo-proc proc)"
+		"  (let ((already-run? false) (result false))"
+		"    (lambda ()"
+		"      (if (not already-run?)"
+		"          (begin (set! result (proc))"
+		"                 (set! already-run? true)"
+		"                 result)"
+		"          result))))",
+		env);
+
+	if (ex > 101) {
+		//define_variable(of_identifier("abs"), of_function(absl), env);
+		evalstr("(define (abs x) (if (< x 0) (- x) x))", env);
+
+		define_variable(of_identifier("<="), of_function(lte), env);
+		//evalstr("(define (<= x y) (not (> x y)))", env);
+
+		define_variable(of_identifier(">="), of_function(gte), env);
+		//evalstr("(define (>= x y) (not (< x y)))", env);
+
+		evalstr("(define (square x) (* x x))", env);
+		evalstr("(define (cube x) (* x x x))", env);
+	}
+	if (ex >= 109) {
+		define_variable(of_identifier("exp"), of_function(expn), env);
+		define_variable(of_identifier("log"), of_function(logn), env);
+		// inc and dec could be 'defined' but making them primitive
+		// avoids the risk of loops in questions where + is defined in
+		// terms of inc
+		define_variable(of_identifier("inc"), of_function(inc), env);
+		define_variable(of_identifier("dec"), of_function(dec), env);
+	}
+	if (ex >= 106) {
+		evalstr("(define (average x y) (/ (+ x y) 2))", env);
+	}
+	if (ex >= 115) {
+		define_variable(of_identifier("remainder"), of_function(rem),
+				env);
+		evalstr("(define (quotient a b)"
+			"  (/ (- a (remainder a b))"
+			"     b))",
+			env);
+		evalstr("(define (modulo a b)"
+			"  (let ((r (remainder a b)))"
+			"    (if (eq? (< b 0) (< r 0))"
+			"      r"
+			"      (+ b r))))",
+			env);
+	}
+	if (ex >= 116) {
+		evalstr("(define (even? n) (= (remainder n 2) 0))", env);
+		evalstr("(define (odd? n) (= (remainder n 2) 1))", env);
+	}
+	if (ex >= 120) {
+		evalstr("(define (gcd a b) (if (= b 0) a (gcd b (remainder a b))))",
+			env);
+		define_variable(of_identifier("random"), of_function(rnd), env);
+	}
+	if (ex >= 121) {
+		evalstr("(define (prime? n)"
+			"  (define (smallest-divisor n)"
+			"    (define (find-divisor n test-divisor)"
+			"      (define (divides? a b)"
+			"        (= (remainder b a) 0))"
+			"      (cond ((> (square test-divisor) n) n)"
+			"            ((divides? test-divisor n) test-divisor)"
+			"            (else (find-divisor n (+ test-divisor 1)))))"
+			"    (find-divisor n 2))"
+			"  (= n (smallest-divisor n)))",
+			env);
+	}
+	if (ex >= 122) {
+		define_variable(of_identifier("display"), of_function(display),
+				env);
+		define_variable(of_identifier("void"), of_function(void_p),
+				env);
+		define_variable(of_identifier("newline"), of_function(newline),
+				env);
+		define_variable(of_identifier("runtime"), of_function(runtime),
+				env);
+		define_variable(of_identifier("seconds"), of_function(seconds),
+				env);
+		define_variable(of_identifier("ticks"), of_function(ticks),
+				env);
+	}
+	if (ex >= 129) {
+		evalstr("(define (identity x) x)", env);
+	}
+	if (ex >= 135) {
+		define_variable(of_identifier("sin"), of_function(sine), env);
+		define_variable(of_identifier("cos"), of_function(cosine), env);
+		define_variable(of_identifier("error"), of_function(user_error),
+				env);
+		evalstr("(define (positive? x) (< 0 x))", env);
+		evalstr("(define (negative? x) (< x 0))", env);
+	}
+	if (ex >= 145) {
+		// not in the book but most answers use it.
+		define_variable(of_identifier("floor"), of_function(flr), env);
+	}
+	if (ex >= 201) {
+		define_variable(of_identifier("cons"), of_function(cons_p),
+				env);
+		define_variable(of_identifier("car"), of_function(car_p), env);
+		define_variable(of_identifier("cdr"), of_function(cdr_p), env);
+	}
+	if (ex >= 203) {
+		define_variable(of_identifier("sqrt"), of_function(sqroot),
+				env);
+	}
+	if (ex >= 205) {
+		// define_variable(of_identifier("expt"), of_function(expt), env);
+		evalstr("(define (expt b n)"
+			"  (define (expt-iter b c p)"
+			"    (if (<= c 0) p (expt-iter b (- c 1) (* b p))))"
+			"  (expt-iter b n 1))",
+			env);
+	}
+	if (ex >= 207) {
+		define_variable(of_identifier("min"), of_function(minimum),
+				env);
+		define_variable(of_identifier("max"), of_function(maximum),
+				env);
+	}
+	if (ex >= 217) {
+		define_variable(of_identifier("nil"), emptylst, env);
+		define_variable(of_identifier("list"), of_function(list), env);
+		evalstr("(define (list-ref items n)"
+			"  (if (= n 0)"
+			"      (car items)"
+			"      (list-ref (cdr items) (- n 1))))",
+			env);
+		define_variable(of_identifier("null?"), of_function(is_null_p),
+				env);
+		define_variable(of_identifier("length"), of_function(length_p),
+				env);
+		define_variable(of_identifier("reverse"),
+				of_function(reverse_p), env);
+		define_variable(of_identifier("append"), of_function(append_p),
+				env);
+		add_accessors(env);
+	}
+	if (ex >= 221) {
+		evalstr("(define (apply proc args) (__%%apply proc args))",
+			env);
+		evalstr("(define (uapply proc args) (__%%apply proc args))",
+			env);
+		evalstr("(define (map proc . arglists)"
+			"  (define (smap proc items)"
+			"    (define (iter items mapped)"
+			"      (if (null? items)"
+			"          mapped"
+			"          (iter (cdr items)"
+			"                (cons (proc (car items))"
+			"                      mapped))))"
+			"    (reverse (iter items nil)))"
+			"  (define (iter arglists mapped)"
+			"    (if (null? (car arglists))"
+			"        mapped"
+			"        (iter (smap cdr arglists)"
+			"              (cons (__%%apply proc (smap car arglists))"
+			"                    mapped))))"
+			"  (reverse (iter arglists nil)))",
+			env);
+		evalstr("(define (filter predicate sequence)"
+			"  (cond ((null? sequence) nil)"
+			"        ((predicate (car sequence))"
+			"         (cons (car sequence)"
+			"               (filter predicate (cdr sequence))))"
+			"        (else (filter predicate (cdr sequence)))))",
+			env);
+		evalstr("(define (accumulate op initial sequence)"
+			"  (if (null? sequence)"
+			"      initial"
+			"      (op (car sequence)"
+			"          (accumulate op initial (cdr sequence)))))",
+			env);
+	}
+	if (ex >= 224) {
+		define_variable(of_identifier("pair?"), of_function(is_pair_p),
+				env);
+		evalstr("(define (for-each proc items)"
+			"  (cond ((not (null? items))"
+			"          (proc (car items))"
+			"          (for-each proc (cdr items)))))",
+			env);
+	}
+	if (ex >= 244) {
+		add_pict(env);
+	}
+	if (ex >= 253) {
+		define_variable(of_identifier("eq?"), of_function(is_eq_p),
+				env);
+		evalstr("(define (memq item x)"
+			"  (cond ((null? x) false)"
+			"        ((eq? item (car x)) x)"
+			"        (else (memq item (cdr x)))))",
+			env);
+	}
+	if (ex >= 254) {
+		define_variable(of_identifier("equal?"),
+				of_function(is_equal_p), env);
+	}
+	if (ex >= 256) {
+		define_variable(of_identifier("number?"),
+				of_function(is_number_p), env);
+		define_variable(of_identifier("symbol?"),
+				of_function(is_symbol_p), env);
+	}
+	if (ex >= 273) {
+		add_optable(env);
+		define_variable(of_identifier("atan"), of_function(arctan),
+				env);
+		evalstr("(define pi 3.14159265358979323846)", env);
+	}
+	if (ex >= 313) {
+		define_variable(of_identifier("set-car!"),
+				of_function(set_car_p), env);
+		define_variable(of_identifier("set-cdr!"),
+				of_function(set_cdr_p), env);
+	}
+	if (ex >= 350) {
+		evalstr("(define (force delayed-obj) (delayed-obj))", env);
+		add_stream(env);
+	}
+	if (ex >= 401) {
+		define_variable(of_identifier("string?"),
+				of_function(is_string_p), env);
+		define_variable(of_identifier("read"), of_function(read_p),
+				env);
+		define_variable(of_identifier("the-global-environment"),
+				the_global_environment(), env);
+		define_variable(of_identifier("uge"), the_global_environment(),
+				env);
+		define_variable(of_identifier("__%%eval"), of_function(eval_p),
+				env);
+		evalstr("(define eval __%%eval)", env);
+		evalstr("(define (repl)"
+			"  (define input-prompt \";;; Eval input:\")"
+			"  (define output-prompt \";;; Eval value:\")"
+			"  (define (prompt-for-input string)"
+			"    (newline) (newline) (display string) (newline))"
+			"  (define (announce-output string)"
+			"    (newline) (display string) (newline))"
+			"  (define (user-print object)"
+			"    (if (and (pair? object)"
+			"             (eq? (car object) 'procedure))"
+			"        (display (list 'compound-procedure"
+			"                       (procedure-parameters object)"
+			"                       (procedure-body object)"
+			"                       '<procedure-env>))"
+			"        (display object)))"
+			"  (prompt-for-input input-prompt)"
+			"  (let ((input (read)))"
+			"    (if (equal? input (list 'exit))"
+			"      (display \"Pulvis et umbra sumus \")"
+			"      (let ((output (__%%eval input uge)))"
+			"        (announce-output output-prompt)"
+			"        (user-print output)"
+			"	(repl)))))",
+			env);
+		evalstr("(define driver-loop repl)", env);
+	}
+	return unspecified;
 }
 
 static obj eval_p(obj args)
@@ -404,282 +687,7 @@ static void add_stream(obj env)
 	evalstr("(define integers (integers-starting-from 1))", env);
 }
 
-static obj add_extras(int ex, obj env)
-{
-	return unspecified;
-
-	// Implementation specific, (not in book):
-	define_variable(of_identifier("%ex"), of_function(pcnt_ex), env);
-	define_variable(of_identifier("defined"), of_function(display_defined),
-			env);
-	define_variable(of_identifier("load"), of_function(loadq), env);
-	define_variable(of_identifier("loadv"), of_function(loadv), env);
-
-	evalstr("(define (memo-proc proc)"
-		"  (let ((already-run? false) (result false))"
-		"    (lambda ()"
-		"      (if (not already-run?)"
-		"          (begin (set! result (proc))"
-		"                 (set! already-run? true)"
-		"                 result)"
-		"          result))))",
-		env);
-
-	if (ex > 101) {
-		//define_variable(of_identifier("abs"), of_function(absl), env);
-		evalstr("(define (abs x) (if (< x 0) (- x) x))", env);
-
-		define_variable(of_identifier("<="), of_function(lte), env);
-		//evalstr("(define (<= x y) (not (> x y)))", env);
-
-		define_variable(of_identifier(">="), of_function(gte), env);
-		//evalstr("(define (>= x y) (not (< x y)))", env);
-
-		evalstr("(define (square x) (* x x))", env);
-		evalstr("(define (cube x) (* x x x))", env);
-	}
-	if (ex >= 109) {
-		define_variable(of_identifier("exp"), of_function(expn), env);
-		define_variable(of_identifier("log"), of_function(logn), env);
-		// inc and dec could be 'defined' but making them primitive
-		// avoids the risk of loops in questions where + is defined in
-		// terms of inc
-		define_variable(of_identifier("inc"), of_function(inc), env);
-		define_variable(of_identifier("dec"), of_function(dec), env);
-	}
-	if (ex >= 106) {
-		evalstr("(define (average x y) (/ (+ x y) 2))", env);
-	}
-	if (ex >= 115) {
-		define_variable(of_identifier("remainder"), of_function(rem),
-				env);
-		evalstr("(define (quotient a b)"
-			"  (/ (- a (remainder a b))"
-			"     b))",
-			env);
-		evalstr("(define (modulo a b)"
-			"  (let ((r (remainder a b)))"
-			"    (if (eq? (< b 0) (< r 0))"
-			"      r"
-			"      (+ b r))))",
-			env);
-	}
-	if (ex >= 116) {
-		evalstr("(define (even? n) (= (remainder n 2) 0))", env);
-		evalstr("(define (odd? n) (= (remainder n 2) 1))", env);
-	}
-	if (ex >= 120) {
-		evalstr("(define (gcd a b) (if (= b 0) a (gcd b (remainder a b))))",
-			env);
-		define_variable(of_identifier("random"), of_function(rnd), env);
-	}
-	if (ex >= 121) {
-		evalstr("(define (prime? n)"
-			"  (define (smallest-divisor n)"
-			"    (define (find-divisor n test-divisor)"
-			"      (define (divides? a b)"
-			"        (= (remainder b a) 0))"
-			"      (cond ((> (square test-divisor) n) n)"
-			"            ((divides? test-divisor n) test-divisor)"
-			"            (else (find-divisor n (+ test-divisor 1)))))"
-			"    (find-divisor n 2))"
-			"  (= n (smallest-divisor n)))",
-			env);
-	}
-	if (ex >= 122) {
-		define_variable(of_identifier("display"), of_function(display),
-				env);
-		define_variable(of_identifier("void"), of_function(void_p),
-				env);
-		define_variable(of_identifier("newline"), of_function(newline),
-				env);
-		define_variable(of_identifier("runtime"), of_function(runtime),
-				env);
-		define_variable(of_identifier("seconds"), of_function(seconds),
-				env);
-		define_variable(of_identifier("ticks"), of_function(ticks),
-				env);
-	}
-	if (ex >= 129) {
-		evalstr("(define (identity x) x)", env);
-	}
-	if (ex >= 135) {
-		define_variable(of_identifier("sin"), of_function(sine), env);
-		define_variable(of_identifier("cos"), of_function(cosine), env);
-		define_variable(of_identifier("error"), of_function(user_error),
-				env);
-		evalstr("(define (positive? x) (< 0 x))", env);
-		evalstr("(define (negative? x) (< x 0))", env);
-	}
-	if (ex >= 145) {
-		// not in the book but most answers use it.
-		define_variable(of_identifier("floor"), of_function(flr), env);
-	}
-	if (ex >= 201) {
-		define_variable(of_identifier("cons"), of_function(cons_p),
-				env);
-		define_variable(of_identifier("car"), of_function(car_p), env);
-		define_variable(of_identifier("cdr"), of_function(cdr_p), env);
-	}
-	if (ex >= 203) {
-		define_variable(of_identifier("sqrt"), of_function(sqroot),
-				env);
-	}
-	if (ex >= 205) {
-		// define_variable(of_identifier("expt"), of_function(expt), env);
-		evalstr("(define (expt b n)"
-			"  (define (expt-iter b c p)"
-			"    (if (<= c 0) p (expt-iter b (- c 1) (* b p))))"
-			"  (expt-iter b n 1))",
-			env);
-	}
-	if (ex >= 207) {
-		define_variable(of_identifier("min"), of_function(minimum),
-				env);
-		define_variable(of_identifier("max"), of_function(maximum),
-				env);
-	}
-	if (ex >= 217) {
-		define_variable(of_identifier("nil"), emptylst, env);
-		define_variable(of_identifier("list"), of_function(list), env);
-		evalstr("(define (list-ref items n)"
-			"  (if (= n 0)"
-			"      (car items)"
-			"      (list-ref (cdr items) (- n 1))))",
-			env);
-		define_variable(of_identifier("null?"), of_function(is_null_p),
-				env);
-		define_variable(of_identifier("length"), of_function(length_p),
-				env);
-		define_variable(of_identifier("reverse"),
-				of_function(reverse_p), env);
-		define_variable(of_identifier("append"), of_function(append_p),
-				env);
-		add_accessors(env);
-	}
-	if (ex >= 221) {
-		evalstr("(define (apply proc args) (__%%apply proc args))",
-			env);
-		evalstr("(define (uapply proc args) (__%%apply proc args))",
-			env);
-		evalstr("(define (map proc . arglists)"
-			"  (define (smap proc items)"
-			"    (define (iter items mapped)"
-			"      (if (null? items)"
-			"          mapped"
-			"          (iter (cdr items)"
-			"                (cons (proc (car items))"
-			"                      mapped))))"
-			"    (reverse (iter items nil)))"
-			"  (define (iter arglists mapped)"
-			"    (if (null? (car arglists))"
-			"        mapped"
-			"        (iter (smap cdr arglists)"
-			"              (cons (__%%apply proc (smap car arglists))"
-			"                    mapped))))"
-			"  (reverse (iter arglists nil)))",
-			env);
-		evalstr("(define (filter predicate sequence)"
-			"  (cond ((null? sequence) nil)"
-			"        ((predicate (car sequence))"
-			"         (cons (car sequence)"
-			"               (filter predicate (cdr sequence))))"
-			"        (else (filter predicate (cdr sequence)))))",
-			env);
-		evalstr("(define (accumulate op initial sequence)"
-			"  (if (null? sequence)"
-			"      initial"
-			"      (op (car sequence)"
-			"          (accumulate op initial (cdr sequence)))))",
-			env);
-	}
-	if (ex >= 224) {
-		define_variable(of_identifier("pair?"), of_function(is_pair_p),
-				env);
-		evalstr("(define (for-each proc items)"
-			"  (cond ((not (null? items))"
-			"          (proc (car items))"
-			"          (for-each proc (cdr items)))))",
-			env);
-	}
-	if (ex >= 244) {
-		add_pict(env);
-	}
-	if (ex >= 253) {
-		define_variable(of_identifier("eq?"), of_function(is_eq_p),
-				env);
-		evalstr("(define (memq item x)"
-			"  (cond ((null? x) false)"
-			"        ((eq? item (car x)) x)"
-			"        (else (memq item (cdr x)))))",
-			env);
-	}
-	if (ex >= 254) {
-		define_variable(of_identifier("equal?"),
-				of_function(is_equal_p), env);
-	}
-	if (ex >= 256) {
-		define_variable(of_identifier("number?"),
-				of_function(is_number_p), env);
-		define_variable(of_identifier("symbol?"),
-				of_function(is_symbol_p), env);
-	}
-	if (ex >= 273) {
-		add_optable(env);
-		define_variable(of_identifier("atan"), of_function(arctan),
-				env);
-		evalstr("(define pi 3.14159265358979323846)", env);
-	}
-	if (ex >= 313) {
-		define_variable(of_identifier("set-car!"),
-				of_function(set_car_p), env);
-		define_variable(of_identifier("set-cdr!"),
-				of_function(set_cdr_p), env);
-	}
-	if (ex >= 350) {
-		evalstr("(define (force delayed-obj) (delayed-obj))", env);
-		add_stream(env);
-	}
-	if (ex >= 401) {
-		define_variable(of_identifier("string?"),
-				of_function(is_string_p), env);
-		define_variable(of_identifier("read"), of_function(read_p),
-				env);
-		define_variable(of_identifier("the-global-environment"),
-				the_global_environment(), env);
-		define_variable(of_identifier("uge"), the_global_environment(),
-				env);
-		define_variable(of_identifier("__%%eval"), of_function(eval_p),
-				env);
-		evalstr("(define eval __%%eval)", env);
-		evalstr("(define (repl)"
-			"  (define input-prompt \";;; Eval input:\")"
-			"  (define output-prompt \";;; Eval value:\")"
-			"  (define (prompt-for-input string)"
-			"    (newline) (newline) (display string) (newline))"
-			"  (define (announce-output string)"
-			"    (newline) (display string) (newline))"
-			"  (define (user-print object)"
-			"    (if (and (pair? object)"
-			"             (eq? (car object) 'procedure))"
-			"        (display (list 'compound-procedure"
-			"                       (procedure-parameters object)"
-			"                       (procedure-body object)"
-			"                       '<procedure-env>))"
-			"        (display object)))"
-			"  (prompt-for-input input-prompt)"
-			"  (let ((input (read)))"
-			"    (if (equal? input (list 'exit))"
-			"      (display \"Pulvis et umbra sumus \")"
-			"      (let ((output (__%%eval input uge)))"
-			"        (announce-output output-prompt)"
-			"        (user-print output)"
-			"	(repl)))))",
-			env);
-		evalstr("(define driver-loop repl)", env);
-	}
-	return unspecified;
-}
+//////////////////
 
 static int ex_num(obj arg)
 {
