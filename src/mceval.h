@@ -54,6 +54,7 @@ bool is_or(obj);
 obj or_to_if(obj);
 bool is_time(obj);
 obj timed_expr(obj);
+bool is_apply(obj);
 bool is_uapply(obj);
 obj apply_to_application(obj exp);
 obj apply_operator(obj exp);

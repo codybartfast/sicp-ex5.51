@@ -520,6 +520,11 @@ bool is_uapply(obj exp)
 	return is_tagged_list(exp, __ppapply);
 }
 
+bool is_apply(obj exp)
+{
+	return is_tagged_list(exp, apply);
+}
+
 obj apply_operator(obj exp)
 {
 	return cadr(exp);

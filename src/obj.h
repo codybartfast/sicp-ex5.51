@@ -112,6 +112,7 @@ obj (*to_function(obj dat))(obj);
 // KEYWORDS
 
 extern const obj and_s;
+extern const obj apply;
 extern const obj __ppapply;
 extern const obj begin;
 extern const obj cond;

@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
 		return 0;
 
 	exp = do_head(tge(), in);
+
 	load_u(in, openout_ptr(stdout), &exp, true);
 	newlinep(out);
 	write_canvas_if_painted(emptylst);

@@ -34,7 +34,6 @@ static obj eval_p(obj args)
 
 static obj add_extras(int ex, obj env)
 {
-
 	// Implementation specific, (not in book):
 	define_variable(of_identifier("%ex"), of_function(pcnt_ex), env);
 	define_variable(of_identifier("defined"), of_function(display_defined),
@@ -142,7 +141,6 @@ static obj add_extras(int ex, obj env)
 		// not in the book but most answers use it.
 		define_variable(of_identifier("floor"), of_function(flr), env);
 	}
-return unspecified;	
 	if (ex >= 201) {
 		define_variable(of_identifier("cons"), of_function(cons_p),
 				env);
@@ -203,7 +201,7 @@ return unspecified;
 			"    (if (null? (car arglists))"
 			"        mapped"
 			"        (iter (smap cdr arglists)"
-			"              (cons (__%%apply proc (smap car arglists))"
+			"              (cons (apply proc (smap car arglists))"
 			"                    mapped))))"
 			"  (reverse (iter arglists nil)))",
 			env);
@@ -258,6 +256,7 @@ return unspecified;
 				env);
 		evalstr("(define pi 3.14159265358979323846)", env);
 	}
+	return unspecified;
 	if (ex >= 313) {
 		define_variable(of_identifier("set-car!"),
 				of_function(set_car_p), env);
@@ -685,8 +684,6 @@ static void add_stream(obj env)
 		env);
 	evalstr("(define integers (integers-starting-from 1))", env);
 }
-
-//////////////////
 
 static int ex_num(obj arg)
 {

@@ -12,10 +12,6 @@
 #include "primproc.h"
 #include "storage.h"
 
-// static obj anenv;
-
-// Analyzing primitives
-
 static obj is_and_p(obj args)
 {
 	return is_and(car(args)) ? true_o : false_o;
@@ -29,6 +25,21 @@ static obj and_to_if_p(obj args)
 static obj is_application_p(obj args)
 {
 	return is_application(car(args)) ? true_o : false_o;
+}
+
+static obj is_apply_p(obj args)
+{
+	return is_apply(car(args)) ? true_o : false_o;
+}
+
+static obj apply_operands_p(obj args)
+{
+	return apply_operands(car(args));
+}
+
+static obj apply_operator_p(obj args)
+{
+	return apply_operator(car(args));
 }
 
 static obj apply_primitive_procedure_p(obj args)
@@ -207,6 +218,11 @@ static obj is_self_evaluating_p(obj args)
 	return is_self_evaluating(car(args)) ? true_o : false_o;
 }
 
+static obj text_of_quotation_p(obj args)
+{
+	return text_of_quotation(car(args));
+}
+
 static obj is_time_p(obj args)
 {
 	return is_time(car(args)) ? true_o : false_o;
@@ -229,6 +245,11 @@ static void add_primprocs(obj env)
 			env);
 	define_variable(of_identifier("application?"),
 			of_function(is_application_p), env);
+	define_variable(of_identifier("apply?"), of_function(is_apply_p), env);
+	define_variable(of_identifier("apply-operands"),
+			of_function(apply_operands_p), env);
+	define_variable(of_identifier("apply-operator"),
+			of_function(apply_operator_p), env);
 	define_variable(of_identifier("apply-primitive-procedure"),
 			of_function(apply_primitive_procedure_p), env);
 	define_variable(of_identifier("car"), of_function(car_p), env);
@@ -301,21 +322,19 @@ static void add_primprocs(obj env)
 	define_variable(of_identifier("reverse"), of_function(reverse_p), env);
 	define_variable(of_identifier("self-evaluating?"),
 			of_function(is_self_evaluating_p), env);
+	define_variable(of_identifier("text-of-quotation"),
+			of_function(text_of_quotation_p), env);
 	define_variable(of_identifier("time?"), of_function(is_time_p), env);
 	define_variable(of_identifier("true?"), of_function(is_true_p), env);
 	define_variable(of_identifier("variable?"), of_function(is_variable_p),
 			env);
 }
 
-////////////////////////////////////
-
 static obj evalstr(char *e, obj env)
 {
-	// printf("EVALSTR: %s\n", e);
 	return eceval(readp(openin_string(e)), env);
 }
 
-// static obj anenv;
 static void init(obj execution_environment)
 {
 	anenv = extend_environment(emptylst, emptylst, execution_environment,
@@ -356,12 +375,17 @@ static void init(obj execution_environment)
 		"        ((and? exp) (analyze (and->if exp)))"
 		"        ((or? exp) (analyze (or->if exp)))"
 		"        ((time? exp) (analyze-time exp))"
+		"        ((apply? exp) (analyze-apply exp))"
 		"        ((application? exp) (analyze-application exp))"
 		"        (else"
 		"         (error \" Unknown expression type-- ANALYZE \" exp))))",
 		anenv);
 	evalstr("(define (analyze-self-evaluating exp)"
 		"  (lambda (env) exp))",
+		anenv);
+	evalstr("(define (analyze-quoted exp)"
+		"  (let ((qval (text-of-quotation exp)))"
+		"    (lambda (env) qval)))",
 		anenv);
 	evalstr("(define (analyze-variable exp)"
 		"  (lambda (env) (lookup-variable-value exp  env)))",
@@ -401,6 +425,13 @@ static void init(obj execution_environment)
 		"        (error \"Empty sequence -- ANALYZE\"))"
 		"    (loop (car procs) (cdr procs))))",
 		anenv);
+	evalstr("(define (analyze-apply exp)"
+		"  (let ((fproc (analyze (apply-operator exp)))"
+		"        (argsproc (analyze (apply-operands exp))))"
+		"    (lambda (env)"
+		"      (execute-application (fproc env)"
+		"                           (argsproc env)))))",
+		anenv);
 	evalstr("(define (analyze-application exp)"
 		"  (let ((fproc (analyze (operator exp)))"
 		"        (aprocs (map analyze (operands exp))))"
@@ -435,7 +466,10 @@ static void init(obj execution_environment)
 obj eval(obj exp, obj exenv)
 {
 	static bool haveinit = false;
+
+	bool orig_gc = disable_gc;
 	disable_gc = true;
+
 	if (!haveinit) {
 		init(exenv);
 		haveinit = true;
@@ -445,9 +479,10 @@ obj eval(obj exp, obj exenv)
 		eceval(cons(of_identifier("analyze"), list1(list2(quote, exp))),
 		       anenv);
 
+	disable_gc = orig_gc;
+
 	obj analyze_execute =
 		cons(list2(quote, analyzed), list1(list2(quote, exenv)));
 
-	disable_gc = false;
 	return eceval(analyze_execute, exenv);
 }

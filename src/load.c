@@ -17,6 +17,7 @@ static char *name = NULL;
 obj load_u(struct inport *in, struct outport *out, obj *unev, bool verbose)
 {
 	char *prevname = name;
+
 	name = in->name;
 	obj exp = (unev == NULL) ? readp(in) : *unev;
 
