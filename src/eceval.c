@@ -24,7 +24,8 @@ static obj stack; // 6
 static obj unev; // 7
 static obj val; // 8
 // Plus... the_global_environment // 9
-const int rootlen = 9;
+obj anenv; // 10
+const int rootlen = 10;
 static obj rootlst;
 
 // ln 182
@@ -127,11 +128,12 @@ obj getroot(void)
 
 	// intentionally not using rootlen here, change number manually after
 	// modifying body below.
-	if ((actlen = length_u(rootlst)) != 9) {
-		return error_internal(
+	if ((actlen = length_u(rootlst)) != 10) {
+		error_internal(
 			AREA,
 			"Bug! getroot() got list of unexpected length: %d ",
 			actlen);
+		exit(1);
 	}
 	// order must match setroot
 	set_car(lst, argl);
@@ -151,6 +153,8 @@ obj getroot(void)
 	set_car(lst, val);
 	lst = cdr(lst);
 	set_car(lst, the_global_environment());
+	lst = cdr(lst);
+	set_car(lst, anenv);
 
 	return rootlst;
 }
@@ -163,7 +167,7 @@ obj setroot(obj rlst)
 
 	// intentionally not using rootlen here, change number manually after
 	// modifying body below.
-	if ((actlen = length_u(rootlst)) != 9) {
+	if ((actlen = length_u(rootlst)) != 10) {
 		return error_internal(
 			AREA,
 			"Bug! setroot() got list of unexpected length: %d",
@@ -187,6 +191,8 @@ obj setroot(obj rlst)
 	val = car(lst);
 	lst = cdr(lst);
 	set_global_environment(car(lst));
+	lst = cdr(lst);
+	anenv = car(lst);
 
 	return unspecified;
 }
@@ -208,7 +214,7 @@ static obj init(void)
 
 	stack = emptylst;
 	// preallocate storage for gc root
-	rootlst = listn(9, //        <------ Actual Length
+	rootlst = listn(10, //       <----- actual  length
 			unspecified, // 1
 			unspecified, // 2
 			unspecified, // 3
@@ -217,7 +223,8 @@ static obj init(void)
 			unspecified, // 6
 			unspecified, // 7
 			unspecified, // 8
-			unspecified //  9
+			unspecified, // 9
+			unspecified // 10
 	);
 	if ((actlen = length_u(rootlst)) != rootlen) {
 		error_internal(
