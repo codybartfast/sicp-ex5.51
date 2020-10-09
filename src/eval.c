@@ -29,7 +29,7 @@ static obj is_application_p(obj args)
 
 static obj is_apply_p(obj args)
 {
-	return is_apply(car(args)) ? true_o : false_o;
+	return is_anapply(car(args)) ? true_o : false_o;
 }
 
 static obj apply_operands_p(obj args)
@@ -45,6 +45,21 @@ static obj apply_operator_p(obj args)
 static obj apply_primitive_procedure_p(obj args)
 {
 	return apply_primitive_procedure(car(args), cadr(args));
+}
+
+static obj is_assignment_p(obj args)
+{
+	return is_assignment(car(args)) ? true_o : false_o;
+}
+
+static obj assignment_value_p(obj args)
+{
+	return assignment_value(car(args));
+}
+
+static obj assignment_variable_p(obj args)
+{
+	return assignment_variable(car(args));
 }
 
 static obj is_begin_p(obj args)
@@ -72,6 +87,16 @@ static obj cond_to_if_p(obj args)
 	return cond_to_if(car(args));
 }
 
+static obj is_cons_stream_p(obj args)
+{
+	return is_cons_stream(car(args)) ? true_o : false_o;
+}
+
+static obj cons_stream_to_cons_p(obj args)
+{
+	return cons_stream_to_cons(car(args));
+}
+
 static obj is_definition_p(obj args)
 {
 	return is_definition(car(args)) ? true_o : false_o;
@@ -90,6 +115,16 @@ static obj definition_value_p(obj args)
 static obj definition_variable_p(obj args)
 {
 	return definition_variable(car(args));
+}
+
+static obj is_delay_p(obj args)
+{
+	return is_delay(car(args)) ? true_o : false_o;
+}
+
+static obj delay_to_lambda_p(obj args)
+{
+	return delay_to_lambda(car(args));
 }
 
 static obj extend_environment_p(obj args)
@@ -218,6 +253,11 @@ static obj is_self_evaluating_p(obj args)
 	return is_self_evaluating(car(args)) ? true_o : false_o;
 }
 
+static obj set_variable_value_p(obj args)
+{
+	return set_variable_value(car(args), cadr(args), caddr(args));
+}
+
 static obj text_of_quotation_p(obj args)
 {
 	return text_of_quotation(car(args));
@@ -252,8 +292,18 @@ static void add_primprocs(obj env)
 			of_function(apply_operator_p), env);
 	define_variable(of_identifier("apply-primitive-procedure"),
 			of_function(apply_primitive_procedure_p), env);
+	define_variable(of_identifier("assignment?"),
+			of_function(is_assignment_p), env);
+	define_variable(of_identifier("assignment-value"),
+			of_function(assignment_value_p), env);
+	define_variable(of_identifier("assignment-variable"),
+			of_function(assignment_variable_p), env);
 	define_variable(of_identifier("car"), of_function(car_p), env);
 	define_variable(of_identifier("cdr"), of_function(cdr_p), env);
+	define_variable(of_identifier("cons-stream?"),
+			of_function(is_cons_stream_p), env);
+	define_variable(of_identifier("cons-stream->cons"),
+			of_function(cons_stream_to_cons_p), env);
 	define_variable(of_identifier("begin?"), of_function(is_begin_p), env);
 	define_variable(of_identifier("begin-actions"),
 			of_function(begin_actions_p), env);
@@ -271,6 +321,9 @@ static void add_primprocs(obj env)
 			of_function(definition_value_p), env);
 	define_variable(of_identifier("definition-variable"),
 			of_function(definition_variable_p), env);
+	define_variable(of_identifier("delay?"), of_function(is_delay_p), env);
+	define_variable(of_identifier("delay->lambda"),
+			of_function(delay_to_lambda_p), env);
 	define_variable(of_identifier("first-exp"), of_function(first_exp_p),
 			env);
 	define_variable(of_identifier("extend-environment"),
@@ -322,6 +375,8 @@ static void add_primprocs(obj env)
 	define_variable(of_identifier("reverse"), of_function(reverse_p), env);
 	define_variable(of_identifier("self-evaluating?"),
 			of_function(is_self_evaluating_p), env);
+	define_variable(of_identifier("set-variable-value!"),
+			of_function(set_variable_value_p), env);
 	define_variable(of_identifier("text-of-quotation"),
 			of_function(text_of_quotation_p), env);
 	define_variable(of_identifier("time?"), of_function(is_time_p), env);
@@ -365,7 +420,7 @@ static void init(obj execution_environment)
 		"         (analyze-self-evaluating exp))"
 		"        ((quoted? exp) (analyze-quoted exp))"
 		"        ((variable? exp) (analyze-variable exp))"
-		// "        ((assignment? exp) (analyze-assignment exp))"
+		"        ((assignment? exp) (analyze-assignment exp))"
 		"        ((definition? exp) (analyze-definition exp))"
 		"        ((if? exp) (analyze-if exp))"
 		"        ((lambda? exp) (analyze-lambda exp))"
@@ -374,6 +429,8 @@ static void init(obj execution_environment)
 		"        ((let? exp) (analyze (let->combination exp)))"
 		"        ((and? exp) (analyze (and->if exp)))"
 		"        ((or? exp) (analyze (or->if exp)))"
+		"        ((delay? exp) (analyze (delay->lambda exp)))"
+		"        ((cons-stream? exp) (analyze (cons-stream->cons exp)))"
 		"        ((time? exp) (analyze-time exp))"
 		"        ((apply? exp) (analyze-apply exp))"
 		"        ((application? exp) (analyze-application exp))"
@@ -390,6 +447,15 @@ static void init(obj execution_environment)
 	evalstr("(define (analyze-variable exp)"
 		"  (lambda (env) (lookup-variable-value exp  env)))",
 		anenv);
+
+	evalstr("(define (analyze-assignment exp)"
+		"  (let ((var (assignment-variable exp))"
+		"        (vproc (analyze (assignment-value exp))))"
+		"    (lambda (env)"
+		"      (set-variable-value! var (vproc env) env)"
+		"      'ok)))",
+		anenv);
+
 	evalstr("(define (analyze-definition exp)"
 		"  (let ((var (definition-variable exp))"
 		"        (vproc (analyze (definition-value exp))))"
@@ -454,8 +520,13 @@ static void init(obj execution_environment)
 		"          \"Unknown procedure type -- EXECUTE-APPLICATION\""
 		"          proc))))",
 		anenv);
+	// evalstr("(define (analyze-delay exp)"
+	// 	"  (let ((proc (analyze (cadr exp))))"
+	// 	"    (lambda (env)"
+	// 	"      (delay (proc env)))))",
+	// 	anenv);
 	evalstr("(define (analyze-time exp)"
-		"  (let ((proc (analyze (if-predicate exp))))"
+		"  (let ((proc (analyze (cadr exp))))"
 		"    (lambda (env)"
 		"      (time (proc env)))))",
 		anenv);

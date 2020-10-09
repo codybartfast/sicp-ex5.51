@@ -290,7 +290,7 @@ eval_dispatch:
 		goto ev_cons_stream;
 	if (is_time(expr))
 		goto ev_timed;
-	if (is_uapply(expr))
+	if (is_ecapply(expr))
 		goto ev_apply;
 	if (is_application(expr))
 		goto ev_application;

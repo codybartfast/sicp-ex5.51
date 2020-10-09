@@ -515,14 +515,14 @@ obj timed_expr(obj exp)
 }
 
 // apply keyword
-bool is_uapply(obj exp)
+bool is_ecapply(obj exp)
 {
 	return is_tagged_list(exp, __ppapply);
 }
 
-bool is_apply(obj exp)
+bool is_anapply(obj exp)
 {
-	return is_tagged_list(exp, apply);
+	return is_tagged_list(exp, uapply);
 }
 
 obj apply_operator(obj exp)

@@ -184,9 +184,9 @@ static obj add_extras(int ex, obj env)
 		add_accessors(env);
 	}
 	if (ex >= 221) {
-		evalstr("(define (apply proc args) (__%%apply proc args))",
-			env);
 		evalstr("(define (uapply proc args) (__%%apply proc args))",
+			env);
+		evalstr("(define (apply proc args) (uapply proc args))",
 			env);
 		evalstr("(define (map proc . arglists)"
 			"  (define (smap proc items)"
@@ -201,7 +201,7 @@ static obj add_extras(int ex, obj env)
 			"    (if (null? (car arglists))"
 			"        mapped"
 			"        (iter (smap cdr arglists)"
-			"              (cons (apply proc (smap car arglists))"
+			"              (cons (uapply proc (smap car arglists))"
 			"                    mapped))))"
 			"  (reverse (iter arglists nil)))",
 			env);
@@ -256,7 +256,6 @@ static obj add_extras(int ex, obj env)
 				env);
 		evalstr("(define pi 3.14159265358979323846)", env);
 	}
-	return unspecified;
 	if (ex >= 313) {
 		define_variable(of_identifier("set-car!"),
 				of_function(set_car_p), env);
@@ -267,6 +266,7 @@ static obj add_extras(int ex, obj env)
 		evalstr("(define (force delayed-obj) (delayed-obj))", env);
 		add_stream(env);
 	}
+	return unspecified;
 	if (ex >= 401) {
 		define_variable(of_identifier("string?"),
 				of_function(is_string_p), env);
@@ -627,8 +627,8 @@ static void add_stream(obj env)
 		"  (if (stream-null? (car argstreams))"
 		"      the-empty-stream"
 		"      (cons-stream"
-		"       (__%%apply proc (map stream-car argstreams))"
-		"       (__%%apply stream-map"
+		"       (uapply proc (map stream-car argstreams))"
+		"       (uapply stream-map"
 		"              (cons proc (map stream-cdr argstreams))))))",
 		env);
 	evalstr("(define (stream-for-each proc s)"
