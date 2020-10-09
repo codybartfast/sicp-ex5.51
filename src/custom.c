@@ -713,10 +713,9 @@ static obj conf_ex(obj env, obj args)
 	return add_extras(ex, env);
 }
 
-obj do_head(obj env, struct inport *in)
+obj do_head(obj exp, obj env, struct inport *in)
 {
 	disable_gc = true;
-	obj exp = readp(in);
 	if (is_pair(exp) && is_eq(car(exp), pex)) {
 		obj r = conf_ex(env, cdr(exp));
 		if (is_err(r))

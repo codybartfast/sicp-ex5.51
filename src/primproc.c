@@ -679,7 +679,7 @@ obj is_eq_p(const obj args)
 	return is_eq(car(args), cadr(args)) ? true_o : false_o;
 }
 
-static bool is_equal(obj a, obj b)
+bool is_equal(obj a, obj b)
 {
 	if (is_eq(a, b))
 		return true;

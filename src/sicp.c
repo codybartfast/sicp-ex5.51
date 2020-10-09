@@ -28,7 +28,12 @@ int main(int argc, char *argv[])
 	if (out == NULL)
 		return 0;
 
-	exp = do_head(tge(), in);
+	exp = readp(in);
+	if (is_equal(exp, cons(of_identifier("%aneval"), emptylst))) {
+		use_aneval();
+		exp = readp(in);
+	}
+	exp = do_head(exp, tge(), in);
 
 	load_u(in, openout_ptr(stdout), &exp, true);
 	newlinep(out);
@@ -108,6 +113,7 @@ static struct inport *usage(void)
 	       "If there are no arguments, will read and evaluate standard in.\n"
 	       "\n"
 	       "Contains code and images licensed under Creative Commons (CC \n"
-	       "BY-SA 3.0 & 4.0) by MIT, Hal Abelson and Gerald Jay Sussman.\n");
+	       "BY-SA 3.0 & 4.0) by MIT, Hal Abelson, Gerald Jay Sussman,\n"
+	       "Daphne Weld Nichols and Sean Barret.\n");
 	return NULL;
 }

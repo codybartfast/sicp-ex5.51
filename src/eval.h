@@ -4,6 +4,8 @@
 
 #include "obj.h"
 
-obj eval(obj exp, obj env);
+extern obj (*eval)(obj, obj) ;
+
+void use_aneval(void);
 
 #endif

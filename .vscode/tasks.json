@@ -10,6 +10,7 @@
             "args": [
                 "-lm", // load maths module
                 //
+                "src/aneval.c",
                 "src/bitmap.c",
                 "src/character.c",
                 "src/convert.c",

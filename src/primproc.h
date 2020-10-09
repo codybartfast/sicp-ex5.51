@@ -49,6 +49,7 @@ obj set_cdr_p(const obj);
 bool is_eq(const obj, const obj);
 obj is_eq_p(const obj);
 
+bool is_equal(const obj, const obj);
 obj is_equal_p(const obj);
 
 obj is_number_p(obj);
