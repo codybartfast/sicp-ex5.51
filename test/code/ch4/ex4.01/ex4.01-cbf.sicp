@@ -8,3 +8,10 @@
 (display-line "Checking expression with eval from text:")(newline)
 (check-fruit
  (mc-eval pick-fruit))
+
+; (driver-loop)
+
+; (define (fib n)
+;   (if (< n 2)
+;       n
+;       (+ (fib (- n 1)) (fib (- n 2)))))

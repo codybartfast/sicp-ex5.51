@@ -188,6 +188,26 @@ static obj let_to_combination_p(obj args)
 	return let_to_combination(car(args));
 }
 
+static obj is_letrec_p(obj args)
+{
+	return is_letrec(car(args)) ? true_o : false_o;
+}
+
+static obj letrec_to_combination_p(obj args)
+{
+	return letrec_to_combination(car(args));
+}
+
+static obj is_letstar_p(obj args)
+{
+	return is_letstar(car(args)) ? true_o : false_o;
+}
+
+static obj letstar_to_combination_p(obj args)
+{
+	return letstar_to_combination(car(args));
+}
+
 static obj lookup_variable_value_p(obj args)
 {
 	return lookup_variable_value(car(args), cadr(args));
@@ -268,6 +288,11 @@ static obj is_time_p(obj args)
 	return is_time(car(args)) ? true_o : false_o;
 }
 
+static obj timed_expr_p(obj args)
+{
+	return timed_expr(car(args));
+}
+
 static obj is_true_p(obj args)
 {
 	return is_true(car(args)) ? true_o : false_o;
@@ -346,6 +371,14 @@ static void add_primprocs(obj env)
 	define_variable(of_identifier("let?"), of_function(is_let_p), env);
 	define_variable(of_identifier("let->combination"),
 			of_function(let_to_combination_p), env);
+	define_variable(of_identifier("letrec?"), of_function(is_letrec_p),
+			env);
+	define_variable(of_identifier("letrec->combination"),
+			of_function(letrec_to_combination_p), env);
+	define_variable(of_identifier("letstar?"), of_function(is_letstar_p),
+			env);
+	define_variable(of_identifier("letstar->combination"),
+			of_function(letstar_to_combination_p), env);
 	define_variable(of_identifier("lookup-variable-value"),
 			of_function(lookup_variable_value_p), env);
 
@@ -380,6 +413,8 @@ static void add_primprocs(obj env)
 	define_variable(of_identifier("text-of-quotation"),
 			of_function(text_of_quotation_p), env);
 	define_variable(of_identifier("time?"), of_function(is_time_p), env);
+	define_variable(of_identifier("timed-expr"), of_function(timed_expr_p),
+			env);
 	define_variable(of_identifier("true?"), of_function(is_true_p), env);
 	define_variable(of_identifier("variable?"), of_function(is_variable_p),
 			env);
@@ -427,6 +462,8 @@ static void init(obj execution_environment)
 		"        ((begin? exp) (analyze-sequence (begin-actions exp)))"
 		"        ((cond? exp) (analyze (cond->if exp)))"
 		"        ((let? exp) (analyze (let->combination exp)))"
+		"        ((letrec? exp) (analyze (letrec->combination exp)))"
+		"        ((letstar? exp) (analyze (letstar->combination exp)))"
 		"        ((and? exp) (analyze (and->if exp)))"
 		"        ((or? exp) (analyze (or->if exp)))"
 		"        ((delay? exp) (analyze (delay->lambda exp)))"
@@ -520,13 +557,8 @@ static void init(obj execution_environment)
 		"          \"Unknown procedure type -- EXECUTE-APPLICATION\""
 		"          proc))))",
 		anenv);
-	// evalstr("(define (analyze-delay exp)"
-	// 	"  (let ((proc (analyze (cadr exp))))"
-	// 	"    (lambda (env)"
-	// 	"      (delay (proc env)))))",
-	// 	anenv);
 	evalstr("(define (analyze-time exp)"
-		"  (let ((proc (analyze (cadr exp))))"
+		"  (let ((proc (analyze (timed-expr exp))))"
 		"    (lambda (env)"
 		"      (time (proc env)))))",
 		anenv);

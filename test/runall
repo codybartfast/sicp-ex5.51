@@ -2,7 +2,7 @@
 
 test_dir=$(dirname "${BASH_SOURCE[0]}")
 export bin_dir=$test_dir/../bin
-source_dir=$test_dir/code/ch3
+source_dir=$test_dir/code/ch4
 
 run() {
 	file=$1

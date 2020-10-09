@@ -266,7 +266,6 @@ static obj add_extras(int ex, obj env)
 		evalstr("(define (force delayed-obj) (delayed-obj))", env);
 		add_stream(env);
 	}
-	return unspecified;
 	if (ex >= 401) {
 		define_variable(of_identifier("string?"),
 				of_function(is_string_p), env);

@@ -113,11 +113,18 @@ static obj lvv_scan(obj var, obj env, obj vars, obj vals)
 	if (is_null(vars)) {
 		return lvv_env_loop(var, enclosing_environment(env));
 	} else if (is_eq(var, car(vars))) {
-		return is_unassigned_obj(car(vals)) ?
-			       error_unbound_variable(AREA,
-						      "%s is *unassigned*",
-						      errstr(car(vars))) :
-			       car(vals);
+		/*
+		   This test is only relevant to exercise 4.20 (but not needed)
+                   it can be left in for the ec-evaluaor but creates an error
+		   with the analyzing evaluator when the *unassigned* object is
+		   analyzed.
+		*/
+		// return is_unassigned_obj(car(vals)) ?
+		// 	       error_unbound_variable(AREA,
+		// 				      "%s is *unassigned*",
+		// 				      errstr(car(vars))) :
+		// 	       car(vals);
+		return car(vals);
 	} else {
 		return lvv_scan(var, env, cdr(vars), cdr(vals));
 	}
