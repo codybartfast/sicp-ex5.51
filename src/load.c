@@ -1,6 +1,7 @@
 #include "load.h"
 
 #include <string.h>
+#include "custom.h"
 #include "environment.h"
 #include "error.h"
 #include "eval.h"
@@ -8,11 +9,33 @@
 #include "outport.h"
 #include "output.h"
 #include "parser.h"
+#include "pict.h"
 #include "primproc.h"
 
 #define AREA "LOAD"
 
 static char *name = NULL;
+
+int run(struct inport *in, struct outport *out)
+{
+	obj exp;
+
+	exp = readp(in);
+	if (is_equal(exp, cons(of_identifier("%aneval"), emptylst))) {
+		use_aneval();
+		exp = readp(in);
+	}
+	exp = do_head(exp, tge(), in);
+
+	load_u(in, openout_ptr(stdout), &exp, true);
+	newlinep(out);
+	write_canvas_if_painted(emptylst);
+
+	parser_freetemp();
+	out_close(out);
+	in_close(in);
+	return 0;
+}
 
 obj load_u(struct inport *in, struct outport *out, obj *unev, bool verbose)
 {

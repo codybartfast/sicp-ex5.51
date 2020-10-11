@@ -1,14 +1,8 @@
 #include "sicpstd.h"
 
 #include <string.h>
-#include "custom.h"
-#include "environment.h"
-#include "eval.h"
 #include "load.h"
 #include "output.h"
-#include "parser.h"
-#include "primproc.h"
-#include "pict.h"
 #include "version.h"
 
 static struct inport *parseargs(int argc, char *argv[]);
@@ -20,7 +14,6 @@ static struct inport *usage(void);
 
 int main(int argc, char *argv[])
 {
-	obj exp;
 	struct inport *in = parseargs(argc, argv);
 	if (in == NULL)
 		return 0;
@@ -28,21 +21,7 @@ int main(int argc, char *argv[])
 	if (out == NULL)
 		return 0;
 
-	exp = readp(in);
-	if (is_equal(exp, cons(of_identifier("%aneval"), emptylst))) {
-		use_aneval();
-		exp = readp(in);
-	}
-	exp = do_head(exp, tge(), in);
-
-	load_u(in, openout_ptr(stdout), &exp, true);
-	newlinep(out);
-	write_canvas_if_painted(emptylst);
-
-	parser_freetemp();
-	out_close(out);
-	in_close(in);
-	return 0;
+	return run(in, out);
 }
 
 static struct inport *parseargs(int argc, char *argv[])

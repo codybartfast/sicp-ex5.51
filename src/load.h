@@ -6,6 +6,7 @@
 #include "obj.h"
 #include "outport.h"
 
+int run(struct inport *in, struct outport *out);
 obj load_u(struct inport *in, struct outport *out, obj *unev, bool verbose);
 obj loadq(obj);
 obj loadv(obj);
