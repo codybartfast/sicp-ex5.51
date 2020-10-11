@@ -6,6 +6,7 @@ project (sicp-scheme)
 set(C_FLAGS "-lm -O3 -std=c17 -pedantic -pedantic-errors -Wall -Wextra -Wdouble-promotion -Wmissing-prototypes -Wstrict-prototypes -Wold-style-definition")
 
 set (SRC_CORE
+	src/ambeval.c
 	src/aneval.c
 	src/bitmap.c
 	src/character.c

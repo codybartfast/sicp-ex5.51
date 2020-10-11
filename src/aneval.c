@@ -303,7 +303,7 @@ static obj is_variable_p(obj args)
 	return is_variable(car(args)) ? true_o : false_o;
 }
 
-static void add_primprocs(obj env)
+void add_primprocs(obj env)
 {
 	define_variable(of_identifier("and?"), of_function(is_and_p), env);
 	define_variable(of_identifier("and->if"), of_function(and_to_if_p),
@@ -563,8 +563,6 @@ static void init(obj execution_environment)
 		"      (time (proc env)))))",
 		anenv);
 }
-
-#include <stdio.h>
 
 obj aneval(obj exp, obj exenv)
 {

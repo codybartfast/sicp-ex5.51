@@ -6,6 +6,7 @@
 
 extern obj (*eval)(obj, obj) ;
 
+void use_ambeval(void);
 void use_aneval(void);
 
 #endif

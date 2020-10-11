@@ -21,10 +21,19 @@ int run(struct inport *in, struct outport *out)
 	obj exp;
 
 	exp = readp(in);
-	if (is_equal(exp, cons(of_identifier("%aneval"), emptylst))) {
-		use_aneval();
-		exp = readp(in);
+	if (true) {
+		if (is_equal(exp, cons(of_identifier("%ambeval"), emptylst))) {
+			use_ambeval();
+			exp = readp(in);
+		}
+		if (is_equal(exp, cons(of_identifier("%aneval"), emptylst))) {
+			use_aneval();
+			exp = readp(in);
+		}
+	} else {
+		use_ambeval();
 	}
+
 	exp = do_head(exp, tge(), in);
 
 	load_u(in, openout_ptr(stdout), &exp, true);

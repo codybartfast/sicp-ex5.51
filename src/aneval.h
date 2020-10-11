@@ -4,6 +4,7 @@
 
 #include "obj.h"
 
+void add_primprocs(obj env);
 obj aneval(obj exp, obj env);
 
 #endif

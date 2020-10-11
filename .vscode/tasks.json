@@ -11,6 +11,7 @@
                 "-lm", // load maths module
                 //
                 "src/aneval.c",
+                "src/ambeval.c",
                 "src/bitmap.c",
                 "src/character.c",
                 "src/convert.c",

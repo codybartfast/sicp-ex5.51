@@ -5,6 +5,7 @@
 #include "obj.h"
 
 extern obj anenv;
+extern obj ambenv;
 obj eceval(obj exp, obj env);
 obj getroot(void);
 obj setroot(obj);
