@@ -249,6 +249,7 @@ obj (*to_function(obj dat))(obj)
 const obj and_s = SYMBOL("and");
 SYMBOL_VAR(uapply)
 const obj __ppapply = SYMBOL("__%%apply");
+const obj arrow = SYMBOL("=>");
 SYMBOL_VAR(begin)
 SYMBOL_VAR(cond)
 const obj cons_s = SYMBOL("cons");
@@ -256,7 +257,7 @@ const obj cons_stream = SYMBOL("cons-stream");
 SYMBOL_VAR(define)
 SYMBOL_VAR(delay)
 const obj else_s = SYMBOL("else");
-const obj arrow = SYMBOL("=>");
+SYMBOL_VAR(failed)
 const obj if_s = SYMBOL("if");
 SYMBOL_VAR(let)
 SYMBOL_VAR(letrec)

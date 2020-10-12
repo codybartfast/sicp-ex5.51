@@ -1,11 +1,13 @@
 #include "ambeval.h"
 
-#define AREA "EVAL"
+#define AREA "AMBEVAL"
 
 #include "aneval.h"
 #include "eceval.h"
 #include "environment.h"
+#include "error.h"
 #include "list.h"
+#include "mceval.h"
 #include "parser.h"
 #include "storage.h"
 
@@ -153,8 +155,10 @@ static void init(obj execution_environment)
 		ambenv);
 }
 
-obj ambeval(obj exp, obj exenv)
+static obj ambeval(obj exp, obj exenv, obj succeed, obj fail)
 {
+	(void)succeed, (void)fail;
+
 	static bool haveinit = false;
 
 	bool orig_gc = disable_gc;
@@ -175,4 +179,20 @@ obj ambeval(obj exp, obj exenv)
 		cons(list2(quote, analyzed), list1(list2(quote, exenv)));
 
 	return eceval(analyze_execute, exenv);
+}
+
+obj ambeval2(obj exp, obj exenv)
+{
+	obj value = of_identifier("value");
+	obj fail_s = of_identifier("fail");
+	obj succeed =
+		make_procedure(list2(value, fail_s), list1(value), emptylst);
+	obj fail = make_procedure(
+		emptylst,
+		list2(list2(of_identifier("display"),
+			    of_string(
+				    "ERROR: (AMBEVAL) unexpected call to amb2's fail")),
+		      failed),
+		emptylst);
+	return ambeval(exp, exenv, succeed, fail);
 }

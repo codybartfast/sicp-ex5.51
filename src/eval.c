@@ -6,11 +6,12 @@
 
 obj (*eval)(obj, obj) = eceval;
 
-void use_ambeval(void){
-	eval = ambeval;
+void use_ambeval(void)
+{
+	eval = ambeval2;
 }
 
-void use_aneval(void){
+void use_aneval(void)
+{
 	eval = aneval;
 }
-
