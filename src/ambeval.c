@@ -42,6 +42,7 @@ static void init(obj execution_environment)
 		ambenv);
 
 	evalstr("(define (analyze exp)"
+		// "  (newline)(display \"Exp:\")(display exp)(newline)"
 		"  (cond ((self-evaluating? exp) "
 		"         (analyze-self-evaluating exp))"
 		"        ((quoted? exp) (analyze-quoted exp))"
@@ -66,49 +67,45 @@ static void init(obj execution_environment)
 		"         (error \" Unknown expression type-- ANALYZE \" exp))))",
 		ambenv);
 	evalstr("(define (analyze-self-evaluating exp)"
-		"  (lambda (env) exp))",
+		"  (lambda (env succeed fail)"
+		"    (succeed exp fail)))",
 		ambenv);
 	evalstr("(define (analyze-quoted exp)"
 		"  (let ((qval (text-of-quotation exp)))"
-		"    (lambda (env) qval)))",
+		"    (lambda (env succeed fail)"
+		"      (succeed qval fail))))",
 		ambenv);
 	evalstr("(define (analyze-variable exp)"
-		"  (lambda (env) (lookup-variable-value exp  env)))",
-		ambenv);
-
-	evalstr("(define (analyze-assignment exp)"
-		"  (let ((var (assignment-variable exp))"
-		"        (vproc (analyze (assignment-value exp))))"
-		"    (lambda (env)"
-		"      (set-variable-value! var (vproc env) env)"
-		"      'ok)))",
-		ambenv);
-
-	evalstr("(define (analyze-definition exp)"
-		"  (let ((var (definition-variable exp))"
-		"        (vproc (analyze (definition-value exp))))"
-		"    (lambda (env)"
-		"      (define-variable! var (vproc env) env)"
-		"      'ok)))",
-		ambenv);
-
-	evalstr("(define (analyze-if exp)"
-		"  (let ((pproc (analyze (if-predicate exp)))"
-		"        (cproc (analyze (if-consequent exp)))"
-		"        (aproc (analyze (if-alternative exp))))"
-		"    (lambda (env)"
-		"      (if (true? (pproc env))"
-		"          (cproc env)"
-		"          (aproc env)))))",
+		"  (lambda (env succeed fail)"
+		"    (succeed (lookup-variable-value exp env)"
+		"             fail)))",
 		ambenv);
 	evalstr("(define (analyze-lambda exp)"
 		"  (let ((vars (lambda-parameters exp))"
 		"        (bproc (analyze-sequence (lambda-body exp))))"
-		"    (lambda (env) (make-procedure vars bproc env))))",
+		"    (lambda (env succeed fail)"
+		"      (succeed (make-procedure vars bproc env)"
+		"fail))))",
+		ambenv);
+	evalstr("(define (analyze-if exp)"
+		"  (let ((pproc (analyze (if-predicate exp)))"
+		"        (cproc (analyze (if-consequent exp)))"
+		"        (aproc (analyze (if-alternative exp))))"
+		"    (lambda (env succeed fail)"
+		"      (pproc env"
+		"             (lambda (pred-value fail2)"
+		"               (if (true? pred-value)"
+		"                   (cproc env succeed fail2)"
+		"                   (aproc env succeed fail2)))"
+		"             fail))))",
 		ambenv);
 	evalstr("(define (analyze-sequence exps)"
-		"  (define (sequentially proc1 proc2)"
-		"    (lambda (env) (proc1 env) (proc2 env)))"
+		"  (define (sequentially a b)"
+		"    (lambda (env succeed fail)"
+		"      (a env"
+		"         (lambda (a-value fail2)"
+		"           (b env succeed fail2))"
+		"         fail)))"
 		"  (define (loop first-proc rest-procs)"
 		"    (if (null? rest-procs)"
 		"        first-proc"
@@ -119,45 +116,114 @@ static void init(obj execution_environment)
 		"        (error \"Empty sequence -- ANALYZE\"))"
 		"    (loop (car procs) (cdr procs))))",
 		ambenv);
-	evalstr("(define (analyze-apply exp)"
-		"  (let ((fproc (analyze (apply-operator exp)))"
-		"        (argsproc (analyze (apply-operands exp))))"
-		"    (lambda (env)"
-		"      (execute-application (fproc env)"
-		"                           (argsproc env)))))",
+	evalstr("(define (analyze-definition exp)"
+		"  (let ((var (definition-variable exp))"
+		"        (vproc (analyze (definition-value exp))))"
+		"    (lambda (env succeed fail)"
+		"      (vproc env"
+		"             (lambda (val fail2)"
+		"               (define-variable! var val env)"
+		"               (succeed 'ok fail2))"
+		"             fail))))",
 		ambenv);
+	evalstr("(define (analyze-assignment exp)"
+		"  (let ((var (assignment-variable exp))"
+		"        (vproc (analyze (assignment-value exp))))"
+		"    (lambda (env succeed fail)"
+		"      (vproc env"
+		"             (lambda (val fail2)"
+		"               (let ((old-value"
+		"                      (lookup-variable-value var env)))"
+		"                 (set-variable-value! var val env)"
+		"                 (succeed 'ok"
+		"                          (lambda ()"
+		"                            (set-variable-value! var"
+		"                                                 old-value"
+		"                                                 env)"
+		"                            (fail2)))))"
+		"             fail))))",
+		ambenv);
+	// evalstr("(define (analyze-apply exp)"
+	// 	"  (let ((fproc (analyze (apply-operator exp)))"
+	// 	"        (argsproc (analyze (apply-operands exp))))"
+	// 	"    (lambda (env succeed fail) "
+	// 	"(display \"  ** HERE **  \")"
+	// 	"      (fproc env"
+	// 	"             (lambda (proc fail2)"
+	// 	"              	(argsproc env"
+	// 	"              		(lambda (args fail3)"
+	// 	"              			(execute-application proc args succeed fail3)"
+	// 	"              		)"
+	// 	"              		fail2"
+	// 	"              	)"
+	// 	"             )"
+	// 	"             fail))))",
+	// 	ambenv);
 	evalstr("(define (analyze-application exp)"
 		"  (let ((fproc (analyze (operator exp)))"
 		"        (aprocs (map analyze (operands exp))))"
-		"    (lambda (env)"
-		"      (execute-application (fproc env)"
-		"                           (map (lambda (aproc) (aproc env))"
-		"                                aprocs)))))",
+		"    (lambda (env succeed fail) "
+		"      (fproc env"
+		"             (lambda (proc fail2)"
+		"               (get-args aprocs"
+		"                         env"
+		"                         (lambda (args fail3)"
+		"                           (execute-application"
+		"                            proc args succeed fail3))"
+		"                         fail2))"
+		"             fail))))",
 		ambenv);
-	evalstr("(define (execute-application proc args)"
+	evalstr("(define (get-args aprocs env succeed fail)"
+		"  (if (null? aprocs)"
+		"      (succeed '() fail)"
+		"      ((car aprocs) env"
+		"                    (lambda (arg fail2)"
+		"                      (get-args (cdr aprocs)"
+		"                                env"
+		"                                (lambda (args fail3)"
+		"                                  (succeed (cons arg args)"
+		"                                           fail3))"
+		"                                fail2))"
+		"                    fail)))",
+		ambenv);
+	evalstr("(define (execute-application proc args succeed fail)"
 		"  (cond ((primitive-procedure? proc)"
-		"         (apply-primitive-procedure proc args))"
+		"         (succeed (apply-primitive-procedure proc args)"
+		"                  fail))"
 		"        ((compound-procedure? proc)"
 		"         ((procedure-body proc)"
 		"          (extend-environment (procedure-parameters proc)"
 		"                              args"
 		"                              (procedure-environment proc)"
-		"                              \"doh! analysis\")))"
+		"                              \"doh! amb analysis\")"
+		"          succeed"
+		"          fail))"
 		"        (else"
 		"         (error"
 		"          \"Unknown procedure type -- EXECUTE-APPLICATION\""
 		"          proc))))",
 		ambenv);
-	evalstr("(define (analyze-time exp)"
-		"  (let ((proc (analyze (timed-expr exp))))"
-		"    (lambda (env)"
-		"      (time (proc env)))))",
-		ambenv);
+
+	// evalstr("(define (analyze-apply exp)"
+	// 	"  (let ((fproc (analyze (apply-operator exp)))"
+	// 	"        (argsproc (analyze (apply-operands exp))))"
+	// 	"    (lambda (env)"
+	// 	"      (execute-application (fproc env)"
+	// 	"                           (argsproc env)))))",
+	// 	ambenv);
+	// evalstr("(define (analyze-application exp)"
+	// 	"  (let ((fproc (analyze (operator exp)))"
+	// 	"        (aprocs (map analyze (operands exp))))"
+	// 	"    (lambda (env)"
+	// 	"      (execute-application (fproc env)"
+	// 	"                           (map (lambda (aproc) (aproc env))"
+	// 	"                                aprocs)))))",
+	// 	ambenv);
 }
 
 static obj ambeval(obj exp, obj exenv, obj succeed, obj fail)
 {
-	(void)succeed, (void)fail;
+	// (void)succeed, (void)fail;
 
 	static bool haveinit = false;
 
@@ -176,7 +242,9 @@ static obj ambeval(obj exp, obj exenv, obj succeed, obj fail)
 	disable_gc = orig_gc;
 
 	obj analyze_execute =
-		cons(list2(quote, analyzed), list1(list2(quote, exenv)));
+		cons(list2(quote, analyzed),
+		     list3(list2(quote, exenv), list2(quote, succeed),
+			   list2(quote, fail)));
 
 	return eceval(analyze_execute, exenv);
 }

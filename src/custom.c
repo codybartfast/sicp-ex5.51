@@ -186,8 +186,7 @@ static obj add_extras(int ex, obj env)
 	if (ex >= 221) {
 		evalstr("(define (uapply proc args) (__%%apply proc args))",
 			env);
-		evalstr("(define (apply proc args) (uapply proc args))",
-			env);
+		evalstr("(define (apply proc args) (uapply proc args))", env);
 		evalstr("(define (map proc . arglists)"
 			"  (define (smap proc items)"
 			"    (define (iter items mapped)"

@@ -153,7 +153,7 @@ static obj parse_list(obj lst, struct inport *port)
 		if (is_err(dat = check_eof()))
 			return dat;
 		else
-			return error_parser(AREA, "Open list at and of file");
+			return error_parser(AREA, "Open list at end of input");
 	case TKN_LIST_CLOSE:
 		return reverse(lst);
 	case TKN_DOT:
