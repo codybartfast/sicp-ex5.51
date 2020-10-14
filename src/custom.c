@@ -238,12 +238,19 @@ static obj add_extras(int ex, obj env)
 			"        ((eq? item (car x)) x)"
 			"        (else (memq item (cdr x)))))",
 			env);
+		evalstr("(define (member item x)"
+			"  (cond ((null? x) false)"
+			"        ((equal? item (car x)) x)"
+			"        (else (member item (cdr x)))))",
+			env);
 	}
 	if (ex >= 254) {
 		define_variable(of_identifier("equal?"),
 				of_function(is_equal_p), env);
 	}
 	if (ex >= 256) {
+		define_variable(of_identifier("integer?"),
+				of_function(is_integer_p), env);
 		define_variable(of_identifier("number?"),
 				of_function(is_number_p), env);
 		define_variable(of_identifier("symbol?"),
@@ -302,6 +309,15 @@ static obj add_extras(int ex, obj env)
 			"	(repl)))))",
 			env);
 		evalstr("(define driver-loop repl)", env);
+	}
+	if (ex >= 435) {
+		evalstr("(define (require p) (if (not p) (amb)))", env);
+		evalstr("(define (distinct? items)"
+			"  (cond ((null? items) true)"
+			"        ((null? (cdr items)) true)"
+			"        ((member (car items) (cdr items)) false)"
+			"        (else (distinct? (cdr items)))))",
+			env);
 	}
 	return unspecified;
 }

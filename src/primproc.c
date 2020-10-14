@@ -697,6 +697,30 @@ obj is_equal_p(const obj args)
 	return is_equal(car(args), cadr(args)) ? true_o : false_o;
 }
 
+obj is_integer_p(obj args)
+{
+	obj chk;
+	Floating f;
+	Integer i;
+
+	if (is_err(chk = chkarity("integer?", 1, args)))
+		return chk;
+	obj n = car(args);
+	if (!is_number(n))
+		return false_o;
+	switch (subtype(n)) {
+	case NUMBER_INTEGER:
+		return true_o;
+	case NUMBER_FLOATING:
+		f = to_floating(n);
+		i = (Integer)f;
+		return (f == i) ? true_o : false_o;
+	default:
+		return error_internal(AREA, "Unknown number type: %d",
+				      subtype(n));
+	}
+}
+
 obj is_number_p(obj args)
 {
 	obj chk;

@@ -1,0 +1,16 @@
+(%ambeval)
+
+(define (new-queen col)
+  (cons col (amb 1 2 3 4 5 6 7 8)))
+
+(define (queens)
+  (define (iter queens)
+    (require (distinct? (map cdr queens)))
+    (require (distinct? (map (lambda (q) (- (car q) (cdr q))) queens)))
+    (require (distinct? (map (lambda (q) (+ (car q) (cdr q))) queens)))
+    (if (= 8 (length queens))
+        queens
+        (iter (cons (new-queen (+ 1 (length queens))) queens))))
+  (iter '()))
+
+(queens)

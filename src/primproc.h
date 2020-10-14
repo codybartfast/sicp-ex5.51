@@ -52,6 +52,7 @@ obj is_eq_p(const obj);
 bool is_equal(const obj, const obj);
 obj is_equal_p(const obj);
 
+obj is_integer_p(obj);
 obj is_number_p(obj);
 obj is_string_p(obj);
 obj is_symbol_p(obj);

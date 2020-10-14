@@ -1,0 +1,65 @@
+(%ambeval)
+
+(define (daughters-and-yachts)
+  (let ((mary 'mary)
+        (gabrielle 'gabrielle)
+        (lorna 'lorna)
+        (rosalind 'rosalind)
+        (melissa 'melissa))
+    (define (amb-of-names) (amb mary gabrielle lorna rosalind melissa))
+
+    (let ((moore-daughter (amb-of-names)))
+      (require (equal? moore-daughter mary))
+      ;; remove if mary's last name is unknown
+
+      (let ((moore-yacht (amb-of-names)))
+        (require (equal? moore-yacht lorna))
+        (require (not (equal? moore-daughter moore-yacht)))
+
+        (let ((barnacle-daughter (amb-of-names)))
+          (require (equal? barnacle-daughter melissa))
+          (let ((barnacle-yacht (amb-of-names)))
+            (require (equal? barnacle-yacht gabrielle))
+            (require (not (equal? barnacle-daughter barnacle-yacht)))
+
+            (let ((downing-daughter (amb-of-names))
+                  (downing-yacht (amb-of-names)))
+              (require (equal? downing-yacht melissa))
+              (require (not (equal? downing-daughter downing-yacht)))
+
+              (let ((hall-daughter (amb-of-names))
+                    (hall-yacht (amb-of-names)))
+                (require (equal? hall-yacht rosalind))
+                (require (not (equal? hall-daughter hall-yacht)))
+
+                (let ((parker-daughter (amb-of-names))
+                      (parker-yacht (amb-of-names)))
+                  (require (not (equal? parker-daughter parker-yacht)))
+                  (require (distinct?
+                            (list moore-daughter downing-daughter
+                                  hall-daughter barnacle-daughter
+                                  parker-daughter)))
+                  (require (distinct?
+                            (list moore-yacht downing-yacht
+                                  hall-yacht barnacle-yacht
+                                  parker-yacht)))
+                  (require (or (and (equal? moore-daughter gabrielle)
+                                    (equal? moore-yacht parker-daughter))
+                               (and (equal? downing-daughter gabrielle)
+                                    (equal? downing-yacht parker-daughter))
+                               (and (equal? hall-daughter gabrielle)
+                                    (equal? hall-yacht parker-daughter))
+                               (and (equal? barnacle-daughter gabrielle)
+                                    (equal? barnacle-yacht parker-daughter))
+                               (and (equal? parker-daughter gabrielle)
+                                    (equal? parker-yacht parker-daughter))))
+                  (display
+                   (list (list 'moore moore-daughter moore-yacht)
+                         (list 'downing downing-daughter downing-yacht)
+                         (list 'hall hall-daughter hall-yacht)
+                         (list 'barnacle barnacle-daughter barnacle-yacht)
+                         (list 'parker parker-daughter parker-yacht)))
+                  ; (amb) ;; uncomment to print all solutions
+                  )))))))))
+
+(daughters-and-yachts)

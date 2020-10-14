@@ -26,6 +26,8 @@ static obj evalstr(char *e, obj env)
 	return eceval(readp(openin_string(e)), env);
 }
 
+#include "output.h"
+
 static void init(obj execution_environment)
 {
 	ambenv = extend_environment(emptylst, emptylst, execution_environment,
@@ -267,10 +269,10 @@ obj ambeval2(obj exp, obj exenv)
 		make_procedure(list2(value, fail_s), list1(value), emptylst);
 	obj fail = make_procedure(
 		emptylst,
-		list2(list2(of_identifier("display"),
-			    of_string(
-				    "ERROR: (AMBEVAL) unexpected call to amb2's fail")),
-		      failed),
+		list1( // list2(of_identifier("display"),
+			//    of_string(
+			//	    "ERROR: (AMBEVAL) unexpected call to amb2's fail")),
+			list2(quote, amb_fail)),
 		emptylst);
 	return ambeval(exp, exenv, succeed, fail);
 }

@@ -120,6 +120,7 @@ obj (*to_function(obj dat))(obj);
 // KEYWORDS
 
 extern const obj amb;
+extern const obj amb_fail;
 extern const obj and_s;
 extern const obj uapply;
 extern const obj __ppapply;

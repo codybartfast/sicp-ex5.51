@@ -1,0 +1,27 @@
+(%ambeval)
+
+(define (require p)
+  (if (not p) (amb)))
+
+(define (require-one p q)
+  (require (if p (not q) q)))
+
+(define (liars-puzzle)
+  (let ((betty (amb 1 2 3 4 5))
+        (ethel (amb 1 2 3 4 5))
+        (joan (amb 1 2 3 4 5))
+        (kitty (amb 1 2 3 4 5))
+        (mary (amb 1 2 3 4 5)))
+    (require-one (= kitty 2) (= betty 3))
+    (require-one (= ethel 1) (= joan 2))
+    (require-one (= joan 3) (= ethel 5))
+    (require-one (= kitty 2) (= mary 4))
+    (require-one (= mary 4) (= betty 1))
+    (require (distinct? (list betty ethel joan kitty mary)))
+    (list (list 'betty betty)
+          (list 'ethel ethel)
+          (list 'joan joan)
+          (list 'kitty kitty)
+          (list 'mary mary))))
+
+(liars-puzzle)

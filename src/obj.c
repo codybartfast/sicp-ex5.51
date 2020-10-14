@@ -239,6 +239,7 @@ obj (*to_function(obj dat))(obj)
 // KEYWORDS
 
 SYMBOL_VAR(amb)
+const obj amb_fail = SYMBOL("amb-fail");
 const obj and_s = SYMBOL("and");
 SYMBOL_VAR(uapply)
 const obj __ppapply = SYMBOL("__%%apply");
@@ -250,7 +251,6 @@ const obj cons_stream = SYMBOL("cons-stream");
 SYMBOL_VAR(define)
 SYMBOL_VAR(delay)
 const obj else_s = SYMBOL("else");
-SYMBOL_VAR(failed)
 const obj if_s = SYMBOL("if");
 SYMBOL_VAR(let)
 SYMBOL_VAR(letrec)
