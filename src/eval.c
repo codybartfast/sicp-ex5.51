@@ -4,7 +4,7 @@
 #include "ambeval.h"
 #include "aneval.h"
 
-obj (*eval)(obj, obj) = eceval;
+obj (*eval)(obj, obj) = ambeval2;
 
 void use_ambeval(void)
 {

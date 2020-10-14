@@ -143,22 +143,18 @@ static void init(obj execution_environment)
 		"                            (fail2)))))"
 		"             fail))))",
 		ambenv);
-	// evalstr("(define (analyze-apply exp)"
-	// 	"  (let ((fproc (analyze (apply-operator exp)))"
-	// 	"        (argsproc (analyze (apply-operands exp))))"
-	// 	"    (lambda (env succeed fail) "
-	// 	"(display \"  ** HERE **  \")"
-	// 	"      (fproc env"
-	// 	"             (lambda (proc fail2)"
-	// 	"              	(argsproc env"
-	// 	"              		(lambda (args fail3)"
-	// 	"              			(execute-application proc args succeed fail3)"
-	// 	"              		)"
-	// 	"              		fail2"
-	// 	"              	)"
-	// 	"             )"
-	// 	"             fail))))",
-	// 	ambenv);
+	evalstr("(define (analyze-apply exp)"
+		"  (let ((fproc (analyze (apply-operator exp)))"
+		"        (argsproc (analyze (apply-operands exp))))"
+		"    (lambda (env succeed fail) "
+		"      (fproc env"
+		"             (lambda (proc fail2)"
+		"              	(argsproc env"
+		"              		(lambda (args fail3)"
+		"              			(execute-application proc args succeed fail3))"
+		"              		fail2))"
+		"             fail))))",
+		ambenv);
 	evalstr("(define (analyze-application exp)"
 		"  (let ((fproc (analyze (operator exp)))"
 		"        (aprocs (map analyze (operands exp))))"
@@ -204,27 +200,15 @@ static void init(obj execution_environment)
 		"          proc))))",
 		ambenv);
 
-	// evalstr("(define (analyze-apply exp)"
-	// 	"  (let ((fproc (analyze (apply-operator exp)))"
-	// 	"        (argsproc (analyze (apply-operands exp))))"
-	// 	"    (lambda (env)"
-	// 	"      (execute-application (fproc env)"
-	// 	"                           (argsproc env)))))",
-	// 	ambenv);
-	// evalstr("(define (analyze-application exp)"
-	// 	"  (let ((fproc (analyze (operator exp)))"
-	// 	"        (aprocs (map analyze (operands exp))))"
-	// 	"    (lambda (env)"
-	// 	"      (execute-application (fproc env)"
-	// 	"                           (map (lambda (aproc) (aproc env))"
-	// 	"                                aprocs)))))",
-	// 	ambenv);
+	evalstr("(define (analyze-time exp)"
+		"  (let ((proc (analyze (timed-expr exp))))"
+		"    (lambda (env succeed fail)"
+		"      (time (proc env succeed fail)))))",
+		ambenv);
 }
 
 static obj ambeval(obj exp, obj exenv, obj succeed, obj fail)
 {
-	// (void)succeed, (void)fail;
-
 	static bool haveinit = false;
 
 	bool orig_gc = disable_gc;
