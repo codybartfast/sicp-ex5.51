@@ -6,6 +6,7 @@ pict.png
 /pict
 /test/code/*
 !/test/code/*/
+/www/sicp.*
 
 
 ## Ignore Visual Studio temporary files, build results, and

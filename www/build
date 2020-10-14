@@ -1,0 +1,27 @@
+../emsdk/upstream/emscripten/emcc 		\
+	../sicp-scheme/src/aneval.c 		\
+	../sicp-scheme/src/bitmap.c             \
+	../sicp-scheme/src/character.c 		\
+	../sicp-scheme/src/convert.c 		\
+	../sicp-scheme/src/custom.c 		\
+	../sicp-scheme/src/eceval.c 		\
+	../sicp-scheme/src/environment.c 	\
+	../sicp-scheme/src/error.c 		\
+	../sicp-scheme/src/eval.c 		\
+	../sicp-scheme/src/inport.c 		\
+	../sicp-scheme/src/lexer.c 		\
+	../sicp-scheme/src/list.c 		\
+	../sicp-scheme/src/load.c 		\
+	../sicp-scheme/src/mceval.c 		\
+	../sicp-scheme/src/obj.c 		\
+	../sicp-scheme/src/outport.c 		\
+	../sicp-scheme/src/output.c 		\
+	../sicp-scheme/src/parser.c 		\
+	../sicp-scheme/src/pict.c 		\
+	../sicp-scheme/src/primproc.c 		\
+	../sicp-scheme/src/sicp.c 		\
+	../sicp-scheme/src/storage.c 		\
+	../sicp-scheme/src/strbldr.c 		\
+						\
+	-s WASM=1 				\
+	-o sicp.html
