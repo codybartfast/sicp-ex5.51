@@ -559,3 +559,8 @@ obj cons_stream_to_cons(obj exp)
 		     list2(memo_proc,
 			   delay_to_lambda(list2(delay, caddr(exp)))));
 }
+
+bool is_amb(obj exp)
+{
+	return is_tagged_list(exp, amb);
+}

@@ -11,6 +11,16 @@
 #include "parser.h"
 #include "storage.h"
 
+static obj is_amb_p(obj args)
+{
+	return is_amb(car(args)) ? true_o : false_o;
+}
+
+static obj amb_choices_p(obj args)
+{
+	return cdar(args);
+}
+
 static obj evalstr(char *e, obj env)
 {
 	return eceval(readp(openin_string(e)), env);
@@ -22,6 +32,10 @@ static void init(obj execution_environment)
 				    of_identifier("init_analyzer"));
 
 	add_primprocs(ambenv);
+
+	define_variable(of_identifier("amb?"), of_function(is_amb_p), ambenv);
+	define_variable(of_identifier("amb-choices"),
+			of_function(amb_choices_p), ambenv);
 
 	evalstr("(define (map proc . arglists)"
 		"  (define (smap proc items)"
@@ -42,7 +56,6 @@ static void init(obj execution_environment)
 		ambenv);
 
 	evalstr("(define (analyze exp)"
-		// "  (newline)(display \"Exp:\")(display exp)(newline)"
 		"  (cond ((self-evaluating? exp) "
 		"         (analyze-self-evaluating exp))"
 		"        ((quoted? exp) (analyze-quoted exp))"
@@ -61,6 +74,7 @@ static void init(obj execution_environment)
 		"        ((delay? exp) (analyze (delay->lambda exp)))"
 		"        ((cons-stream? exp) (analyze (cons-stream->cons exp)))"
 		"        ((time? exp) (analyze-time exp))"
+		"        ((amb? exp) (analyze-amb exp))"
 		"        ((apply? exp) (analyze-apply exp))"
 		"        ((application? exp) (analyze-application exp))"
 		"        (else"
@@ -204,6 +218,18 @@ static void init(obj execution_environment)
 		"  (let ((proc (analyze (timed-expr exp))))"
 		"    (lambda (env succeed fail)"
 		"      (time (proc env succeed fail)))))",
+		ambenv);
+	evalstr("(define (analyze-amb exp)"
+		"  (let ((cprocs (map analyze (amb-choices exp))))"
+		"    (lambda (env succeed fail)"
+		"      (define (try-next choices)"
+		"        (if (null? choices)"
+		"            (fail)"
+		"            ((car choices) env"
+		"                           succeed"
+		"                           (lambda ()"
+		"                             (try-next (cdr choices))))))"
+		"      (try-next cprocs))))",
 		ambenv);
 }
 

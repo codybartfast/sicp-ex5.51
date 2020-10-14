@@ -7,14 +7,6 @@
 
 #define AREA "ERROR"
 
-#define OBJ_4(TYPE, STYPE, VTYPE, VALUE)                                       \
-	{                                                                      \
-		TYPE, STYPE,                                                   \
-		{                                                              \
-			.VTYPE = VALUE                                         \
-		}                                                              \
-	}
-
 enum errsbtyp {
 	ERROR_MEMORY = 1,
 	ERROR_ARGUMENT_TYPE, // 2

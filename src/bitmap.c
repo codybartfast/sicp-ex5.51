@@ -26,14 +26,6 @@
 
 #define AREA "BITMAP"
 
-#define OBJ_4(TYPE, STYPE, VTYPE, VALUE)                                       \
-	{                                                                      \
-		TYPE, STYPE,                                                   \
-		{                                                              \
-			.VTYPE = VALUE                                         \
-		}                                                              \
-	}
-
 extern unsigned char hamiltondata[];
 extern unsigned char patterndata[];
 extern unsigned char sussmandata[];

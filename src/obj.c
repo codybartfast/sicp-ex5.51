@@ -5,14 +5,6 @@
 #include "error.h"
 #include "storage.h"
 
-#define OBJ_4(TYPE, STYPE, VTYPE, VALUE)                                       \
-	{                                                                      \
-		TYPE, STYPE,                                                   \
-		{                                                              \
-			.VTYPE = VALUE                                         \
-		}                                                              \
-	}
-
 #define OBJ_2(TYPE, STYPE)                                                     \
 	{                                                                      \
 		TYPE, STYPE,                                                   \
@@ -246,6 +238,7 @@ obj (*to_function(obj dat))(obj)
 
 // KEYWORDS
 
+SYMBOL_VAR(amb)
 const obj and_s = SYMBOL("and");
 SYMBOL_VAR(uapply)
 const obj __ppapply = SYMBOL("__%%apply");

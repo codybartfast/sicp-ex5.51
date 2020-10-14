@@ -5,6 +5,14 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
+#define OBJ_4(TYPE, STYPE, VTYPE, VALUE)                                       \
+	{                                                                      \
+		TYPE, STYPE,                                                   \
+		{                                                              \
+			.VTYPE = VALUE                                         \
+		}                                                              \
+	}
+
 enum type {
 	TYPE_NOT_SET = 0,
 	TYPE_SYMBOL, // 1
@@ -111,6 +119,7 @@ obj (*to_function(obj dat))(obj);
 
 // KEYWORDS
 
+extern const obj amb;
 extern const obj and_s;
 extern const obj uapply;
 extern const obj __ppapply;

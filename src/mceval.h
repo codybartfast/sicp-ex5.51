@@ -65,4 +65,6 @@ obj delay_to_lambda(obj exp);
 bool is_cons_stream(obj exp);
 obj cons_stream_to_cons(obj exp);
 
+bool is_amb(obj exp);
+
 #endif
