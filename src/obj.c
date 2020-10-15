@@ -239,7 +239,6 @@ obj (*to_function(obj dat))(obj)
 // KEYWORDS
 
 SYMBOL_VAR(amb)
-const obj amb_fail = SYMBOL("amb-fail");
 const obj and_s = SYMBOL("and");
 SYMBOL_VAR(uapply)
 const obj __ppapply = SYMBOL("__%%apply");

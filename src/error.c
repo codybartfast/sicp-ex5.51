@@ -16,7 +16,8 @@ enum errsbtyp {
 	ERROR_IO, // 6
 	ERROR_PARSER, // 7
 	ERROR_UNBOUND_VARIABLE, // 8
-	ERROR_USER // 9
+	ERROR_AMB, // 9
+	ERROR_USER // 10
 };
 
 const char *errstr(obj dat)
@@ -124,6 +125,14 @@ obj error_unbound_variable(const char *area, const char *message, ...)
 	va_list args;
 	va_start(args, message);
 	return print_make_err(ERROR_UNBOUND_VARIABLE, "Unbound Variable", area,
+			      message, args);
+}
+
+obj error_amb(const char *area, const char *message, ...)
+{
+	va_list args;
+	va_start(args, message);
+	return print_make_err(ERROR_AMB, "Amb failed", area,
 			      message, args);
 }
 

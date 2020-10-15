@@ -18,6 +18,8 @@ obj error_io(const char *area, const char *message, ...);
 obj error_parser(const char *area, const char *message, ...);
 obj error_syntax(const char *area, const char *message, ...);
 obj error_unbound_variable(const char *area, const char *message, ...);
+obj error_amb(const char *area, const char *message, ...);
 
 obj user_error(const obj args);
+
 #endif

@@ -21,6 +21,12 @@ static obj amb_choices_p(obj args)
 	return cdar(args);
 }
 
+static obj amb_fail_p(obj args)
+{
+	(void)args;
+	return error_amb(AREA, "No more choices");
+}
+
 static obj evalstr(char *e, obj env)
 {
 	return eceval(readp(openin_string(e)), env);
@@ -263,16 +269,13 @@ static obj ambeval(obj exp, obj exenv, obj succeed, obj fail)
 
 obj ambeval2(obj exp, obj exenv)
 {
+	define_variable(of_identifier("amb-fail"), of_function(amb_fail_p),
+			exenv);
 	obj value = of_identifier("value");
 	obj fail_s = of_identifier("fail");
 	obj succeed =
 		make_procedure(list2(value, fail_s), list1(value), emptylst);
 	obj fail = make_procedure(
-		emptylst,
-		list1( // list2(of_identifier("display"),
-			//    of_string(
-			//	    "ERROR: (AMBEVAL) unexpected call to amb2's fail")),
-			list2(quote, amb_fail)),
-		emptylst);
+		emptylst, list1(list1(of_identifier("amb-fail"))), exenv);
 	return ambeval(exp, exenv, succeed, fail);
 }
