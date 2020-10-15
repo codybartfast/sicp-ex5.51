@@ -241,7 +241,7 @@ static void init(obj execution_environment)
 		ambenv);
 }
 
-static obj ambeval(obj exp, obj exenv, obj succeed, obj fail)
+obj ambeval(obj exp, obj exenv, obj succeed, obj fail)
 {
 	static bool haveinit = false;
 

@@ -2,6 +2,7 @@
 
 #include <ctype.h>
 #include <stdlib.h>
+#include "ambeval.h"
 #include "bitmap.h"
 #include "environment.h"
 #include "error.h"
@@ -27,9 +28,18 @@ static obj evalstr(char *e, obj env)
 
 static obj eval_p(obj args)
 {
-	if (is_err(chkarity("repl", 2, args)))
+	if (is_err(args = chkarity("repl", 2, args))) {
 		return args;
+	}
 	return eval(car(args), cadr(args));
+}
+
+static obj ambeval_p(obj args)
+{
+	if (is_err(args = chkarity("amb-loop", 4, args))) {
+		return args;
+	}
+	return ambeval(car(args), cadr(args), caddr(args), cadddr(args));
 }
 
 static obj add_extras(int ex, obj env)
@@ -52,14 +62,14 @@ static obj add_extras(int ex, obj env)
 		env);
 
 	if (ex > 101) {
-		//define_variable(of_identifier("abs"), of_function(absl), env);
-		evalstr("(define (abs x) (if (< x 0) (- x) x))", env);
+		define_variable(of_identifier("abs"), of_function(absl), env);
+		// evalstr("(define (abs x) (if (< x 0) (- x) x))", env);
 
 		define_variable(of_identifier("<="), of_function(lte), env);
-		//evalstr("(define (<= x y) (not (> x y)))", env);
+		// evalstr("(define (<= x y) (not (> x y)))", env);
 
 		define_variable(of_identifier(">="), of_function(gte), env);
-		//evalstr("(define (>= x y) (not (< x y)))", env);
+		// evalstr("(define (>= x y) (not (< x y)))", env);
 
 		evalstr("(define (square x) (* x x))", env);
 		evalstr("(define (cube x) (* x x x))", env);
@@ -311,12 +321,54 @@ static obj add_extras(int ex, obj env)
 		evalstr("(define driver-loop repl)", env);
 	}
 	if (ex >= 435) {
+		define_variable(of_identifier("ambeval"),
+				of_function(ambeval_p), env);
 		evalstr("(define (require p) (if (not p) (amb)))", env);
 		evalstr("(define (distinct? items)"
 			"  (cond ((null? items) true)"
 			"        ((null? (cdr items)) true)"
 			"        ((member (car items) (cdr items)) false)"
 			"        (else (distinct? (cdr items)))))",
+			env);
+		evalstr("(define (amb-loop)"
+			"  (define input-prompt \";;; Amb-Eval input:\")"
+			"  (define output-prompt \";;; Amb-Eval value:\")"
+			"  (define (prompt-for-input string)"
+			"    (newline) (newline) (display string) (newline))"
+			"  (define (announce-output string)"
+			"    (newline) (display string) (newline))"
+			"  (define (user-print object)"
+			"    (if (and (pair? object)"
+			"             (eq? (car object) 'procedure))"
+			"        (display (list 'compound-procedure"
+			"                       (procedure-parameters object)"
+			"                       (procedure-body object)"
+			"                       '<procedure-env>))"
+			"        (display object)))"
+			"  (define (internal-loop try-again)"
+			"    (prompt-for-input input-prompt)"
+			"    (let ((input (read)))"
+			"      (if (eq? input 'try-again)"
+			"          (try-again)"
+			"          (begin"
+			"            (newline)"
+			"            (display \";;; Starting a new problem \")"
+			"            (ambeval input"
+			"                     the-global-environment"
+			"                     (lambda (val next-alternative)"
+			"                       (announce-output output-prompt)"
+			"                       (user-print val)"
+			"                       (internal-loop next-alternative))"
+			"                     (lambda ()"
+			"                       (announce-output"
+			"                        \";;; There are no more values of\")"
+			"                       (user-print input)"
+			"                       (amb-loop)))))))"
+			"  (internal-loop"
+			"   (lambda ()"
+			"     (newline)"
+			"     (display \";;; There is no current problem\")"
+			"     (amb-loop))))",
 			env);
 	}
 	return unspecified;
