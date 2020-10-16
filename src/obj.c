@@ -257,9 +257,11 @@ const obj letstar = SYMBOL("let*");
 const obj memo_proc = SYMBOL("memo-proc");
 SYMBOL_VAR(lambda)
 const obj or_s = SYMBOL("or");
+SYMBOL_VAR(quasiquote)
 SYMBOL_VAR(quote)
 const obj set = SYMBOL("set!");
 const obj time_s = SYMBOL("time");
+SYMBOL_VAR(unquote)
 
 // TAGS
 SYMBOL_VAR(procedure)

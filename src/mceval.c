@@ -560,7 +560,57 @@ obj cons_stream_to_cons(obj exp)
 			   delay_to_lambda(list2(delay, caddr(exp)))));
 }
 
+// new - amb
+
 bool is_amb(obj exp)
 {
 	return is_tagged_list(exp, amb);
+}
+
+// new - quasiquoted
+
+static bool is_unquote(obj exp)
+{
+	return is_tagged_list(exp, unquote);
+}
+
+static obj quasi_list(obj lst)
+{
+	obj qlst = emptylst;
+
+	if (is_quasiquote(lst)) {
+		return error_syntax(AREA,
+				    "Nested '`' (quasiquote) is not supported");
+	}
+
+	for (lst = reverse(lst); is_pair(lst); lst = cdr(lst)) {
+		obj item = car(lst);
+		if (is_unquote(item)) {
+			item = cadr(item);
+		} else if (is_pair(item)) {
+			item = quasi_list(item);
+		} else {
+			item = list2(quote, item);
+		}
+		qlst = cons(item, qlst);
+	}
+	return cons(of_identifier("list"), qlst);
+}
+
+static obj quasi_dat(obj dat)
+{
+	if (is_pair(dat)) {
+		return quasi_list(dat);
+	}
+	return list2(quote, dat);
+}
+
+bool is_quasiquote(obj exp)
+{
+	return is_tagged_list(exp, quasiquote);
+}
+
+obj quasi_to_combination(obj exp)
+{
+	return quasi_dat(cadr(exp));
 }

@@ -263,6 +263,16 @@ static obj is_quoted_p(obj args)
 	return is_quoted(car(args)) ? true_o : false_o;
 }
 
+static obj is_quasiquote_p(obj args)
+{
+	return is_quasiquote(car(args)) ? true_o : false_o;
+}
+
+static obj quasi_to_combination_p(obj args)
+{
+	return quasi_to_combination(car(args));
+}
+
 static obj rest_exps_p(obj args)
 {
 	return rest_exps(car(args));
@@ -403,6 +413,10 @@ void add_primprocs(obj env)
 			of_function(procedure_parameters_p), env);
 	define_variable(of_identifier("quoted?"), of_function(is_quoted_p),
 			env);
+	define_variable(of_identifier("quasiquote?"),
+			of_function(is_quasiquote_p), env);
+	define_variable(of_identifier("quasi->combination"),
+			of_function(quasi_to_combination_p), env);
 	define_variable(of_identifier("rest-exps"), of_function(rest_exps_p),
 			env);
 	define_variable(of_identifier("reverse"), of_function(reverse_p), env);
@@ -454,6 +468,7 @@ static void init(obj execution_environment)
 		"  (cond ((self-evaluating? exp) "
 		"         (analyze-self-evaluating exp))"
 		"        ((quoted? exp) (analyze-quoted exp))"
+		"        ((quasiquote? exp) (analyze (quasi->combination exp)))"
 		"        ((variable? exp) (analyze-variable exp))"
 		"        ((assignment? exp) (analyze-assignment exp))"
 		"        ((definition? exp) (analyze-definition exp))"

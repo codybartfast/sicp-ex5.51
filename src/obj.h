@@ -139,9 +139,11 @@ extern const obj letstar;
 extern const obj lambda;
 extern const obj memo_proc;
 extern const obj or_s;
+extern const obj quasiquote;
 extern const obj quote;
 extern const obj set;
 extern const obj time_s;
+extern const obj unquote;
 
 // EVAL TAGS
 extern const obj procedure;

@@ -14,7 +14,9 @@ enum token_type {
 	TKN_NUMBER, // 5
 	TKN_STRING, // 6
 	TKN_DOT, // 7
-	TKN_QUOTE // 8
+	TKN_QUOTE, // 8
+	TKN_QUASIQUOTE, // 9
+	TKN_UNQUOTE // 10
 };
 
 struct location {

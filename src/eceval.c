@@ -268,6 +268,8 @@ eval_dispatch:
 		goto ev_variable;
 	if (is_quoted(expr))
 		goto ev_quoted;
+	if (is_quasiquote(expr))
+		goto ev_quasiquoted;
 	if (is_assignment(expr))
 		goto ev_assignment;
 	if (is_definition(expr))
@@ -316,6 +318,9 @@ ev_variable:
 ev_quoted:
 	val = text_of_quotation(expr);
 	goto go_cont;
+ev_quasiquoted:
+	expr = quasi_to_combination(expr);
+	goto eval_dispatch;
 ev_lambda:
 	unev = lambda_parameters(expr);
 	expr = lambda_body(expr);

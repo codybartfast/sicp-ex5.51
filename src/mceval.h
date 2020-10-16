@@ -67,4 +67,7 @@ obj cons_stream_to_cons(obj exp);
 
 bool is_amb(obj exp);
 
+bool is_quasiquote(obj exp);
+obj quasi_to_combination(obj exp);
+
 #endif

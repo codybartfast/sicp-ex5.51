@@ -21,8 +21,9 @@ obj read(void)
 	return readp(dfltin());
 }
 
-obj read_p(obj args){
-	if(is_err(args = chkarity("read", 0, args)))
+obj read_p(obj args)
+{
+	if (is_err(args = chkarity("read", 0, args)))
 		return args;
 	return read();
 }
@@ -74,7 +75,7 @@ static obj string(struct token *tkn)
 	return of_string(str);
 }
 
-static obj quote_(struct inport *port)
+static obj mark_to_list(struct inport *port, obj keyword, char *msg)
 {
 	obj dat = readp(port);
 	if (is_err(dat))
@@ -86,12 +87,31 @@ static obj quote_(struct inport *port)
 	case TYPE_PAIRPTR:
 	case TYPE_STRING:
 	case TYPE_SYMBOL:
-		return list2(quote, dat);
+		return list2(keyword, dat);
 	default:
-		return error_parser(
-			AREA, "Expected a datum after quote ', but got \"%s\"",
-			errstr(dat));
+		return error_parser(AREA, msg, errstr(dat));
 	}
+}
+
+static obj quote_(struct inport *port)
+{
+	return mark_to_list(
+		port, quote,
+		"Expected a datum after \"'\" (quote), but got \"%s\"");
+}
+
+static obj quasiquote_(struct inport *port)
+{
+	return mark_to_list(
+		port, quasiquote,
+		"Expected a datum after '`' (quasiquote), but got \"%s\"");
+}
+
+static obj unquote_(struct inport *port)
+{
+	return mark_to_list(
+		port, unquote,
+		"Expected a datum after ',' (unquote), but got \"%s\"");
 }
 
 static obj parse_list(obj, struct inport *);
@@ -110,6 +130,10 @@ static obj parse(struct token *tkn, struct inport *port)
 		return string(tkn);
 	case TKN_QUOTE:
 		return quote_(port);
+	case TKN_QUASIQUOTE:
+		return quasiquote_(port);
+	case TKN_UNQUOTE:
+		return unquote_(port);
 	case TKN_EOF:
 		return check_eof();
 	default:

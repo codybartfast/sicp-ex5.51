@@ -67,6 +67,7 @@ static void init(obj execution_environment)
 		"  (cond ((self-evaluating? exp) "
 		"         (analyze-self-evaluating exp))"
 		"        ((quoted? exp) (analyze-quoted exp))"
+		"        ((quasiquote? exp) (analyze (quasi->combination exp)))"
 		"        ((variable? exp) (analyze-variable exp))"
 		"        ((assignment? exp) (analyze-assignment exp))"
 		"        ((definition? exp) (analyze-definition exp))"
