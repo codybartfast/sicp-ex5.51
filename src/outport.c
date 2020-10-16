@@ -98,7 +98,7 @@ int out_writes(struct outport *out, const char *str)
 	return rc < 0 ? EOF : 0;
 }
 
-char *out_tostring(struct outport *port)
+char *out_copystring(struct outport *port)
 {
 	if (port == NULL) {
 		eprintf(AREA, "tostring received a null outport.");
@@ -108,7 +108,7 @@ char *out_tostring(struct outport *port)
 		eprintf(AREA, "cannot get string from a non-string outport");
 		return NULL;
 	}
-	return sb_string(port->sb);
+	return sb_copy(port->sb);
 }
 
 struct outport *new_outport(void)

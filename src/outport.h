@@ -19,7 +19,7 @@ struct outport *openout_string(void);
 
 int out_writec(struct outport *, char c);
 int out_writes(struct outport *, const char *s);
-char *out_tostring(struct outport *);
+char *out_copystring(struct outport *);
 int out_close(struct outport *);
 
 #endif

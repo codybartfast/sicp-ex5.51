@@ -748,6 +748,58 @@ obj is_symbol_p(obj args)
 	return is_symbol(car(args)) ? true_o : false_o;
 }
 
+#include "convert.h"
+#include "strbldr.h"
+
+obj string_append_p(obj args)
+{
+	struct strbldr *sb = new_strbldr();
+
+	for (; is_pair(args); args = cdr(args)) {
+		obj arg = car(args);
+		if (!is_string(arg))
+			return error_argument_type(
+				AREA, "append-string got non string");
+		sb_adds(sb, to_string(arg));
+	}
+	obj str = of_string(sb_copy(sb));
+	sb_free(&sb);
+	return str;
+}
+
+obj number_to_string_p(obj args)
+{
+	obj chk;
+
+	if (is_err(chk = chkarity("number->string", 1, args)))
+		return chk;
+	struct outport *tmp = openout_string();
+	cnv_number_string(tmp, car(args));
+	obj str = of_string(out_copystring(tmp));
+	out_close(tmp);
+	return str;
+}
+
+obj string_to_symbol_p(obj args)
+{
+	obj chk;
+
+	if (is_err(chk = chkarity("string->symbol", 1, args)))
+		return chk;
+	obj r = of_identifier(to_string(car(args)));
+	return r;
+}
+
+obj symbol_to_string_p(obj args)
+{
+	obj chk;
+
+	if (is_err(chk = chkarity("symbol->string", 1, args)))
+		return chk;
+	obj r = of_string(to_string(car(args)));
+	return r;
+}
+
 obj pcnt_ex(obj args)
 {
 	(void)args;

@@ -57,6 +57,11 @@ obj is_number_p(obj);
 obj is_string_p(obj);
 obj is_symbol_p(obj);
 
+obj string_append_p(obj);
+obj number_to_string_p(obj);
+obj string_to_symbol_p(obj);
+obj symbol_to_string_p(obj);
+
 obj pcnt_ex(obj);
 
 #endif

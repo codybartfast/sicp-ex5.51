@@ -371,6 +371,17 @@ static obj add_extras(int ex, obj env)
 			"     (amb-loop))))",
 			env);
 	}
+	if (ex >= 500) {
+		define_variable(of_identifier("string-append"),
+				of_function(string_append_p), env);
+		define_variable(of_identifier("number->string"),
+				of_function(number_to_string_p), env);
+		define_variable(of_identifier("string->symbol"),
+				of_function(string_to_symbol_p), env);
+		define_variable(of_identifier("symbol->string"),
+				of_function(symbol_to_string_p), env);
+	}
+
 	return unspecified;
 }
 
