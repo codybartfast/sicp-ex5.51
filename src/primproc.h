@@ -62,6 +62,8 @@ obj number_to_string_p(obj);
 obj string_to_symbol_p(obj);
 obj symbol_to_string_p(obj);
 
+obj string_lt_p(obj);
+
 obj pcnt_ex(obj);
 
 #endif

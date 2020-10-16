@@ -380,6 +380,8 @@ static obj add_extras(int ex, obj env)
 				of_function(string_to_symbol_p), env);
 		define_variable(of_identifier("symbol->string"),
 				of_function(symbol_to_string_p), env);
+		define_variable(of_identifier("string<?"),
+				of_function(string_lt_p), env);
 	}
 
 	return unspecified;

@@ -800,6 +800,17 @@ obj symbol_to_string_p(obj args)
 	return r;
 }
 
+obj string_lt_p(obj args)
+{
+	obj chk;
+
+	if (is_err(chk = chkarity("string<?", 2, args)))
+		return chk;
+	return strcmp(to_string(car(args)), to_string(cadr(args))) < 0 ?
+		       true_o :
+		       false_o;
+}
+
 obj pcnt_ex(obj args)
 {
 	(void)args;
