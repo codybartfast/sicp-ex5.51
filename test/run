@@ -5,7 +5,7 @@ export bin_dir=$test_dir/../bin
 source_dir=$test_dir/code
 
 # file=scratch.sicp
-file=ch5/ex5.50-cbf.sicp
+file=ch5/ex5.50/ex5.50-cbf.sicp
 
 echo running: $file
 $bin_dir/sicp $source_dir/$file

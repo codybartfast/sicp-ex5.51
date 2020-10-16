@@ -1,0 +1,328 @@
+; #lang sicp
+
+; (#%require "compiler-50.scm")
+
+;; Based on ec-evaluator-48, for Ex 5.50.
+
+
+;; =========================================================================
+;; Primitive Operations
+;; =========================================================================
+
+;; 4.1.2  Representing Expressions
+
+(define (self-evaluating? exp)
+  (cond ((number? exp) true)
+        ((string? exp) true)
+        (else false)))
+
+(define (tagged-list? exp tag)
+  (if (pair? exp)
+      (eq? (car exp) tag)
+      false))
+
+(define (definition? exp)
+  (tagged-list? exp 'define))
+(define (definition-variable exp)
+  (if (symbol? (cadr exp))
+      (cadr exp)
+      (caadr exp)))
+(define (definition-value exp)
+  (if (symbol? (cadr exp))
+      (caddr exp)
+      (make-lambda (cdadr exp)
+                   (cddr exp))))
+
+(define (make-lambda parameters body)
+  (cons 'lambda (cons parameters body)))
+
+(define (if-alternative exp)
+  (if (not (null? (cdddr exp)))
+      (cadddr exp)
+      'false))
+
+;; 4.1.3  Evaluator Data Structures
+
+(define (make-procedure parameters body env)
+  (list 'procedure parameters body env))
+
+(define (enclosing-environment env) (cdr env))
+(define (first-frame env) (car env))
+(define the-empty-environment '())
+
+(define (make-frame variables values)
+  (cons variables values))
+(define (frame-variables frame) (car frame))
+(define (frame-values frame) (cdr frame))
+(define (add-binding-to-frame! var val frame)
+  (set-car! frame (cons var (car frame)))
+  (set-cdr! frame (cons val (cdr frame))))
+
+(define (extend-environment vars vals base-env)
+  (if (= (length vars) (length vals))
+      (cons (make-frame vars vals) base-env)
+      (if (< (length vars) (length vals))
+          (error "Too many arguments supplied" vars vals)
+          (error "Too few arguments supplied" vars vals))))
+
+(define (lookup-variable-value var env)
+  (define (env-loop env)
+    (define (scan vars vals)
+      (cond ((null? vars)
+             (env-loop (enclosing-environment env)))
+            ((eq? var (car vars))
+             (car vals))
+            (else (scan (cdr vars) (cdr vals)))))
+    (if (eq? env the-empty-environment)
+        (error "unbound variable" var)
+        (let ((frame (first-frame env)))
+          (scan (frame-variables frame)
+                (frame-values frame)))))
+  (env-loop env))
+
+(define (set-variable-value! var val env)
+  (define (env-loop env)
+    (define (scan vars vals)
+      (cond ((null? vars)
+             (env-loop (enclosing-environment env)))
+            ((eq? var (car vars))
+             (set-car! vals val))
+            (else (scan (cdr vars) (cdr vals)))))
+    (if (eq? env the-empty-environment)
+        (error "Unbound variable -- SET!" var)
+        (let ((frame (first-frame env)))
+          (scan (frame-variables frame)
+                (frame-values frame)))))
+  (env-loop env))
+
+(define (define-variable! var val env)
+  (let ((frame (first-frame env)))
+    (define (scan vars vals)
+      (cond ((null? vars)
+             (add-binding-to-frame! var val frame))
+            ((eq? var (car vars))
+             (set-car! vals val))
+            (else (scan (cdr vars) (cdr vals)))))
+    (scan (frame-variables frame)
+          (frame-values frame))))
+
+;; 4.1.4  Running the Evaluator as a Program
+
+(define (setup-environment)
+  (let ((initial-env
+         (extend-environment (primitive-procedure-names)
+                             (primitive-procedure-objects)
+                             the-empty-environment)))
+    (define-variable! 'true true initial-env)
+    (define-variable! 'false false initial-env)
+    initial-env))
+
+
+;; Code for checking primitive procedures Deleted Here
+
+(define (primitive-procedure? proc)
+  (tagged-list? proc 'primitive))
+
+(define (primitive-implementation proc) (cadr proc))
+
+(define (apply-in-underlying-scheme proc args)
+  (apply (primitive-implementation proc) args))
+
+(define primitive-procedures
+  ;; Primitives used by the metacirculator evaluator's implementation
+  (list (list 'car car)
+        (list 'cdr cdr)
+        (list 'cons cons)
+        (list 'null? null?)
+        (list 'list list)
+        (list '= =)
+        (list 'length length)
+        (list 'newline newline)
+        (list 'display display)
+        (list 'read read)
+        (list 'number? number?)
+        (list 'string? string?)
+        (list 'symbol? symbol?)
+        (list 'pair? pair?)
+        (list 'eq? eq?)
+        (list 'cadr cadr)
+        (list 'caadr caadr)
+        (list 'cdadr cdadr)
+        (list 'cddr cddr)
+        (list 'not not)
+        (list 'caddr caddr)
+        (list 'error error)
+        (list 'set-car! set-car!)
+        (list 'set-cdr! set-cdr!)
+        (list 'cadddr cadddr)
+        (list 'cdddr cdddr)
+        (list 'apply-in-underlying-scheme apply-in-underlying-scheme)
+        ;; Additional primitive procedures installed in the MC-evaluator
+        (list '- -)
+        (list '* *)
+        (list 'equal? equal?)
+        ))
+        
+(define (primitive-procedure-names)
+  (map car
+       primitive-procedures))
+
+(define (primitive-procedure-objects)
+  (map (lambda (proc) (list 'primitive (cadr proc)))
+       primitive-procedures))
+
+(define (apply-primitive-procedure proc args)
+  (apply
+   (primitive-implementation proc)
+   (reverse args))) ;; <-- reverse arguments for eceval
+
+(define the-global-environment (setup-environment))
+
+
+;; Primitive Operation for Evaluator (Section 5.4)
+;; ===============================================
+
+;; Listed in the order that errors arose when trying to run the eceval
+;; machine without any primitive operations.
+
+(define evaluator-operations
+  (list
+   (list 'self-evaluating? self-evaluating?)
+   (list 'variable? symbol?)
+   (list 'quoted? (lambda (exp) (tagged-list? exp 'quote)))
+   (list 'assignment? (lambda (exp) (tagged-list? exp 'set!)))
+   (list 'definition? definition?)
+   (list 'if? (lambda (exp) (tagged-list? exp 'if)))
+   (list 'lambda? (lambda (exp) (tagged-list? exp 'lambda)))
+   (list 'begin? (lambda (exp) (tagged-list? exp 'begin)))
+   (list 'application? pair?)
+   (list 'lookup-variable-value lookup-variable-value)
+   (list 'text-of-quotation cadr)
+   (list 'lambda-parameters cadr)
+   (list 'lambda-body cddr)
+   (list 'make-procedure make-procedure)
+   (list 'operator car)
+   (list 'operands cdr)
+   (list 'empty-arglist (lambda () '()))
+   (list 'no-operands? null?)
+   (list 'first-operand car)
+   (list 'last-operand? (lambda (exp) (null? (cdr exp))))
+   (list 'adjoin-arg cons)
+   (list 'rest-operands cdr)
+   (list 'primitive-procedure? primitive-procedure?)
+   (list 'compound-procedure? (lambda (exp) (tagged-list? exp 'procedure)))
+   (list 'apply-primitive-procedure apply-primitive-procedure)
+   (list 'procedure-parameters cadr)
+   (list 'procedure-environment cadddr)
+   (list 'extend-environment
+         (lambda (vars vals base-env)
+            (extend-environment
+             vars
+             (reverse vals)              ;; <-- reverse arguments
+             base-env)))
+   (list 'procedure-body caddr)
+   (list 'begin-actions cdr)
+   (list 'first-exp car)
+   (list 'last-exp? (lambda (exp) (null? (cdr exp))))
+   (list 'rest-exps cdr)
+   (list 'if-predicate cadr)
+   (list 'true? (lambda (exp) (not (eq? exp false))))
+   (list 'if-alternative if-alternative)
+   (list 'if-consequent caddr)
+   (list 'assignment-variable cadr)
+   (list 'assignment-value caddr)
+   (list 'set-variable-value! set-variable-value!)
+   (list 'definition-variable definition-variable)
+   (list 'definition-value definition-value)
+   (list 'define-variable! define-variable!)
+   (list 'add-binding-to-frame! add-binding-to-frame!)
+   (list 'display display)
+   (list 'displayln (lambda (exp) (display exp) (newline)))
+   ;; Ex 5.24
+   (list 'cond-clauses cdr)
+   (list 'no-clauses? null?)
+   (list 'cond? (lambda (exp) (tagged-list? exp 'cond)))
+   (list 'clauses-first car)
+   (list 'clauses-rest cdr)
+   (list 'cond-else-clause? (lambda (exp) (eq? (car exp) 'else)))
+   (list 'cond-predicate car)
+   (list 'cond-actions cdr)
+   ; Ex 5.48
+   (list 'compile-and-run?
+         (lambda (exp) (tagged-list? exp 'compile-and-run)))
+   (list 'statements-with-return statements-with-return)
+   (list 'compile-and-run-exp cadr)
+   ))
+
+
+;; Primitive Operations to Support Compiled Code (Section 5.5)
+;; ===========================================================
+
+;; Footer 38 - Data Structures for Compiled Procedures
+
+(define (make-compiled-procedure entry env)
+  (list 'compiled-procedure entry env))
+
+(define (compiled-procedure? proc)
+  (tagged-list? proc 'compiled-procedure))
+
+(define (compiled-procedure-entry c-proc) (cadr c-proc))
+
+(define (compiled-procedure-env c-proc) (caddr c-proc))
+
+;; Exercise 5.39
+
+(define (skip lst n)
+  (if (= n 0)
+      lst
+      (skip (cdr lst) (- n 1))))
+
+;(define (frame-values frame) (cdr frame))
+
+(define (lex-frame-number addr) (car addr))
+(define (lex-displacement addr) (cadr addr))
+
+(define (lexical-address-lookup addr env)
+;  (println addr)
+;  (println env)
+  (let ((frame (list-ref env (lex-frame-number addr))))
+    (let ((value (list-ref (frame-values frame) (lex-displacement addr))))
+      (if (eq? value '*unassigned*)
+          (error "Unassigned lex-address:" addr)
+          value))))
+
+(define (lexical-address-set! addr value env)
+  (let ((frame (list-ref env (lex-frame-number addr))))
+    (let ((value-head (skip (frame-values frame) (lex-displacement addr))))
+      (set-car! value-head value))))
+
+;; Compiled Code Operations List
+
+(define compiled-code-operations
+  (list   
+   (list 'make-compiled-procedure make-compiled-procedure)
+   (list 'compiled-procedure? compiled-procedure?)
+   (list 'compiled-procedure-entry compiled-procedure-entry)
+   (list 'compiled-procedure-env compiled-procedure-env)
+   (list 'lexical-address-lookup lexical-address-lookup)
+   (list 'lexical-address-set! lexical-address-set!)
+   (list '= =)
+   (list '* *)
+   (list '- -)
+   (list '+ +)
+   (list 'false? (lambda (exp) (eq? exp false)))
+   (list 'get-global-environment (lambda () the-global-environment))
+   (list 'list list)
+   (list 'cons cons)))
+
+;; Combined Primitive Operations
+;; =============================
+
+
+(define eceval-operations
+  (append evaluator-operations compiled-code-operations))
+
+
+;; Explicit Control Evaluator Deleted Here
+
+; (#%provide eceval-operations)

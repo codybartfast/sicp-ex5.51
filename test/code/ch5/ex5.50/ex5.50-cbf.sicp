@@ -1,0 +1,19 @@
+(load "machine-50")
+(load "compiler-50")
+(load "ec-evaluator-50")
+(load "mc-evaluator-50-exp")
+
+(display "Compiling metacircular-evaluator source ...")(newline)
+(define mc-eval-code
+  (statements-with-next mc-evaluator-exp))
+
+(define program
+  (cons '(assign env (op get-global-environment))
+        mc-eval-code))
+
+(display "Making machine ...")(newline)
+(define machine (make-machine eceval-operations program))
+
+(display "Starting matacirculator evaluator REPL ...")(newline)
+(start machine)
+;machine

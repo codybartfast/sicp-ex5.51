@@ -1,0 +1,813 @@
+; #lang sicp
+
+;; Based on compiler-48 for ex 5.50.
+
+
+;; Compiler from book text, Section 5.5
+;; ====================================
+
+;; 5.5.1  Structure of the Compiler
+;; ================================
+
+(define (compile exp ctenv target linkage)
+  (cond ((self-evaluating? exp)
+         (compile-self-evaluating exp ctenv target linkage))
+        ((quoted? exp) (compile-quoted exp ctenv target linkage))
+        ((variable? exp)
+         (compile-variable exp ctenv target linkage))
+        ((assignment? exp)
+         (compile-assignment exp ctenv target linkage))
+        ((definition? exp)
+         (compile-definition exp ctenv target linkage))
+        ((if? exp) (compile-if exp ctenv target linkage))
+        ((lambda? exp) (compile-lambda exp ctenv target linkage))
+        ((begin? exp)
+         (compile-sequence (begin-actions exp)
+                           ctenv
+                           target
+                           linkage))
+        ((cond? exp) (compile (cond->if exp) ctenv target linkage))
+        ((let? exp) (compile (let->combination exp) ctenv target linkage))
+        ((primitive-name? exp ctenv)
+         (compile-primitive-procedure exp ctenv target linkage))
+        ((application? exp)
+         (compile-application exp ctenv target linkage))
+        (else
+         (error "Unknown expression type -- COMPILE" exp))))
+
+(define (make-instruction-sequence needs modifies statements)
+  (list needs modifies statements))
+
+(define (empty-instruction-sequence)
+  (make-instruction-sequence '() '() '()))
+
+
+;; 5.5.2  Compiling Expressions
+;; ============================
+
+;; Compiling linkage code
+
+(define (compile-linkage linkage)
+  (cond ((eq? linkage 'return)
+         (make-instruction-sequence
+          '(continue) '() '((goto (reg continue)))))
+        ((eq? linkage 'next)
+         (empty-instruction-sequence))
+        (else
+         (make-instruction-sequence
+          '() '() `((goto (label ,linkage)))))))
+
+(define (end-with-linkage linkage instruction-sequence)
+  (preserving '(continue)
+              instruction-sequence
+              (compile-linkage linkage)))
+
+;; Compiling simple expressions
+
+(define (compile-self-evaluating exp ctenv target linkage)
+  (end-with-linkage linkage
+   (make-instruction-sequence '() (list target)
+    `((assign ,target (const ,exp))))))
+(define (compile-quoted exp ctenv target linkage)
+  (end-with-linkage linkage
+   (make-instruction-sequence '() (list target)
+    `((assign ,target (const ,(text-of-quotation exp)))))))
+
+;; Compile-varaible moved to "Exercsie 5.42" below
+
+;; Compile-assignment moved to "Exercise 5.42" below
+
+(define (compile-definition exp ctenv target linkage)
+  (let ((var (definition-variable exp))
+        (get-value-code
+         (compile (definition-value exp) ctenv 'val 'next)))
+    (end-with-linkage
+     linkage
+     (preserving '(env)
+                 get-value-code
+                 (make-instruction-sequence
+                  '(env val) (list target)
+                  `((perform (op define-variable!)
+                             (const ,var)
+                             (reg val)
+                             (reg env))
+                    (assign ,target (const ok))))))))
+
+;; Compiling conditional expressions
+
+(define (compile-if exp ctenv target linkage)
+  (let ((t-branch (make-label 'true-branch))
+        (f-branch (make-label 'false-branch))
+        (after-if (make-label 'after-if)))
+    (let ((consequent-linkage
+           (if (eq? linkage 'next) after-if linkage)))
+      (let ((p-code (compile (if-predicate exp) ctenv 'val 'next))
+            (c-code
+             (compile
+              (if-consequent exp) ctenv target consequent-linkage))
+            (a-code
+             (compile (if-alternative exp) ctenv target linkage)))
+        (preserving '(env continue)
+                    p-code
+                    (append-instruction-sequences
+                     (make-instruction-sequence
+                      '(val) '()
+                      `((test (op false?) (reg val))
+                        (branch (label ,f-branch))))
+                     (parallel-instruction-sequences
+                      (append-instruction-sequences t-branch c-code)
+                      (append-instruction-sequences f-branch a-code))
+                     after-if))))))
+
+;; Compiling sequences
+
+(define (compile-sequence seq ctenv target linkage)
+  (if (last-exp? seq)
+      (compile (first-exp seq) ctenv target linkage)
+      (preserving '(env continue)
+                  (compile (first-exp seq) ctenv target 'next)
+                  (compile-sequence (rest-exps seq) ctenv target linkage))))
+
+;; Compiling lambda expressions
+
+(define (compile-lambda exp ctenv target linkage)
+  (let ((proc-entry (make-label 'entry))
+        (after-lambda (make-label 'after-lambda)))
+    (let ((lambda-linkage
+           (if (eq? linkage 'next) after-lambda linkage)))
+      (append-instruction-sequences
+       (tack-on-instruction-sequence
+        (end-with-linkage lambda-linkage
+                          (make-instruction-sequence
+                           '(env)
+                           (list target)
+                           `((assign ,target
+                                     (op make-compiled-procedure)
+                                     (label ,proc-entry)
+                                     (reg env)))))
+        (compile-lambda-body exp ctenv proc-entry))
+       after-lambda))))
+
+(define (compile-lambda-body exp ctenv proc-entry)
+  (let ((formals (lambda-parameters exp))
+        (body-exp (scan-out-defines (lambda-body exp))))
+    (let ((ctenv (extend-ctenv ctenv formals)))
+      (append-instruction-sequences
+       (make-instruction-sequence
+        '(env proc argl) '(env)
+        `(,proc-entry
+          (assign env (op compiled-procedure-env) (reg proc))
+          (assign env
+                  (op extend-environment)
+                  (const ,formals)
+                  (reg argl)
+                  (reg env))))
+       (compile-sequence body-exp ctenv 'val 'return)))))
+
+
+;; 5.5.3  Compiling Combinations
+;; =============================
+
+(define (compile-application exp ctenv target linkage)
+  (let ((proc-code (compile (operator exp) ctenv 'proc 'next))
+        (operand-codes
+         (map (lambda (operand) (compile operand ctenv 'val 'next))
+              (operands exp))))
+    (preserving '(env continue)
+                proc-code
+                (preserving '(proc continue)
+                            (construct-arglist operand-codes)
+                            (compile-procedure-call target linkage)))))
+
+(define (construct-arglist operand-codes)
+  ;; Removed reversal of operand-codes.
+  ;; Argl now in reverse order the same as the evaluator's argl
+  (if (null? operand-codes)
+      (make-instruction-sequence
+       '() '(argl) '((assign argl (const ()))))
+      (let ((code-to-get-last-arg
+             (append-instruction-sequences
+              (car operand-codes)
+              (make-instruction-sequence
+               '(val) '(argl) '((assign argl (op list) (reg val)))))))
+        (if (null? (cdr operand-codes))
+            code-to-get-last-arg
+            (preserving '(env)
+                        code-to-get-last-arg
+                        (code-to-get-rest-args
+                         (cdr operand-codes)))))))
+
+(define (code-to-get-rest-args operand-codes)
+  (let ((code-for-next-arg
+         (preserving '(argl)
+                     (car operand-codes)
+                     (make-instruction-sequence
+                      '(val argl)
+                      '(argl)
+                      '((assign argl (op cons) (reg val) (reg argl)))))))
+    (if (null? (cdr operand-codes))
+        code-for-next-arg
+        (preserving '(env)
+                    code-for-next-arg
+                    (code-to-get-rest-args (cdr operand-codes))))))
+
+;; Apply procedures
+
+(define (compile-procedure-call target linkage)
+  (let ((primitive-branch (make-label 'primitive-branch))
+        (compiled-branch (make-label 'compiled-branch))
+        (compound-branch (make-label 'compound-branch))
+        (after-call (make-label 'after-call)))
+    (let ((compiled-linkage
+           (if (eq? linkage 'next) after-call linkage)))
+      (append-instruction-sequences
+       (make-instruction-sequence
+        '(proc) '() `((test (op primitive-procedure?) (reg proc))
+                      (branch (label ,primitive-branch))
+                      (test (op compound-procedure?) (reg proc))
+                      (branch (label ,compound-branch))))
+       (parallel-instruction-sequences
+        (append-instruction-sequences
+         compiled-branch
+         (compile-proc-appl target compiled-linkage))
+        (append-instruction-sequences
+         compound-branch
+         (compile-compound-appl target compiled-linkage))
+        (append-instruction-sequences
+         primitive-branch
+         (end-with-linkage
+          linkage
+          (make-instruction-sequence
+           '(proc argl) (list target)
+           `((assign ,target
+                     (op apply-primitive-procedure)
+                     (reg proc)
+                     (reg argl)))))))
+       after-call))))
+
+;; Applying compiled procedures
+
+(define (compile-proc-appl target linkage)
+  (cond ((and (eq? target 'val) (not (eq? linkage 'return)))
+         (make-instruction-sequence
+          '(proc) all-regs
+          `((assign continue (label ,linkage))
+            (assign val (op compiled-procedure-entry)
+                    (reg proc))
+            (goto (reg val)))))
+        ((and (not (eq? target 'val))
+              (not (eq? linkage 'return)))
+         (let ((proc-return (make-label 'proc-return)))
+           (make-instruction-sequence
+            '(proc) all-regs
+            `((assign continue (label ,proc-return))
+              (assign val (op compiled-procedure-entry)
+                      (reg proc))
+              (goto (reg val))
+              ,proc-return
+              (assign ,target (reg val))
+              (goto (label ,linkage))))))
+        ((and (eq? target 'val) (eq? linkage 'return))
+         (make-instruction-sequence
+          '(proc continue) all-regs
+          '((assign val (op compiled-procedure-entry)
+                    (reg proc))
+            (goto (reg val)))))
+        ((and (not (eq? target 'val)) (eq? linkage 'return))
+         (error "return linkage, target not val -- COMPILE"
+                target))))
+
+
+;; 5.5.4  Combining Instruction Sequences
+;; ======================================
+
+(define (registers-needed s)
+  (if (symbol? s) '() (car s)))
+(define (registers-modified s)
+  (if (symbol? s) '() (cadr s)))
+(define (statements s)
+  (if (symbol? s) (list s) (caddr s)))
+
+(define (needs-register? seq reg)
+  (memq reg (registers-needed seq)))
+(define (modifies-register? seq reg)
+  (memq reg (registers-modified seq)))
+
+(define (append-instruction-sequences . seqs)
+  (define (append-2-sequences seq1 seq2)
+    (make-instruction-sequence
+     (list-union (registers-needed seq1)
+                 (list-difference (registers-needed seq2)
+                                  (registers-modified seq1)))
+     (list-union (registers-modified seq1)
+                 (registers-modified seq2))
+     (append (statements seq1) (statements seq2))))
+  (define (append-seq-list seqs)
+    (if (null? seqs)
+        (empty-instruction-sequence)
+        (append-2-sequences (car seqs)
+                            (append-seq-list (cdr seqs)))))
+  (append-seq-list seqs))
+
+(define (list-union s1 s2)
+  (cond ((null? s1) s2)
+        ((memq (car s1) s2) (list-union (cdr s1) s2))
+        (else (cons (car s1) (list-union (cdr s1) s2)))))
+(define (list-difference s1 s2)
+  (cond ((null? s1) '())
+        ((memq (car s1) s2) (list-difference (cdr s1) s2))
+        (else (cons (car s1)
+                    (list-difference (cdr s1) s2)))))
+
+(define (preserving regs seq1 seq2)
+  (if (null? regs)
+      (append-instruction-sequences seq1 seq2)
+      (let ((first-reg (car regs)))
+        (if (and (needs-register? seq2 first-reg)
+                 (modifies-register? seq1 first-reg))
+            (preserving (cdr regs)
+                        (make-instruction-sequence
+                         (list-union (list first-reg)
+                                     (registers-needed seq1))
+                         (list-difference (registers-modified seq1)
+                                          (list first-reg))
+                         (append `((save ,first-reg))
+                                 (statements seq1)
+                                 `((restore ,first-reg))))
+                        seq2)
+            (preserving (cdr regs) seq1 seq2)))))
+
+(define (tack-on-instruction-sequence seq body-seq)
+  (make-instruction-sequence
+   (registers-needed seq)
+   (registers-modified seq)
+   (append (statements seq) (statements body-seq))))
+
+(define (parallel-instruction-sequences . seqs)
+  (define (parallelize-2-seqs seq1 seq2)
+    (make-instruction-sequence
+     (list-union (registers-needed seq1)
+                 (registers-needed seq2))
+     (list-union (registers-modified seq1)
+                 (registers-modified seq2))
+     (append (statements seq1) (statements seq2))))
+  (define (parallelize seqs)
+    (if (null? seqs)
+        (empty-instruction-sequence)
+        (parallelize-2-seqs (car seqs)
+                            (parallelize (cdr seqs)))))
+  (parallelize seqs))
+
+
+;; 4.1.2  Representing Expressions
+;; ===============================
+
+(define (self-evaluating? exp)
+  (cond ((number? exp) true)
+        ((string? exp) true)
+        (else false)))
+
+(define (variable? exp) (symbol? exp))
+
+(define (quoted? exp)
+  (tagged-list? exp 'quote))
+(define (text-of-quotation exp) (cadr exp))
+
+(define (tagged-list? exp tag)
+  (if (pair? exp)
+      (eq? (car exp) tag)
+      false))
+
+(define (assignment? exp)
+  (tagged-list? exp 'set!))
+(define (assignment-variable exp) (cadr exp))
+(define (assignment-value exp) (caddr exp))
+
+(define (definition? exp)
+  (tagged-list? exp 'define))
+(define (definition-variable exp)
+  (if (symbol? (cadr exp))
+      (cadr exp)
+      (caadr exp)))
+(define (definition-value exp)
+  (if (symbol? (cadr exp))
+      (caddr exp)
+      (make-lambda (cdadr exp)
+                   (cddr exp))))
+
+(define (lambda? exp) (tagged-list? exp 'lambda))
+(define (lambda-parameters exp) (cadr exp))
+(define (lambda-body exp) (cddr exp))
+
+(define (make-lambda parameters body)
+  (cons 'lambda (cons parameters body)))
+
+(define (if? exp) (tagged-list? exp 'if))
+(define (if-predicate exp) (cadr exp))
+(define (if-consequent exp) (caddr exp))
+(define (if-alternative exp)
+  (if (not (null? (cdddr exp)))
+      (cadddr exp)
+      'false))
+
+(define (make-if predicate consequent alternative)
+  (list 'if predicate consequent alternative))
+
+(define (begin? exp) (tagged-list? exp 'begin))
+(define (begin-actions exp) (cdr exp))
+(define (last-exp? seq) (null? (cdr seq)))
+(define (first-exp seq) (car seq))
+(define (rest-exps seq) (cdr seq))
+
+(define (sequence->exp seq)
+  (cond ((null? seq) seq)
+        ((last-exp? seq) (first-exp seq))
+        (else (make-begin seq))))
+(define (make-begin seq) (cons 'begin seq))
+
+(define (application? exp) (pair? exp))
+(define (operator exp) (car exp))
+(define (operands exp) (cdr exp))
+
+(define (cond? exp) (tagged-list? exp 'cond))
+(define (cond-clauses exp) (cdr exp))
+(define (cond-else-clause? clause)
+  (eq? (cond-predicate clause) 'else))
+(define (cond-predicate clause) (car clause))
+(define (cond-actions clause) (cdr clause))
+(define (cond->if exp)
+  (expand-clauses (cond-clauses exp)))
+
+(define (expand-clauses clauses)
+  (if (null? clauses)
+      'false
+      (let ((first (car clauses))
+            (rest (cdr clauses)))
+        (if (cond-else-clause? first)
+            (if (null? rest)
+                (sequence->exp (cond-actions first))
+                (error "ELSE clause isn't last -- COND->IF"
+                       clauses))
+            (make-if (cond-predicate first)
+                     (sequence->exp (cond-actions first))
+                     (expand-clauses rest))))))
+
+
+;; From Footers
+;; ============
+
+;; footer 37
+(define label-counter 0)
+
+(define (new-label-number)
+  (set! label-counter (+ 1 label-counter))
+  label-counter)
+
+(define (make-label name)
+  (string->symbol
+   (string-append (symbol->string name)
+                  (number->string (new-label-number)))))
+
+;; footer 41
+
+(define all-regs '(env proc val argl arg1 arg2 continue compapp))
+
+
+;; Old Friends
+;; ===========
+
+(define (lookup key table)
+  (let ((record (assoc key (cdr table))))
+    (if record
+        (cdr record)
+        false)))
+(define (assoc key records)
+  (cond ((null? records) false)
+        ((equal? key (caar records)) (car records))
+        (else (assoc key (cdr records)))))
+
+
+;; =========================================
+;; Exercise 5.38 (open-code primitive apply)
+;; =========================================
+
+;; Part A
+;; ------
+
+(define (spread-arguments operands ctenv)
+  (if (= 2 (length operands))
+      (preserving '(env)
+                  (compile (car operands) ctenv 'arg1 'next)
+                  (preserving '(arg1)
+                              (compile (cadr operands) ctenv 'arg2 'next)
+                              (make-instruction-sequence
+                               '(arg1) '() '())))
+      (error "Spread-arguments expects 2 arguments -- COMPILE" operands)))
+
+;; Part B
+;; ------
+
+(define (compile-= exp ctenv target linkage)
+  (compile-2arg-open-code '= (operands exp) ctenv target linkage))
+
+(define (compile-* exp ctenv target linkage)
+  (compile-multi-arg-open '* (operands exp) ctenv target linkage '1))
+
+(define (compile-- exp ctenv target linkage)
+  (compile-2arg-open-code '- (operands exp) ctenv target linkage))
+
+(define (compile-+ exp ctenv target linkage)
+  (compile-multi-arg-open '+ (operands exp) ctenv target linkage '0))
+
+(define (compile-2arg-open-code operator operands ctenv target linkage)
+  (end-with-linkage
+   linkage
+   (append-instruction-sequences
+    (spread-arguments operands ctenv)
+    (make-instruction-sequence
+     '(arg1 arg2)
+     `(,target)
+     `((assign ,target (op ,operator) (reg arg1) (reg arg2)))))))
+
+(define primitive-procedure-compilers
+  (list
+   '*table*
+   (cons '= compile-=)
+   (cons '* compile-*)
+   (cons '- compile--)
+   (cons '+ compile-+)))
+
+(define primitive-procedure-names
+  (map car (cdr primitive-procedure-compilers)))
+
+;; primitive-procedure? moved to Exercise 5.44 below
+
+(define (lookup-primitive-compiler prim-proc)
+  (lookup prim-proc primitive-procedure-compilers))
+
+(define (compile-primitive-procedure exp ctenv target linkage)
+  ((lookup-primitive-compiler (car exp)) exp ctenv target linkage))
+
+
+;; Part D
+;; ------
+
+(define (compile-multi-arg-open
+         operator operands ctenv target linkage op-id)
+  (let ((operand-count (length operands)))
+    (cond
+      ((= 0 operand-count) (compile op-id ctenv target linkage))
+      ((= 1 operand-count) (compile (car operands) ctenv target linkage))
+      (else
+       (end-with-linkage
+        linkage
+        (preserving
+         '(env)
+         (compile (car operands) ctenv 'arg1 'next)
+         (compile-open-code-reduce operator
+                                   (cdr operands)
+                                   ctenv
+                                   target)))))))
+
+(define (compile-open-code-reduce operator operands ctenv target)
+  (let* ((is-last-operand (null? (cdr operands)))
+         (trgt (if is-last-operand target 'arg1))
+         (open-code-apply
+          (preserving '(arg1)
+                      (compile (car operands) ctenv 'arg2 'next)
+                      (make-instruction-sequence
+                       '(arg1 arg2)
+                       `(,trgt)
+                       `((assign ,trgt (op ,operator)
+                                 (reg arg1) (reg arg2)))))))
+    (if is-last-operand
+        open-code-apply
+        (preserving
+         '(env)
+         open-code-apply
+         (compile-open-code-reduce operator (cdr operands) ctenv target)))))
+
+
+;;; Exercise 5.39
+;;; =============
+
+;; Moved to ec-evaluator
+
+
+;; Exercise 5.40
+;; =============
+
+(define empty-ctenv '())
+
+(define (extend-ctenv ctenv vars)
+  (cons vars ctenv))
+
+
+;; Exercise 5.41
+;; =============
+
+(define (make-lex-addr frame-number displacement)
+  (list frame-number displacement))
+
+(define (index-of item list)
+  (define (iter l n)
+    (if (pair? l)
+        (if (eq? item (car l))
+            n
+            (iter (cdr l) (+ n 1)))
+        false))
+  (iter list 0))
+
+(define (find-variable var ctenv)
+  (define (iter env frame-number)
+    (if (pair? env)
+        (let ((vars (car env)))
+          (cond ((index-of var vars)
+                 => (lambda (displacement)
+                      (make-lex-addr frame-number displacement)))
+                (else (iter (cdr env) (+ frame-number 1)))))
+          'not-found))
+  (iter ctenv 0))
+
+
+;; Exercise 5.42
+;; =============
+
+(define (compile-variable exp ctenv target linkage)
+  (let ((lex-addr (find-variable exp ctenv)))
+    (let ((lookup-code
+           (if (eq? lex-addr 'not-found)
+               ;; put global-env into target to preserve env
+               `((assign ,target
+                         (op get-global-environment))
+                 (assign ,target
+                         (op lookup-variable-value)
+                         (const ,exp)
+                         (reg ,target)))
+               `((assign ,target
+                         (op lexical-address-lookup)
+                         (const ,lex-addr)
+                         (reg env))))))
+      (end-with-linkage
+       linkage
+       (make-instruction-sequence
+        '(env) (list target)
+        lookup-code)))))
+
+(define (compile-assignment exp ctenv target linkage)
+  (let ((var (assignment-variable exp))
+        (get-value-code
+         (compile (assignment-value exp) ctenv 'val 'next)))
+    (let ((lex-addr (find-variable var ctenv)))
+      (let ((assignment-seq
+             (if (eq? lex-addr 'not-found)
+                 (make-instruction-sequence
+                  '(env val)
+                  (list 'env target)  ;; we're modifying env
+                  ;; target could be val so can't put global-env there
+                  `((assign env (op get-global-environment))
+                    (perform (op set-variable-value!)
+                             (const ,var)
+                             (reg val)
+                             (reg env))
+                    (assign ,target (const ok))))
+                 (make-instruction-sequence
+                  '(env val)
+                  (list target)
+                  `((perform (op lexical-address-set!)
+                             (const ,lex-addr)
+                             (reg val)
+                             (reg env))
+                    (assign ,target (const ok)))))))
+        (end-with-linkage
+         linkage
+         (preserving
+          '(env)
+          get-value-code
+          assignment-seq))))))
+
+
+;; Exercise 5.43 - scan out definitions
+;; ====================================
+
+(define (make-call proc args) (cons proc args))
+
+(define (scan-out-defines exp)
+  (define (scan exp new-members vars)
+    (if (null? exp)
+        (cons new-members vars)
+        (let ((member (car exp)))
+          (if (definition? member)
+              (scan (cdr exp)
+                    (cons
+                     (list 'set!
+                           (definition-variable member)
+                           (definition-value member))
+                     new-members)
+                    (cons (definition-variable member) vars))
+              (scan (cdr exp)
+                    (cons member new-members)
+                    vars)))))
+  (let ((scan-rslt (scan exp '() '())))
+    (let ((new-body (reverse (car scan-rslt)))
+          (vars (reverse (cdr scan-rslt))))
+      (let ((vals (map (lambda (var) ''*unassigned*) vars)))
+        (if (null? vars)
+            exp
+            (list (make-call (make-lambda vars new-body) vals)))))))
+
+
+;; Exercise 5.44
+;; =============
+
+(define (primitive-name? exp ctenv)
+  (and (pair? exp)
+       (memq (car exp) primitive-procedure-names)
+       (eq? 'not-found (find-variable (car exp) ctenv))))
+
+
+;; Exercise 5.47
+;; =============
+
+(define (compile-compound-appl target linkage)
+  (cond ((and (eq? target 'val) (not (eq? linkage 'return)))
+         (make-instruction-sequence
+          '(proc) all-regs
+          `((assign continue (label ,linkage))
+            (save continue)               ;
+            (goto (reg compapp)))))       ;
+        ((and (not (eq? target 'val))
+              (not (eq? linkage 'return)))
+         (let ((proc-return (make-label 'proc-return)))
+           (make-instruction-sequence
+            '(proc) all-regs
+            `((assign continue (label ,proc-return))
+              (save continue)             ;
+              (goto (reg compapp))        ;
+              ,proc-return
+              (assign ,target (reg val))
+              (goto (label ,linkage))))))
+        ((and (eq? target 'val) (eq? linkage 'return))
+         (make-instruction-sequence
+          '(proc continue) all-regs
+          '((save continue)               ;
+            (goto (reg compapp)))))       ;
+        ((and (not (eq? target 'val)) (eq? linkage 'return))
+         (error "return linkage, target not val -- COMPILE"
+                target))))
+
+
+;; Exercise 5.48
+;; =============
+
+(define (statements-with-return exp)
+  (statements-with exp 'return))
+
+
+;; Exercise 5.50
+;; =============
+
+(define (statements-with-next exp)
+  (statements-with exp 'next))
+
+(define (statements-with exp linkage)
+  (statements
+   (compile exp empty-ctenv 'val linkage)))
+
+;; let->combination
+
+(define (let-body exp)
+  (cddr exp))
+
+(define (let-pairs exp)
+  (cadr exp))
+
+(define let-pair-id car)
+
+(define let-pair-value cadr)
+
+(define (let-params exp)
+  (map let-pair-id
+       (let-pairs exp)))
+
+(define (let-values exp)
+  (map let-pair-value
+       (let-pairs exp)))
+
+(define (let? exp) (tagged-list? exp 'let))
+
+(define (let->combination exp)
+  (make-call
+   (make-lambda (let-params exp)
+                (let-body exp))
+   (let-values exp)))
+
+; ;; And Finally
+; ;; ===========
+
+; (#%provide
+;  compile
+;  empty-ctenv
+;  statements
+;  statements-with-return
+;  statements-with-next)
