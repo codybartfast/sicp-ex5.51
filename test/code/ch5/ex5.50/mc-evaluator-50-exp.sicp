@@ -1,6 +1,6 @@
 ; #lang sicp
 
-;; Everything from mc-evaluator-50, except provide, in one big begin 
+;; Everything from mc-evaluator-50, except provide, in one big begin
 ;; expression which can be passed the compiler.
 
 ; (#%provide mc-evaluator-exp)
@@ -8,7 +8,7 @@
 (define mc-evaluator-exp
   '(begin
 
-     
+
      ;; 4.1.1  The Core of the Evaluator
      ;; ================================
 
@@ -23,7 +23,7 @@
               (make-procedure (lambda-parameters exp)
                               (lambda-body exp)
                               env))
-             ((begin? exp) 
+             ((begin? exp)
               (eval-sequence (begin-actions exp) env))
              ((cond? exp) (eval (cond->if exp) env))
              ((application? exp)
@@ -289,7 +289,7 @@
              (list 'list list)
              (list 'equal? equal?)
              ))
-         
+
      (define (primitive-procedure-names)
        (map car
             primitive-procedures))
@@ -322,10 +322,15 @@
      (define (driver-loop)
        (prompt-for-input input-prompt)
        (let ((input (read)))
-         (let ((output (eval input the-global-environment)))
-           (announce-output output-prompt)
-           (user-print output)))
-       (driver-loop))
+         (cond
+           ((equal? input (list 'exit))
+             (display "Malum consilium quod mutari non potest")
+             (newline))
+           (else
+             (let ((output (eval input the-global-environment)))
+               (announce-output output-prompt)
+               (user-print output)
+               (driver-loop))))))
      (define (prompt-for-input string)
        (newline) (newline) (display string) (newline))
 
@@ -341,5 +346,5 @@
            (display object)))
 
      (driver-loop)
-     
+
      ))

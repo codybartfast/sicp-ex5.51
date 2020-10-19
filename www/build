@@ -1,4 +1,5 @@
 ../emsdk/upstream/emscripten/emcc 		\
+	../sicp-scheme/src/ambeval.c 		\
 	../sicp-scheme/src/aneval.c 		\
 	../sicp-scheme/src/bitmap.c             \
 	../sicp-scheme/src/character.c 		\

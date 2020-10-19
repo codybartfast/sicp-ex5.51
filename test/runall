@@ -13,5 +13,5 @@ run() {
 
 export -f run
 
-find $source_dir -type f -name 'ex*.sicp' | sort | while read line ; do run $line ; done
-# find $source_dir -type f -name 'ex*.sicp' -exec bash -c 'run $0' {} \;
+find $source_dir -type f -regex '.*[1234]/.*/ex.*sicp' | sort | while read line ; do run $line ; done
+# find $source_dir -type f -regex '.*[1234]/.*/ex.*sicp' -exec bash -c 'run $0' {} \;

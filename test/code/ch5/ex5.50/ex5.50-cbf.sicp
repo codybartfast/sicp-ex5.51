@@ -1,3 +1,5 @@
+; (%ambeval)
+
 (load "machine-50")
 (load "compiler-50")
 (load "ec-evaluator-50")
