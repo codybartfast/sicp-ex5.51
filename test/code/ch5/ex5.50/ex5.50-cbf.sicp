@@ -16,4 +16,3 @@
 
 (display "Starting matacirculator evaluator REPL ...")(newline)
 (start machine)
-;machine

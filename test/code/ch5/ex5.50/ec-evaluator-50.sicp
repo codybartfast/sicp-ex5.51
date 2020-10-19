@@ -158,8 +158,10 @@
         (list 'cdddr cdddr)
         (list 'apply-in-underlying-scheme apply-in-underlying-scheme)
         ;; Additional primitive procedures installed in the MC-evaluator
+        (list '+ +)
         (list '- -)
         (list '* *)
+        (list '< <)
         (list 'equal? equal?)
         ))
         

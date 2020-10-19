@@ -280,9 +280,11 @@
                  (map proc (cdr items)))))
 
      (define primitive-procedures
-       (list (list '= =)
-             (list '* *)
+       (list (list '+ +)
              (list '- -)
+             (list '* *)
+             (list '= =)
+             (list '< <)
              (list 'cons cons)
              (list 'list list)
              (list 'equal? equal?)
