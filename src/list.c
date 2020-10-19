@@ -149,11 +149,8 @@ obj append(obj lst1, obj lst2)
 
 obj append_p(obj args)
 {
-	// obj chk = chkarity("append", 2, args);
-	// if (is_err(chk))
-	// 	return chk;
 	obj lst = emptylst;
-	for (; is_pair(args); args = cdr(args)) {
+	for (args = reverse(args); is_pair(args); args = cdr(args)) {
 		lst = append(car(args), lst);
 	}
 	return lst;
