@@ -10,6 +10,7 @@
 #include "mceval.h"
 #include "parser.h"
 #include "primproc.h"
+#include "register.h"
 #include "storage.h"
 
 static obj is_and_p(obj args)

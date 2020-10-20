@@ -31,6 +31,7 @@
                 "src/parser.c",
                 "src/pict.c",
                 "src/primproc.c",
+                "src/register.c",
                 "src/sicp.c",
                 "src/storage.c",
                 "src/strbldr.c",

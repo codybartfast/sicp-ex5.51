@@ -9,29 +9,11 @@
 #include "mceval.h"
 #include "output.h"
 #include "primproc.h"
+#include "register.h"
 #include "storage.h"
 
 #define AREA "ECEVAL"
 
-struct core {
-	obj argl; //     1
-	obj cont; //     2
-	obj env; //      3
-	obj expr; //     4
-	obj proc; //     5
-	obj stack; //    6
-	obj unev; //     7
-	obj val; //      8
-} cre;
-struct core *cr0 = &cre;
-
-// the_global_environment // 9
-obj anenv; //   10
-obj ambenv; //  11
-obj savetmp; // 12
-
-const int rootlen = 12;
-static obj rootlst;
 
 // ln 182
 static obj empty_arglist(void)
@@ -87,89 +69,6 @@ static obj restore(struct core *cr)
 }
 
 // used for garbage collection
-obj getroot(void)
-{
-	int actlen;
-	obj lst = rootlst;
-
-	// intentionally not using rootlen here, change number manually after
-	// modifying body below.
-	if ((actlen = length_u(rootlst)) != 12) {
-		error_internal(
-			AREA,
-			"Bug! getroot() got list of unexpected length: %d ",
-			actlen);
-		exit(1);
-	}
-	// order must match setroot
-	set_car(lst, cr0->argl);
-	lst = cdr(lst);
-	set_car(lst, cr0->cont);
-	lst = cdr(lst);
-	set_car(lst, cr0->env);
-	lst = cdr(lst);
-	set_car(lst, cr0->expr);
-	lst = cdr(lst);
-	set_car(lst, cr0->proc);
-	lst = cdr(lst);
-	set_car(lst, cr0->stack);
-	lst = cdr(lst);
-	set_car(lst, cr0->unev);
-	lst = cdr(lst);
-	set_car(lst, cr0->val);
-	lst = cdr(lst);
-	set_car(lst, the_global_environment());
-	lst = cdr(lst);
-	set_car(lst, anenv);
-	lst = cdr(lst);
-	set_car(lst, ambenv);
-	lst = cdr(lst);
-	set_car(lst, savetmp);
-
-	return rootlst;
-}
-
-// used for garbage collection
-obj setroot(obj rlst)
-{
-	int actlen;
-	obj lst = rootlst = rlst;
-
-	// intentionally not using rootlen here, change number manually after
-	// modifying body below.
-	if ((actlen = length_u(rootlst)) != 12) {
-		return error_internal(
-			AREA,
-			"Bug! setroot() got list of unexpected length: %d",
-			actlen);
-	}
-	// order must match getroot
-	cr0->argl = car(lst);
-	lst = cdr(lst);
-	cr0->cont = car(lst);
-	lst = cdr(lst);
-	cr0->env = car(lst);
-	lst = cdr(lst);
-	cr0->expr = car(lst);
-	lst = cdr(lst);
-	cr0->proc = car(lst);
-	lst = cdr(lst);
-	cr0->stack = car(lst);
-	lst = cdr(lst);
-	cr0->unev = car(lst);
-	lst = cdr(lst);
-	cr0->val = car(lst);
-	lst = cdr(lst);
-	set_global_environment(car(lst));
-	lst = cdr(lst);
-	anenv = car(lst);
-	lst = cdr(lst);
-	ambenv = car(lst);
-	lst = cdr(lst);
-	savetmp = car(lst);
-
-	return unspecified;
-}
 
 static obj proc_name;
 static void set_proc_name(struct core *cr)
@@ -181,43 +80,8 @@ static void set_proc_name(struct core *cr)
 					  of_string("<unknown>");
 }
 
-static bool initdone = false;
-static obj init(void)
-{
-	int actlen;
-
-	cr0->stack = emptylst;
-	// preallocate storage for gc root
-	rootlst = listn(12, //       <----- actual  length
-			unspecified, //  1
-			unspecified, //  2
-			unspecified, //  3
-			unspecified, //  4
-			unspecified, //  5
-			unspecified, //  6
-			unspecified, //  7
-			unspecified, //  8
-			unspecified, //  9
-			unspecified, // 10
-			unspecified, // 11
-			unspecified //  12
-	);
-	if ((actlen = length_u(rootlst)) != rootlen) {
-		error_internal(
-			AREA,
-			"Bug! init, root wrong length. is: %d, expected %d",
-			actlen, rootlen);
-		exit(1);
-	}
-	initdone = true;
-	return unspecified;
-}
-
 static obj ecevalcr(obj expression, obj _environment, struct core *cr)
 {
-	if (!initdone) {
-		init();
-	}
 	cr->expr = expression;
 	cr->env = _environment;
 	cr->cont = ev_return_caller;
@@ -588,5 +452,5 @@ go_cont:
 
 obj eceval(obj expression, obj _environment)
 {
-	return ecevalcr(expression, _environment,cr0);
+	return ecevalcr(expression, _environment, dfltcore());
 }

@@ -9,6 +9,7 @@
 #include "list.h"
 #include "mceval.h"
 #include "parser.h"
+#include "register.h"
 #include "storage.h"
 
 static obj is_amb_p(obj args)
