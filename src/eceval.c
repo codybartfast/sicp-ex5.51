@@ -13,8 +13,6 @@
 
 #define AREA "ECEVAL"
 
-enum reg { ARGL, CONT, ENV, EXPR, PROC, STACK, UNEV, VAL };
-
 static obj argl; // 1
 static obj cont; // 2
 static obj env; // 3
@@ -26,7 +24,8 @@ static obj val; // 8
 // Plus... the_global_environment // 9
 obj anenv; // 10
 obj ambenv; // 11
-const int rootlen = 11;
+obj savetmp; // 12
+const int rootlen = 12;
 static obj rootlst;
 
 // ln 182
@@ -58,50 +57,11 @@ static void timed_eval(obj start)
 	displaydat(of_string("s ] "));
 }
 
-static void save(enum reg reg)
+static void save(obj val)
 {
-	// Why use an enum?  Why not just pass the obj to save as an argument?
-	//
-	//      Because the call to newpair (below) allows garbage collection.
-	//
-	// So?  The argument obj wouldn't be reachable from the GC 'root' list.
-	//
-	// So?  If the arg(ument) is a pointer to a pair (i.e., is_pair), and a
-	//      collection occurs, then the arg's pointer will not be updated
-	//      because the garbage collector doesn't know about it.
-	//
-	// So?  The arg would still point to the pair's original location (now a
-	//      'broken heart') and not to the pair's new location.
-	//
-	// Oh!  That's right, you just avoided putting corrupt data on the stack!
-	//
+	savetmp = val;
+	stack = consgc(&savetmp, &stack);
 
-	switch (reg) {
-	case ARGL:
-		stack = consgc(&argl, &stack);
-		break;
-	case CONT:
-		stack = consgc(&cont, &stack);
-		break;
-	case ENV:
-		stack = consgc(&env, &stack);
-		break;
-	case EXPR:
-		stack = consgc(&expr, &stack);
-		break;
-	case PROC:
-		stack = consgc(&proc, &stack);
-		break;
-	case STACK:
-		stack = consgc(&stack, &stack);
-		break;
-	case UNEV:
-		stack = consgc(&unev, &stack);
-		break;
-	case VAL:
-		stack = consgc(&val, &stack);
-		break;
-	}
 	if (is_err(stack)) {
 		eprintf(AREA, "Halting - Reached Memory Limit");
 		exit(1);
@@ -129,7 +89,7 @@ obj getroot(void)
 
 	// intentionally not using rootlen here, change number manually after
 	// modifying body below.
-	if ((actlen = length_u(rootlst)) != 11) {
+	if ((actlen = length_u(rootlst)) != 12) {
 		error_internal(
 			AREA,
 			"Bug! getroot() got list of unexpected length: %d ",
@@ -158,6 +118,8 @@ obj getroot(void)
 	set_car(lst, anenv);
 	lst = cdr(lst);
 	set_car(lst, ambenv);
+	lst = cdr(lst);
+	set_car(lst, savetmp);
 
 	return rootlst;
 }
@@ -170,7 +132,7 @@ obj setroot(obj rlst)
 
 	// intentionally not using rootlen here, change number manually after
 	// modifying body below.
-	if ((actlen = length_u(rootlst)) != 11) {
+	if ((actlen = length_u(rootlst)) != 12) {
 		return error_internal(
 			AREA,
 			"Bug! setroot() got list of unexpected length: %d",
@@ -198,6 +160,8 @@ obj setroot(obj rlst)
 	anenv = car(lst);
 	lst = cdr(lst);
 	ambenv = car(lst);
+	lst = cdr(lst);
+	savetmp = car(lst);
 
 	return unspecified;
 }
@@ -219,7 +183,7 @@ static obj init(void)
 
 	stack = emptylst;
 	// preallocate storage for gc root
-	rootlst = listn(11, //       <----- actual  length
+	rootlst = listn(12, //       <----- actual  length
 			unspecified, //  1
 			unspecified, //  2
 			unspecified, //  3
@@ -230,7 +194,8 @@ static obj init(void)
 			unspecified, //  8
 			unspecified, //  9
 			unspecified, // 10
-			unspecified //  11
+			unspecified, // 11
+			unspecified //  12
 	);
 	if ((actlen = length_u(rootlst)) != rootlen) {
 		error_internal(
@@ -331,10 +296,10 @@ ev_lambda:
 
 // ln 277
 ev_application:
-	save(CONT);
-	save(ENV);
+	save(cont);
+	save(env);
 	unev = operands(expr);
-	save(UNEV);
+	save(unev);
 	expr = operator(expr);
 	set_proc_name();
 	cont = ev_appl_did_operator;
@@ -350,16 +315,16 @@ ev_appl_did_operator:
 		return proc;
 	if (no_operands(unev))
 		goto apply_dispatch;
-	save(PROC);
+	save(proc);
 
 // ln 295
 ev_appl_operand_loop:
-	save(ARGL);
+	save(argl);
 	expr = first_operand(unev);
 	if (is_last_operand(unev))
 		goto ev_appl_last_arg;
-	save(ENV);
-	save(UNEV);
+	save(env);
+	save(unev);
 	cont = ev_appl_accumulate_arg;
 	goto eval_dispatch;
 
@@ -403,7 +368,7 @@ primitive_apply:
 // ln 348
 ev_begin:
 	unev = begin_actions(expr);
-	save(CONT);
+	save(cont);
 	goto ev_sequence;
 
 // ln 338
@@ -423,8 +388,8 @@ ev_sequence:
 	expr = first_exp(unev);
 	if (is_last_exp(unev))
 		goto ev_sequence_last_exp;
-	save(UNEV);
-	save(ENV);
+	save(unev);
+	save(env);
 	cont = ev_sequence_continue;
 	goto eval_dispatch;
 ev_sequence_continue:
@@ -440,9 +405,9 @@ ev_sequence_last_exp:
 
 // ln 374
 ev_if:
-	save(EXPR); // save expression for later
-	save(ENV);
-	save(CONT);
+	save(expr); // save expression for later
+	save(env);
+	save(cont);
 	cont = ev_if_decide;
 	expr = if_predicate(expr);
 	goto eval_dispatch; // evaluate the predicate
@@ -466,10 +431,10 @@ ev_if_consequent:
 // ln 399
 ev_assignment:
 	unev = assignment_variable(expr);
-	save(UNEV); // save variable for later
+	save(unev); // save variable for later
 	expr = assignment_value(expr);
-	save(ENV);
-	save(CONT);
+	save(env);
+	save(cont);
 	cont = ev_assignment_1;
 	goto eval_dispatch; // evaluate the assignment value
 
@@ -484,10 +449,10 @@ ev_assignment_1:
 // ln 416
 ev_definition:
 	unev = definition_variable(expr);
-	save(UNEV); // save variable for later
+	save(unev); // save variable for later
 	expr = definition_value(expr);
-	save(ENV);
-	save(CONT);
+	save(env);
+	save(cont);
 	cont = ev_definition_1;
 	goto eval_dispatch; // evaluate the definition value
 ev_definition_1:
@@ -538,10 +503,10 @@ ev_cons_stream:
 
 // new
 ev_timed:
-	save(UNEV);
+	save(unev);
 	unev = runtime(emptylst);
-	save(UNEV);
-	save(CONT);
+	save(unev);
+	save(cont);
 	cont = ev_timed_done;
 	expr = cons(begin, cdr(expr));
 	goto eval_dispatch;
@@ -555,10 +520,10 @@ ev_timed_done:
 
 // new
 ev_apply:
-	save(CONT);
-	save(ENV);
+	save(cont);
+	save(env);
 	unev = apply_operands(expr);
-	save(UNEV);
+	save(unev);
 	expr = apply_operator(expr);
 	cont = ev_apply_2;
 	goto eval_dispatch;
@@ -567,8 +532,8 @@ ev_apply_2:
 	unev = restore();
 	env = restore();
 	proc = val;
-	save(PROC);
-	save(ENV);
+	save(proc);
+	save(env);
 	expr = unev;
 	cont = ev_apply_3;
 	goto eval_dispatch;
