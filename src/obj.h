@@ -29,7 +29,8 @@ enum type {
 	TYPE_BROKEN_HEART, // 11
 	TYPE_BITMAP, // 12
 	TYPE_UNASSIGNED, // 13
-	TYPE_ERROR // 14
+	TYPE_YIELDED, // 14
+	TYPE_ERROR // 15
 };
 
 enum { SUBTYPE_NOT_SET = 0 };
@@ -172,6 +173,8 @@ extern const obj ok;
 extern const obj unspecified;
 bool is_void(obj dat);
 extern const obj void_o;
+extern const obj yielded;
+bool is_yielded(obj dat);
 
 // BROKEN HEART
 

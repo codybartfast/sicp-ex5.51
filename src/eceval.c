@@ -3,7 +3,9 @@
 
 #include "eceval.h"
 
+#include <stdbool.h>
 #include <stdlib.h>
+
 #include "error.h"
 #include "list.h"
 #include "mceval.h"
@@ -81,7 +83,7 @@ static void set_proc_name(struct core *cr)
 					  of_string("<unknown>");
 }
 
-static obj ecevalgoto(struct core *cr)
+static obj ecevalgoto(struct core *cr, bool yield)
 {
 	obj go_obj = restore(cr);
 	goto go_obj;
@@ -422,6 +424,10 @@ unknown_procedure_type:
 	return error_eval(AREA, "Unknown procedure type: %s", errstr(cr->proc));
 
 go_cont:
+	if (yield) {
+		save(cr->cont, cr);
+		return yielded;
+	}
 	go_obj = cr->cont;
 go_obj:
 	if (is_eq(go_obj, ev_return_caller))
@@ -456,10 +462,14 @@ go_obj:
 
 obj eceval(obj expression, obj _environment)
 {
+	obj rslt;
+
 	struct core *cr = dfltcore();
 	cr->expr = expression;
 	cr->env = _environment;
 	cr->cont = ev_return_caller;
 	save_nogc(ev_eval_dispatch, cr);
-	return ecevalgoto(cr);
+	while (is_yielded(rslt = ecevalgoto(cr, false)))
+		;
+	return rslt;
 }

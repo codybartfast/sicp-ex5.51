@@ -302,6 +302,11 @@ bool is_void(obj dat)
 	return type(dat) == TYPE_VOID;
 }
 const obj void_o = OBJ_2(TYPE_VOID, SUBTYPE_NOT_SET);
+const obj yielded = OBJ_2(TYPE_YIELDED, SUBTYPE_NOT_SET);
+bool is_yielded(obj dat)
+{
+	return type(dat) == TYPE_YIELDED;
+}
 
 // BROKEN HEART
 
