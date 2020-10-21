@@ -14,7 +14,6 @@
 
 #define AREA "ECEVAL"
 
-
 // ln 182
 static obj empty_arglist(void)
 {
@@ -46,8 +45,8 @@ static void timed_eval(obj start)
 
 static void save(obj dat, struct core *cr)
 {
-	savetmp = dat;
-	cr->stack = consgc(&savetmp, &cr->stack);
+	svtmp = dat;
+	cr->stack = consgc(&svtmp, &cr->stack);
 
 	if (is_err(cr->stack)) {
 		eprintf(AREA, "Halting - Reached Memory Limit");
@@ -67,8 +66,6 @@ static obj restore(struct core *cr)
 		return dat;
 	}
 }
-
-// used for garbage collection
 
 static obj proc_name;
 static void set_proc_name(struct core *cr)
