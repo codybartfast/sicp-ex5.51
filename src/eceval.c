@@ -52,7 +52,11 @@ static void save(obj dat, struct core *cr)
 		eprintf(AREA, "Halting - Reached Memory Limit");
 		exit(1);
 	}
-	return;
+}
+
+static void save_nogc(obj dat, struct core *cr)
+{
+	cr->stack = cons(dat, cr->stack);
 }
 
 static obj restore(struct core *cr)
@@ -77,11 +81,10 @@ static void set_proc_name(struct core *cr)
 					  of_string("<unknown>");
 }
 
-static obj ecevalcr(obj expression, obj _environment, struct core *cr)
+static obj ecevalgoto(struct core *cr)
 {
-	cr->expr = expression;
-	cr->env = _environment;
-	cr->cont = ev_return_caller;
+	obj go_obj = restore(cr);
+	goto go_obj;
 
 // 5.4.1 The Core of the Evaluator
 
@@ -419,35 +422,44 @@ unknown_procedure_type:
 	return error_eval(AREA, "Unknown procedure type: %s", errstr(cr->proc));
 
 go_cont:
-	if (is_eq(cr->cont, ev_return_caller))
+	go_obj = cr->cont;
+go_obj:
+	if (is_eq(go_obj, ev_return_caller))
 		return cr->val;
-	if (is_eq(cr->cont, ev_appl_accum_last_arg))
+	if (is_eq(go_obj, ev_appl_accum_last_arg))
 		goto ev_appl_accum_last_arg;
-	if (is_eq(cr->cont, ev_appl_accumulate_arg))
+	if (is_eq(go_obj, ev_appl_accumulate_arg))
 		goto ev_appl_accumulate_arg;
-	if (is_eq(cr->cont, ev_appl_did_operator))
+	if (is_eq(go_obj, ev_appl_did_operator))
 		goto ev_appl_did_operator;
-	if (is_eq(cr->cont, ev_apply_2))
+	if (is_eq(go_obj, ev_apply_2))
 		goto ev_apply_2;
-	if (is_eq(cr->cont, ev_apply_3))
+	if (is_eq(go_obj, ev_apply_3))
 		goto ev_apply_3;
-	if (is_eq(cr->cont, ev_assignment_1))
+	if (is_eq(go_obj, ev_assignment_1))
 		goto ev_assignment_1;
-	if (is_eq(cr->cont, ev_definition_1))
+	if (is_eq(go_obj, ev_definition_1))
 		goto ev_definition_1;
-	if (is_eq(cr->cont, ev_if_decide))
+	if (is_eq(go_obj, ev_eval_dispatch))
+		goto eval_dispatch;
+	if (is_eq(go_obj, ev_if_decide))
 		goto ev_if_decide;
-	if (is_eq(cr->cont, ev_quoted))
+	if (is_eq(go_obj, ev_quoted))
 		goto ev_quoted;
-	if (is_eq(cr->cont, ev_sequence_continue))
+	if (is_eq(go_obj, ev_sequence_continue))
 		goto ev_sequence_continue;
-	if (is_eq(cr->cont, ev_timed_done))
+	if (is_eq(go_obj, ev_timed_done))
 		goto ev_timed_done;
 	return error_internal(AREA, "BUG! Goto... where?: %s",
-			      to_string(cr->cont));
+			      to_string(go_obj));
 }
 
 obj eceval(obj expression, obj _environment)
 {
-	return ecevalcr(expression, _environment, dfltcore());
+	struct core *cr = dfltcore();
+	cr->expr = expression;
+	cr->env = _environment;
+	cr->cont = ev_return_caller;
+	save_nogc(ev_eval_dispatch, cr);
+	return ecevalgoto(cr);
 }

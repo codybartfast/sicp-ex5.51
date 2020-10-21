@@ -156,6 +156,7 @@ extern const obj ev_apply_2;
 extern const obj ev_apply_3;
 extern const obj ev_assignment_1;
 extern const obj ev_definition_1;
+extern const obj ev_eval_dispatch;
 extern const obj ev_if_decide;
 extern const obj ev_quoted;
 extern const obj ev_sequence_continue;
