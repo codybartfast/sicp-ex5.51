@@ -1,0 +1,19 @@
+(%ex "3.39")
+
+; exercise 3.39, page 306
+
+(define s (make-serializer))
+
+; (define s (lambda (x) x))
+
+(define (loop)
+  (define x 10)
+  (parallel-execute (lambda () (set! x ((s (lambda () (* x x))))))
+                    (s (lambda () (set! x (+ x 1)))))
+  (display "x: ")
+  (display x)
+  (newline)
+  ; (loop)
+  )
+
+(loop)

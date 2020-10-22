@@ -1,0 +1,17 @@
+(%ex "3.38")
+
+; exercise 3.38, page 303
+
+(define (loop)
+  (define balance 100)
+  (parallel-eval
+    (set! balance (+ balance 10))
+    (set! balance (- balance 20))
+    (set! balance (- balance (/ balance 2))))
+  (display "bal: ")
+  (display balance)
+  (newline)
+  ; (loop)
+  )
+
+(loop)
