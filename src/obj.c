@@ -258,6 +258,7 @@ SYMBOL_VAR(letrec)
 const obj letstar = SYMBOL("let*");
 const obj memo_proc = SYMBOL("memo-proc");
 const obj or_s = SYMBOL("or");
+const obj parallel_eval_s = SYMBOL("parallel-eval");
 const obj parallel_execute_s = SYMBOL("parallel-execute");
 SYMBOL_VAR(quasiquote)
 SYMBOL_VAR(quote)

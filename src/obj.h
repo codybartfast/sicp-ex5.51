@@ -140,6 +140,7 @@ extern const obj letrec;
 extern const obj letstar;
 extern const obj memo_proc;
 extern const obj or_s;
+extern const obj parallel_eval_s;
 extern const obj parallel_execute_s;
 extern const obj quasiquote;
 extern const obj quote;

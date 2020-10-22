@@ -16,6 +16,7 @@
 
 #define AREA "ECEVAL"
 
+static obj parallel_eval(obj actions, obj env);
 static obj parallel_execute(obj actions, obj env);
 
 // ln 182
@@ -136,8 +137,10 @@ eval_dispatch:
 		goto ev_cons_stream;
 	if (is_time(cr->expr))
 		goto ev_timed;
+	if (is_parallel_eval(cr->expr))
+		goto ev_parallel_eval;
 	if (is_parallel_execute(cr->expr))
-		goto ev_concurrent_execute;
+		goto ev_parallel_execute;
 	if (is_ecapply(cr->expr))
 		goto ev_apply;
 	if (is_application(cr->expr))
@@ -394,8 +397,16 @@ ev_timed_done:
 	goto go_cont;
 
 // new
-ev_concurrent_execute:
-	return parallel_execute(cdr(cr->expr), cr->env);
+ev_parallel_eval:
+	cr->val = parallel_eval(cdr(cr->expr), cr->env);
+	go_obj = cr->cont;
+	goto go_obj;
+
+ev_parallel_execute:
+	cr->val = parallel_execute(cdr(cr->expr), cr->env);
+	go_obj = cr->cont;
+	goto go_obj;
+
 // new
 ev_apply:
 	save(cr->cont, cr);
@@ -437,6 +448,7 @@ go_cont:
 	}
 	go_obj = cr->cont;
 go_obj:
+// printf("obj: %s\n", to_string(go_obj));
 	if (is_eq(go_obj, ev_return_caller))
 		return cr->val;
 	if (is_eq(go_obj, ev_appl_accum_last_arg))
@@ -477,15 +489,26 @@ obj eceval(obj expression, obj _environment)
 	return ecevalgoto(cr, false);
 }
 
-static int rand_below(int n)
+static obj parallel_execute(obj procs, obj env)
 {
-	return plat_rand() % n;
+	obj actions = emptylst;
+
+	for (; is_pair(procs); procs = cdr(procs)) {
+		actions = cons(list1(car(procs)), actions);
+	}
+	return parallel_eval(actions, env);
 }
 
-static obj parallel_execute(obj actions, obj env)
+static int rand_clicks(int n)
 {
-	static bool running[NCORE];
-	static int free = 0;
+	Integer r = plat_rand();
+	return ((r % 16) > 11) ? (r % n) + 1 : 0;
+}
+
+static obj parallel_eval(obj actions, obj env)
+{
+	bool running[NCORE];
+	int free = 0;
 	int i, j, runcount;
 
 	while (is_pair(actions)) {
@@ -512,9 +535,10 @@ static obj parallel_execute(obj actions, obj env)
 			if (!running[i]) {
 				continue;
 			}
-			int clicks = rand_below(32);
+			int clicks = rand_clicks(2);
 			for (j = 0; j < clicks; j++) {
-				if (!is_yielded(ecevalgoto(getcore(i), true))) {
+				obj r = ecevalgoto(getcore(i), true);
+				if (!is_yielded(r)) {
 					running[i] = false;
 					runcount--;
 					break;

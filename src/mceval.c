@@ -615,7 +615,14 @@ obj quasi_to_combination(obj exp)
 	return quasi_dat(cadr(exp));
 }
 
+// new - parallel
+
 bool is_parallel_execute(obj exp)
 {
 	return is_tagged_list(exp, parallel_execute_s);
+}
+
+bool is_parallel_eval(obj exp)
+{
+	return is_tagged_list(exp, parallel_eval_s);
 }

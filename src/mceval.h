@@ -71,5 +71,6 @@ bool is_quasiquote(obj exp);
 obj quasi_to_combination(obj exp);
 
 bool is_parallel_execute(obj exp);
+bool is_parallel_eval(obj exp);
 
 #endif
