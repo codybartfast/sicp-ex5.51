@@ -16,6 +16,8 @@
 
 #define AREA "ECEVAL"
 
+static obj parallel_execute(obj actions, obj env);
+
 // ln 182
 static obj empty_arglist(void)
 {
@@ -134,6 +136,8 @@ eval_dispatch:
 		goto ev_cons_stream;
 	if (is_time(cr->expr))
 		goto ev_timed;
+	if (is_parallel_execute(cr->expr))
+		goto ev_concurrent_execute;
 	if (is_ecapply(cr->expr))
 		goto ev_apply;
 	if (is_application(cr->expr))
@@ -390,6 +394,9 @@ ev_timed_done:
 	goto go_cont;
 
 // new
+ev_concurrent_execute:
+	return parallel_execute(cdr(cr->expr), cr->env);
+// new
 ev_apply:
 	save(cr->cont, cr);
 	save(cr->env, cr);
@@ -462,14 +469,59 @@ go_obj:
 
 obj eceval(obj expression, obj _environment)
 {
-	obj rslt;
-
 	struct core *cr = dfltcore();
 	cr->expr = expression;
 	cr->env = _environment;
 	cr->cont = ev_return_caller;
 	save_nogc(ev_eval_dispatch, cr);
-	while (is_yielded(rslt = ecevalgoto(cr, false)))
-		;
-	return rslt;
+	return ecevalgoto(cr, false);
+}
+
+static int rand_below(int n)
+{
+	return plat_rand() % n;
+}
+
+static obj parallel_execute(obj actions, obj env)
+{
+	static bool running[NCORE];
+	static int free = 0;
+	int i, j, runcount;
+
+	while (is_pair(actions)) {
+		free++;
+		if (free == NCORE) {
+			return error_arity(
+				AREA,
+				"parallel-execute takes at most %d expressions",
+				(NCORE - 1));
+		}
+		struct core *cr = getcore(free);
+		running[free] = true;
+		cr->expr = car(actions);
+		cr->env = env;
+		cr->cont = ev_return_caller;
+		save_nogc(ev_eval_dispatch, cr);
+		actions = cdr(actions);
+	}
+
+	runcount = free;
+
+	while (runcount) {
+		for (i = 1; i <= free; i++) {
+			if (!running[i]) {
+				continue;
+			}
+			int clicks = rand_below(32);
+			for (j = 0; j < clicks; j++) {
+				if (!is_yielded(ecevalgoto(getcore(i), true))) {
+					running[i] = false;
+					runcount--;
+					break;
+				}
+			}
+		}
+	}
+
+	return finished;
 }

@@ -70,4 +70,6 @@ bool is_amb(obj exp);
 bool is_quasiquote(obj exp);
 obj quasi_to_combination(obj exp);
 
+bool is_parallel_execute(obj exp);
+
 #endif

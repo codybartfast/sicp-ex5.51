@@ -614,3 +614,8 @@ obj quasi_to_combination(obj exp)
 {
 	return quasi_dat(cadr(exp));
 }
+
+bool is_parallel_execute(obj exp)
+{
+	return is_tagged_list(exp, parallel_execute_s);
+}

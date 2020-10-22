@@ -250,13 +250,15 @@ const obj cons_stream = SYMBOL("cons-stream");
 SYMBOL_VAR(define)
 SYMBOL_VAR(delay)
 const obj else_s = SYMBOL("else");
+SYMBOL_VAR(finished)
 const obj if_s = SYMBOL("if");
+SYMBOL_VAR(lambda)
 SYMBOL_VAR(let)
 SYMBOL_VAR(letrec)
 const obj letstar = SYMBOL("let*");
 const obj memo_proc = SYMBOL("memo-proc");
-SYMBOL_VAR(lambda)
 const obj or_s = SYMBOL("or");
+const obj parallel_execute_s = SYMBOL("parallel-execute");
 SYMBOL_VAR(quasiquote)
 SYMBOL_VAR(quote)
 const obj set = SYMBOL("set!");

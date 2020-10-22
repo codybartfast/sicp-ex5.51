@@ -423,7 +423,7 @@ errno_t rand_s(unsigned *);
 #define PLAT_RAND_MAX RAND_MAX
 #endif
 
-static Integer plat_rand(void)
+Integer plat_rand(void)
 {
 #ifdef _WIN32
 	unsigned r;

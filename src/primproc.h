@@ -27,6 +27,7 @@ obj arctan(const obj);
 obj flr(const obj);
 obj sqroot(const obj);
 
+Integer plat_rand(void);
 obj rnd(const obj);
 obj runtime(const obj);
 obj ticks(const obj);

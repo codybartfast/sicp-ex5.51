@@ -7,14 +7,14 @@
 
 #define AREA "REGISTER"
 
-static struct core cores[ncore];
+static struct core cores[NCORE];
 
 // global-env
 obj ambenv;
 obj anenv;
 obj svtmp;
 
-const int rootlen = nother + ncore;
+const int rootlen = NOTHER + NCORE;
 static obj rootlst;
 
 static void init(void)
@@ -25,14 +25,14 @@ static void init(void)
 
 	rootlst = emptylst;
 	int i, j;
-	for (i = 0; i < ncore; i++) {
+	for (i = 0; i < NCORE; i++) {
 		obj reglst = emptylst;
-		for (j = 0; j < nreg; j++) {
+		for (j = 0; j < NREG; j++) {
 			reglst = cons(unspecified, reglst);
 		}
 		rootlst = cons(reglst, rootlst);
 	}
-	for (i = 0; i < nother; i++) {
+	for (i = 0; i < NOTHER; i++) {
 		rootlst = cons(unspecified, rootlst);
 	}
 	initdone = true;
@@ -55,7 +55,7 @@ obj getroot(void)
 	set_car(lst, svtmp);
 	lst = cdr(lst);
 
-	for (i = 0; i < ncore; i++, lst = cdr(lst)) {
+	for (i = 0; i < NCORE; i++, lst = cdr(lst)) {
 		struct core *cr = &cores[i];
 		obj reglst = car(lst);
 
@@ -104,7 +104,7 @@ void setroot(obj rlst)
 	svtmp = car(lst);
 	lst = cdr(lst);
 
-	for (i = 0; i < ncore; i++, lst = cdr(lst)) {
+	for (i = 0; i < NCORE; i++, lst = cdr(lst)) {
 		struct core *cr = &cores[i];
 		obj reglst = car(lst);
 
@@ -132,6 +132,16 @@ void setroot(obj rlst)
 		cr->val = car(reglst);
 		reglst = cdr(reglst);
 	}
+}
+
+struct core *getcore(int idx)
+{
+	if (idx < 0 || NCORE <= idx) {
+		eprintf(AREA, "Invalid core index: %d", idx);
+		exit(1);
+	}
+	init();
+	return &cores[idx];
 }
 
 struct core *dfltcore(void)
