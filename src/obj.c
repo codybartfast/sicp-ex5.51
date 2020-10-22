@@ -256,6 +256,7 @@ SYMBOL_VAR(lambda)
 SYMBOL_VAR(let)
 SYMBOL_VAR(letrec)
 const obj letstar = SYMBOL("let*");
+const obj lock = SYMBOL("__%%lock");
 const obj memo_proc = SYMBOL("memo-proc");
 const obj or_s = SYMBOL("or");
 const obj parallel_eval_s = SYMBOL("parallel-eval");
@@ -279,6 +280,7 @@ SYMBOL_VAR(ev_assignment_1)
 SYMBOL_VAR(ev_definition_1)
 SYMBOL_VAR(ev_eval_dispatch)
 SYMBOL_VAR(ev_if_decide)
+SYMBOL_VAR(ev_lock_done)
 SYMBOL_VAR(ev_quoted)
 SYMBOL_VAR(ev_sequence_continue)
 SYMBOL_VAR(ev_timed_done)

@@ -626,3 +626,8 @@ bool is_parallel_eval(obj exp)
 {
 	return is_tagged_list(exp, parallel_eval_s);
 }
+
+bool is_lock(obj exp)
+{
+	return is_tagged_list(exp, lock);
+}

@@ -278,6 +278,37 @@ static obj add_extras(int ex, obj env)
 		define_variable(of_identifier("set-cdr!"),
 				of_function(set_cdr_p), env);
 	}
+	if (ex >= 338) {
+		evalstr("(define (clear! cell)"
+			"  (set-car! cell false))",
+			env);
+		evalstr("(define (test-and-set! cell)"
+			"  (__%%lock"
+			"    (if (car cell)"
+			"        true"
+			"        (begin (set-car! cell true)"
+			"               false))))",
+			env);
+		evalstr("(define (make-mutex)"
+			"  (let ((cell (list false)))            "
+			"    (define (the-mutex m)"
+			"      (cond ((eq? m 'acquire)"
+			"             (if (test-and-set! cell)"
+			"                 (the-mutex 'acquire)))"
+			"            ((eq? m 'release) (clear! cell))))"
+			"    the-mutex))",
+			env);
+		evalstr("(define (make-serializer)"
+			"  (let ((mutex (make-mutex)))"
+			"    (lambda (p)"
+			"      (define (serialized-p . args)"
+			"        (mutex 'acquire)"
+			"        (let ((val (apply p args)))"
+			"          (mutex 'release)"
+			"          val))"
+			"      serialized-p)))",
+			env);
+	}
 	if (ex >= 350) {
 		evalstr("(define (force delayed-obj) (delayed-obj))", env);
 		add_stream(env);

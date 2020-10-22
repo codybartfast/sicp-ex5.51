@@ -88,6 +88,7 @@ static void set_proc_name(struct core *cr)
 
 static obj ecevalgoto(struct core *cr, bool yield)
 {
+	bool locked = false;
 	obj go_obj = restore(cr);
 	goto go_obj;
 
@@ -141,6 +142,8 @@ eval_dispatch:
 		goto ev_parallel_eval;
 	if (is_parallel_execute(cr->expr))
 		goto ev_parallel_execute;
+	if (is_lock(cr->expr))
+		goto ev_lock;
 	if (is_ecapply(cr->expr))
 		goto ev_apply;
 	if (is_application(cr->expr))
@@ -407,6 +410,21 @@ ev_parallel_execute:
 	go_obj = cr->cont;
 	goto go_obj;
 
+ev_lock:
+	if (locked) {
+		return error_internal(AREA, "Attempted to lock twice");
+	}
+	save(cr->cont, cr);
+	locked = true;
+	cr->cont = ev_lock_done;
+	cr->expr = cons(begin, cdr(cr->expr));
+	goto eval_dispatch;
+
+ev_lock_done:
+	cr->cont = restore(cr);
+	locked = false;
+	goto go_cont;
+
 // new
 ev_apply:
 	save(cr->cont, cr);
@@ -442,13 +460,12 @@ unknown_procedure_type:
 	return error_eval(AREA, "Unknown procedure type: %s", errstr(cr->proc));
 
 go_cont:
-	if (yield) {
+	if (yield && !locked) {
 		save(cr->cont, cr);
 		return yielded;
 	}
 	go_obj = cr->cont;
 go_obj:
-// printf("obj: %s\n", to_string(go_obj));
 	if (is_eq(go_obj, ev_return_caller))
 		return cr->val;
 	if (is_eq(go_obj, ev_appl_accum_last_arg))
@@ -469,6 +486,8 @@ go_obj:
 		goto eval_dispatch;
 	if (is_eq(go_obj, ev_if_decide))
 		goto ev_if_decide;
+	if (is_eq(go_obj, ev_lock_done))
+		goto ev_lock_done;
 	if (is_eq(go_obj, ev_quoted))
 		goto ev_quoted;
 	if (is_eq(go_obj, ev_sequence_continue))
