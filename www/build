@@ -21,6 +21,7 @@
 	../sicp-scheme/src/pict.c 		\
 	../sicp-scheme/src/primproc.c 		\
 	../sicp-scheme/src/sicp.c 		\
+	../sicp-scheme/src/register.c 		\
 	../sicp-scheme/src/storage.c 		\
 	../sicp-scheme/src/strbldr.c 		\
 						\

@@ -27,6 +27,7 @@ set (SRC_CORE
 	src/parser.c
 	src/pict.c
 	src/primproc.c
+	src/register.c
 	src/storage.c
 	src/strbldr.c
 	)

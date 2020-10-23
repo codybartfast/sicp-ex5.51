@@ -518,7 +518,7 @@ static obj parallel_execute(obj procs, obj env)
 	return parallel_eval(actions, env);
 }
 
-static int rand_clicks(int n)
+static int rndslices(int n)
 {
 	Integer r = plat_rand();
 	return ((r % 16) > 11) ? (r % n) + 1 : 0;
@@ -548,16 +548,14 @@ static obj parallel_eval(obj actions, obj env)
 	}
 
 	runcount = free;
-
 	while (runcount) {
 		for (i = 1; i <= free; i++) {
 			if (!running[i]) {
 				continue;
 			}
-			int clicks = rand_clicks(2);
-			for (j = 0; j < clicks; j++) {
-				obj r = ecevalgoto(getcore(i), true);
-				if (!is_yielded(r)) {
+			int nslices = rndslices(2);
+			for (j = 0; j < nslices; j++) {
+				if (!is_yielded(ecevalgoto(getcore(i), true))) {
 					running[i] = false;
 					runcount--;
 					break;
@@ -565,6 +563,5 @@ static obj parallel_eval(obj actions, obj env)
 			}
 		}
 	}
-
 	return finished;
 }
